@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, Plus, Hash, Clock, Settings, ChevronDown, ChevronRight, Loader2, Info, HelpCircle } from 'lucide-react';
 import { TutorialModal, useTutorialSeen } from './TutorialModal';
@@ -305,7 +306,7 @@ export function RoomBrowser({ onJoin, initialRoomId, initialHost }: RoomBrowserP
         </div>
 
         {/* Footer */}
-        <div className="mt-6 text-center">
+        <div className="mt-6 text-center space-y-2">
           <p className="text-amber-200/40 text-xs">
             Made with <span className="text-red-400">♥</span> by{' '}
             <a
@@ -317,6 +318,15 @@ export function RoomBrowser({ onJoin, initialRoomId, initialHost }: RoomBrowserP
               rabitem.de
             </a>
           </p>
+          <div className="flex items-center justify-center gap-3 text-xs">
+            <Link href="/datenschutz" className="text-amber-400/40 hover:text-amber-300 transition-colors">
+              Datenschutz
+            </Link>
+            <span className="text-amber-500/20">•</span>
+            <Link href="/impressum" className="text-amber-400/40 hover:text-amber-300 transition-colors">
+              Impressum
+            </Link>
+          </div>
         </div>
       </motion.div>
     </div>

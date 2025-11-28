@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { IPlayer } from '@shared/domain';
 import { Share2, AlertTriangle, Loader2, LogOut } from 'lucide-react';
 import { AVATAR_PRESETS, loadGameSettings, saveGameSettings } from './SettingsPanel';
@@ -190,6 +191,23 @@ export function LobbyUI({
 
           {/* Rules section */}
           <GameRules />
+
+          {/* Legal footer */}
+          <div className="px-6 py-4 border-t border-amber-500/10 flex items-center justify-center gap-4 text-xs">
+            <Link
+              href="/datenschutz"
+              className="text-amber-400/40 hover:text-amber-300 transition-colors"
+            >
+              Datenschutz
+            </Link>
+            <span className="text-amber-500/20">•</span>
+            <Link
+              href="/impressum"
+              className="text-amber-400/40 hover:text-amber-300 transition-colors"
+            >
+              Impressum
+            </Link>
+          </div>
         </div>
       </div>
     </div>
