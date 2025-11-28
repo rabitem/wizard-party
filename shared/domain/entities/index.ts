@@ -7,5 +7,6 @@ export {
   GamePhase,
   type IGameState,
   type IRoomSettings,
+  type IPauseState,
   type PlayCardResult,
 } from './game';

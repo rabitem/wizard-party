@@ -71,6 +71,7 @@ export interface UseGameConnectionReturn {
   clearTrickResult: () => void;
   connect: (host: string, roomId: string, playerName: string, roomSettings?: RoomSettings) => void;
   disconnect: () => void;
+  leaveGame: () => void;
   startGame: () => void;
   selectTrump: (suit: Suit) => void;
   placeBid: (bid: number) => void;

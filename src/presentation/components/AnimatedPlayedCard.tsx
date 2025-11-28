@@ -11,6 +11,13 @@ import {
   createCardMaterials,
   disposeCardMaterials,
 } from '../utils/card-texture';
+import { CardTrail } from './three/CardTrail';
+import {
+  PLAY_ANIMATION,
+  easeOutCubic,
+  easeInOutCubic,
+  randomInRange,
+} from '../config/physics.config';
 
 interface AnimatedPlayedCardProps {
   card: ICard;
@@ -58,10 +65,10 @@ export function AnimatedPlayedCard({
   const animationStartTime = useRef<number | null>(null);
   const lastCardId = useRef<string>('');
 
-  // Animation duration in seconds
-  const ANIMATION_DURATION = isLocalPlayer ? 0.4 : 0.6;
-  const FLIP_START = 0.2;
-  const FLIP_END = 0.7;
+  // Animation timing from config
+  const ANIMATION_DURATION = isLocalPlayer
+    ? PLAY_ANIMATION.LOCAL_DURATION
+    : PLAY_ANIMATION.OPPONENT_DURATION;
 
   // Generate consistent random offsets for this specific card
   const randomOffsets = useMemo(() => {
@@ -83,17 +90,14 @@ export function AnimatedPlayedCard({
     };
   }, [cardId]);
 
-  // Detect new card being played and reset animation
+  // Reset animation when card changes - useEffect is appropriate here
+  // since we're synchronizing with an external prop change
   useEffect(() => {
     if (cardId !== lastCardId.current) {
       lastCardId.current = cardId;
       animationStartTime.current = null;
     }
   }, [cardId]);
-
-  // Easing functions
-  const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
-  const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
   useFrame((state) => {
     if (!groupRef.current) return;
@@ -108,22 +112,27 @@ export function AnimatedPlayedCard({
 
     const posProgress = easeOutCubic(rawProgress);
 
-    // Calculate flip progress
+    // Calculate flip progress using config values
     let flipProgress = 0;
     if (!isLocalPlayer) {
-      if (rawProgress > FLIP_START && rawProgress < FLIP_END) {
-        flipProgress = easeInOutCubic((rawProgress - FLIP_START) / (FLIP_END - FLIP_START));
-      } else if (rawProgress >= FLIP_END) {
+      if (rawProgress > PLAY_ANIMATION.FLIP_START && rawProgress < PLAY_ANIMATION.FLIP_END) {
+        flipProgress = easeInOutCubic(
+          (rawProgress - PLAY_ANIMATION.FLIP_START) /
+          (PLAY_ANIMATION.FLIP_END - PLAY_ANIMATION.FLIP_START)
+        );
+      } else if (rawProgress >= PLAY_ANIMATION.FLIP_END) {
         flipProgress = 1;
       }
     } else {
       flipProgress = 1;
     }
 
-    // Physics-based arc
-    const baseArcHeight = isLocalPlayer ? 0.5 : 1.5;
+    // Physics-based arc using config values
+    const baseArcHeight = isLocalPlayer
+      ? PLAY_ANIMATION.PEAK_HEIGHT_LOCAL
+      : PLAY_ANIMATION.PEAK_HEIGHT_OPPONENT;
     const peakHeight = baseArcHeight * randomOffsets.throwStrength;
-    const peakTime = 0.35;
+    const peakTime = PLAY_ANIMATION.PEAK_TIME;
     const normalizedTime = rawProgress / peakTime;
     let arcY: number;
     if (rawProgress < peakTime) {
@@ -134,11 +143,19 @@ export function AnimatedPlayedCard({
       arcY = peakHeight * (1 - gravityFall);
     }
 
-    // Small bounce at the end
+    // Impact bounce with damped oscillation for realistic landing
     let bounceY = 0;
-    if (rawProgress > 0.85) {
-      const bounceProgress = (rawProgress - 0.85) / 0.15;
-      bounceY = Math.sin(bounceProgress * Math.PI) * randomOffsets.bounceStrength * (1 - bounceProgress);
+    let bounceRotZ = 0;
+    if (rawProgress > 0.8) {
+      const bounceProgress = (rawProgress - 0.8) / 0.2;
+      // Primary bounce using config values
+      const primaryBounce = Math.sin(bounceProgress * Math.PI * PLAY_ANIMATION.BOUNCE_FREQUENCY / 6) *
+        PLAY_ANIMATION.BOUNCE_INTENSITY * randomOffsets.bounceStrength * 4;
+      // Decay envelope using config
+      const decay = Math.exp(-bounceProgress * PLAY_ANIMATION.BOUNCE_DECAY);
+      bounceY = primaryBounce * decay;
+      // Subtle rotation wobble on landing
+      bounceRotZ = Math.sin(bounceProgress * Math.PI * 3) * PLAY_ANIMATION.BOUNCE_INTENSITY * decay;
     }
 
     // Final position with random offsets
@@ -157,15 +174,15 @@ export function AnimatedPlayedCard({
 
     const flipAmount = isLocalPlayer ? 0 : Math.PI * (1 - flipProgress);
 
-    // In-flight wobble
+    // In-flight wobble using config values
     const wobbleDecay = 1 - easeOutCubic(rawProgress);
-    const timeOffset = state.clock.elapsedTime * randomOffsets.wobbleFreq;
-    const wobbleX = Math.sin(timeOffset) * randomOffsets.flightWobbleX * wobbleDecay;
-    const wobbleZ = Math.cos(timeOffset * 1.3) * randomOffsets.flightWobbleZ * wobbleDecay;
+    const timeOffset = state.clock.elapsedTime * PLAY_ANIMATION.FLIGHT_WOBBLE_SPEED;
+    const wobbleX = Math.sin(timeOffset) * PLAY_ANIMATION.FLIGHT_WOBBLE_INTENSITY * randomOffsets.flightWobbleX * wobbleDecay;
+    const wobbleZ = Math.cos(timeOffset * 1.3) * PLAY_ANIMATION.FLIGHT_WOBBLE_INTENSITY * randomOffsets.flightWobbleZ * wobbleDecay;
 
-    // In-flight spin
+    // In-flight spin using config values
     const spinDecay = 1 - easeOutCubic(rawProgress);
-    const flightSpin = randomOffsets.flightSpinZ * spinDecay;
+    const flightSpin = randomOffsets.flightSpinZ * PLAY_ANIMATION.FLIGHT_SPIN_SPEED * spinDecay;
 
     const finalRotX = targetRotation[0] + randomOffsets.finalRotX;
     const finalRotZ = randomOffsets.finalRotZ;
@@ -173,7 +190,7 @@ export function AnimatedPlayedCard({
     groupRef.current.rotation.set(
       finalRotX + flipAmount + wobbleX,
       THREE.MathUtils.lerp(0, targetRotation[1], posProgress),
-      finalRotZ + flightSpin + wobbleZ
+      finalRotZ + flightSpin + wobbleZ + bounceRotZ
     );
 
     // Scale animation
@@ -195,11 +212,21 @@ export function AnimatedPlayedCard({
   }, [card]);
 
   return (
-    <group ref={groupRef} position={startPosition}>
-      <mesh ref={meshRef}>
-        <boxGeometry args={[CARD_WIDTH, CARD_HEIGHT, CARD_THICKNESS]} />
-        <meshBasicMaterial color="#1a1a2e" />
-      </mesh>
-    </group>
+    <>
+      {/* Card trail effect during flight - always active, component handles visibility */}
+      <CardTrail
+        targetRef={groupRef}
+        color="#ffd700"
+        length={10}
+        opacity={0.2}
+        active={true}
+      />
+
+      <group ref={groupRef} position={startPosition}>
+        <mesh ref={meshRef} castShadow receiveShadow>
+          <boxGeometry args={[CARD_WIDTH, CARD_HEIGHT, CARD_THICKNESS]} />
+        </mesh>
+      </group>
+    </>
   );
 }

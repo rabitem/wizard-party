@@ -3,3 +3,4 @@ export { SelectTrumpUseCase, type SelectTrumpInput, type SelectTrumpOutput } fro
 export { PlaceBidUseCase, type PlaceBidInput, type PlaceBidOutput } from './place-bid.use-case';
 export { PlayCardUseCase, type PlayCardInput, type PlayCardOutput } from './play-card.use-case';
 export { NextRoundUseCase, type NextRoundInput, type NextRoundOutput } from './next-round.use-case';
+export { ResumeGameUseCase, type ResumeGameInput, type ResumeGameOutput } from './resume-game.use-case';

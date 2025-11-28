@@ -1,12 +1,15 @@
 {
-  "name": "Wizard Party",
+  "name": "Wizard Party - Free Online Card Game",
   "short_name": "Wizard Party",
-  "description": "A magical multiplayer party game. Cast spells, compete with friends, and become the ultimate wizard!",
+  "description": "Play Wizard Party free online! A magical multiplayer trick-taking card game for 2-6 players. Predict your tricks, compete with friends, and become the ultimate wizard. No download required - play instantly in your browser!",
   "start_url": "/",
+  "id": "/",
   "display": "standalone",
-  "background_color": "#1a1a2e",
-  "theme_color": "#1a1a2e",
+  "display_override": ["standalone", "minimal-ui"],
+  "background_color": "#09090b",
+  "theme_color": "#1e1b4b",
   "orientation": "any",
+  "categories": ["games", "entertainment"],
   "icons": [
     {
       "src": "/favicon.svg",
@@ -15,14 +18,25 @@
       "purpose": "any"
     },
     {
-      "src": "/icon-192.png",
-      "sizes": "192x192",
+      "src": "/icon.png",
+      "sizes": "32x32",
       "type": "image/png"
     },
     {
-      "src": "/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "/apple-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
-  ]
+  ],
+  "shortcuts": [
+    {
+      "name": "Play Now",
+      "short_name": "Play",
+      "description": "Jump into a game of Wizard Party",
+      "url": "/",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+    }
+  ],
+  "prefer_related_applications": false
 }

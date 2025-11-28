@@ -332,6 +332,7 @@ export function useGameConnection(): UseGameConnectionReturn {
     // Connection
     connect,
     disconnect,
+    leaveGame: gameCommands.leaveGame,
     clearTrickResult,
 
     // Game commands

@@ -6,3 +6,11 @@ export { TrumpIndicator } from './TrumpIndicator';
 export { PlayerSeat } from './PlayerSeat';
 export { PlayerCard } from './PlayerCard';
 export { CollectingCard } from './CollectingCard';
+export {
+  ChipStacks,
+  Coasters,
+  DealerButton,
+  ContactShadow,
+  TableCenterGlow,
+  ScatteredCards,
+} from './TableDecorations';

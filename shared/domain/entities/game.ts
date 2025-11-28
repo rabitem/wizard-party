@@ -15,6 +15,7 @@ export enum GamePhase {
   PLAYING = 'PLAYING',
   ROUND_END = 'ROUND_END',
   GAME_END = 'GAME_END',
+  PAUSED = 'PAUSED',
 }
 
 /**
@@ -25,6 +26,17 @@ export interface IRoomSettings {
   isPublic: boolean;
   maxPlayers: number;
   password?: string;
+}
+
+/**
+ * Pause state for tracking game pause information
+ */
+export interface IPauseState {
+  pausedForPlayerId: string;
+  pausedForPlayerName: string;
+  pausedAt: number;
+  previousPhase: GamePhase;
+  timeoutDuration: number; // milliseconds
 }
 
 /**
@@ -46,6 +58,7 @@ export interface IGameState {
   hostId: string;
   forbiddenBid: number | null;
   roomSettings?: IRoomSettings;
+  pauseState?: IPauseState | null;
 }
 
 /**
@@ -62,6 +75,7 @@ export interface PlayCardResult {
  *
  * Game flow:
  * LOBBY -> DEALING -> TRUMP_SELECTION/BIDDING -> PLAYING -> ROUND_END -> (repeat or GAME_END)
+ * Any active phase can transition to PAUSED when a player leaves, then resume or end
  */
 export class Game {
   private deck: Deck;
@@ -76,6 +90,7 @@ export class Game {
   public currentTrick: Trick | null = null;
   public completedTricks: Trick[] = [];
   public hostId: string;
+  public pauseState: IPauseState | null = null;
 
   constructor(public readonly id: string, hostId: string) {
     this.deck = new Deck();
@@ -408,6 +423,87 @@ export class Game {
   }
 
   // ============================================================================
+  // Pause/Resume
+  // ============================================================================
+
+  /**
+   * Check if game is in an active (pausable) state
+   */
+  isActiveGame(): boolean {
+    return [
+      GamePhase.DEALING,
+      GamePhase.TRUMP_SELECTION,
+      GamePhase.BIDDING,
+      GamePhase.PLAYING,
+      GamePhase.ROUND_END,
+    ].includes(this.phase);
+  }
+
+  /**
+   * Pause the game for a player who left
+   */
+  pause(playerId: string, playerName: string, timeoutDuration: number = 120000): void {
+    if (!this.isActiveGame()) {
+      throw new Error('Cannot pause game in current phase');
+    }
+
+    this.pauseState = {
+      pausedForPlayerId: playerId,
+      pausedForPlayerName: playerName,
+      pausedAt: Date.now(),
+      previousPhase: this.phase,
+      timeoutDuration,
+    };
+    this.phase = GamePhase.PAUSED;
+  }
+
+  /**
+   * Resume the game from paused state
+   */
+  resume(): void {
+    if (this.phase !== GamePhase.PAUSED || !this.pauseState) {
+      throw new Error('Game is not paused');
+    }
+
+    this.phase = this.pauseState.previousPhase;
+    this.pauseState = null;
+  }
+
+  /**
+   * Get remaining time before pause timeout (milliseconds)
+   */
+  getPauseTimeRemaining(): number {
+    if (!this.pauseState) return 0;
+    const elapsed = Date.now() - this.pauseState.pausedAt;
+    return Math.max(0, this.pauseState.timeoutDuration - elapsed);
+  }
+
+  /**
+   * Check if pause has timed out
+   */
+  isPauseTimedOut(): boolean {
+    return this.getPauseTimeRemaining() <= 0;
+  }
+
+  /**
+   * Transfer host to another player
+   */
+  transferHost(newHostId: string): void {
+    const newHost = this.getPlayer(newHostId);
+    if (!newHost) {
+      throw new Error('New host not found');
+    }
+    this.hostId = newHostId;
+  }
+
+  /**
+   * Get connected human players count
+   */
+  getConnectedHumanCount(): number {
+    return this.players.filter(p => p.isConnected && !p.isBot).length;
+  }
+
+  // ============================================================================
   // Getters
   // ============================================================================
 
@@ -458,6 +554,7 @@ export class Game {
       bidsPlaced: this.getBidsPlaced(),
       hostId: this.hostId,
       forbiddenBid: this.getForbiddenBid(),
+      pauseState: this.pauseState,
     };
   }
 
@@ -480,6 +577,7 @@ export class Game {
     game.completedTricks = data.completedTricks.map((t) =>
       Trick.fromJSON(t, data.trumpSuit)
     );
+    game.pauseState = data.pauseState ?? null;
     return game;
   }
 }

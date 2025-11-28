@@ -29,12 +29,16 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden;
   background: var(--background);
   color: var(--foreground);
   font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Only hide overflow on game pages, not legal pages */
+body:has(canvas) {
+  overflow: hidden;
 }
 
 /* Focus states */
@@ -76,4 +80,28 @@ button:focus-visible {
 
 #__next {
   height: 100%;
+}
+
+/* Cookie banner animation */
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation: slideInFromBottom 0.5s ease-out forwards;
+}
+
+.slide-in-from-bottom-4 {
+  --tw-enter-translate-y: 1rem;
+}
+
+.fade-in {
+  --tw-enter-opacity: 0;
 }

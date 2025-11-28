@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useSound } from '@/lib/sounds';
-import { X } from 'lucide-react';
+import { X, LogOut } from 'lucide-react';
 import {
   AVATAR_PRESETS,
   CARD_THEMES,
@@ -34,9 +34,11 @@ export {
 interface SettingsPanelProps {
   isOpen: boolean;
   onClose: () => void;
+  onLeaveGame?: () => void;
+  showLeaveGame?: boolean;
 }
 
-export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
+export function SettingsPanel({ isOpen, onClose, onLeaveGame, showLeaveGame }: SettingsPanelProps) {
   const sound = useSound();
   const [soundSettings, setSoundSettings] = useState(sound.getSettings());
   const [gameSettings, setGameSettings] = useState<GameSettings>(loadGameSettings);
@@ -132,6 +134,25 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                 />
 
                 <KeyboardShortcutsSection />
+
+                {/* Leave Game Section */}
+                {showLeaveGame && onLeaveGame && (
+                  <div className="pt-4 border-t border-amber-500/10">
+                    <button
+                      onClick={() => {
+                        onClose();
+                        onLeaveGame();
+                      }}
+                      className="w-full flex items-center justify-center gap-2 py-3 bg-red-600/20 hover:bg-red-600/30 border border-red-500/30 text-red-400 rounded-xl font-medium transition-colors cursor-pointer"
+                    >
+                      <LogOut className="w-5 h-5" />
+                      Leave Game
+                    </button>
+                    <p className="text-xs text-zinc-500 text-center mt-2">
+                      The game will be paused for other players
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>

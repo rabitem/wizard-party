@@ -15,6 +15,8 @@ export {
   type TrickCompleteEvent,
   type RoundCompleteEvent,
   type GameCompleteEvent,
+  type GamePausedEvent,
+  type GameResumedEvent,
   type GameStateEvent,
   type ErrorEvent,
   type EmoteEvent,

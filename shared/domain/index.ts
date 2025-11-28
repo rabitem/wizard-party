@@ -24,6 +24,7 @@ export {
   GamePhase,
   type IGameState,
   type IRoomSettings,
+  type IPauseState,
   type PlayCardResult,
 } from './entities';
 
@@ -45,6 +46,8 @@ export {
   type TrickCompleteEvent,
   type RoundCompleteEvent,
   type GameCompleteEvent,
+  type GamePausedEvent,
+  type GameResumedEvent,
   type GameStateEvent,
   type ErrorEvent,
   type EmoteEvent,

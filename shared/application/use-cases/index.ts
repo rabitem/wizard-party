@@ -15,6 +15,9 @@ export {
   NextRoundUseCase,
   type NextRoundInput,
   type NextRoundOutput,
+  ResumeGameUseCase,
+  type ResumeGameInput,
+  type ResumeGameOutput,
 } from './game';
 
 // Player use cases

@@ -1,5 +1,0 @@
-# Wizard Party robots.txt
-User-agent: *
-Allow: /
-
-Sitemap: https://wizard-party.vercel.app/sitemap.xml

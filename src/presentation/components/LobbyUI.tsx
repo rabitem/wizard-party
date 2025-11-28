@@ -12,6 +12,7 @@ import {
   AddBotButton,
   AvatarPicker,
   GameRules,
+  LobbyFunFacts,
 } from './lobby';
 
 interface LobbyUIProps {
@@ -183,6 +184,9 @@ export function LobbyUI({
               )}
             </div>
           </div>
+
+          {/* Fun Facts */}
+          <LobbyFunFacts />
 
           {/* Rules section */}
           <GameRules />

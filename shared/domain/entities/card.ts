@@ -79,9 +79,9 @@ export class Card implements ICard {
    * 5. Higher value wins within same suit
    */
   beats(other: Card, leadSuit: Suit | null, trumpSuit: Suit | null): boolean {
-    // Wizards always win (first wizard wins ties)
-    if (this.isWizard()) return true;
+    // Wizards always win (first wizard wins - so later wizards don't beat earlier ones)
     if (other.isWizard()) return false;
+    if (this.isWizard()) return true;
 
     // Jesters always lose
     if (this.isJester()) return false;

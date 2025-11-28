@@ -38,6 +38,7 @@ import { EmoteBar, QuickChat } from '../components/EmoteBar';
 import { SettingsPanel } from '../components/SettingsPanel';
 import { StatsPanel } from '../components/StatsPanel';
 import { UndoRequestUI } from '../components/UndoRequestUI';
+import { GamePausedOverlay } from '../components/GamePausedOverlay';
 
 export function GameScene() {
   const {
@@ -54,6 +55,7 @@ export function GameScene() {
     clearTrickResult,
     connect,
     disconnect,
+    leaveGame,
     startGame,
     selectTrump,
     placeBid,
@@ -153,9 +155,18 @@ export function GameScene() {
   }, [connect, session]);
 
   const handleLeaveLobby = useCallback(() => {
+    leaveGame();
     session.clearSession();
     disconnect();
-  }, [disconnect, session]);
+  }, [leaveGame, disconnect, session]);
+
+  const handleLeaveGame = useCallback(() => {
+    if (window.confirm('Are you sure you want to leave the game? The game will be paused for other players.')) {
+      leaveGame();
+      session.clearSession();
+      disconnect();
+    }
+  }, [leaveGame, disconnect, session]);
 
   // Block card interactions while showing trick result
   const isWaitingForTrickResult = trickResult !== null;
@@ -227,7 +238,12 @@ export function GameScene() {
         </div>
       )}
 
-      <SettingsPanel isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
+      <SettingsPanel
+        isOpen={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        onLeaveGame={handleLeaveGame}
+        showLeaveGame={Boolean(showGame && gameState?.phase !== GamePhase.LOBBY && gameState?.phase !== GamePhase.GAME_END)}
+      />
       <StatsPanel isOpen={statsOpen} onClose={() => setStatsOpen(false)} />
 
       {/* Top-right buttons */}
@@ -252,11 +268,11 @@ export function GameScene() {
       {showGame && gameState && playerId && !contextLost && (
         <Canvas
           key={`game-canvas-${contextKey}`}
-          shadows={false}
+          shadows="soft"
           className="touch-none"
           dpr={[1, 1.5]}
           gl={{
-            antialias: false,
+            antialias: true,
             powerPreference: 'default',
             failIfMajorPerformanceCaveat: false,
             alpha: false,
@@ -389,6 +405,14 @@ export function GameScene() {
           onRequestUndo={requestUndo}
           onRespondUndo={respondUndo}
           canRequestUndo={canRequestUndo}
+        />
+      )}
+
+      {/* Game Paused Overlay */}
+      {showGame && gameState.phase === GamePhase.PAUSED && (
+        <GamePausedOverlay
+          pauseState={gameState.pauseState ?? null}
+          localPlayerId={playerId}
         />
       )}
     </div>

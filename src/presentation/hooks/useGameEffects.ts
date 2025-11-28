@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { GamePhase, IGameState } from '@shared/domain';
 import { loadPlayerStats, recordGameResult, type RoundRecord } from '@/lib/player-stats';
+import { reportGameStats } from '@/lib/global-stats';
 
 interface UseGameEffectsProps {
   gameState: IGameState | null;
@@ -79,6 +80,11 @@ export function useGameEffects({
 
     const currentStats = loadPlayerStats();
     recordGameResult(currentStats, placement, localPlayer.score, gameState.players.length, rounds);
+
+    // Report global stats (only once per game, use host to avoid duplicates)
+    if (playerId === gameState.hostId) {
+      reportGameStats(gameState);
+    }
 
     statsRecordedRef.current = true;
   }, [gameState, playerId]);

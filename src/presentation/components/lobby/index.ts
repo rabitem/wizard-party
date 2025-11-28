@@ -4,3 +4,4 @@ export { EmptyPlayerSlot } from './EmptyPlayerSlot';
 export { AddBotButton } from './AddBotButton';
 export { AvatarPicker } from './AvatarPicker';
 export { GameRules } from './GameRules';
+export { LobbyFunFacts } from './LobbyFunFacts';

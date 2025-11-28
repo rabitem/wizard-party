@@ -142,21 +142,46 @@ export function createBackTexture(): THREE.CanvasTexture {
   return tex;
 }
 
-export function createCardMaterials(card: ICard): THREE.MeshBasicMaterial[] {
+// Card material type - using MeshStandardMaterial for realistic lighting
+export type CardMaterial = THREE.MeshStandardMaterial;
+
+export function createCardMaterials(card: ICard): CardMaterial[] {
   const frontTex = createCardTexture(card);
   const backTex = createBackTexture();
 
+  // Edge material - slight sheen like real card edges
+  const edgeMaterial = new THREE.MeshStandardMaterial({
+    color: '#f5f5f0',
+    roughness: 0.6,
+    metalness: 0.0,
+  });
+
+  // Front face - glossy card surface
+  const frontMaterial = new THREE.MeshStandardMaterial({
+    map: frontTex,
+    roughness: 0.35,
+    metalness: 0.05,
+  });
+
+  // Back face - slightly more matte
+  const backMaterial = new THREE.MeshStandardMaterial({
+    map: backTex,
+    roughness: 0.4,
+    metalness: 0.1,
+  });
+
+  // Box geometry face order: +X, -X, +Y, -Y, +Z (front), -Z (back)
   return [
-    new THREE.MeshBasicMaterial({ color: '#2a2a3a' }),
-    new THREE.MeshBasicMaterial({ color: '#2a2a3a' }),
-    new THREE.MeshBasicMaterial({ color: '#2a2a3a' }),
-    new THREE.MeshBasicMaterial({ color: '#2a2a3a' }),
-    new THREE.MeshBasicMaterial({ map: frontTex }),
-    new THREE.MeshBasicMaterial({ map: backTex }),
+    edgeMaterial, // right edge
+    edgeMaterial, // left edge
+    edgeMaterial, // top edge
+    edgeMaterial, // bottom edge
+    frontMaterial, // front face
+    backMaterial, // back face
   ];
 }
 
-export function disposeCardMaterials(materials: THREE.MeshBasicMaterial[]): void {
+export function disposeCardMaterials(materials: CardMaterial[]): void {
   materials.forEach((m) => {
     if (m.map) m.map.dispose();
     m.dispose();

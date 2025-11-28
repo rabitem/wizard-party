@@ -26,6 +26,10 @@ export enum GameEventType {
   ROUND_COMPLETE = 'ROUND_COMPLETE',
   GAME_COMPLETE = 'GAME_COMPLETE',
 
+  // Pause events
+  GAME_PAUSED = 'GAME_PAUSED',
+  GAME_RESUMED = 'GAME_RESUMED',
+
   // State sync
   GAME_STATE = 'GAME_STATE',
   ERROR = 'ERROR',
@@ -148,6 +152,24 @@ export interface GameCompleteEvent extends BaseGameEvent {
 }
 
 // ============================================================================
+// Pause Events
+// ============================================================================
+
+export interface GamePausedEvent extends BaseGameEvent {
+  type: GameEventType.GAME_PAUSED;
+  pausedForPlayerId: string;
+  pausedForPlayerName: string;
+  timeoutDuration: number;
+  reason: 'player_left' | 'player_disconnected';
+}
+
+export interface GameResumedEvent extends BaseGameEvent {
+  type: GameEventType.GAME_RESUMED;
+  resumedPlayerId: string;
+  resumedPlayerName: string;
+}
+
+// ============================================================================
 // State Sync Events
 // ============================================================================
 
@@ -240,6 +262,8 @@ export type GameEvent =
   | TrickCompleteEvent
   | RoundCompleteEvent
   | GameCompleteEvent
+  | GamePausedEvent
+  | GameResumedEvent
   | GameStateEvent
   | ErrorEvent
   | EmoteEvent

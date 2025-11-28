@@ -14,6 +14,7 @@ import {
   type IGameState,
   type IRoomSettings,
   type IPlayer,
+  type IPauseState,
   type ClientCommand,
   type JoinGameCommand,
   type SelectTrumpCommand,
@@ -46,6 +47,7 @@ interface PersistedState {
   botCounter: number;
   players: IPlayer[];
   hostId: string;
+  pauseState: IPauseState | null;
 }
 
 // ============================================================================
@@ -124,14 +126,40 @@ export default class WizardServer implements Party.Server {
     const hasOtherConnection = Array.from(this.connectionToPlayer.values()).includes(playerId);
     if (hasOtherConnection) return;
 
-    const result = this.useCases.leaveGame.execute({
+    // Handle the player leaving (disconnection, not intentional)
+    this.handlePlayerLeave(playerId, false);
+  }
+
+  /**
+   * Handle alarm for pause timeout
+   */
+  async onAlarm() {
+    console.log('[Server] Pause timeout alarm triggered');
+
+    if (this.game.phase !== GamePhase.PAUSED || !this.game.pauseState) {
+      console.log('[Server] Not in paused state, ignoring alarm');
+      return;
+    }
+
+    // Replace disconnected player with bot and resume
+    const result = this.useCases.resumeGame.executeOnTimeout({
       game: this.game,
-      playerId,
+      botCounter: this.botCounter,
     });
 
-    this.broadcast(result.playerLeftEvent);
-    this.broadcastPersonalizedState();
-    this.saveState();
+    if (result.wasResumed) {
+      if (result.newBotCounter !== undefined) {
+        this.botCounter = result.newBotCounter;
+      }
+
+      if (result.gameResumedEvent) {
+        this.broadcast(result.gameResumedEvent);
+      }
+
+      this.broadcastPersonalizedState();
+      this.saveState();
+      this.scheduleBotAction();
+    }
   }
 
   // ============================================================================
@@ -222,6 +250,10 @@ export default class WizardServer implements Party.Server {
         this.handleRespondUndo(cmd.approved, sender);
         break;
       }
+
+      case ClientCommandType.LEAVE_GAME:
+        this.handleLeaveGame(sender, true);
+        break;
     }
   }
 
@@ -261,6 +293,30 @@ export default class WizardServer implements Party.Server {
     }
 
     this.broadcast(result.playerJoinedEvent);
+
+    // Check if this reconnection should resume a paused game
+    if (this.game.phase === GamePhase.PAUSED &&
+        this.game.pauseState?.pausedForPlayerId === result.playerId) {
+      // Player we were waiting for has reconnected - resume the game
+      const resumeResult = this.useCases.resumeGame.executeOnReconnect({
+        game: this.game,
+        reconnectedPlayerId: result.playerId,
+      });
+
+      if (resumeResult.wasResumed) {
+        // Cancel the timeout alarm
+        this.room.storage.deleteAlarm();
+        console.log('[Server] Cancelled pause timeout - player reconnected');
+
+        if (resumeResult.gameResumedEvent) {
+          this.broadcast(resumeResult.gameResumedEvent);
+        }
+
+        // Schedule bot action in case it's a bot's turn
+        this.scheduleBotAction();
+      }
+    }
+
     this.broadcastPersonalizedState();
     this.saveState();
   }
@@ -447,6 +503,44 @@ export default class WizardServer implements Party.Server {
     });
 
     this.broadcast(result.playerLeftEvent);
+    this.broadcastPersonalizedState();
+    this.saveState();
+  }
+
+  private handleLeaveGame(sender: Party.Connection, isIntentional: boolean) {
+    const playerId = this.connectionToPlayer.get(sender.id);
+    if (!playerId) return;
+
+    // Remove connection mapping
+    this.connectionToPlayer.delete(sender.id);
+
+    // Handle the leave
+    this.handlePlayerLeave(playerId, isIntentional);
+  }
+
+  /**
+   * Common handler for player leaving (intentional or disconnect)
+   */
+  private handlePlayerLeave(playerId: string, isIntentional: boolean) {
+    const result = this.useCases.leaveGame.execute({
+      game: this.game,
+      playerId,
+      isIntentional,
+    });
+
+    // Broadcast player left event
+    this.broadcast(result.playerLeftEvent);
+
+    // If game should pause, broadcast pause event and schedule alarm
+    if (result.shouldPause && result.gamePausedEvent) {
+      this.broadcast(result.gamePausedEvent);
+
+      // Schedule alarm for pause timeout
+      const timeoutMs = result.gamePausedEvent.timeoutDuration;
+      this.room.storage.setAlarm(Date.now() + timeoutMs);
+      console.log(`[Server] Scheduled pause timeout alarm for ${timeoutMs}ms`);
+    }
+
     this.broadcastPersonalizedState();
     this.saveState();
   }
@@ -734,11 +828,15 @@ export default class WizardServer implements Party.Server {
           trick.winnerId = t.winnerId;
           return trick;
         });
+
+        // Restore pause state
+        this.game.pauseState = stored.pauseState ?? null;
       }
 
       console.log('[Server] State restored:', {
         players: this.game.players.length,
         phase: this.game.phase,
+        paused: this.game.phase === GamePhase.PAUSED,
       });
     } catch (error) {
       console.error('[Server] Failed to restore state:', error);
@@ -754,6 +852,7 @@ export default class WizardServer implements Party.Server {
         botCounter: this.botCounter,
         players: this.game.players.map((p) => p.toJSON()),
         hostId: this.game.hostId,
+        pauseState: this.game.pauseState,
       };
       await this.room.storage.put('gameState', state);
     } catch (error) {

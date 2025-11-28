@@ -13,7 +13,11 @@ import {
   CollectingCard,
   PlayerEmote,
   PlayerChatBubble,
+  ChipStacks,
+  Coasters,
+  TableCenterGlow,
 } from './table';
+import { TrickWinParticles, SparkleParticles } from './three/TrickWinParticles';
 
 interface EmoteData {
   id: string;
@@ -234,6 +238,21 @@ export function GameTable({
           />
         );
       })}
+
+      {/* TRICK WIN PARTICLE EFFECTS */}
+      <TrickWinParticles
+        position={[0, 0.3, 0]}
+        active={!!trickWinnerId}
+        color="#ffd700"
+      />
+
+      {/* AMBIENT SPARKLES on table center */}
+      <SparkleParticles position={[0, 0.05, 0]} radius={0.6} count={15} color="#ffd700" />
+
+      {/* DECORATIVE ELEMENTS */}
+      <ChipStacks />
+      <Coasters />
+      <TableCenterGlow />
     </group>
   );
 }

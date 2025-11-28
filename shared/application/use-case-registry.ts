@@ -4,6 +4,7 @@ import {
   PlaceBidUseCase,
   PlayCardUseCase,
   NextRoundUseCase,
+  ResumeGameUseCase,
   JoinGameUseCase,
   LeaveGameUseCase,
   AddBotUseCase,
@@ -27,6 +28,7 @@ export interface IUseCaseRegistry {
   placeBid: PlaceBidUseCase;
   playCard: PlayCardUseCase;
   nextRound: NextRoundUseCase;
+  resumeGame: ResumeGameUseCase;
   joinGame: JoinGameUseCase;
   leaveGame: LeaveGameUseCase;
   addBot: AddBotUseCase;
@@ -51,6 +53,7 @@ export function createUseCaseRegistry(): IUseCaseRegistry {
     placeBid: new PlaceBidUseCase(),
     playCard: new PlayCardUseCase(),
     nextRound: new NextRoundUseCase(),
+    resumeGame: new ResumeGameUseCase(),
     joinGame: new JoinGameUseCase(),
     leaveGame: new LeaveGameUseCase(),
     addBot: new AddBotUseCase(),

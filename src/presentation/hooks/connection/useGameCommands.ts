@@ -35,6 +35,10 @@ export function useGameCommands(
     sendCommand({ type: ClientCommandType.REQUEST_STATE });
   }, [sendCommand]);
 
+  const leaveGame = useCallback(() => {
+    sendCommand({ type: ClientCommandType.LEAVE_GAME });
+  }, [sendCommand]);
+
   return {
     startGame,
     selectTrump,
@@ -43,5 +47,6 @@ export function useGameCommands(
     nextRound,
     requestRematch,
     requestState,
+    leaveGame,
   };
 }

@@ -24,6 +24,9 @@ export {
   NextRoundUseCase,
   type NextRoundInput,
   type NextRoundOutput,
+  ResumeGameUseCase,
+  type ResumeGameInput,
+  type ResumeGameOutput,
   // Player
   JoinGameUseCase,
   type JoinGameInput,
