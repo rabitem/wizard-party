@@ -20,6 +20,9 @@
 # production
 /build
 
+# partykit
+/.partykit/
+
 # misc
 .DS_Store
 *.pem
@@ -39,3 +42,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo

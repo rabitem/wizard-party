@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Wizard Party
 
-## Getting Started
+A real-time multiplayer implementation of the Wizard card game with a 3D interface.
 
-First, run the development server:
+## What It Is
+
+Wizard Party is a browser-based card game where 3-6 players compete across multiple rounds, bidding on how many tricks they'll win and then trying to hit their bid exactly. The game features:
+
+- **Real-time multiplayer** via WebSocket connections using PartyKit
+- **3D game table** rendered with React Three Fiber showing cards, player positions, and animations
+- **Complete Wizard rules** including the 60-card deck (52 number cards + 4 Wizards + 4 Jesters), trump selection, and the "forbidden bid" rule for the last bidder
+- **Bot players** to fill empty seats
+- **Social features** including emotes, quick chat, and an undo request system
+- **Room system** with public/private rooms and shareable join links
+
+## Tech Stack
+
+- **Frontend**: Next.js 16, React 19, React Three Fiber, Tailwind CSS
+- **Backend**: PartyKit (WebSocket server with persistent storage)
+- **Architecture**: Clean architecture with shared domain logic between client and server
+
+## Running Locally
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Install dependencies
+npm install
+
+# Run both frontend and PartyKit server
+npm run dev:all
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+This starts the Next.js frontend at `http://localhost:3000` and the PartyKit server at `http://localhost:1999`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+  presentation/     # React components, hooks, and 3D scene
+  lib/              # Utilities (sounds, player stats)
+shared/
+  domain/           # Game entities, events, and rules
+  application/      # Use cases and business logic
+party/
+  server.ts         # PartyKit WebSocket server
+```

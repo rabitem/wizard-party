@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <!-- Hat gradient -->
+    <linearGradient id="hatGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c084fc"/>
+      <stop offset="50%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#6d28d9"/>
+    </linearGradient>
+    <!-- Hat shadow -->
+    <linearGradient id="hatShadow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#4c1d95"/>
+    </linearGradient>
+    <!-- Brim gradient -->
+    <linearGradient id="brimGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#6d28d9"/>
+    </linearGradient>
+    <!-- Star glow -->
+    <radialGradient id="starGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </radialGradient>
+    <!-- Sparkle filter -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="30" fill="#1e1b4b" opacity="0.9"/>
+
+  <!-- Hat body -->
+  <path d="M32 6 L48 52 L16 52 Z" fill="url(#hatGrad)"/>
+  <!-- Hat fold/shadow -->
+  <path d="M32 6 L40 52 L32 52 L24 52 Z" fill="url(#hatShadow)" opacity="0.3"/>
+
+  <!-- Hat band -->
+  <path d="M20 44 Q32 40 44 44 L46 48 Q32 44 18 48 Z" fill="#fbbf24"/>
+  <path d="M20 44 Q32 40 44 44 L44.5 46 Q32 42 19.5 46 Z" fill="#fef08a"/>
+
+  <!-- Hat brim -->
+  <ellipse cx="32" cy="52" rx="22" ry="6" fill="url(#brimGrad)"/>
+  <ellipse cx="32" cy="51" rx="20" ry="4" fill="#a78bfa" opacity="0.4"/>
+
+  <!-- Main star -->
+  <g filter="url(#glow)">
+    <polygon points="32,14 34.5,22 43,22 36.5,27 39,35 32,30 25,35 27.5,27 21,22 29.5,22" fill="url(#starGlow)"/>
+  </g>
+
+  <!-- Sparkles -->
+  <g filter="url(#glow)">
+    <circle cx="14" cy="18" r="2" fill="#fef08a"/>
+    <circle cx="50" cy="12" r="1.5" fill="#fef08a"/>
+    <circle cx="52" cy="28" r="1.8" fill="#c4b5fd"/>
+    <circle cx="12" cy="36" r="1.2" fill="#c4b5fd"/>
+    <circle cx="22" cy="10" r="1" fill="#fbbf24"/>
+    <circle cx="46" cy="22" r="1" fill="#fbbf24"/>
+  </g>
+
+  <!-- Tiny stars -->
+  <path d="M10 26 L11 28 L13 28 L11.5 29.5 L12 32 L10 30.5 L8 32 L8.5 29.5 L7 28 L9 28 Z" fill="#e9d5ff" opacity="0.8"/>
+  <path d="M54 38 L55 40 L57 40 L55.5 41.5 L56 44 L54 42.5 L52 44 L52.5 41.5 L51 40 L53 40 Z" fill="#e9d5ff" opacity="0.7"/>
+</svg>
