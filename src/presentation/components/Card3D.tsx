@@ -162,8 +162,6 @@ export function Card3D({
     if (!meshRef.current) return;
 
     const materials = createCardMaterials(card);
-    // Add depthTest: false for proper rendering
-    materials.forEach((m) => (m.depthTest = false));
     meshRef.current.material = materials;
 
     return () => {
@@ -204,9 +202,9 @@ export function Card3D({
         }
       }}
     >
-      <mesh ref={meshRef} renderOrder={1001}>
+      <mesh ref={meshRef}>
         <boxGeometry args={[CARD_WIDTH, CARD_HEIGHT, CARD_THICKNESS]} />
-        <meshBasicMaterial color="#1a1a2e" depthTest={false} />
+        <meshBasicMaterial color="#1a1a2e" />
       </mesh>
     </group>
   );
