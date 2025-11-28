@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { ICard } from '@shared/domain';
@@ -157,17 +157,18 @@ export function Card3D({
     };
   }, [isDragging, onDragToTable, onDragEnd]);
 
-  // Set up materials after mount
+  // Create materials once per card identity using useMemo
+  const materials = useMemo(() => {
+    return createCardMaterials(card);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [card.id, card.type, card.suit, card.value]);
+
+  // Cleanup on unmount only
   useEffect(() => {
-    if (!meshRef.current) return;
-
-    const materials = createCardMaterials(card);
-    meshRef.current.material = materials;
-
     return () => {
       disposeCardMaterials(materials);
     };
-  }, [card]);
+  }, [materials]);
 
   return (
     <group
@@ -202,9 +203,8 @@ export function Card3D({
         }
       }}
     >
-      <mesh ref={meshRef}>
+      <mesh ref={meshRef} material={materials}>
         <boxGeometry args={[CARD_WIDTH, CARD_HEIGHT, CARD_THICKNESS]} />
-        <meshBasicMaterial color="#1a1a2e" />
       </mesh>
     </group>
   );
