@@ -11,7 +11,7 @@ import {
   generateRoomId,
   USERNAME_KEY,
   RECENT_ROOMS_KEY,
-  DEFAULT_HOST,
+  getDefaultHost,
   type RoomSettings,
   type RecentRoom,
 } from './room-browser';
@@ -44,7 +44,7 @@ interface RoomBrowserProps {
 
 export function RoomBrowser({ onJoin, initialRoomId, initialHost }: RoomBrowserProps) {
   const [username, setUsername] = useState(loadSavedUsername);
-  const [host, setHost] = useState(initialHost || DEFAULT_HOST);
+  const [host, setHost] = useState(() => initialHost || getDefaultHost());
   const [recentRooms, setRecentRooms] = useState<RecentRoom[]>(loadRecentRooms);
   const [showCreateRoom, setShowCreateRoom] = useState(false);
   const [showJoinByCode, setShowJoinByCode] = useState(false);

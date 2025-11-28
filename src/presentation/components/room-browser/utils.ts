@@ -3,11 +3,19 @@ export const ROOM_CODE_MAX = 8;
 export const USERNAME_KEY = 'wizard-party-username';
 export const RECENT_ROOMS_KEY = 'wizard-party-recent-rooms';
 
-export const DEFAULT_HOST =
-  process.env.NEXT_PUBLIC_PARTYKIT_HOST ||
-  (typeof window !== 'undefined' && window.location.hostname === 'localhost'
-    ? 'localhost:1999'
-    : 'wizard-party.rabitem.partykit.dev');
+// Use a function to get the host to avoid SSR hydration mismatch
+export function getDefaultHost(): string {
+  if (process.env.NEXT_PUBLIC_PARTYKIT_HOST) {
+    return process.env.NEXT_PUBLIC_PARTYKIT_HOST;
+  }
+  if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+    return 'localhost:1999';
+  }
+  return 'wizard-party.rabitem.partykit.dev';
+}
+
+// For backwards compatibility - but prefer getDefaultHost() in components
+export const DEFAULT_HOST = 'wizard-party.rabitem.partykit.dev';
 
 export interface RoomSettings {
   name: string;
