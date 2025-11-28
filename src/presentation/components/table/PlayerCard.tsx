@@ -28,10 +28,10 @@ export function PlayerCard({ position, player, isCurrentTurn, isLocalPlayer, pla
   const bidOver = bidMade && player.bid !== null && player.tricksWon > player.bid;
 
   const bgColor = '#0a0a15';
-  const borderColor = isCurrentTurn ? '#f59e0b' : '#f59e0b33';
+  const borderColor = isCurrentTurn ? '#f59e0b' : '#3d2804';
   const accentColor = '#f59e0b';
   const textColor = '#fef3c7';
-  const mutedText = '#f59e0b99';
+  const mutedText = '#967219';
 
   return (
     <Billboard position={position} follow={true} lockX={false} lockY={false} lockZ={false}>
@@ -62,7 +62,7 @@ export function PlayerCard({ position, player, isCurrentTurn, isLocalPlayer, pla
       </mesh>
       <mesh position={[-0.38, 0.06, 0]}>
         <ringGeometry args={[0.11, 0.12, 24]} />
-        <meshBasicMaterial color={isCurrentTurn ? accentColor : '#f59e0b33'} />
+        <meshBasicMaterial color={isCurrentTurn ? accentColor : '#3d2804'} />
       </mesh>
 
       {/* Avatar emoji */}
@@ -101,7 +101,7 @@ export function PlayerCard({ position, player, isCurrentTurn, isLocalPlayer, pla
       {/* Divider line */}
       <mesh position={[0, -0.17, -0.01]}>
         <planeGeometry args={[0.9, 0.006]} />
-        <meshBasicMaterial color="#f59e0b1a" />
+        <meshBasicMaterial color="#1f1a0a" />
       </mesh>
 
       {/* Bid/Won row */}
