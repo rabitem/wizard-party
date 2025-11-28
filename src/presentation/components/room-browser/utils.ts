@@ -4,9 +4,10 @@ export const USERNAME_KEY = 'wizard-party-username';
 export const RECENT_ROOMS_KEY = 'wizard-party-recent-rooms';
 
 export const DEFAULT_HOST =
-  typeof window !== 'undefined' && window.location.hostname === 'localhost'
+  process.env.NEXT_PUBLIC_PARTYKIT_HOST ||
+  (typeof window !== 'undefined' && window.location.hostname === 'localhost'
     ? 'localhost:1999'
-    : `${typeof window !== 'undefined' ? window.location.host : ''}/party`;
+    : 'wizard-party.rabitem.partykit.dev');
 
 export interface RoomSettings {
   name: string;

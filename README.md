@@ -31,6 +31,26 @@ npm run dev:all
 
 This starts the Next.js frontend at `http://localhost:3000` and the PartyKit server at `http://localhost:1999`.
 
+## Deployment
+
+The frontend and WebSocket server must be deployed separately:
+
+### 1. Deploy PartyKit Server
+
+```bash
+npm run deploy:party
+```
+
+This deploys to PartyKit and gives you a URL like `wizard-party.your-username.partykit.dev`.
+
+### 2. Deploy Frontend (Vercel)
+
+1. Push to GitHub
+2. Import the repo in Vercel
+3. Add environment variable:
+   - `NEXT_PUBLIC_PARTYKIT_HOST` = `wizard-party.your-username.partykit.dev`
+4. Deploy
+
 ## Project Structure
 
 ```

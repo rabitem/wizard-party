@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Share2, Check, Copy } from 'lucide-react';
+import { DEFAULT_HOST } from '../room-browser/utils';
 
 interface ShareModalProps {
   roomId: string;
@@ -12,12 +13,7 @@ interface ShareModalProps {
 export function ShareModal({ roomId, onClose }: ShareModalProps) {
   const [copied, setCopied] = useState(false);
 
-  const host =
-    typeof window !== 'undefined'
-      ? window.location.hostname === 'localhost'
-        ? 'localhost:1999'
-        : window.location.host
-      : 'localhost:1999';
+  const host = DEFAULT_HOST;
 
   const shareUrl =
     typeof window !== 'undefined' ? `${window.location.origin}?room=${roomId}&host=${encodeURIComponent(host)}` : '';
