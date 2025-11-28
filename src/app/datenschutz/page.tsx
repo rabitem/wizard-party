@@ -76,8 +76,8 @@ export default function DatenschutzPage() {
             </h2>
             <div className="text-amber-200/70 text-sm space-y-1">
               <p className="font-medium text-amber-100">Felix Huisinga</p>
-              <p>Sophienstraße 26</p>
-              <p>30159 Hannover</p>
+              <p>Mannstaedtstr. 16</p>
+              <p>65187 Wiesbaden</p>
               <p>Deutschland</p>
               <p className="mt-3">
                 E-Mail:{" "}
