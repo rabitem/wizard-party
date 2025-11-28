@@ -36,14 +36,11 @@ export function UndoRequestUI({
 }: UndoRequestUIProps) {
   // Track countdown ticks since the request started
   const [countdownTick, setCountdownTick] = useState(0);
-  // Track which request we're counting for
-  const [countingForTimestamp, setCountingForTimestamp] = useState<number | null>(null);
 
-  // Handle request changes - reset countdown state
-  if (undoRequest?.timestamp !== countingForTimestamp) {
-    setCountingForTimestamp(undoRequest?.timestamp ?? null);
+  // Reset countdown when request changes
+  useEffect(() => {
     setCountdownTick(0);
-  }
+  }, [undoRequest?.timestamp]);
 
   // Calculate time remaining based on initial timestamp and ticks elapsed
   const timeRemaining = useMemo(() => {
@@ -61,7 +58,7 @@ export function UndoRequestUI({
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [undoRequest]);
+  }, [undoRequest?.timestamp]);
 
   const isRequester = undoRequest?.requesterId === localPlayerId;
   const hasResponded = undoRequest?.responses.has(localPlayerId);
