@@ -33,7 +33,7 @@ interface SentInboxRow extends InboxRow {
 
 const toActor = (row: SocialPlayerRow): InboxActor => {
   const player = toSocialPlayer(row);
-  return { userId: player.userId, username: player.username, displayName: player.displayName, avatar: player.avatar, level: player.level };
+  return { userId: player.userId, username: player.username, displayName: player.displayName, avatar: player.avatar, appearance: player.appearance, level: player.level };
 };
 
 /** Rows of unknown kinds (written by a newer deploy) or with invalid payloads are skipped. */

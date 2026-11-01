@@ -34,14 +34,27 @@ Contracts that live in the browser are proven by the sandbox and Playwright, not
 | Realtime smoke | `npm run dev:party`, then `node scripts/realtime-smoke.mjs` | The worker on port 1999 |
 
 `npm test` is `vitest run`. It collects the files Vitest's default include matches (`*.test.ts`,
-`*.test.tsx`) except `e2e/`, `.claude/worktrees/` and `.animation-audit/` (`vitest.config.ts`), so
-levels 1 to 4 run together. Arguments after `--` go to Vitest: a path narrows the files,
-`-t "<name>"` narrows by test name.
+`*.test.tsx`) except the Playwright specs (`e2e/**/*.spec.ts`), `.claude/worktrees/` and
+`.animation-audit/` (`vitest.config.ts`), so levels 1 to 4 run together, with the unit tests of the
+pure Playwright helpers (`e2e/support/*.test.ts`). Arguments after `--` go to Vitest: a path
+narrows the files, `-t "<name>"` narrows by test name.
 
 ```bash
 npm test
 npm test -- party/room/reconnect.test.ts
 npm run test:physics
+```
+
+The matrix suites cross the axes a contract may depend on: `party/room/server-matrix.test.ts`
+(level 3: turn timers, pause and restart per table size, ruleset and seat mix) and
+`test/integration/table-matrix.integration.test.ts` (level 4: whole games per table size, deck,
+hidden bids, house rules, bot mix and network shape, scored independently by
+`party/test-support/score-sheet.ts`). By default both run a pairwise subset
+(`party/test-support/matrix.ts`, on the generator in `e2e/support/matrix.ts`); `FULL_MATRIX=1`
+runs every combination, about four minutes. The weekly `matrix.yml` workflow runs it:
+
+```bash
+FULL_MATRIX=1 npm test -- test/integration/table-matrix.integration.test.ts party/room/server-matrix.test.ts
 ```
 
 `npm run test:physics` runs the card-animation, drag and physics-boundary unit tests only. The
@@ -77,25 +90,36 @@ Projects are set in `playwright.config.ts`:
 
 | Project | Runs | Notes |
 | --- | --- | --- |
-| `chromium`, `firefox`, `webkit`, `edge` | Every sandbox spec except the matrix and the golden path | `edge` uses the installed Microsoft Edge (`channel: 'msedge'`); no workflow runs it |
-| `android-phone`, `iphone`, `iphone-landscape`, `ipad` | The sandbox specs except `performance`, `render-budget`, the matrix and the golden path | Device emulation |
-| `viewport-matrix` | `e2e/playability-matrix.spec.ts` | Chromium; key viewports, or all with `E2E_FULL_MATRIX=1` |
-| `golden-path` | `e2e/golden-path.spec.ts` | The real app, no sandbox; see below |
+| `chromium`, `firefox`, `webkit`, `edge`, `chrome` | Every sandbox spec except the matrices and the golden path | `edge` and `chrome` are the branded builds (`channel: 'msedge'`, `'chrome'`); install them with `npx playwright install msedge chrome` where they are missing |
+| `android-phone`, `android-landscape`, `android-tablet`, `fold-cover`, `fold-open` | The sandbox specs except `performance`, `render-budget`, the matrices and the golden path | Chromium device emulation: Pixel 7 both ways, Galaxy Tab S9, Galaxy Z Fold 7 folded and open |
+| `iphone`, `iphone-landscape`, `iphone-se`, `iphone-pro-max`, `ipad`, `ipad-landscape`, `ipad-mini` | The same | WebKit device emulation: iPhone 14 both ways, iPhone SE, iPhone 15 Pro Max, iPad Pro 11 both ways, iPad Mini |
+| `chromium-hidpi`, `firefox-hidpi`, `touch-laptop` | The same | Desktop windows at 200 % scaling, and a 1366x768 window with a touch screen (coarse pointer) |
+| `viewport-matrix`, `viewport-matrix-firefox`, `viewport-matrix-webkit` | `e2e/playability-matrix.spec.ts` | Key viewports, or all with `E2E_FULL_MATRIX=1`; Firefox has no `isMobile`, so its phones are touch windows |
+| `settings-matrix`, `settings-matrix-firefox`, `settings-matrix-webkit`, `settings-matrix-phone` | `e2e/settings-matrix.spec.ts` | Every setting value at least once, or every pair with `E2E_FULL_MATRIX=1` |
+| `golden-path`, `golden-path-firefox`, `golden-path-webkit`, `golden-path-android`, `golden-path-iphone` | `e2e/golden-path.spec.ts` | The real app, no sandbox; see below |
 
 The specs and the contract each owns:
 
 | Spec | Owns |
 | --- | --- |
-| `scenarios.spec.ts` | Throws, landing, collection styles, shuffle and sort, special cards, game end |
+| `scenarios.spec.ts` | Throws (including a drag dropped back on the hand), landing, collection styles, shuffle and sort, special cards, a theme change mid-flight, a round at server pace, game end |
 | `viewports.spec.ts` | Layout and playability per device project and table size |
 | `playability-matrix.spec.ts` | The largest hand on the viewport matrix (`SANDBOX_VIEWPORTS`, `src/presentation/config/sandbox.config.ts`) |
+| `settings-matrix.spec.ts` | Card theme, table theme, UI theme, collection style, card number size and reduced motion crossed with scenario and table size (`e2e/support/matrix.ts`) |
 | `reconnect.spec.ts` | Drops, stalls and slow links mid-trick and across a trick completion |
 | `faults.spec.ts` | Superseded connection, offline, state storms, throwing storage, lost WebGL context, hidden tab, social floods |
 | `input.spec.ts` | Synthetic touch, and a card played with real device touch |
+| `accessibility.spec.ts` | The trump choice is a modal dialog named by its title on every browser and device (centred dialog or bottom sheet) |
 | `render-budget.spec.ts` | Render and React count budgets, per table size and per table theme |
 | `performance.spec.ts` | Frame-time budgets on the real clock (titles contain `sustains`) |
 | `visual.spec.ts` | Reference frames per table theme and UI theme |
-| `golden-path.spec.ts` | A guest plays a one-round game in the real app, reloads into the same seat and reaches the results |
+| `golden-path.spec.ts` | A guest plays a one-round game in the real app at the smallest and largest table, reloads into the same seat and reaches the results |
+
+The matrix suites cannot run the full cartesian product (the five setting axes alone multiply to
+61,200 combinations, before scenario, table size and reduced motion), so `e2e/support/matrix.ts` builds covering designs: `eachChoice` puts every
+value of every axis in some row, `allPairs` puts every pair of values of any two axes in some row.
+Both are deterministic, so a test title names one combination across runs. Axis values are read
+from the presets, so a new theme or collection style joins the matrix without a spec change.
 
 The golden path needs a production build and a worker on `localhost:1999`. A page served from
 `localhost` plays against that worker (`LOCAL_REALTIME_HOST`) unless the build names a realtime host
@@ -115,7 +139,7 @@ Playwright reads these environment variables:
 | `E2E_BASE_URL` | `playwright.config.ts` | Unset: Playwright starts `next start` | Point the suites at a server that is already running |
 | `E2E_PORT` | `playwright.config.ts` | `3210` | Port of the server Playwright starts |
 | `E2E_WORKERS` | `playwright.config.ts` | `2` | Parallel workers; a sandbox run drives a whole game client, so keep it low |
-| `E2E_FULL_MATRIX` | `e2e/playability-matrix.spec.ts` | Unset | `1` runs every viewport at every table size; unset runs the key viewports at the smallest and largest table |
+| `E2E_FULL_MATRIX` | `e2e/playability-matrix.spec.ts`, `settings-matrix.spec.ts`, `scenarios.spec.ts`, `faults.spec.ts`, `reconnect.spec.ts`, `golden-path.spec.ts` | Unset | `1` widens every suite: every viewport, every pair of settings (`allPairs`), and every table size (3 to 6) for the core scenarios, faults, network scenarios and the golden path. Unset: the key viewports at the smallest and largest table, every setting value once (`eachChoice`), four seats for the core scenarios, 3 and 6 for faults, network and the golden path |
 | `PERF_TARGET_FPS` | `e2e/performance.spec.ts` | `FRAME_BUDGETS.DEFAULT_TARGET_FPS` | Frame rate the p95 frame time must sustain |
 | `CI` | `playwright.config.ts` | Unset | Set: one retry, `test.only` is an error, the line reporter |
 
@@ -130,16 +154,35 @@ git-ignored.
 
 ## CI
 
-GitHub Actions is the source of truth for the checks. Two workflows run tests.
+GitHub Actions is the source of truth for the checks. Three workflows run tests.
 
 | Workflow | Runs on | What it runs |
 | --- | --- | --- |
-| `.github/workflows/ci.yml`, job `verify` | Pull requests to `main`, pushes to `main`, manual dispatch | `npm ci`, `typecheck`, `lint`, `npm test`, `build`, `check:worker`, then the realtime smoke and the golden path |
-| `.github/workflows/e2e.yml`, "Browser suites" | Pull requests labelled `e2e`, a weekly schedule, manual dispatch | `npx playwright test --project=<project> --grep-invert "sustains"`, one job per project |
+| `.github/workflows/ci.yml`, "CI" | Pull requests to `main`, pushes to `main`, manual dispatch | Parallel jobs `Typecheck`, `Lint`, `Tests` and `Build and play`, gated by `Verify application` |
+| `.github/workflows/e2e.yml`, "Browser suites" | Pull requests labelled `e2e`, a weekly schedule, manual dispatch | One build, then `npx playwright test --project=<project> --shard=<n>/<shards> --grep-invert "sustains"`, one job per project and shard |
+| `.github/workflows/matrix.yml`, "Full matrix" | A weekly schedule, manual dispatch | `FULL_MATRIX=1` over the level-3 and level-4 matrix suites |
 
-### The verify job
+### CI
 
-After the build the job installs Chromium, starts `npm run dev:party` in the background, waits for
+The four jobs share nothing, so they run at the same time; each installs from the lockfile and
+keeps its own cache:
+
+| Job | Runs | Cache |
+| --- | --- | --- |
+| `Typecheck` | `npm run typecheck` (the app, then the worker) | `tsconfig.tsbuildinfo` (incremental) |
+| `Lint` | `npm run lint -- --cache --cache-strategy content` | `.eslintcache` |
+| `Tests` | `npm run test:coverage`: levels 1 to 4, with the coverage summary on the run page | |
+| `Build and play` | `npm run build` and `check:worker` while Chromium installs, then the smoke test and the golden path | the Playwright browser |
+
+`Verify application` needs the four and passes only when every one passed; it also runs when one
+failed, so it reports the failure instead of being skipped. It is the check that rulesets and the
+Dependabot policy (`.github/scripts/dependabot-auto-merge.mjs`) name, so a job can be added or
+split without touching either. Coverage is printed, never enforced: a percentage cannot tell a
+meaningful test from a vacuous one.
+
+### Build and play
+
+After the build the job starts `npm run dev:party` in the background, waits for
 `http://localhost:1999/health`, then runs two checks against that one worker:
 
 1. `node scripts/realtime-smoke.mjs` opens raw WebSockets. It checks `/health`, CORS preflight,
@@ -147,7 +190,8 @@ After the build the job installs Chromium, starts `npm run dev:party` in the bac
    retry-safe `START_GAME`, hidden hands of other seats, reconnect by persistent id, the room
    status, the tournament room gate and protocol-2 seat tokens. It checks the worker's shape on a
    dealt round; bidding, card play and scoring belong to levels 3 and 4 and the golden path.
-2. `npx playwright test --project=golden-path` plays the build the job made, in Chromium.
+2. `npx playwright test --project=golden-path` plays the build the job made, in Chromium, at three
+   seats (the weekly browser run adds six seats and the other engines and phones).
 
 If either fails the job prints the worker log. A failed or cancelled job uploads the `golden-path`
 artifact (`e2e-report/`, `e2e-results/`).
@@ -156,14 +200,29 @@ artifact (`e2e-report/`, `e2e-results/`).
 
 - **Pull request.** The `e2e` label runs the `chromium` and `android-phone` projects on every push
   to the PR.
-- **Weekly run.** Sunday 03:00 UTC, every project except `edge` (`chromium`, `firefox`, `webkit`,
-  the four device projects and `viewport-matrix`), with `E2E_FULL_MATRIX=1` for the viewport
-  matrix.
-- **Manual dispatch.** The same projects, the viewport matrix on its key viewports. The inputs are
-  `grep` (Playwright `--grep`) and `update_snapshots` (see [Visual baselines](#visual-baselines)).
+- **Weekly run.** Sunday 03:00 UTC, every project (desktop engines, branded Chrome and Edge,
+  devices, both matrices on every engine, the golden path on every engine and both phones) with
+  `E2E_FULL_MATRIX=1`, each project split into four shards.
+- **Manual dispatch.** The same projects in two shards each, without `E2E_FULL_MATRIX`. The inputs
+  are `grep` (Playwright `--grep`) and `update_snapshots` (see [Visual baselines](#visual-baselines)).
 
-Each project is a job with its own browser install and `npm run e2e:build`. A failed or cancelled
-job uploads `e2e-<project>`; see `.claude/skills/pull-request/references/ci.md` for downloading it.
+A `plan` job lists the jobs, one per project and shard with the engine to install. A `build` job
+runs `npm run e2e:build` once and uploads `.next` as the `e2e-build` artifact; every project job
+downloads it instead of building again, and restores its engine from a cache (the branded Chrome
+and Edge install from their vendors). The `golden-path*` jobs also start the worker
+(`npm run dev:party`) and print its log on failure. A shard without tests passes
+(`--pass-with-no-tests`), so a narrow `grep` does not fail the other projects. A failed or
+cancelled job uploads `e2e-<project>-<shard>`; see `.claude/skills/pull-request/references/ci.md`
+for downloading it.
+
+### Known issues
+
+A product bug a browser suite found and that is not fixed yet goes in
+`e2e/support/known-issues.ts`, with what is broken; nowhere else may a test be skipped or loosened.
+A bug that reproduces on every run is expected to fail (`test.fail`): the test still runs and turns
+red the day the bug is fixed, so the fix's pull request removes the entry. A bug that shows on some
+runs only is marked `fixme` with its reason, and the report lists it. The sandbox fixture applies
+the list, matching the title below the file and, where given, the project.
 
 ### Runner minutes are limited
 

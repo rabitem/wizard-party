@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { DEFAULT_APPEARANCE } from '../character';
 import { EMPTY_STATS } from './player-stats';
 import { LEADERBOARD_RULES, buildLeaderboards, rankLeaderboard, type LeaderboardCandidate } from './leaderboard';
 
@@ -8,6 +9,7 @@ function candidate(username: string, overrides: Partial<LeaderboardCandidate['st
     username,
     displayName: username.toUpperCase(),
     avatar: 'wizard',
+    appearance: DEFAULT_APPEARANCE,
     totalXp,
     stats: { ...EMPTY_STATS, gamesPlayed: 12, gamesWon: 3, highestScore: 100, ...overrides },
   };

@@ -111,9 +111,14 @@ const ACTIVITY_ICON: Record<LobbyActivityView['kind'], React.ReactNode> = {
   settings: <Clock className="w-4 h-4 text-amber-300" />,
 };
 
+/**
+ * Phones: a stack under the top bar. Split (desktop): the bottom-left corner, beside the table.
+ * Landscape phones have no free corner, so only the newest toast shows, in the gap above the table
+ * and the panel.
+ */
 export function LobbyToasts({ items }: { items: LobbyActivityView[] }) {
   return (
-    <div className="fixed top-16 inset-x-0 z-30 flex flex-col items-center gap-2 px-4 pointer-events-none split:top-auto split:bottom-6 split:right-auto split:items-start split:px-6" aria-live="polite">
+    <div className="fixed top-16 inset-x-0 z-30 flex flex-col items-center gap-2 px-4 pointer-events-none split:top-auto split:bottom-6 split:right-auto split:items-start split:px-6 landscape-phone:top-1.5 landscape-phone:bottom-auto landscape-phone:right-0 landscape-phone:items-center landscape-phone:[&>*:not(:last-child)]:hidden landscape-phone:[&>*]:py-0.5 landscape-phone:[&>*]:text-xs" aria-live="polite">
       <AnimatePresence initial={false}>
         {items.map((item) => (
           <motion.div

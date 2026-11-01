@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { DEFAULT_PROFILE_VISIBILITY, completeStats, type LeaderboardCandidate, type PlayerStatsSummary } from '@shared/domain/account';
+import { displayedAppearance } from '@shared/domain/character';
 import type { ILeaderboardReader } from '@shared/application/ports/account';
 
 import { getSql } from '../db/neon';
@@ -9,6 +10,7 @@ interface CandidateRow {
   username: string;
   display_name: string;
   avatar: string | null;
+  appearance: unknown;
   total_xp: number;
   summary: Partial<PlayerStatsSummary> | null;
 }
@@ -21,6 +23,7 @@ export class PostgresLeaderboardReader implements ILeaderboardReader {
         u."username" AS username,
         u."displayUsername" AS display_name,
         d.data ->> 'avatar' AS avatar,
+        p.appearance,
         pr.total_xp,
         pr.summary
       FROM player_progress pr
@@ -37,6 +40,7 @@ export class PostgresLeaderboardReader implements ILeaderboardReader {
       username: row.username,
       displayName: row.display_name,
       avatar: row.avatar ?? 'wizard',
+      appearance: displayedAppearance(row.appearance, row.avatar),
       totalXp: row.total_xp,
       stats: completeStats(row.summary),
     }));

@@ -1,6 +1,6 @@
 'use client';
 
-import type { CSSProperties } from 'react';
+import { useId, type CSSProperties } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import type { BottomSheetProps } from './BottomSheet.types';
 import { useBottomSheetAnimation } from './useBottomSheetAnimation';
@@ -14,6 +14,7 @@ import { THEME_SURFACE } from '@/presentation/config/theme-surface.config';
  * A draggable bottom sheet modal component
  * Supports drag-to-close gesture, a customizable header and a sticky footer for the main action.
  * Its height follows the visible viewport (dvh), so mobile browser toolbars never hide the footer.
+ * Assistive technology announces it as a modal dialog named by its title, as the desktop dialogs are.
  */
 export function BottomSheet({
   isOpen,
@@ -29,6 +30,7 @@ export function BottomSheet({
   const { y, opacity, handleDragEnd } = useBottomSheetAnimation(isOpen, onClose);
   const hasFooter = footer !== undefined && footer !== null;
   const heightStyle = { '--sheet-max-height': String(maxHeight) } as CSSProperties;
+  const titleId = useId();
 
   return (
     <AnimatePresence>
@@ -43,6 +45,9 @@ export function BottomSheet({
 
           {/* Sheet */}
           <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={title ? titleId : undefined}
             className="relative w-full overflow-hidden"
             style={{
               y,
@@ -68,6 +73,7 @@ export function BottomSheet({
               <BottomSheetHandle visible={showHandle} />
 
               {title ? <BottomSheetHeader
+                  titleId={titleId}
                   title={title}
                   subtitle={subtitle}
                   showHandle={showHandle}

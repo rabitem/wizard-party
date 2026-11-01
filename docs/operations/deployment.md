@@ -126,6 +126,22 @@ migrations first; a preview deployment skips them.
 `/api/cron/telemetry-retention`, which enforces every storage period of the privacy policy. It
 needs `CRON_SECRET` in the project, and answers 401 without it.
 
+### Preview builds
+
+Every push to a branch of this repository builds a preview. Pull requests from forks build only
+after a team member authorizes them (Vercel's Git Fork Protection, on by default: keep it on in
+the project's settings), so outside contributors cannot spend build minutes.
+
+`vercel.json` also sets `ignoreCommand` to `scripts/vercel-ignore-build.mjs`, Vercel's Ignored
+Build Step. Production always builds. A preview is skipped when every file changed since the
+branch's last successful deployment is one the build never reads: tests (`*.test.*`, `test/`,
+`e2e/`), `docs/`, `.github/`, `.claude/`, root Markdown files and the test runner configs.
+Anything else builds, and so does any case the script cannot judge: a branch's first deployment,
+a previous commit outside Vercel's shallow clone, a git error. Dependabot's pull requests change
+`package.json` and the lockfile, so they always build, and the auto-merge policy keeps its
+`Vercel` status. To change what counts as outside the app, edit `APP_IRRELEVANT_PATHS` together
+with `scripts/vercel-ignore-build.test.mjs`.
+
 Social sign-in needs each provider's callback registered as
 `https://<your-site>/api/auth/callback/<provider>` (see [configuration.md](configuration.md)).
 

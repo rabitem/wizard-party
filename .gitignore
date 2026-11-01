@@ -70,3 +70,6 @@ GOAL*.md
 # Playwright browser suites
 /e2e-report/
 /e2e-results/
+
+# ESLint cache (npm run lint -- --cache)
+.eslintcache

@@ -7,6 +7,7 @@ import type { BottomSheetHeaderProps } from './BottomSheet.types';
  * Displays title and optional subtitle
  */
 export function BottomSheetHeader({
+  titleId,
   title,
   subtitle,
   showHandle = true,
@@ -17,6 +18,7 @@ export function BottomSheetHeader({
       style={{ paddingTop: showHandle ? 0 : 16 }}
     >
       <h2
+        id={titleId}
         className="text-lg text-amber-100/95 text-center"
         style={{ fontFamily: 'Georgia, serif' }}
       >

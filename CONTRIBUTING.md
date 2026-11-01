@@ -47,18 +47,15 @@ how to read a CI failure; it is written for coding agents and reads well for peo
 
 ## What CI checks
 
-Every pull request to `main`, and every push to it, runs the `Verify application` job in
-`.github/workflows/ci.yml`. The steps run in order and stop at the first failure:
+Every pull request to `main`, and every push to it, runs `.github/workflows/ci.yml`: four jobs
+at the same time, and the `Verify application` check, which passes only when all four passed:
 
-| Step | Command |
+| Job | Commands |
 | --- | --- |
-| Install | `npm ci` |
-| Types | `npm run typecheck` (the app, then the worker with `tsconfig.worker.json`) |
+| Typecheck | `npm run typecheck` (the app, then the worker with `tsconfig.worker.json`) |
 | Lint | `npm run lint` |
-| Tests | `npm test` |
-| Build | `npm run build` |
-| Worker bundle | `npm run check:worker` (`wrangler deploy --dry-run`) |
-| Smoke test and golden path | `npm run dev:party`, then `node scripts/realtime-smoke.mjs` and `npx playwright test --project=golden-path` |
+| Tests | `npm test` (CI runs `npm run test:coverage` and prints the coverage summary) |
+| Build and play | `npm run build`, `npm run check:worker` (`wrangler deploy --dry-run`), then `npm run dev:party` with `node scripts/realtime-smoke.mjs` and `npx playwright test --project=golden-path` |
 
 Run the same commands before you push. The browser suites in `.github/workflows/e2e.yml` cost
 runner hours, so they run on a pull request only when it carries the `e2e` label, and on a weekly

@@ -1,4 +1,5 @@
 import { SOCIAL_LIMITS, acceptsInviteFrom, canRevokeInvite, isRoomCode, sentInviteState, type SentInviteState } from '../../../domain/social';
+import type { CharacterAppearance } from '../../../domain/character';
 import type { IClock } from '../../ports/account';
 import type { IInboxRepository, IPlayerDirectory, IRoomRosterStore, ISocialGraphRepository, ISocialThrottle } from '../../ports/social';
 import type { InboxNotifier } from '../inbox/inbox-notifier';
@@ -61,7 +62,7 @@ export class SendGameInviteUseCase {
 /** One invite the viewer sent, as the sender sees it. Times are epoch milliseconds. */
 export interface SentGameInvite {
   id: string;
-  recipient: { userId: string; displayName: string; avatar: string | null };
+  recipient: { userId: string; displayName: string; avatar: string | null; appearance: CharacterAppearance };
   createdAt: number;
   readAt: number | null;
   expiresAt: number;
@@ -88,7 +89,7 @@ export class ListSentGameInvitesUseCase {
     });
     return sent.map(({ item, recipient }) => ({
       id: item.id,
-      recipient: { userId: recipient.userId, displayName: recipient.displayName, avatar: recipient.avatar },
+      recipient: { userId: recipient.userId, displayName: recipient.displayName, avatar: recipient.avatar, appearance: recipient.appearance },
       createdAt: item.createdAt,
       readAt: item.readAt,
       expiresAt: item.expiresAt ?? item.createdAt + SOCIAL_LIMITS.GAME_INVITE_TTL_MS,

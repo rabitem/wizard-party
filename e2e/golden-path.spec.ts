@@ -25,8 +25,16 @@ const BIDDING_TIMER_SECONDS = TURN_TIMER_LIMITS.MAX_SECONDS;
 const TURN_WAIT_MS = 30_000;
 /** The play timer, the room's auto-act delay after it (TURN_TIMEOUT_POLICY) and the trick's presentation. */
 const AUTO_PLAY_WAIT_MS = 60_000;
-const SEATS_WITH_TWO_BOTS = 3;
+/**
+ * Table sizes: the guest plus bots. Every table size is proven in process (the level-4 table
+ * matrix); here a size only adds the real pages' lobby and results at that many seats. CI plays the
+ * smallest table on every pull request; the weekly run (E2E_FULL_MATRIX=1) adds the largest.
+ */
+const SEAT_COUNTS = process.env.E2E_FULL_MATRIX === '1' ? [3, 6] : [3];
 const GUEST_NAME = 'Ann';
+
+// Each game has its own room; with two workers the table sizes play at the same time.
+test.describe.configure({ mode: 'parallel' });
 
 interface Standing {
   madeBid: boolean;
@@ -101,7 +109,7 @@ function oneCardRoundScore(madeBid: boolean, tricks: number): number {
   return madeBid ? baseBidPoints + tricks * pointsPerTrick : -penaltyPerMiss;
 }
 
-test('a guest creates a room, adds two bots, plays a one-round game, reloads mid-game into the same seat, and lands on the results', async ({ page }) => {
+for (const seats of SEAT_COUNTS) test(`${seats} seats: a guest creates a room, adds ${seats - 1} bots, plays a one-round game, reloads mid-game into the same seat, and lands on the results`, async ({ page }) => {
   // About 45 s, most of it the room's auto-act wait; the cap leaves room for a slow runner.
   test.setTimeout(2 * 60_000);
   // The first-visit tutorial has no labelled close control; a returning guest has seen it.
@@ -128,10 +136,9 @@ test('a guest creates a room, adds two bots, plays a one-round game, reloads mid
     await expect(sheet).toBeHidden();
   });
 
-  await test.step('seat two bots and start', async () => {
-    await addBot(page, 2);
-    await addBot(page, SEATS_WITH_TWO_BOTS);
-    await page.getByRole('button', { name: `Start game · ${SEATS_WITH_TWO_BOTS} players` }).click();
+  await test.step(`seat ${seats - 1} bots and start`, async () => {
+    for (let seated = 2; seated <= seats; seated++) await addBot(page, seated);
+    await page.getByRole('button', { name: `Start game · ${seats} players` }).click();
     await expect(page).toHaveURL(new RegExp(`/game/${roomId}$`));
   });
 
@@ -157,7 +164,7 @@ test('a guest creates a room, adds two bots, plays a one-round game, reloads mid
   await test.step('show the final standings by the scoring rules', async () => {
     await expect(page.getByRole('heading', { level: 1, name: /^(Victory!|Game Over)$/ })).toBeVisible();
     const rows = page.getByRole('button').filter({ hasText: /\d+\/\d+ perfect/ });
-    await expect(rows).toHaveCount(SEATS_WITH_TWO_BOTS);
+    await expect(rows).toHaveCount(seats);
     const standings = await Promise.all((await rows.all()).map(readStanding));
 
     for (const standing of standings) {

@@ -1,3 +1,4 @@
+import { displayedAppearance, type CharacterAppearance } from '../character';
 import { getTournamentAward } from '../tournament/awards';
 import { TROPHY_TIERS, type TournamentVisibility, type TrophyTier } from '../tournament/tournament.types';
 import { ACHIEVEMENTS } from './achievements';
@@ -56,6 +57,8 @@ export interface PublicProfileSource {
   displayUsername: string;
   tagline: string;
   avatar: string | null;
+  /** player_profiles.appearance as stored (untrusted); absent or null while none was saved. */
+  appearance?: unknown;
   isPublic: boolean;
   showHistory: boolean;
   memberSince: number;
@@ -119,6 +122,7 @@ export interface PublicProfile {
   displayName: string;
   tagline: string;
   avatar: string;
+  appearance: CharacterAppearance;
   progression: Progression;
   stats: PublicHeadlineStats;
   achievements: { id: string; unlockedAt: number }[];
@@ -222,6 +226,7 @@ export function buildPublicProfile(source: PublicProfileSource | null): PublicPr
     displayName: source.displayUsername.toLowerCase() === source.username ? source.displayUsername : source.username,
     tagline: source.tagline,
     avatar: sanitizeAvatarId(source.avatar),
+    appearance: displayedAppearance(source.appearance, source.avatar),
     progression: getProgression(source.totalXp),
     stats: toHeadlineStats(source.stats),
     achievements,
