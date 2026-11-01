@@ -179,11 +179,13 @@ describe('collecting card trick timing', () => {
       const timing = getCollectingModeTiming(mode);
       const slot = getCollectingFlyDelay(1, timing) - getCollectingFlyDelay(0, timing);
       const variants = mode === 'random' ? COLLECTION_ANIMATION_VARIANTS : [mode];
-      const longestFlight = Math.max(...variants.map((variant) =>
+      // The longest paced flight, or a variant's floor for short hops if that is longer
+      const longestFlight = Math.max(...variants.map((variant) => Math.max(
         COLLECT_ANIMATION.FLY_DURATION_MAX *
         (1 + COLLECT_ANIMATION.DURATION_JITTER) *
-        getCollectingAnimationProfile(variant).flyDurationMultiplier
-      ));
+        getCollectingAnimationProfile(variant).flyDurationMultiplier,
+        getCollectingAnimationProfile(variant).minFlyDuration
+      )));
 
       expect(getCollectingFlyDelay(0, timing)).toBe(0);
       expect(slot).toBeGreaterThanOrEqual(longestFlight + COLLECT_ANIMATION.FLY_STAGGER);

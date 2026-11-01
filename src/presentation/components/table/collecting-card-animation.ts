@@ -112,6 +112,24 @@ export function getCollectingFlyDelay(stackIndex: number, timing: CollectingMode
   return stackIndex * (longestFlight + COLLECT_ANIMATION.FLY_STAGGER) * timing.staggerMultiplier;
 }
 
+/**
+ * Flight time from the hover to the winner's deck: paced by distance, jittered per card and
+ * stretched by the variant, but never shorter than the variant's path needs (`minFlyDuration`).
+ * Every floor fits in a flight slot (getCollectingFlyDelay), so cards still land in slot order.
+ */
+export function getCollectingFlyDuration(
+  distance: number,
+  durationMultiplier: number,
+  profile: CollectionAnimationProfile
+): number {
+  const paced = Math.min(
+    COLLECT_ANIMATION.FLY_DURATION_MAX,
+    Math.max(COLLECT_ANIMATION.FLY_DURATION_MIN, distance / COLLECT_ANIMATION.FLY_SPEED)
+  );
+
+  return Math.max(paced * durationMultiplier * profile.flyDurationMultiplier, profile.minFlyDuration);
+}
+
 export function getCollectingWaitDuration(timing: CollectingModeTiming): number {
   return COLLECT_ANIMATION.WAIT_DURATION * timing.waitDurationMultiplier;
 }

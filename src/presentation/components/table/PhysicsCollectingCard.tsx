@@ -201,7 +201,8 @@ export function PhysicsCollectingCard({ card, startPosition, targetPosition, sta
     targetPos: targetPosition,
     stackedY,
     gatherMult: randomOffsets.durationMult * modeTiming.flyDurationMultiplier,
-    flyMult: randomOffsets.durationMult * animationProfile.flyDurationMultiplier,
+    durationMult: randomOffsets.durationMult,
+    profile: animationProfile,
   });
   const initialTransform = useMemo(
     () => getInitialCollectingCardTransform({ startPosition, startRotation }),

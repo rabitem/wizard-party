@@ -4,10 +4,12 @@ import {
   type CollectionAnimationVariant,
 } from '../../config/collection-animation.config';
 import { CARD_DIMENSIONS, COLLECT_ANIMATION } from '../../config/physics.config';
+import { SANDBOX_AUDIT } from '../../config/sandbox.config';
 import {
   COLLECTING_CARD_HOVER_SCALE,
   getCollectingAnimationProfile,
   getCollectingFlyDelay,
+  getCollectingFlyDuration,
   getCollectingModeTiming,
   getCollectingWaitDuration,
   getInitialCollectingCardTransform,
@@ -37,30 +39,36 @@ interface TimelineCase {
   collectingCardCount: number;
   startRotation: number;
   targetRotation: number;
+  /** The winner's deck; defaults to a far seat */
+  targetPosition?: [number, number, number];
 }
 
 const START_POSITION: [number, number, number] = [1.4, 0.03, 1.1];
 const CENTER_POSITION: [number, number, number] = [0.015, 0.3, -0.012];
 const TARGET_POSITION: [number, number, number] = [-2.1, 0.05, 1.6];
 
-/** Distance-aware duration, as PhysicsCollectingCard paces a real collection */
-function pacedDuration(from: [number, number, number], to: [number, number, number], speed: number, min: number, max: number): number {
-  const distance = Math.hypot(to[0] - from[0], to[1] - from[1], to[2] - from[2]);
-  return Math.min(max, Math.max(min, distance / speed)) * OFFSETS.durationMult;
+function distanceBetween(from: [number, number, number], to: [number, number, number]): number {
+  return Math.hypot(to[0] - from[0], to[1] - from[1], to[2] - from[2]);
 }
 
-function buildParams({ variant, stackIndex, collectingCardCount, startRotation, targetRotation }: TimelineCase): Omit<FrameAnimationParams, 'elapsed'> {
+/** Distance-aware gather duration, as PhysicsCollectingCard paces a real collection */
+function pacedGatherDuration(): number {
+  const paced = distanceBetween(START_POSITION, CENTER_POSITION) / COLLECT_ANIMATION.GATHER_SPEED;
+  return Math.min(COLLECT_ANIMATION.GATHER_DURATION_MAX, Math.max(COLLECT_ANIMATION.GATHER_DURATION_MIN, paced)) * OFFSETS.durationMult;
+}
+
+function buildParams({ variant, stackIndex, collectingCardCount, startRotation, targetRotation, targetPosition = TARGET_POSITION }: TimelineCase): Omit<FrameAnimationParams, 'elapsed'> {
   const timing = getCollectingModeTiming(variant);
   const profile = getCollectingAnimationProfile(variant);
   return {
-    gatherDuration: pacedDuration(START_POSITION, CENTER_POSITION, COLLECT_ANIMATION.GATHER_SPEED, COLLECT_ANIMATION.GATHER_DURATION_MIN, COLLECT_ANIMATION.GATHER_DURATION_MAX) * timing.flyDurationMultiplier,
+    gatherDuration: pacedGatherDuration() * timing.flyDurationMultiplier,
     waitDuration: getCollectingWaitDuration(timing),
     flyDelay: getCollectingFlyDelay(stackIndex, timing),
-    flyDuration: pacedDuration(CENTER_POSITION, TARGET_POSITION, COLLECT_ANIMATION.FLY_SPEED, COLLECT_ANIMATION.FLY_DURATION_MIN, COLLECT_ANIMATION.FLY_DURATION_MAX) * profile.flyDurationMultiplier,
+    flyDuration: getCollectingFlyDuration(distanceBetween(CENTER_POSITION, targetPosition), OFFSETS.durationMult, profile),
     animationPhase: 'flying',
     startPosition: START_POSITION,
     centerPos: CENTER_POSITION,
-    targetPosition: TARGET_POSITION,
+    targetPosition,
     stackedY: 0.05,
     startRotation,
     targetRotation,
@@ -101,6 +109,29 @@ function getPhaseBoundaries(params: Omit<FrameAnimationParams, 'elapsed'>): numb
   const flyStart = params.gatherDuration + params.waitDuration + params.flyDelay;
   return [params.gatherDuration, flyStart, flyStart + params.flyDuration];
 }
+
+/** Largest second difference of the flight path per 60 Hz frame, as the sandbox audit judges a scripted card */
+function getSharpestFlightBend(params: Omit<FrameAnimationParams, 'elapsed'>): number {
+  const [, flyStart, flyEnd] = getPhaseBoundaries(params);
+  const points: number[][] = [];
+  for (let elapsed = flyStart - 2 * FRAME_S; elapsed <= flyEnd; elapsed += FRAME_S) {
+    const pose = poseAt(params, elapsed);
+    points.push([pose.x, pose.y, pose.z]);
+  }
+
+  let sharpest = 0;
+  for (let index = 2; index < points.length; index++) {
+    const [a, b, c] = [points[index - 2], points[index - 1], points[index]];
+    sharpest = Math.max(sharpest, Math.hypot(c[0] - 2 * b[0] + a[0], c[1] - 2 * b[1] + a[1], c[2] - 2 * b[2] + a[2]));
+  }
+  return sharpest;
+}
+
+// Decks next to the centre pace the shortest flights, where a flourish bends hardest per frame
+const NEAR_DECKS: [number, number, number][] = [[1, 0.05, 0.6], [-0.9, 0.05, -0.7], [0.2, 0.05, -1.1], [-1.1, 0.05, 0.3]];
+const SHORT_HOPS: TimelineCase[] = COLLECTION_ANIMATION_VARIANTS.flatMap((variant) =>
+  [0, 1, 2, 3, 4, 5].map((stackIndex) => ({ variant, stackIndex, collectingCardCount: 6, startRotation: -1, targetRotation: -2 }))
+);
 
 const CASES: TimelineCase[] = COLLECTION_ANIMATION_VARIANTS.flatMap((variant) =>
   [0, 2, 5].map((stackIndex) => ({
@@ -163,6 +194,12 @@ describe('resolveFrameAnimationResult', () => {
       const change = Math.hypot(...after.map((value, index) => value - before[index]));
       // Units per second: a frozen launch pose left orbiting spiral cards turning by ~1.8 u/s here.
       expect(change).toBeLessThan(1.5);
+    });
+
+    it.each(SHORT_HOPS)('sweeps a short hop to a near deck without a path kink ($variant, stack slot $stackIndex)', (timelineCase) => {
+      for (const targetPosition of NEAR_DECKS) {
+        expect(getSharpestFlightBend(buildParams({ ...timelineCase, targetPosition }))).toBeLessThan(SANDBOX_AUDIT.MAX_PATH_KINK);
+      }
     });
 
     it('lands from the flight exactly on the stacked pose', () => {
