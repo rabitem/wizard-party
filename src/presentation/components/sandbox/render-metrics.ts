@@ -37,6 +37,7 @@ class RenderAccumulator {
   private finiteTriangleFrames = 0;
   private nonFiniteTriangleFrames = 0;
   private textureUploads = 0;
+  private boneUploads = 0;
   private uploadBytes = 0;
   private programLinks = 0;
   private probeMs = 0;
@@ -59,6 +60,7 @@ class RenderAccumulator {
       this.nonFiniteTriangleFrames++;
     }
     this.textureUploads += sample.textureUploads;
+    this.boneUploads += sample.boneUploads;
     this.uploadBytes += sample.uploadBytes;
     this.programLinks += sample.programLinks;
     this.probeMs += sample.probeMs;
@@ -89,6 +91,7 @@ class RenderAccumulator {
       trianglesMean: this.finiteTriangleFrames > 0 ? Math.round(this.triangles / this.finiteTriangleFrames) : null,
       nonFiniteTriangleFrames: this.nonFiniteTriangleFrames,
       textureUploads: this.textureUploads,
+      boneUploads: this.boneUploads,
       uploadBytes: this.uploadBytes,
       programLinks: this.programLinks,
       cpuFrameMs: summarizeDistribution(this.cpuMs),

@@ -58,6 +58,7 @@ export { PreferencesPanel } from './PreferencesPanel';
 export { CardThemeSection } from './CardThemeSection';
 export { CardNumberSizeSection } from './CardNumberSizeSection';
 export { TableThemeSection } from './TableThemeSection';
+export { TableCharactersSection } from './TableCharactersSection';
 export { KeyboardShortcutsSection } from './KeyboardShortcutsSection';
 export { ThemeSection } from './ThemeSection';
 export { SeasonalPackSection } from './SeasonalPackSection';

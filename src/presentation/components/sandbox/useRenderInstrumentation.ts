@@ -14,7 +14,7 @@ export interface RenderInstrumentation {
   takeSample(probeStartedAt: number): RenderSample;
 }
 
-const EMPTY_GL_COUNTS: GlFrameCounts = { shadowDrawCalls: 0, textureUploads: 0, uploadBytes: 0, programLinks: 0 };
+const EMPTY_GL_COUNTS: GlFrameCounts = { shadowDrawCalls: 0, textureUploads: 0, boneUploads: 0, uploadBytes: 0, programLinks: 0 };
 
 interface FrameState {
   gl: GlInstrumentation | null;
@@ -65,6 +65,7 @@ export function useRenderInstrumentation(get: () => RootState, realNow: () => nu
         geometries: gl.info.memory.geometries,
         programs: gl.info.programs?.length ?? 0,
         textureUploads: counts.textureUploads,
+        boneUploads: counts.boneUploads,
         uploadBytes: counts.uploadBytes,
         programLinks: counts.programLinks,
         cpuMs: frame.frameStartedAt === null ? null : Math.max(0, probeStartedAt - frame.frameStartedAt),

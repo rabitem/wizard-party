@@ -116,7 +116,7 @@ function installPaletteShader(material: MeshStandardMaterial): PaletteUniforms {
  * Gives a cloned figure its own copies of the shared materials, so its palette does not repaint
  * other figures. One copy per original material, with the palette shader installed.
  */
-export function ownFigureMaterials(figure: Object3D): void {
+export function ownFigureMaterials(figure: Object3D): Material[] {
   const copies = new Map<Material, Material>();
   figure.traverse((object) => {
     const mesh = object as Object3D & { isMesh?: boolean; material?: Material };
@@ -129,6 +129,7 @@ export function ownFigureMaterials(figure: Object3D): void {
     }
     mesh.material = copy;
   });
+  return [...copies.values()];
 }
 
 /** Recolours a figure prepared with ownFigureMaterials. */

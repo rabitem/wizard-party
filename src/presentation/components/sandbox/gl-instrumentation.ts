@@ -41,12 +41,22 @@ function estimateUploadBytes(method: UploadMethod, args: readonly unknown[]): nu
   }
 }
 
+/** WebGL's FLOAT type: in this scene only skinned meshes upload float data (their bone matrices). */
+const GL_FLOAT = 0x1406;
+
+/** Bone matrices of a skinned mesh: texImage2D and texSubImage2D both take the type as their 8th argument. */
+function isBoneUpload(method: UploadMethod, args: readonly unknown[]): boolean {
+  return (method === 'texImage2D' || method === 'texSubImage2D') && args.length >= 9 && args[7] === GL_FLOAT;
+}
+
 const UPLOAD_METHODS = ['texImage2D', 'texSubImage2D', 'texImage3D', 'texSubImage3D', 'compressedTexImage2D', 'compressedTexSubImage2D'] as const;
 type UploadMethod = typeof UPLOAD_METHODS[number];
 
 export interface GlFrameCounts {
   shadowDrawCalls: number;
   textureUploads: number;
+  /** Float uploads of skinned meshes' bone matrices (a few KB each), kept apart from textureUploads. */
+  boneUploads: number;
   uploadBytes: number;
   programLinks: number;
 }
@@ -60,13 +70,17 @@ type AnyFunction = (...args: unknown[]) => unknown;
  * Requires renderer.info.autoReset = false (the probe resets the counters once per frame).
  */
 export class GlInstrumentation {
-  private counts: GlFrameCounts = { shadowDrawCalls: 0, textureUploads: 0, uploadBytes: 0, programLinks: 0 };
+  private counts: GlFrameCounts = { shadowDrawCalls: 0, textureUploads: 0, boneUploads: 0, uploadBytes: 0, programLinks: 0 };
   private readonly restores: Array<() => void> = [];
 
   constructor(private readonly renderer: THREE.WebGLRenderer) {
     const context = renderer.getContext() as unknown as Record<string, AnyFunction>;
     for (const method of UPLOAD_METHODS) {
       this.wrap(context, method, (args) => {
+        if (isBoneUpload(method, args)) {
+          this.counts.boneUploads++;
+          return;
+        }
         this.counts.textureUploads++;
         this.counts.uploadBytes += estimateUploadBytes(method, args);
       });
@@ -80,7 +94,7 @@ export class GlInstrumentation {
   /** Counts since the previous call. */
   takeFrame(): GlFrameCounts {
     const counts = this.counts;
-    this.counts = { shadowDrawCalls: 0, textureUploads: 0, uploadBytes: 0, programLinks: 0 };
+    this.counts = { shadowDrawCalls: 0, textureUploads: 0, boneUploads: 0, uploadBytes: 0, programLinks: 0 };
     return counts;
   }
 

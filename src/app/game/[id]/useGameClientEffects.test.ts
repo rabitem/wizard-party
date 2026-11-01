@@ -29,6 +29,7 @@ const baseSettings: GameSettings = {
   customSounds: [],
   leaderboardPosition: 'right',
   leaderboardCompact: false,
+  tableCharacters: true,
 };
 
 describe('game sound effect helpers', () => {

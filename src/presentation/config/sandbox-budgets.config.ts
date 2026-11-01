@@ -45,6 +45,14 @@ export const RENDER_BUDGETS = {
   WARM_TEXTURE_UPLOAD_SLACK: 10,
   /** Texture uploads while the table is idle. */
   IDLE_TEXTURE_UPLOADS_MAX: 0,
+  /** Bone-matrix uploads while the table is idle: resting character figures hold their pose. */
+  IDLE_BONE_UPLOADS_MAX: 0,
+  /**
+   * Bone-matrix uploads (one 4 KB float texture per figure per animated frame) in a warm round:
+   * reactions play a clip once (cheering a trick, the round's result). A round measured about
+   * 1,500 at every table size; figures that never stopped moving would upload many times that.
+   */
+  WARM_ROUND_BONE_UPLOADS_MAX: 2500,
   /** GPU textures may grow by at most this much over one played round (leak signal). */
   TEXTURE_GROWTH_PER_ROUND_MAX: 8,
   /** Visible punctual lights (point, spot, directional) in the scene. */

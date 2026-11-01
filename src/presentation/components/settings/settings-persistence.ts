@@ -66,6 +66,8 @@ export interface GameSettings {
   customSounds: CustomAudioSettings[];
   leaderboardPosition: LeaderboardPosition;
   leaderboardCompact: boolean;
+  /** Opponents' characters stand at their seats on the 3D table. */
+  tableCharacters: boolean;
 }
 
 const DEFAULT_GAME_SETTINGS: GameSettings = {
@@ -83,6 +85,7 @@ const DEFAULT_GAME_SETTINGS: GameSettings = {
   customSounds: [],
   leaderboardPosition: 'right',
   leaderboardCompact: false,
+  tableCharacters: true,
 };
 
 const AVATAR_IDS = new Set(AVATAR_PRESETS.map((preset) => preset.id));
@@ -147,6 +150,7 @@ function normalizeGameSettings(settings: unknown): GameSettings {
       DEFAULT_GAME_SETTINGS.leaderboardPosition
     ),
     leaderboardCompact: booleanSetting(partial.leaderboardCompact, DEFAULT_GAME_SETTINGS.leaderboardCompact),
+    tableCharacters: booleanSetting(partial.tableCharacters, DEFAULT_GAME_SETTINGS.tableCharacters),
   };
 }
 

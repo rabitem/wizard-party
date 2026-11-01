@@ -195,6 +195,40 @@ Every player sees every signed-in player's look, guests included, because the ro
 Looks are public, so a ticket is no secret; the name binding stops a seat from wearing another
 player's look. Bots get their look on the client, by difficulty.
 
+### Figures at the seats
+
+Every opponent's character stands behind their seat plate on the 3D table, facing the centre
+(`SeatFigure` in `components/table/`, mounted by `PlayerBrandmark`). The local seat has none: it
+is nearest the camera and would stand in front of the player's own hand.
+
+- **Look**: `useSeatAppearance`, as for every other seat. A seat without a known look shows a
+  dark silhouette figure (`CharacterFigure silhouette`).
+- **Size and place**: `SEAT_FIGURE` in `config/character.config.ts` (about 0.75 units tall,
+  standing a little outside the plate). Figures are not camera fit points; the seat plates are.
+- **Reactions** (`seat-reactions.ts`, `useSeatReaction`): a figure cheers the trick its player
+  won, hops or flinches on a round by the sign of the score the server recorded, raises a spell
+  when its player sends an emote, and sleeps while its human is disconnected. A reaction plays its
+  clip once (`CharacterFigure`'s `oneShot`) and the figure settles back by itself on the mixer's
+  clock, so ending it needs no timer or re-render. Reactions only read what the client was told;
+  nothing judges the game.
+- **Draw calls**: `character-bake.ts` merges a figure's visible parts into one skinned mesh per
+  material (a figure is five skinned outfit pieces, a skinned head and rigid props on bones), so a
+  figure draws in two or three calls instead of about a dozen. Skinned parts move into one bind
+  space (the KayKit skins differ by one constant offset each); rigid props are bound to their
+  nearest bone with full weight. Every `CharacterFigure` is baked, also in the editor and on the
+  podium; the bake re-runs when the look changes.
+- **Cost**: at rest a figure holds its clip's first frame, and `character-skeleton.ts` stops its
+  bone uploads once the pose is in place (three.js would re-upload a skinned mesh's bone texture
+  every frame), so a resting table uploads nothing. All parts of a figure share one skeleton. The
+  subtree is ambient (`AMBIENT_USER_DATA`), so a reaction never forces full-rate frames. Figures
+  mount visible, so the table's shader warm-up compiles them; every figure shares the palette
+  program. On the low render tier and with `prefers-reduced-motion` figures never react.
+  Unmounting disposes a figure's materials and bone textures.
+- **Failure**: each figure has its own `Suspense` and error boundary. A failed asset load leaves
+  that seat without a figure instead of rebuilding the canvas.
+- **Setting**: "Characters at the table" (`tableCharacters` in the game settings, synced with the
+  account) in the in-game settings panel turns all figures off.
+
 ## Checking assets
 
 `/dev/characters` (local dev and Vercel previews only) shows every part, palette and clip on the

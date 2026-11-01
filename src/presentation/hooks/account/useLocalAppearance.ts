@@ -18,8 +18,7 @@ interface Loaded {
 /**
  * Which look the local player shows. A guest has none (a silhouette): choosing a character comes
  * with an account. Signed in: a saved look; otherwise the one derived from the avatar in the local
- * settings, by the same rule the server applies, so a new sigil shows at once and nothing flashes
- * while the account loads.
+ * settings, by the same rule the server applies, so nothing flashes while the account loads.
  */
 export function chooseLocalAppearance(
   status: AccountStatus,

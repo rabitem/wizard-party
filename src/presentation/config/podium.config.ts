@@ -40,8 +40,6 @@ export const PODIUM = {
   AMBIENT_INTENSITY: 0.9,
   KEY_LIGHT_POSITION: [2.5, 5, 4] as const,
   KEY_LIGHT_INTENSITY: 1.7,
-  /** Players without a known look stand as a dark figure of the default look. */
-  SILHOUETTE_COLOR: '#26222e',
   /** The champion cheers this long, rests (idle) for CHEER_REST_MS, then cheers again. */
   CHEER_MS: 3200,
   CHEER_REST_MS: 6000,
