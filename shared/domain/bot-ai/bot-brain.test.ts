@@ -43,7 +43,14 @@ function cardsOf(steps: BotStep[]) {
   return steps.filter((step): step is Extract<BotStep, { kind: 'card' }> => step.kind === 'card');
 }
 
-describe('BotBrain decisions accepted by the Game aggregate', () => {
+/**
+ * Whole games of bot decisions. The budget clock never moves, so every search runs all the
+ * iterations it may: deterministic, but CPU-bound (a few seconds per Expert table, several times
+ * that under coverage on a CI runner), well past Vitest's 5 s default.
+ */
+const WHOLE_GAME_TIMEOUT_MS = 60_000;
+
+describe('BotBrain decisions accepted by the Game aggregate', { timeout: WHOLE_GAME_TIMEOUT_MS }, () => {
   // Each seat plays at its own level, so one table exercises every strategy together.
   it.each(RULESETS)('every level only makes legal moves to the end of a game ($name)', ({ rules }) => {
     for (const seed of [1, 2]) {
