@@ -13,7 +13,7 @@ committed files:
 
 | File | Holds | Size (gzip) |
 | --- | --- | --- |
-| `public/characters/characters.glb` | One rig (41 bones) with every catalog part on it | about 530 KB (360 KB) |
+| `public/characters/characters.glb` | One rig (41 bones) with every catalog part on it, four textures | about 530 KB (360 KB) |
 | `public/characters/character-animations.glb` | The same rig without meshes, plus the clips in `CHARACTER_CLIPS` | about 240 KB (115 KB) |
 
 The build (`scripts/characters/build-character-assets.mjs`):
@@ -40,21 +40,52 @@ every part.
 
 ## Loading and showing a look
 
-- `CharacterFigure` (`src/presentation/components/character/`) loads both files through drei's
-  `useGLTF` with the meshopt decoder, clones the rig per figure (`SkeletonUtils.clone`), shows the
-  look's parts (`applyAppearance`, keyed on `userData.part`) and crossfades between clips
-  (`CHARACTER_CLIP_FADE_SECONDS`). It suspends while loading; `preloadCharacterAssets()` starts the
-  downloads early.
+- `character-assets.ts` loads each file once per page (three's `GLTFLoader` with the meshopt
+  decoder, imported on first use) and shares it between figures and portraits.
+- `CharacterFigure` (`src/presentation/components/character/`) suspends on those loads, clones the
+  rig per figure (`SkeletonUtils.clone`) with its own materials (`ownFigureMaterials`), shows the
+  look's parts and palette (`applyAppearance`, parts keyed on `userData.part`) and crossfades
+  between clips (`CHARACTER_CLIP_FADE_SECONDS`). `preloadCharacterAssets()` starts the downloads
+  early.
 - three.js strips `:` `/` and `.` from node names when it loads them (`head:mage` becomes `headmage`,
   `upperarm.l` becomes `upperarml`), so code finds parts by `userData.part`, never by name.
 - The model is about 2.7 units tall, standing on y = 0.
-- Palettes and familiars are not drawn yet.
+- Familiars are not drawn yet.
+
+## Palettes
+
+Each KayKit texture is an 8x4 grid of gradient cells, and parts pick a colour by sampling a cell.
+`CLOTHING_CELLS` (`src/presentation/config/character-palettes.config.ts`) lists the clothing cells
+of each texture as primary (robes, tunics, the hood) or accent (capes, trims); skin, hair, leather
+and metal are never listed. `PALETTE_COLORS` gives each catalog palette a primary and an accent
+colour; `palette:classic` keeps the original colours.
+
+The recolour happens in the shader (`character-palette.ts`): `onBeforeCompile` replaces three's
+`map_fragment` so a texel in a listed cell takes the palette colour, scaled by its brightness
+relative to the cell's average. The averages are measured once per texture by drawing it down to
+8x4 pixels. All figures share one shader program (`customProgramCacheKey`); each figure owns its
+materials, so its palette does not repaint others. Props share their outfit's texture, so a
+spellbook cover follows the accent colour.
+
+To find the cells of a new texture, read which cells each part's `TEXCOORD_0` falls into (row =
+floor(v * 4), column = floor(u * 8), v from the top) and look at the texture.
+
+## Portraits
+
+`CharacterPortrait` shows a look's head and shoulders as an image. `renderCharacterPortrait`
+(`character-portrait-renderer.ts`) renders it on one hidden WebGL canvas shared by the page, with
+one posed figure (the idle clip at `CHARACTER_PORTRAIT.POSE_SECONDS`), framed on the head bone,
+on a transparent background. Renders run one at a time and are cached per look
+(`portraitKey`, `CHARACTER_PORTRAIT.CACHE_LIMIT`). Until a render is ready, or without WebGL, the
+component shows an empty circle of the same size. Server-rendered images (emails, Open Graph
+cards) cannot use it.
 
 ## Checking assets
 
-`/dev/characters` (local dev and Vercel previews only) shows every part and clip on the real
-assets, without accounts or unlocks, and reports invalid combinations. The first visit in
-`next dev` takes a few seconds while the route compiles.
+`/dev/characters` (local dev and Vercel previews only) shows every part, palette and clip on the
+real assets, without accounts or unlocks, reports invalid combinations, and renders the look's
+portrait in every palette. The first visit in `next dev` takes a few seconds while the route
+compiles.
 
 ## Changing assets
 

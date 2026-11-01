@@ -31,3 +31,18 @@ export type CharacterClip = (typeof CHARACTER_CLIPS)[keyof typeof CHARACTER_CLIP
 
 /** Seconds to blend from one clip into the next. */
 export const CHARACTER_CLIP_FADE_SECONDS = 0.25;
+
+/** Head-and-shoulders portraits, rendered in the browser (character-portrait-renderer.ts). */
+export const CHARACTER_PORTRAIT = {
+  /** Rendered square size in device pixels; CSS scales it down. */
+  SIZE_PX: 256,
+  FOV_DEGREES: 26,
+  /** Camera position relative to the head bone, in model units (the figure is about 2.7 tall). */
+  CAMERA_OFFSET: [0, 0.6, 4.6] as const,
+  /** Where the camera looks, relative to the head bone: above it, so tall hats fit. */
+  TARGET_OFFSET: [0, 0.45, 0] as const,
+  /** Time into the idle clip used as the portrait pose, in seconds. */
+  POSE_SECONDS: 0.4,
+  /** Rendered portraits kept per page; the oldest are dropped first. */
+  CACHE_LIMIT: 200,
+} as const;

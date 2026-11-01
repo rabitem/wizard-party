@@ -12,11 +12,12 @@ import {
   type CharacterSlot,
 } from '@shared/domain/character';
 
-import { CharacterFigure } from '@/presentation/components/character';
+import { CharacterFigure, CharacterPortrait } from '@/presentation/components/character';
 import { CHARACTER_CLIPS, type CharacterClip } from '@/presentation/config/character.config';
 
-/** Slots the 3D model shows; palettes and familiars arrive with their own assets. */
-const MODEL_SLOTS: readonly CharacterSlot[] = CHARACTER_SLOTS.filter((slot) => slot !== 'palette' && slot !== 'familiar');
+/** Slots the model shows; familiars arrive with their own assets. */
+const MODEL_SLOTS: readonly CharacterSlot[] = CHARACTER_SLOTS.filter((slot) => slot !== 'familiar');
+const PALETTES = CHARACTER_PARTS.filter((part) => part.slot === 'palette');
 const CAMERA = { position: [0, 1.6, 7] as [number, number, number], fov: 35 };
 const TARGET: [number, number, number] = [0, 1.35, 0];
 
@@ -54,7 +55,8 @@ export function CharacterViewer() {
         </label>
         <p role="status" className={`text-xs ${problem ? 'text-red-300' : 'text-emerald-300/80'}`}>{problem ?? 'valid combination'}</p>
       </aside>
-      <div className="h-[70dvh] md:h-dvh" data-testid="character-canvas">
+      <div className="flex flex-col">
+      <div className="h-[60dvh] md:h-[calc(100dvh-8rem)]" data-testid="character-canvas">
         <Canvas camera={CAMERA} dpr={[1, 2]}>
           <ambientLight intensity={0.8} />
           <directionalLight position={[2, 4, 3]} intensity={1.6} />
@@ -63,6 +65,15 @@ export function CharacterViewer() {
           </Suspense>
           <OrbitControls target={TARGET} enablePan={false} />
         </Canvas>
+      </div>
+      <div className="flex gap-2 overflow-x-auto p-3 border-t border-amber-900/40" data-testid="character-portraits">
+        {PALETTES.map((palette) => (
+          <figure key={palette.id} className="flex flex-col items-center gap-1 shrink-0">
+            <CharacterPortrait appearance={{ ...appearance, palette: palette.id }} label={`${palette.name} portrait`} className="w-20 h-20 rounded-full bg-black/30" />
+            <figcaption className="text-[10px] text-amber-200/70">{palette.name}</figcaption>
+          </figure>
+        ))}
+      </div>
       </div>
     </main>
   );
