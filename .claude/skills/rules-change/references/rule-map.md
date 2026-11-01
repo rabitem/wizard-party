@@ -59,7 +59,7 @@ put rule logic in them.
 | Card faces and guide | emblems, palettes, icons, mini cards, explainer | `src/presentation/utils/card-textures/special-cards/`, `src/presentation/components/expansion-guide/`, `src/presentation/components/bidding/mini-card-styles.ts` |
 | Game end, stats | `getWinnerIds`, `getStandings` | `src/presentation/components/GameEndUI.tsx`, `src/presentation/hooks/useGameEffects.ts`, `party/telemetry/telemetry-mapper.ts` |
 | Tournaments | strict ruleset validation; stored settings re-normalized | `shared/domain/tournament/tournament-validation.ts`, `shared/tournament/match-ticket.ts`, `src/infrastructure/tournament/tournament-rows.ts` |
-| Achievements | final and running scores | `shared/domain/account/achievements.ts` |
+| Achievements | final and running scores | `shared/domain/account/achievements.ts`, `shared/domain/account/achievement-facts.ts` |
 
 Adding a member to `CardType`, `TrickRank` or an effect kind makes the compiler flag every
 exhaustive table (`Record<CardType, …>`, `Record<SpecialCardType, …>`, `HANDLERS`). `switch`

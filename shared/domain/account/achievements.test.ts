@@ -151,6 +151,12 @@ describe('single game achievements', () => {
     for (const id of ['games-500', 'wins-100', 'streak-10', 'tricks-1000']) expect(unlocks(id, almost)).toBe(false);
   });
 
+  it('should never show negative progress for the lifetime score', () => {
+    const inDebt = contextOf([], undefined, { ...EMPTY_STATS, gamesPlayed: 3, totalScore: -120 });
+    expect(progressOf('score-total-10000', inDebt)).toEqual({ current: 0, target: 10_000 });
+    expect(unlocks('score-total-10000', contextOf([], undefined, { ...EMPTY_STATS, totalScore: 10_000 }))).toBe(true);
+  });
+
   it('should sum correct zero bids across games', () => {
     const tenZeros = () => game({ rounds: [...Array.from({ length: 10 }, () => hit(0)), miss(0)] });
     const results = Array.from({ length: 4 }, tenZeros);
@@ -172,7 +178,9 @@ describe('single game achievements', () => {
 
   it('should keep secret achievements hidden and unlock clouded crystal only for 5+ round blind games', () => {
     const secrets = ACHIEVEMENTS.filter((a) => a.secret).map((a) => a.id);
-    expect(secrets).toEqual(expect.arrayContaining(['clouded-crystal', 'phoenix', 'perfect-balance']));
+    expect(secrets).toEqual(
+      expect.arrayContaining(['clouded-crystal', 'phoenix', 'perfect-balance', 'eternal-apprentice', 'lesser-evil', 'icarus', 'overreach', 'welcome-back'])
+    );
 
     const fourMisses = Array.from({ length: 4 }, () => miss(1));
     expect(unlocks('clouded-crystal', contextOf([game({ rounds: fourMisses })]))).toBe(false);
@@ -195,6 +203,62 @@ describe('single game achievements', () => {
     expect(unlocks('perfect-balance', contextOf([game({ score: 1 })]))).toBe(false);
     expect(unlocks('perfect-balance', contextOf([game({ score: 0, rounds: [] })]))).toBe(false);
     expect(unlocks('perfect-balance', contextOf([game({ score: 0, rounds: [hit(0, 20), miss(1, 3)] })]))).toBe(true);
+  });
+
+  it('should count only 10+ round games with 80% exact bids towards keen eye', () => {
+    const keen = () => game({ rounds: [...Array.from({ length: 8 }, () => hit(1)), miss(1), miss(2)] });
+    const shortGame = game({ rounds: Array.from({ length: 9 }, () => hit(1)) });
+    const sloppy = game({ rounds: [...Array.from({ length: 7 }, () => hit(1)), miss(1), miss(1), miss(1)] });
+    const nine = Array.from({ length: 9 }, keen);
+    expect(progressOf('keen-eye', contextOf([...nine, shortGame, sloppy]))).toEqual({ current: 9, target: 10 });
+    expect(unlocks('keen-eye', contextOf([...nine, keen()]))).toBe(true);
+  });
+
+  it('should fulfil the prophecy only with a perfect game of 15+ rounds', () => {
+    const exact = (rounds: number) => Array.from({ length: rounds }, () => hit(1));
+    expect(unlocks('prophecy-fulfilled', contextOf([game({ rounds: exact(14) })]))).toBe(false);
+    expect(unlocks('prophecy-fulfilled', contextOf([game({ rounds: [...exact(14), miss(1)] })]))).toBe(false);
+    expect(unlocks('prophecy-fulfilled', contextOf([game({ rounds: exact(15) })]))).toBe(true);
+  });
+
+  it('should break the unsinkable run on a last place, at any table size', () => {
+    const safe = () => game({ playerCount: 4, placement: 3 });
+    const nineteen = Array.from({ length: 19 }, safe);
+    const lastOfTwo = game({ playerCount: 2, placement: 2 });
+    expect(progressOf('unsinkable', contextOf([...nineteen, lastOfTwo, safe()]))).toEqual({ current: 19, target: 20 });
+    expect(unlocks('unsinkable', contextOf([lastOfTwo, ...nineteen, game({ playerCount: 6, placement: 5 })]))).toBe(true);
+  });
+
+  it('should find consecutive UTC days, busy days and long breaks', () => {
+    const at = (day: number, hour = 12) => game({ playedAt: MIDNIGHT + day * DAY + hour * 3600_000 });
+    const gappedWeek = [0, 1, 2, 3, 5, 6, 7].map((day) => at(day));
+    expect(progressOf('daily-ritual', contextOf(gappedWeek))).toEqual({ current: 4, target: 5 });
+    expect(unlocks('daily-ritual', contextOf([...gappedWeek, at(4)]))).toBe(true);
+
+    const fourToday = [1, 2, 3, 4].map((hour) => at(0, hour));
+    expect(progressOf('spellbound', contextOf([...fourToday, at(1, 1)]))).toEqual({ current: 4, target: 5 });
+    expect(unlocks('spellbound', contextOf([...fourToday, at(0, 23)]))).toBe(true);
+
+    expect(unlocks('welcome-back', contextOf([at(0), at(29)]))).toBe(false);
+    expect(unlocks('welcome-back', contextOf([at(0), at(10), at(40)]))).toBe(true);
+  });
+
+  it('should crown the lesser evil and burn icarus only on their exact conditions', () => {
+    expect(unlocks('lesser-evil', contextOf([game({ placement: 2, score: -20 })]))).toBe(false);
+    expect(unlocks('lesser-evil', contextOf([game({ placement: 1, score: 0 })]))).toBe(false);
+    expect(unlocks('lesser-evil', contextOf([game({ placement: 1, score: -20 })]))).toBe(true);
+
+    const climb = [hit(3, 50), hit(3, 50)]; // 100
+    const crash = [miss(5, 0), miss(5, 0), miss(3, 0)]; // 100 -> -30
+    expect(unlocks('icarus', contextOf([game({ score: -30, rounds: [...climb, ...crash] })]))).toBe(true);
+    expect(unlocks('icarus', contextOf([game({ score: 10, rounds: [...climb, ...crash] })]))).toBe(false);
+    expect(unlocks('icarus', contextOf([game({ score: -30, rounds: [hit(3, 50), hit(2, 40), ...crash] })]))).toBe(false);
+  });
+
+  it('should count a miss of 4+ tricks in either direction as overreach', () => {
+    expect(unlocks('overreach', contextOf([game({ rounds: [miss(5, 2)] })]))).toBe(false);
+    expect(unlocks('overreach', contextOf([game({ rounds: [miss(5, 1)] })]))).toBe(true);
+    expect(unlocks('overreach', contextOf([game({ rounds: [miss(0, 4)] })]))).toBe(true);
   });
 });
 
@@ -241,20 +305,40 @@ describe('tournament achievements', () => {
     expect(unlocks('tournament-flawless', contextOf([], [participation({ finalRank: 1, flawless: true, tableWins: 3 })]))).toBe(true);
   });
 
-  it('should unlock comeback and oracle from the matching awards', () => {
-    expect(getTournamentAward('comeback')).not.toBeNull();
-    expect(getTournamentAward('oracle')).not.toBeNull();
+  it('should unlock comeback, oracle and iron constitution from the matching awards', () => {
+    for (const awardId of ['comeback', 'oracle', 'iron-mage']) expect(getTournamentAward(awardId)).not.toBeNull();
     const withAward = (awardId: string) => participation({ awards: [{ awardId, tier: 'special', xp: 200 }] });
     expect(unlocks('tournament-comeback', contextOf([], [withAward('oracle')]))).toBe(false);
     expect(unlocks('tournament-comeback', contextOf([], [withAward('comeback')]))).toBe(true);
     expect(unlocks('tournament-oracle', contextOf([], [withAward('high-roller')]))).toBe(false);
     expect(unlocks('tournament-oracle', contextOf([], [withAward('oracle')]))).toBe(true);
+    expect(unlocks('tournament-iron-mage', contextOf([], [withAward('finisher')]))).toBe(false);
+    expect(unlocks('tournament-iron-mage', contextOf([], [withAward('iron-mage')]))).toBe(true);
   });
 
   it('should require a title in a field of 16+ for the multitude', () => {
     expect(unlocks('tournament-big-field', contextOf([], [participation({ finalRank: 1, entrants: 15 })]))).toBe(false);
     expect(unlocks('tournament-big-field', contextOf([], [participation({ finalRank: 2, entrants: 32 })]))).toBe(false);
     expect(unlocks('tournament-big-field', contextOf([], [participation({ finalRank: 1, entrants: 16 })]))).toBe(true);
+  });
+
+  it('should need a title in each format for the versatile victor', () => {
+    const title = (format: TournamentParticipation['format']) => participation({ format, finalRank: 1 });
+    expect(unlocks('tournament-knockout-title', contextOf([], [title('series')]))).toBe(false);
+    expect(unlocks('tournament-knockout-title', contextOf([], [title('knockout')]))).toBe(true);
+    const runnerUpKnockout = participation({ format: 'knockout', finalRank: 2 });
+    expect(progressOf('tournament-both-formats', contextOf([], [title('series'), title('series'), runnerUpKnockout]))).toEqual({ current: 1, target: 2 });
+    expect(unlocks('tournament-both-formats', contextOf([], [title('series'), title('knockout')]))).toBe(true);
+  });
+
+  it('should sum table wins and count hosted tournaments', () => {
+    const tables = (tableWins: number) => participation({ tableWins });
+    expect(progressOf('tournament-table-wins-25', contextOf([], [tables(10), tables(14)]))).toEqual({ current: 24, target: 25 });
+    expect(unlocks('tournament-table-wins-25', contextOf([], [tables(10), tables(15)]))).toBe(true);
+
+    const hosted = () => participation({ wasHost: true, wasEntrant: false, finalRank: null, matchesPlayed: 0, awards: [] });
+    expect(progressOf('tournament-host-5', contextOf([], [...Array.from({ length: 4 }, hosted), participation()]))).toEqual({ current: 4, target: 5 });
+    expect(unlocks('tournament-host-5', contextOf([], Array.from({ length: 5 }, hosted)))).toBe(true);
   });
 
   it('should keep unlocked achievements complete in statuses', () => {

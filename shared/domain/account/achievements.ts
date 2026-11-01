@@ -1,6 +1,32 @@
+import { TOURNAMENT_FORMAT_IDS } from '../tournament/tournament.types';
 import type { TournamentParticipation } from '../tournament/participation';
-import { countCorrectBids, type GameResult } from './game-result';
+import {
+  ACHIEVEMENT_AWARD_IDS,
+  ACHIEVEMENT_RULES,
+  bidAccuracy,
+  distinctDaysPlayed,
+  earnedAward,
+  highestBidHit,
+  isBlindGame,
+  isLast,
+  isPerfectGame,
+  isWin,
+  longestBreakInDays,
+  longestCorrectBidRun,
+  longestDailyRun,
+  longestGameRun,
+  mostGamesInOneDay,
+  playedTournament,
+  reachedPodium,
+  runningScoreRange,
+  wonTournament,
+  widestMiss,
+  zeroBidsHit,
+} from './achievement-facts';
+import type { GameResult } from './game-result';
 import type { PlayerStatsSummary } from './player-stats';
+
+export { ACHIEVEMENT_RULES } from './achievement-facts';
 
 export type AchievementTier = 'bronze' | 'silver' | 'gold' | 'legendary';
 
@@ -41,18 +67,6 @@ export interface AchievementDefinition {
 type AchievementRule = Omit<AchievementDefinition, 'category'>;
 type Progress = AchievementRule['progress'];
 
-/** Tuning of the rules below that is not already spelled out in a definition's target. */
-export const ACHIEVEMENT_RULES = {
-  /** Rounds a game needs for "every bid" style achievements to count. */
-  MIN_ROUNDS_FOR_BID_FEATS: 5,
-  /** Running score a phoenix must have fallen to (or below) before winning. */
-  PHOENIX_LOW_POINT: -50,
-  /** Table sizes the table hopper must have won at. */
-  TABLE_HOPPER_SIZES: [3, 4, 5, 6],
-  /** Length of a calendar day for "distinct days played" (days are counted in UTC). */
-  UTC_DAY_MS: 24 * 60 * 60 * 1000,
-} as const;
-
 const capped = (target: number, current: number): AchievementProgress => ({ current: Math.min(target, current), target });
 
 const counter = (target: number, read: (stats: PlayerStatsSummary) => number): Progress =>
@@ -74,70 +88,19 @@ const countTournaments = (target: number, predicate: (participation: TournamentP
 
 const anyTournament = (predicate: (participation: TournamentParticipation) => boolean): Progress => countTournaments(1, predicate);
 
-// --- Game facts -------------------------------------------------------------------------------
+const sumOverTournaments = (target: number, read: (participation: TournamentParticipation) => number): Progress =>
+  (context) => capped(target, tournamentsOf(context).reduce((sum, participation) => sum + read(participation), 0));
 
-const isWin = (result: GameResult) => result.placement === 1;
-
-const hasBidFeatRounds = (result: GameResult) => result.rounds.length >= ACHIEVEMENT_RULES.MIN_ROUNDS_FOR_BID_FEATS;
-
-const isPerfectGame = (result: GameResult) => hasBidFeatRounds(result) && countCorrectBids(result) === result.rounds.length;
-
-const isBlindGame = (result: GameResult) => hasBidFeatRounds(result) && countCorrectBids(result) === 0;
-
-const zeroBidsHit = (result: GameResult) => result.rounds.filter((round) => round.bid === 0 && round.tricksWon === 0).length;
-
-/** Highest bid the player hit exactly in this game (0 when none). */
-const highestBidHit = (result: GameResult) =>
-  result.rounds.reduce((best, round) => (round.bid === round.tricksWon ? Math.max(best, round.bid) : best), 0);
-
-/** Longest run of consecutive rounds with an exact bid. */
-function longestCorrectBidRun(result: Pick<GameResult, 'rounds'>): number {
-  let longest = 0;
-  let current = 0;
-  for (const round of result.rounds) {
-    current = round.bid === round.tricksWon ? current + 1 : 0;
-    longest = Math.max(longest, current);
-  }
-  return longest;
-}
-
-/** Lowest running total over the rounds (0 if it never went below zero). */
-function lowestRunningScore(result: Pick<GameResult, 'rounds'>): number {
-  let running = 0;
-  let lowest = 0;
-  for (const round of result.rounds) {
-    running += round.roundScore;
-    lowest = Math.min(lowest, running);
-  }
-  return lowest;
-}
-
-/** Distinct UTC calendar days on which the player finished a game. */
-function distinctDaysPlayed(results: readonly Pick<GameResult, 'playedAt'>[]): number {
-  return new Set(results.map((result) => Math.floor(result.playedAt / ACHIEVEMENT_RULES.UTC_DAY_MS))).size;
-}
-
-const tableSizesWon = (context: AchievementContext): AchievementProgress => {
+const tableSizesWon: Progress = (context) => {
   const sizes: readonly number[] = ACHIEVEMENT_RULES.TABLE_HOPPER_SIZES;
   const won = new Set(context.results.filter((result) => isWin(result) && sizes.includes(result.playerCount)).map((result) => result.playerCount));
   return { current: won.size, target: sizes.length };
 };
 
-// --- Tournament facts -------------------------------------------------------------------------
-
-/** Sat at least one table (a no-show for every match does not count as playing). */
-const playedTournament = (participation: TournamentParticipation) => participation.wasEntrant && participation.matchesPlayed > 0;
-
-const wonTournament = (participation: TournamentParticipation) => playedTournament(participation) && participation.finalRank === 1;
-
-const reachedPodium = (participation: TournamentParticipation) =>
-  playedTournament(participation) && participation.finalRank !== null && participation.finalRank <= 3;
-
-const earnedAward = (awardId: string) => (participation: TournamentParticipation) =>
-  participation.awards.some((award) => award.awardId === awardId);
-
-/** Award ids (TOURNAMENT_AWARDS) that achievements look for. */
-const ACHIEVEMENT_AWARD_IDS = { COMEBACK: 'comeback', ORACLE: 'oracle' } as const;
+const tournamentFormatsWon: Progress = (context) => {
+  const won = new Set(tournamentsOf(context).filter(wonTournament).map((participation) => participation.format));
+  return { current: won.size, target: TOURNAMENT_FORMAT_IDS.length };
+};
 
 // --- Catalogue --------------------------------------------------------------------------------
 
@@ -180,9 +143,55 @@ const GAME_ACHIEVEMENTS: readonly AchievementRule[] = [
     icon: 'bird',
     tier: 'gold',
     secret: true,
-    progress: anyGame((r) => isWin(r) && lowestRunningScore(r) <= ACHIEVEMENT_RULES.PHOENIX_LOW_POINT),
+    progress: anyGame((r) => isWin(r) && runningScoreRange(r).lowest <= ACHIEVEMENT_RULES.PHOENIX_LOW_POINT),
   },
   { id: 'perfect-balance', name: 'Perfect Balance', description: 'Finish a game with exactly 0 points.', icon: 'scale', tier: 'silver', secret: true, progress: anyGame((r) => r.rounds.length > 0 && r.score === 0) },
+  { id: 'bids-25', name: 'Apprentice Seer', description: 'Hit 25 bids exactly.', icon: 'glasses', tier: 'bronze', progress: counter(25, (s) => s.correctBids) },
+  { id: 'tricks-100', name: 'Trick Taker', description: 'Win 100 tricks.', icon: 'spade', tier: 'bronze', progress: counter(100, (s) => s.totalTricksWon) },
+  { id: 'rounds-1000', name: 'Thousand Rounds', description: 'Play 1,000 rounds.', icon: 'library', tier: 'silver', progress: counter(1000, (s) => s.totalRounds) },
+  { id: 'score-total-10000', name: "Dragon's Hoard", description: 'Earn 10,000 points across all your games.', icon: 'vault', tier: 'gold', progress: counter(10_000, (s) => Math.max(0, s.totalScore)) },
+  {
+    id: 'keen-eye',
+    name: 'Keen Eye',
+    description: 'Hit 80% of your bids in 10 games of 10+ rounds.',
+    icon: 'crosshair',
+    tier: 'silver',
+    progress: countGames(10, (r) => r.rounds.length >= ACHIEVEMENT_RULES.KEEN_EYE_MIN_ROUNDS && bidAccuracy(r) >= ACHIEVEMENT_RULES.KEEN_EYE_ACCURACY),
+  },
+  {
+    id: 'prophecy-fulfilled',
+    name: 'Prophecy Fulfilled',
+    description: 'Hit every bid in a game of 15+ rounds.',
+    icon: 'moon-star',
+    tier: 'legendary',
+    progress: anyGame((r) => isPerfectGame(r) && r.rounds.length >= ACHIEVEMENT_RULES.PROPHECY_ROUNDS),
+  },
+  { id: 'crowded-hall', name: 'Crowded Hall', description: 'Finish 25 games with 6 players.', icon: 'party-popper', tier: 'silver', progress: countGames(25, (r) => r.playerCount === 6) },
+  { id: 'unsinkable', name: 'Unsinkable', description: 'Finish 20 games in a row without coming last.', icon: 'anchor', tier: 'gold', progress: (context) => capped(20, longestGameRun(context.results, (r) => !isLast(r))) },
+  { id: 'days-30', name: 'Devoted Disciple', description: 'Play on 30 different days.', icon: 'calendar-check', tier: 'gold', progress: (context) => capped(30, distinctDaysPlayed(context.results)) },
+  { id: 'daily-ritual', name: 'Daily Ritual', description: 'Play on 5 days in a row.', icon: 'calendar-range', tier: 'silver', progress: (context) => capped(5, longestDailyRun(context.results)) },
+  { id: 'spellbound', name: 'Spellbound', description: 'Finish 5 games in one day.', icon: 'coffee', tier: 'silver', progress: (context) => capped(5, mostGamesInOneDay(context.results)) },
+  { id: 'eternal-apprentice', name: 'Eternal Apprentice', description: 'Finish second 25 times.', icon: 'ribbon', tier: 'bronze', secret: true, progress: countGames(25, (r) => r.placement === 2) },
+  { id: 'lesser-evil', name: 'The Lesser Evil', description: 'Win a game with a negative score.', icon: 'ghost', tier: 'gold', secret: true, progress: anyGame((r) => isWin(r) && r.score < 0) },
+  {
+    id: 'icarus',
+    name: 'Icarus',
+    description: 'Climb to 100+ points in a game, then finish below zero.',
+    icon: 'sunset',
+    tier: 'bronze',
+    secret: true,
+    progress: anyGame((r) => r.score < 0 && runningScoreRange(r).highest >= ACHIEVEMENT_RULES.ICARUS_HIGH_POINT),
+  },
+  { id: 'overreach', name: 'Overreach', description: 'Miss a bid by 4 or more tricks.', icon: 'tornado', tier: 'bronze', secret: true, progress: anyGame((r) => widestMiss(r) >= ACHIEVEMENT_RULES.OVERREACH_MISS) },
+  {
+    id: 'welcome-back',
+    name: 'Welcome Back',
+    description: 'Return to the table after 30 days or more away.',
+    icon: 'sprout',
+    tier: 'bronze',
+    secret: true,
+    progress: (context) => ({ current: longestBreakInDays(context.results) >= ACHIEVEMENT_RULES.RETURN_AFTER_DAYS ? 1 : 0, target: 1 }),
+  },
 ];
 
 const TOURNAMENT_ACHIEVEMENTS: readonly AchievementRule[] = [
@@ -211,6 +220,11 @@ const TOURNAMENT_ACHIEVEMENTS: readonly AchievementRule[] = [
     tier: 'legendary',
     progress: anyTournament((p) => wonTournament(p) && p.entrants >= 16),
   },
+  { id: 'tournament-knockout-title', name: 'Last Mage Standing', description: 'Win a knockout tournament.', icon: 'sword', tier: 'silver', progress: anyTournament((p) => wonTournament(p) && p.format === 'knockout') },
+  { id: 'tournament-both-formats', name: 'Versatile Victor', description: 'Win both a series and a knockout tournament.', icon: 'shield-half', tier: 'gold', progress: tournamentFormatsWon },
+  { id: 'tournament-iron-mage', name: 'Iron Constitution', description: 'Earn the Iron Mage award in a tournament.', icon: 'biceps-flexed', tier: 'bronze', progress: anyTournament(earnedAward(ACHIEVEMENT_AWARD_IDS.IRON_MAGE)) },
+  { id: 'tournament-table-wins-25', name: 'Table Breaker', description: 'Win 25 tournament tables.', icon: 'hammer', tier: 'silver', progress: sumOverTournaments(25, (p) => (playedTournament(p) ? p.tableWins : 0)) },
+  { id: 'tournament-host-5', name: 'Patron of the Circuit', description: 'Host 5 tournaments through to the end.', icon: 'handshake', tier: 'silver', progress: countTournaments(5, (p) => p.wasHost) },
 ];
 
 const inCategory = (category: AchievementCategory, rules: readonly AchievementRule[]): AchievementDefinition[] =>
