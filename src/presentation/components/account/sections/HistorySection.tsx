@@ -8,7 +8,7 @@ import { ACCOUNT_LIMITS } from '@shared/domain/account';
 import { accountApi, type AccountGameDto } from '@/lib/account/account-api';
 
 import { OwnPublicProfileLink } from '../public/PublicProfileLink';
-import { Button, Notice, Panel, SERIF, SectionHeading, errorMessage } from '../ui';
+import { Button, Notice, Panel, SectionHeading, errorMessage } from '../ui';
 import { GameRow, type PinControl } from './GameHistoryRow';
 import { pinOverrides } from './pin-overrides';
 import { useGamePins } from './useGamePins';
@@ -105,7 +105,7 @@ interface GameListProps {
 
 function GameList({ games, group, empty, rows, pinControl }: GameListProps) {
   if (games.length === 0) {
-    return <p className="text-sm text-amber-200/45 italic" style={SERIF}>{empty}</p>;
+    return <p className="text-sm text-amber-200/45 italic font-serif">{empty}</p>;
   }
   return (
     <ul className="divide-y divide-amber-800/20">
@@ -132,7 +132,7 @@ function HistoryFooter({ history }: { history: ReturnType<typeof useGameHistory>
   }
   if (history.games.length === 0) return null;
   return (
-    <p className="mt-4 text-center text-[11px] uppercase tracking-wider text-amber-600/45" style={SERIF}>
+    <p className="mt-4 text-center text-[11px] uppercase tracking-wider text-amber-600/45 font-serif">
       The beginning of your chronicle
     </p>
   );

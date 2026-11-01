@@ -5,7 +5,6 @@ import { SeasonalCorner, SeasonalDivider, useActiveTheme } from '@/presentation/
 import { ThemedErrorIllustration } from './ThemedErrorIllustration';
 import { getErrorPageCopy, type ErrorPageKind } from './themed-error-copy';
 
-const SERIF = { fontFamily: 'Georgia, serif' } as const;
 const CORNER_SIZE = 36;
 
 const PANEL_STYLE = {
@@ -49,12 +48,12 @@ export function ErrorPageShell({ kind, code, children, footnote }: ErrorPageShel
 
           <ThemedErrorIllustration />
 
-          {code ? <div className={`text-5xl ${tone.code} mt-2`} style={SERIF}>{code}</div> : null}
+          {code ? <div className={`font-serif text-5xl ${tone.code} mt-2`}>{code}</div> : null}
 
           <SeasonalDivider className="my-4" />
 
-          <h1 className={`text-2xl ${tone.title} mb-3`} style={SERIF}>{copy.headline}</h1>
-          <p className={`${tone.body} mb-8`} style={SERIF}>{copy.body}</p>
+          <h1 className={`font-serif text-2xl ${tone.title} mb-3`}>{copy.headline}</h1>
+          <p className={`font-serif ${tone.body} mb-8`}>{copy.body}</p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">{children}</div>
 

@@ -28,7 +28,7 @@ function DropdownHeader({ label }: { label: string }) {
   return (
     <div className="flex items-center justify-center gap-2 mb-3">
       <div className="h-px w-6 bg-gradient-to-r from-transparent to-amber-700/30" />
-      <span className="text-amber-600/60 text-[10px] uppercase tracking-widest" style={{ fontFamily: 'Georgia, serif' }}>
+      <span className="text-amber-600/60 text-[10px] uppercase tracking-widest font-serif">
         {label}
       </span>
       <div className="h-px w-6 bg-gradient-to-l from-transparent to-amber-700/30" />

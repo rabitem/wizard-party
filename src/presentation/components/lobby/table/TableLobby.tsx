@@ -6,7 +6,7 @@ import { LobbyRoster } from './LobbyRoster';
 import { InvitedStrip, LobbyBottomBar, LobbyTopBar, RulesChips } from './LobbyChrome';
 import { ConnectionBanner, LobbyToasts } from './LobbyStates';
 import { LobbyPanelBackdrop, LobbyPanelDecor, LobbyScene } from '../skins/LobbyDecor';
-import { LOBBY_GRID_CLASS, LOBBY_PAGE_CLASS, LOBBY_SLOT, SERIF } from './lobby-styles';
+import { LOBBY_GRID_CLASS, LOBBY_PAGE_CLASS, LOBBY_SLOT } from './lobby-styles';
 import type { LobbyActivityView, LobbyInviteView, LobbySeatView, RuleChip, StartReadiness } from './lobby-view.types';
 
 export interface TableLobbyProps {
@@ -66,7 +66,7 @@ export function TableLobby(props: TableLobbyProps) {
           <LobbyRoster className={LOBBY_SLOT.roster} seats={props.seats} maxPlayers={props.maxPlayers} onSeatClick={props.onSeatClick} onEmptySeatClick={props.onEmptySeatClick} />
           <div className={`flex flex-col gap-3 ${LOBBY_SLOT.info}`}>
             {/* The panel lists the rules first; phones keep invites above the rules. */}
-            <h2 className="hidden split:block text-amber-100 text-sm" style={SERIF}>Table rules</h2>
+            <h2 className="hidden split:block text-amber-100 text-sm font-serif">Table rules</h2>
             <div className="empty:hidden split:order-last split:pt-2">
               <InvitedStrip invites={props.invites} canInvite={props.canInvite} onRevoke={props.onRevokeInvite} onInvite={props.onOpenInvite} />
             </div>

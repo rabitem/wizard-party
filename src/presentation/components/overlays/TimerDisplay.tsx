@@ -38,7 +38,7 @@ export function TimerDisplay({ timeRemaining, progress, isUrgent }: TimerDisplay
       <motion.div
         className="text-center mb-3 sm:mb-4"
         style={{
-          fontFamily: 'Georgia, serif',
+          fontFamily: 'var(--font-serif)',
           fontSize: 'clamp(2rem, 8vw, 2.5rem)',
           fontWeight: 500,
           color: isUrgent ? '#e57373' : 'var(--accent)',

@@ -13,7 +13,7 @@ interface ExpansionSetPickerProps {
 /** One entry per anniversary edition; selecting one opens its explainer. */
 export function ExpansionSetPicker({ onSelect }: ExpansionSetPickerProps) {
   return (
-    <ul className="space-y-2" style={{ fontFamily: 'Georgia, serif' }}>
+    <ul className="space-y-2 font-serif">
       {getExplainableExpansionSets().map((set) => (
         <li key={set.id}>
           <button

@@ -37,10 +37,10 @@ interface SettingsPanelProps {
 function LeaveGameSection({ onClose, onLeaveGame }: { onClose: () => void; onLeaveGame: () => void }) {
   return (
     <div className="pt-4 border-t-2 border-amber-800/20">
-      <button onClick={() => { onClose(); onLeaveGame(); }} className="w-full flex items-center justify-center gap-2 py-3 rounded border-2 border-red-800/50 text-red-400/90 transition-all cursor-pointer hover:border-red-700/60 hover:text-red-300 text-sm sm:text-base" style={{ background: 'linear-gradient(180deg, color-mix(in srgb, var(--color-amber-800) 30%, transparent) 0%, color-mix(in srgb, var(--color-amber-900) 20%, transparent) 100%)', fontFamily: 'Georgia, serif' }}>
+      <button onClick={() => { onClose(); onLeaveGame(); }} className="w-full flex items-center justify-center gap-2 py-3 rounded border-2 border-red-800/50 text-red-400/90 transition-all cursor-pointer hover:border-red-700/60 hover:text-red-300 text-sm sm:text-base" style={{ background: 'linear-gradient(180deg, color-mix(in srgb, var(--color-amber-800) 30%, transparent) 0%, color-mix(in srgb, var(--color-amber-900) 20%, transparent) 100%)', fontFamily: 'var(--font-serif)' }}>
         <LogOut className="w-5 h-5" />Abandon Battle
       </button>
-      <p className="text-xs text-amber-600/40 text-center mt-2" style={{ fontFamily: 'Georgia, serif' }}>The battle will be paused for other warriors</p>
+      <p className="text-xs text-amber-600/40 text-center mt-2 font-serif">The battle will be paused for other warriors</p>
     </div>
   );
 }
@@ -53,7 +53,7 @@ function MorePreferencesLink() {
   const { status } = useAccount();
   const href = status === 'signed-in' ? CONSTANTS.ROUTES.ACCOUNT_PREFERENCES : CONSTANTS.ROUTES.GUEST_PREFERENCES;
   return (
-    <a href={href} target="_blank" rel="noopener" className="flex items-center gap-3 p-3 rounded border border-amber-800/30 text-amber-200/80 hover:border-amber-700/50 hover:text-amber-100 transition-colors" style={{ background: THEME_SURFACE.CARD_BG, fontFamily: 'Georgia, serif' }}>
+    <a href={href} target="_blank" rel="noopener" className="flex items-center gap-3 p-3 rounded border border-amber-800/30 text-amber-200/80 hover:border-amber-700/50 hover:text-amber-100 transition-colors" style={{ background: THEME_SURFACE.CARD_BG, fontFamily: 'var(--font-serif)' }}>
       <SlidersHorizontal className="w-4 h-4 text-amber-500/60 flex-shrink-0" />
       <span className="flex-1 min-w-0">
         <span className="block text-sm">More preferences</span>

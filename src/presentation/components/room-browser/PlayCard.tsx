@@ -10,7 +10,6 @@ import { PlayerAvatar } from '../account/PlayerAvatar';
 import { isValidRoomCode, parseRoomCodeInput } from './room-code';
 import { ROOM_CODE_MAX, ROOM_CODE_MIN } from './utils';
 
-const SERIF = { fontFamily: 'Georgia, serif' } as const;
 const NAME_MAX_LENGTH = 20;
 const FIELD_BG = 'color-mix(in srgb, color-mix(in srgb, var(--surface), black 60%) 60%, transparent)';
 
@@ -55,7 +54,7 @@ function NameMessage({ validation, showRequired }: { validation: PlayCardValidat
   const problem = nameProblem(validation) ?? (showRequired ? 'Enter a name first so the table knows who you are.' : null);
   if (!problem) return null;
   return (
-    <p id="play-name-message" role="alert" className="mt-2 text-xs text-red-300/90" style={SERIF}>
+    <p id="play-name-message" role="alert" className="mt-2 text-xs text-red-300/90 font-serif">
       {problem}
     </p>
   );
@@ -82,7 +81,7 @@ function NameField({
   const invalid = showRequired || Boolean(nameProblem(validation));
   return (
     <div>
-      <label htmlFor="play-name" className="block text-amber-500/70 text-xs mb-1.5" style={SERIF}>
+      <label htmlFor="play-name" className="block text-amber-500/70 text-xs mb-1.5 font-serif">
         What should we call you?
       </label>
       <div className="relative">
@@ -101,7 +100,7 @@ function NameField({
           className={`w-full pl-4 pr-20 py-3 rounded-xl border text-base text-amber-50 placeholder-amber-600/40 focus:ring-2 focus:ring-amber-500/10 transition-colors ${
             invalid ? 'border-red-500/50 focus:border-red-400/60' : 'border-amber-700/30 focus:border-amber-500/50'
           }`}
-          style={{ background: FIELD_BG, ...SERIF }}
+          style={{ background: FIELD_BG, fontFamily: 'var(--font-serif)' }}
         />
         <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2 pointer-events-none" suppressHydrationWarning>
           {identity.name.length > 0 ? (
@@ -121,7 +120,7 @@ function NameField({
 function AccountLine({ identity, validation }: { identity: PlayCardIdentity; validation: PlayCardValidation }) {
   return (
     <div>
-      <div className="flex items-center gap-2.5 text-sm" style={SERIF}>
+      <div className="flex items-center gap-2.5 text-sm font-serif">
         <PlayerAvatar size="sm" level={identity.accountLevel} />
         <span className="text-amber-500/70 shrink-0">Playing as</span>
         <span className="text-amber-100 truncate min-w-0">{identity.name}</span>
@@ -175,7 +174,7 @@ function JoinByCodeForm({
 
   return (
     <form onSubmit={submit} noValidate>
-      <label htmlFor="play-room-code" className="block text-amber-200/90 text-[15px] mb-2" style={SERIF}>
+      <label htmlFor="play-room-code" className="block text-amber-200/90 text-[15px] mb-2 font-serif">
         {invitedTo ? 'You were invited to this room' : 'Got a room code?'}
       </label>
       <div className="relative">
@@ -211,7 +210,7 @@ function JoinByCodeForm({
         </button>
       </div>
       {showHint ? (
-        <p id="play-room-code-hint" role="alert" className="mt-2 text-xs text-red-300/90" style={SERIF}>
+        <p id="play-room-code-hint" role="alert" className="mt-2 text-xs text-red-300/90 font-serif">
           Room codes have {ROOM_CODE_MIN} to {ROOM_CODE_MAX} letters or digits. Invite links work too.
         </p>
       ) : null}
@@ -273,7 +272,7 @@ export function PlayCard({ identity, validation, canPlay, isLoading, pendingRoom
 
           <div className="flex items-center gap-3" aria-hidden>
             <div className="flex-1 h-px bg-amber-700/25" />
-            <span className="text-amber-600/50 text-xs" style={SERIF}>or start a game</span>
+            <span className="text-amber-600/50 text-xs font-serif">or start a game</span>
             <div className="flex-1 h-px bg-amber-700/25" />
           </div>
 
@@ -293,8 +292,7 @@ export function PlayCard({ identity, validation, canPlay, isLoading, pendingRoom
               type="button"
               onClick={() => run('create', onCreateRoom)}
               disabled={isLoading}
-              className="w-full h-11 rounded-xl border border-amber-700/50 flex items-center justify-center gap-2 text-sm text-amber-100 cursor-pointer hover:bg-amber-900/25 hover:border-amber-500/60 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
-              style={SERIF}
+              className="w-full h-11 rounded-xl border border-amber-700/50 flex items-center justify-center gap-2 text-sm text-amber-100 cursor-pointer hover:bg-amber-900/25 hover:border-amber-500/60 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed font-serif"
             >
               {busy && action === 'create' ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden /> : <Settings2 className="w-4 h-4" aria-hidden />}
               Create room

@@ -24,7 +24,7 @@ export function PuzzledSnowman() {
         <path d="M60 108 L36 80 M44 90 L36 92 M38 82 L42 70" stroke="#78350f" strokeWidth="4" strokeLinecap="round" fill="none" />
         <path d="M108 112 L136 104 M128 106 L134 96" stroke="#78350f" strokeWidth="4" strokeLinecap="round" fill="none" />
       </g>
-      <text x="118" y="44" fontSize="28" fontFamily="Georgia, serif" fill="#bae6fd" className={styles.pulse}>?</text>
+      <text x="118" y="44" fontSize="28" fill="#bae6fd" className={`font-serif ${styles.pulse}`}>?</text>
     </g>
   );
 }

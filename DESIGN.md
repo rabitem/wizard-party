@@ -202,7 +202,7 @@ A warm, low-key palette: near-black grounds, candle and parchment lettering, and
 - **Room code** (platform mono, 1.125rem, +0.3em, uppercase): room codes in fields and the lobby's code pill. Data, not a heading.
 
 ### Named Rules
-**The One Voice Rule.** Every user-facing word is Georgia serif at regular weight. The global stylesheet still defaults to Inter, so a new component opts in to the serif explicitly (the shared `SERIF` style); forgetting it is a visible defect.
+**The One Voice Rule.** Every user-facing word is Georgia serif at regular weight. The global stylesheet still defaults to Inter, so a new component opts in to the serif explicitly with the `font-serif` class (or `var(--font-serif)` in an inline style), both from the one `--font-serif` token in `globals.css`; forgetting it is a visible defect.
 
 **The Sentence Case Rule.** Headings are sentence case at heading scale and stand alone: no small uppercase labels above them, no tracked caps as section markers.
 

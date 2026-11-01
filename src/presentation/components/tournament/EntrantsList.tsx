@@ -5,7 +5,7 @@ import { Crown, Users } from 'lucide-react';
 import type { TournamentDetailView } from '@shared/application/use-cases/tournament';
 
 import { INSET_BG } from '../account/account-surfaces';
-import { Panel, SERIF, SectionHeading } from '../account/ui';
+import { Panel, SectionHeading } from '../account/ui';
 import { PlayerMonogram, PlayerName } from './TournamentPlayer';
 import { fieldLabel } from './tournament-view-model';
 
@@ -22,7 +22,7 @@ export function EntrantsList({ detail }: { detail: TournamentDetailView }) {
           description={registration ? `${fieldLabel(tournament)} registered. Seeds are set by level when the tournament starts.` : `${entrants.length} players, by seed.`}
         />
         {entrants.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-amber-800/40 px-4 py-6 text-center text-sm text-amber-200/45" style={SERIF}>
+          <p className="rounded-xl border border-dashed border-amber-800/40 px-4 py-6 text-center text-sm text-amber-200/45 font-serif">
             Nobody has registered yet.
           </p>
         ) : (
@@ -35,7 +35,7 @@ export function EntrantsList({ detail }: { detail: TournamentDetailView }) {
                   className={`flex items-center gap-2.5 rounded-xl border px-3 py-2 ${isViewer ? 'border-amber-500/50' : 'border-amber-900/30'}`}
                   style={{ background: INSET_BG }}
                 >
-                  <span className="w-6 shrink-0 text-center text-[11px] tabular-nums text-amber-500/60" style={SERIF} aria-label={registration ? undefined : `Seed ${entrant.seed}`}>
+                  <span className="w-6 shrink-0 text-center text-[11px] tabular-nums text-amber-500/60 font-serif" aria-label={registration ? undefined : `Seed ${entrant.seed}`}>
                     {registration ? '' : entrant.seed}
                   </span>
                   <PlayerMonogram name={entrant.displayName} highlight={isViewer} />
@@ -45,7 +45,7 @@ export function EntrantsList({ detail }: { detail: TournamentDetailView }) {
                   </span>
                   {entrant.userId === tournament.host.userId ? <Crown className="h-4 w-4 shrink-0 text-amber-400/70" aria-label="Host" /> : null}
                   {entrant.status === 'eliminated' && tournament.status === 'running' ? (
-                    <span className="shrink-0 text-[10px] uppercase tracking-wider text-red-300/60" style={SERIF}>
+                    <span className="shrink-0 text-[10px] uppercase tracking-wider text-red-300/60 font-serif">
                       out
                     </span>
                   ) : null}

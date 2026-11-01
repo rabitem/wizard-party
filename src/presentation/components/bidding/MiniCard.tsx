@@ -22,7 +22,7 @@ export function MiniCard({ card }: { card: ICard }) {
       style={{ background: style.background }}
       title={card.type === CardType.NUMBER ? undefined : getCardCatalogEntry(card.type).name}
     >
-      <span className={`text-xs font-bold leading-none ${style.textClass}`} style={{ fontFamily: 'Georgia, serif' }}>
+      <span className={`font-serif text-xs font-bold leading-none ${style.textClass}`}>
         {getRankDisplay(card)}
       </span>
       {theme ? <i

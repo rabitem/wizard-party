@@ -11,7 +11,6 @@ import { socialApi } from '@/lib/social/social-api';
 import { useJoinRoom } from '@/presentation/hooks/social/useJoinRoom';
 import { useSocial, useSocialPanel } from '@/presentation/providers/SocialProvider';
 
-import { SERIF } from '../account/ui';
 import { PresenceAvatar } from './PresenceAvatar';
 import { presenceLabel, STATUS_COLORS } from './social-format';
 import type { useSocialActions } from './useSocialActions';
@@ -41,7 +40,7 @@ export function FriendRow({ friend, actions }: FriendRowProps) {
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
             {friend.pinnedAt !== null ? <Pin className="w-3 h-3 text-amber-400/70 shrink-0" aria-label="Pinned" /> : null}
-            <span className="truncate text-sm text-amber-100" style={SERIF}>{friend.displayName}</span>
+            <span className="truncate text-sm text-amber-100 font-serif">{friend.displayName}</span>
             <span className="text-[10px] text-amber-500/60 shrink-0">Lv {friend.level}</span>
           </div>
           <span className="block text-xs truncate" style={{ color: presence.status === 'offline' ? 'color-mix(in srgb, var(--color-amber-300) 35%, transparent)' : STATUS_COLORS[presence.status] }}>

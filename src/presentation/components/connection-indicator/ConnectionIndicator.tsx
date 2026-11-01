@@ -154,7 +154,7 @@ export function ConnectionIndicator({
         </div>
 
         {showLabel ? (
-          <span className="text-[10px] font-medium hidden sm:inline relative z-10" style={{ color, fontFamily: 'Georgia, serif' }}>
+          <span className="text-[10px] font-medium hidden sm:inline relative z-10" style={{ color, fontFamily: 'var(--font-serif)' }}>
             {label}
           </span>
         ) : null}

@@ -40,8 +40,7 @@ export function ReactionsFeed({ emotes, chatMessages }: ReactionsFeedProps) {
           >
             <i className={`ra ${emojiData?.icon || 'ra-help'} text-lg leading-none text-amber-400`} />
             <span
-              className="text-amber-400/90 text-xs truncate"
-              style={{ fontFamily: 'Georgia, serif' }}
+              className="text-amber-400/90 text-xs truncate font-serif"
             >
               {emote.playerName}
             </span>
@@ -57,14 +56,12 @@ export function ReactionsFeed({ emotes, chatMessages }: ReactionsFeedProps) {
           }}
         >
           <span
-            className="text-amber-400/90 text-xs"
-            style={{ fontFamily: 'Georgia, serif' }}
+            className="text-amber-400/90 text-xs font-serif"
           >
             {chat.playerName}
           </span>
           <span
-            className="text-amber-200/80 text-sm"
-            style={{ fontFamily: 'Georgia, serif' }}
+            className="text-amber-200/80 text-sm font-serif"
           >
             {chat.message}
           </span>

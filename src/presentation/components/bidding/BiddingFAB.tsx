@@ -79,8 +79,7 @@ export function BiddingFAB({ isMyTurn, bidsPlaced, totalPlayers, onExpand }: Bid
             <>
               <i className="ra ra-scroll-unfurled text-xl text-amber-200" />
               <span
-                className="text-[8px] font-bold text-amber-200 uppercase tracking-wider mt-0.5"
-                style={{ fontFamily: 'Georgia, serif' }}
+                className="text-[8px] font-bold text-amber-200 uppercase tracking-wider mt-0.5 font-serif"
               >
                 Bid!
               </span>
@@ -89,8 +88,7 @@ export function BiddingFAB({ isMyTurn, bidsPlaced, totalPlayers, onExpand }: Bid
             <>
               <i className="ra ra-hourglass text-lg text-amber-500/70" />
               <span
-                className="text-[8px] text-amber-500/70 uppercase tracking-wide mt-0.5"
-                style={{ fontFamily: 'Georgia, serif' }}
+                className="text-[8px] text-amber-500/70 uppercase tracking-wide mt-0.5 font-serif"
               >
                 {bidsPlaced}/{totalPlayers}
               </span>

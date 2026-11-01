@@ -23,7 +23,7 @@ export function ControlsChatView({ onBack, onSendChat }: ControlsChatViewProps) 
         className="flex items-center gap-1 text-amber-400 text-xs mb-3 cursor-pointer hover:text-amber-300 transition-colors"
       >
         <ChevronLeft className="w-4 h-4" />
-        <span style={{ fontFamily: 'Georgia, serif' }}>Back</span>
+        <span className="font-serif">Back</span>
       </button>
       <ScrollIndicator maxHeight="40vh">
         <div className="grid grid-cols-2 gap-2 py-3">
@@ -34,7 +34,7 @@ export function ControlsChatView({ onBack, onSendChat }: ControlsChatViewProps) 
               className="group relative px-3 py-3 text-sm text-amber-200/90 transition-all cursor-pointer active:scale-95 text-center"
               style={{
                 background: THEME_SURFACE.CONTROL_BG,
-                fontFamily: 'Georgia, serif',
+                fontFamily: 'var(--font-serif)',
               }}
             >
               {/* Border frame */}

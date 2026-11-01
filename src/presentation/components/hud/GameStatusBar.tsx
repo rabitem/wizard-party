@@ -18,7 +18,6 @@ interface GameStatusBarProps {
   children?: ReactNode;
 }
 
-const SERIF = { fontFamily: 'Georgia, serif' } as const;
 /** Compact bar matches the height of the top-bar buttons (44px on touch, 40px with a mouse) */
 const COMPACT_CONTENT_STYLE = { height: 'var(--hud-control-size, 40px)' } as const;
 
@@ -66,16 +65,16 @@ function TrumpSection({ trumpSuit, compact, classes }: { trumpSuit: Suit | null;
   const suit = trumpSuit ? cardTheme.suits[trumpSuit] : null;
   return (
     <div className={classes.section}>
-      {compact ? null : <span className={`text-amber-600/70 uppercase ${classes.label}`} style={SERIF}>Trump</span>}
+      {compact ? null : <span className={`font-serif text-amber-600/70 uppercase ${classes.label}`}>Trump</span>}
       {suit ? (
         <div className="flex items-center justify-center gap-1.5" style={{ color: getHudSuitColor(suit.accent) }} title={suit.name}>
           <i className={`ra ${suit.symbol} ${classes.suitIcon} leading-none`} />
-          {compact ? null : <span className="text-sm leading-none" style={SERIF}>{suit.name}</span>}
+          {compact ? null : <span className="text-sm leading-none font-serif">{suit.name}</span>}
         </div>
       ) : (
         <div className="flex items-center justify-center gap-1.5 text-amber-500/60" title="No trump">
           <i className={`ra ra-cancel ${classes.suitIcon} leading-none`} />
-          {compact ? null : <span className="text-sm leading-none" style={SERIF}>None</span>}
+          {compact ? null : <span className="text-sm leading-none font-serif">None</span>}
         </div>
       )}
     </div>
@@ -107,8 +106,8 @@ export function GameStatusBar({ currentRound, maxRounds, trumpSuit, isConnected 
 
             <div className={`relative ${classes.section} ${badgeClass}`}>
               <HudRoundBadgeDecor />
-              <span className={`text-amber-600/70 uppercase ${classes.label}`} style={SERIF}>Rnd</span>
-              <div className={`text-amber-200/90 ${classes.round}`} style={SERIF}>
+              <span className={`font-serif text-amber-600/70 uppercase ${classes.label}`}>Rnd</span>
+              <div className={`font-serif text-amber-200/90 ${classes.round}`}>
                 {currentRound}
                 <span className={`text-amber-600/40 ${classes.roundOf}`}>/</span>
                 <span className={`text-amber-400/60 ${compact ? 'text-xs' : 'text-sm'}`}>{maxRounds}</span>

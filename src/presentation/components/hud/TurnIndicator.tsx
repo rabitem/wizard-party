@@ -33,8 +33,7 @@ function TrickStatusBar({
 
   return (
     <span
-      className={`flex items-center gap-2 min-w-0 ${isLocalWinner ? 'text-emerald-300' : 'text-amber-300'}`}
-      style={{ fontFamily: 'Georgia, serif' }}
+      className={`font-serif flex items-center gap-2 min-w-0 ${isLocalWinner ? 'text-emerald-300' : 'text-amber-300'}`}
     >
       {isLocalWinner ? (
         <Trophy className="w-4 h-4 flex-shrink-0" />
@@ -116,14 +115,13 @@ export function TurnIndicator({
                 voided={trickResult.voided}
               /> : null}
             {!trickResult && isMyTurn ? <span
-                className="text-amber-300 flex items-center gap-2"
-                style={{ fontFamily: 'Georgia, serif' }}
+                className="text-amber-300 flex items-center gap-2 font-serif"
               >
                 <span className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" />
                 {isMobile ? 'Thy move!' : 'Thy turn — choose a card to play'}
               </span> : null}
             {!trickResult && !isMyTurn && (
-              <span className="inline-flex items-center gap-1 min-w-0 max-w-full" style={{ fontFamily: 'Georgia, serif' }}>
+              <span className="inline-flex items-center gap-1 min-w-0 max-w-full font-serif">
                 <span className="text-amber-200/60 flex-shrink-0">Awaiting</span>
                 <span className="inline-flex items-baseline min-w-0">
                   <span className={`text-amber-300 inline-block max-w-[220px] align-bottom ${NAME_SCORE_TEXT_CLASS}`}>{currentPlayerName}</span>

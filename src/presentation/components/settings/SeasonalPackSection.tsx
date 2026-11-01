@@ -20,8 +20,7 @@ export function SeasonalPackSection({ settings, onApply }: SeasonalPackSectionPr
         <div className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-700/30" />
         <Sparkles className="w-4 h-4 text-amber-500/60" />
         <span
-          className="text-xs text-amber-400/70 uppercase tracking-widest"
-          style={{ fontFamily: 'Georgia, serif' }}
+          className="text-xs text-amber-400/70 uppercase tracking-widest font-serif"
         >
           Theme Packs
         </span>
@@ -66,17 +65,17 @@ function SeasonalPackButton({ pack, isActive, onApply }: SeasonalPackButtonProps
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
           <i className={`ra ${pack.icon} text-lg`} style={{ color: pack.color }} />
-          <span className="text-sm text-amber-200/90" style={{ fontFamily: 'Georgia, serif' }}>
+          <span className="text-sm text-amber-200/90 font-serif">
             {pack.name}
           </span>
           {isActive ? <Check className="w-4 h-4 ml-auto text-amber-400" aria-label="Active" /> : null}
         </div>
-        <p className="text-xs text-amber-500/50" style={{ fontFamily: 'Georgia, serif' }}>
+        <p className="text-xs text-amber-500/50 font-serif">
           {pack.tagline}
         </p>
         <span
           className="text-[10px] uppercase tracking-wider"
-          style={{ fontFamily: 'Georgia, serif', color: isActive ? pack.color : 'color-mix(in srgb, var(--color-amber-600) 55%, transparent)' }}
+          style={{ fontFamily: 'var(--font-serif)', color: isActive ? pack.color : 'color-mix(in srgb, var(--color-amber-600) 55%, transparent)' }}
         >
           {isActive ? 'Active' : 'Apply look'}
         </span>

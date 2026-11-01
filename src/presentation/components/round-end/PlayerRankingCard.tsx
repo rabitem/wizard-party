@@ -68,8 +68,7 @@ export function PlayerRankingCard({ player, index, localPlayerId, isMobile = fal
         {/* Player name */}
         <div className="flex-1 min-w-0">
           <span
-            className={`text-xs font-medium truncate block ${isLocal ? 'text-amber-200' : 'text-amber-100/70'}`}
-            style={{ fontFamily: 'Georgia, serif' }}
+            className={`font-serif text-xs font-medium truncate block ${isLocal ? 'text-amber-200' : 'text-amber-100/70'}`}
           >
             {player.name}{isLocal ? ' (You)' : ''}
           </span>
@@ -89,8 +88,7 @@ export function PlayerRankingCard({ player, index, localPlayerId, isMobile = fal
 
         {/* Total score */}
         <div
-          className="text-sm font-bold text-amber-100 min-w-[28px] text-right"
-          style={{ fontFamily: 'Georgia, serif' }}
+          className="text-sm font-bold text-amber-100 min-w-[28px] text-right font-serif"
         >
           {player.score}
         </div>
@@ -112,8 +110,7 @@ export function PlayerRankingCard({ player, index, localPlayerId, isMobile = fal
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 min-w-0">
           <span
-            className={`font-medium ${NAME_SCORE_TEXT_FLEX_CLASS} ${index === 0 ? 'text-amber-300' : 'text-amber-100/80'}`}
-            style={{ fontFamily: 'Georgia, serif' }}
+            className={`font-serif font-medium ${NAME_SCORE_TEXT_FLEX_CLASS} ${index === 0 ? 'text-amber-300' : 'text-amber-100/80'}`}
           >
             {player.name}
           </span>
@@ -135,8 +132,7 @@ export function PlayerRankingCard({ player, index, localPlayerId, isMobile = fal
           style={getNameScoreValueStyle(1, [player.score], 40)}
         >
           <div
-            className={`font-bold ${index === 0 ? 'text-amber-400 text-lg' : 'text-amber-100'}`}
-            style={{ fontFamily: 'Georgia, serif' }}
+            className={`font-serif font-bold ${index === 0 ? 'text-amber-400 text-lg' : 'text-amber-100'}`}
           >
             {player.score}
           </div>

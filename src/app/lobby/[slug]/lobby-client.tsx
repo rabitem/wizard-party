@@ -121,7 +121,7 @@ function GameStartingScreen() {
     <div className="min-h-screen flex items-center justify-center">
       <div className="flex flex-col items-center gap-4 text-amber-400/70">
         <Loader2 className="w-8 h-8 animate-spin" />
-        <span style={{ fontFamily: 'Georgia, serif' }}>Starting game...</span>
+        <span className="font-serif">Starting game...</span>
       </div>
     </div>
   );
@@ -131,7 +131,7 @@ function GameStartingScreen() {
 function PageFooter() {
   return (
     <footer className="text-center py-6">
-      <div className="flex items-center justify-center gap-3 text-[10px] sm:text-xs" style={{ fontFamily: 'Georgia, serif' }}>
+      <div className="flex items-center justify-center gap-3 text-[10px] sm:text-xs font-serif">
         <Link href="/privacy" className="text-amber-600/30 hover:text-amber-400 transition-colors">Privacy</Link>
         <span className="text-amber-700/20">·</span>
         <Link href="/imprint" className="text-amber-600/30 hover:text-amber-400 transition-colors">Imprint</Link>
@@ -144,10 +144,10 @@ function PageFooter() {
 function JoinFormHeader() {
   return (
     <div className="text-center mb-6">
-      <h1 className="text-2xl sm:text-3xl text-amber-100/95 mb-2" style={{ fontFamily: 'Georgia, serif' }}>
+      <h1 className="text-2xl sm:text-3xl text-amber-100/95 mb-2 font-serif">
         Join Game
       </h1>
-      <p className="text-amber-500/50 text-sm" style={{ fontFamily: 'Georgia, serif' }}>
+      <p className="text-amber-500/50 text-sm font-serif">
         Enter your name to join the room
       </p>
     </div>
@@ -160,7 +160,7 @@ function RoomCodeSection({ slug }: { slug: string }) {
     <div className="mb-4">
       <div className="flex items-center gap-2 mb-2 px-1">
         <div className="w-1.5 h-1.5 rounded-full bg-amber-500/60" />
-        <span className="text-amber-400/70 text-xs uppercase tracking-wider" style={{ fontFamily: 'Georgia, serif' }}>Room Code</span>
+        <span className="text-amber-400/70 text-xs uppercase tracking-wider font-serif">Room Code</span>
       </div>
       <div className="font-mono text-xl text-amber-300 text-center py-3 rounded-xl border border-amber-700/30 tracking-widest" style={{ background: 'color-mix(in srgb, color-mix(in srgb, var(--surface), black 60%) 60%, transparent)' }}>{slug}</div>
     </div>
@@ -179,13 +179,13 @@ function NameInputSection({ playerName, isAccountName, setUserInput, handleKeyDo
     <div className="mb-4">
       <div className="flex items-center gap-2 mb-2 px-1">
         <div className="w-1.5 h-1.5 rounded-full bg-amber-500/60" />
-        <span className="text-amber-400/70 text-xs uppercase tracking-wider" style={{ fontFamily: 'Georgia, serif' }}>Your Name</span>
+        <span className="text-amber-400/70 text-xs uppercase tracking-wider font-serif">Your Name</span>
       </div>
       <div className="relative">
-        <input type="text" value={playerName} onChange={(e) => setUserInput(e.target.value)} onKeyDown={handleKeyDown} placeholder="Enter your wizard name..." maxLength={20} readOnly={isAccountName} aria-describedby={isAccountName ? 'account-name-hint' : undefined} disabled={effectiveIsJoining} className="w-full px-4 py-3 rounded-xl border border-amber-700/30 placeholder-amber-600/30 focus:border-amber-500/50 focus:ring-2 focus:ring-amber-500/10 transition-all text-sm disabled:opacity-50" style={{ background: 'color-mix(in srgb, color-mix(in srgb, var(--surface), black 60%) 60%, transparent)', fontFamily: 'Georgia, serif', color: 'color-mix(in srgb, var(--color-amber-100) 95%, transparent)' }} autoFocus />
+        <input type="text" value={playerName} onChange={(e) => setUserInput(e.target.value)} onKeyDown={handleKeyDown} placeholder="Enter your wizard name..." maxLength={20} readOnly={isAccountName} aria-describedby={isAccountName ? 'account-name-hint' : undefined} disabled={effectiveIsJoining} className="w-full px-4 py-3 rounded-xl border border-amber-700/30 placeholder-amber-600/30 focus:border-amber-500/50 focus:ring-2 focus:ring-amber-500/10 transition-all text-sm disabled:opacity-50" style={{ background: 'color-mix(in srgb, color-mix(in srgb, var(--surface), black 60%) 60%, transparent)', fontFamily: 'var(--font-serif)', color: 'color-mix(in srgb, var(--color-amber-100) 95%, transparent)' }} autoFocus />
         {isAccountName ? null : <CharCounter length={playerName.length} hasMounted={hasMounted} />}
       </div>
-      {isAccountName ? <p id="account-name-hint" className="mt-1.5 px-1 text-[11px] text-amber-200/45" style={{ fontFamily: 'Georgia, serif' }}>Your account name. <Link href="/account?tab=profile" className="text-amber-400/80 hover:text-amber-300 underline-offset-2 hover:underline">Change it</Link> on your profile.</p> : null}
+      {isAccountName ? <p id="account-name-hint" className="mt-1.5 px-1 text-[11px] text-amber-200/45 font-serif">Your account name. <Link href="/account?tab=profile" className="text-amber-400/80 hover:text-amber-300 underline-offset-2 hover:underline">Change it</Link> on your profile.</p> : null}
     </div>
   );
 }
@@ -193,14 +193,14 @@ function NameInputSection({ playerName, isAccountName, setUserInput, handleKeyDo
 /** Error message display */
 function ErrorMessage({ joinError }: { joinError: string | null }) {
   if (!joinError) return null;
-  return <div className="mb-4 px-4 py-3 rounded-xl text-sm border border-red-500/30" style={{ background: 'color-mix(in srgb, var(--color-amber-600) 10%, transparent)', color: '#fca5a5', fontFamily: 'Georgia, serif' }}>{joinError}</div>;
+  return <div className="mb-4 px-4 py-3 rounded-xl text-sm border border-red-500/30" style={{ background: 'color-mix(in srgb, var(--color-amber-600) 10%, transparent)', color: '#fca5a5', fontFamily: 'var(--font-serif)' }}>{joinError}</div>;
 }
 
 /** Join button */
 function JoinButton({ playerName, effectiveIsJoining, handleJoin }: { playerName: string; effectiveIsJoining: boolean; handleJoin: () => void }) {
   const isEnabled = playerName.trim() && !effectiveIsJoining;
   return (
-    <button onClick={handleJoin} disabled={!isEnabled} className="w-full py-3.5 rounded-xl font-medium transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2" style={{ background: isEnabled ? 'linear-gradient(180deg, var(--accent-cta-top) 0%, var(--accent-cta-mid) 50%, var(--accent-cta-bottom) 100%)' : 'linear-gradient(180deg, color-mix(in srgb, var(--color-amber-600) 30%, transparent) 0%, color-mix(in srgb, var(--color-amber-700) 20%, transparent) 100%)', boxShadow: isEnabled ? '0 4px 20px color-mix(in srgb, var(--accent-deep) 30%, transparent), inset 0 1px 0 rgba(255,255,255,0.2)' : 'none', fontFamily: 'Georgia, serif', color: isEnabled ? '#1a1510' : 'color-mix(in srgb, var(--color-amber-100) 50%, transparent)' }}>
+    <button onClick={handleJoin} disabled={!isEnabled} className="w-full py-3.5 rounded-xl font-medium transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2" style={{ background: isEnabled ? 'linear-gradient(180deg, var(--accent-cta-top) 0%, var(--accent-cta-mid) 50%, var(--accent-cta-bottom) 100%)' : 'linear-gradient(180deg, color-mix(in srgb, var(--color-amber-600) 30%, transparent) 0%, color-mix(in srgb, var(--color-amber-700) 20%, transparent) 100%)', boxShadow: isEnabled ? '0 4px 20px color-mix(in srgb, var(--accent-deep) 30%, transparent), inset 0 1px 0 rgba(255,255,255,0.2)' : 'none', fontFamily: 'var(--font-serif)', color: isEnabled ? '#1a1510' : 'color-mix(in srgb, var(--color-amber-100) 50%, transparent)' }}>
       {effectiveIsJoining ? <><Loader2 className="w-4 h-4 animate-spin" />Joining...</> : <>Join Game<ArrowRight className="w-4 h-4" /></>}
     </button>
   );
@@ -210,7 +210,7 @@ function JoinButton({ playerName, effectiveIsJoining, handleJoin }: { playerName
 function HomeLink() {
   return (
     <div className="mt-4 text-center">
-      <Link href="/" className="text-amber-500/40 text-sm hover:text-amber-400 transition-colors cursor-pointer" style={{ fontFamily: 'Georgia, serif' }}>or create a new game</Link>
+      <Link href="/" className="text-amber-500/40 text-sm hover:text-amber-400 transition-colors cursor-pointer font-serif">or create a new game</Link>
     </div>
   );
 }

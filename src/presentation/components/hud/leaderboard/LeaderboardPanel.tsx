@@ -148,10 +148,10 @@ function PanelHeader({ currentRound, scale, showCloseButton, onClose }: { curren
     <div className="flex items-center justify-between px-3 py-2 border-b border-amber-800/30 flex-shrink-0" style={{ gap: `${8 * scale}px` }}>
       <div className="flex items-center" style={{ gap: `${6 * scale}px` }}>
         <i className="ra ra-scroll-unfurled leading-none text-amber-500/70" style={{ fontSize: `${16 * scale}px` }} />
-        <span className="text-amber-400/70 uppercase tracking-wider" style={{ fontFamily: 'Georgia, serif', fontSize: `${13 * scale}px` }}>Standings</span>
+        <span className="text-amber-400/70 uppercase tracking-wider" style={{ fontFamily: 'var(--font-serif)', fontSize: `${13 * scale}px` }}>Standings</span>
       </div>
       <div className="flex items-center" style={{ gap: `${6 * scale}px` }}>
-        <span className="text-amber-600/50" style={{ fontFamily: 'Georgia, serif', fontSize: `${12 * scale}px` }}>Rnd {currentRound}</span>
+        <span className="text-amber-600/50" style={{ fontFamily: 'var(--font-serif)', fontSize: `${12 * scale}px` }}>Rnd {currentRound}</span>
         {showCloseButton && onClose ? <button onClick={onClose} className="p-0.5 hover:bg-amber-900/30 transition-colors cursor-pointer"><X style={{ width: `${16 * scale}px`, height: `${16 * scale}px` }} className="text-amber-500/60" /></button> : null}
       </div>
     </div>

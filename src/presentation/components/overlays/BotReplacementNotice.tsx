@@ -32,7 +32,7 @@ export function BotReplacementNotice({ isWaitingForMe, playerName }: BotReplacem
       <p
         className="text-xs sm:text-sm leading-relaxed min-w-0"
         style={{
-          fontFamily: 'Georgia, serif',
+          fontFamily: 'var(--font-serif)',
           color: 'color-mix(in srgb, var(--accent) 60%, transparent)',
         }}
       >

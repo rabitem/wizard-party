@@ -81,8 +81,8 @@ function DialogHeader({ onClose }: { onClose: () => void }) {
             <Plus className="w-5 h-5 text-amber-500/80" />
           </div>
           <div>
-            <h2 className="text-lg text-amber-100/95" style={{ fontFamily: 'Georgia, serif' }}>Create Room</h2>
-            <p className="text-amber-500/50 text-xs" style={{ fontFamily: 'Georgia, serif' }}>Set up your game</p>
+            <h2 className="text-lg text-amber-100/95 font-serif">Create Room</h2>
+            <p className="text-amber-500/50 text-xs font-serif">Set up your game</p>
           </div>
         </div>
         <button onClick={onClose} className="p-2 hover:bg-amber-900/30 rounded-lg transition-colors">
@@ -97,7 +97,7 @@ function DialogHeader({ onClose }: { onClose: () => void }) {
 function RoomNameInput({ roomName, onChange }: { roomName: string; onChange: (value: string) => void }) {
   return (
     <div>
-      <label className="block text-sm text-amber-300/80 mb-1.5 sm:mb-2" style={{ fontFamily: 'Georgia, serif' }}>Room Name</label>
+      <label className="block text-sm text-amber-300/80 mb-1.5 sm:mb-2 font-serif">Room Name</label>
       <input
         type="text"
         value={roomName}
@@ -105,9 +105,9 @@ function RoomNameInput({ roomName, onChange }: { roomName: string; onChange: (va
         maxLength={20}
         placeholder="The Wizard's Den"
         className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border border-amber-700/40 placeholder-amber-600/40 hover:border-amber-600/50 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-colors cursor-text text-sm sm:text-base"
-        style={{ background: 'linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--surface), black 55%) 90%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 65%) 90%, transparent) 100%)', fontFamily: 'Georgia, serif', color: 'color-mix(in srgb, var(--color-amber-100) 95%, transparent)' }}
+        style={{ background: 'linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--surface), black 55%) 90%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 65%) 90%, transparent) 100%)', fontFamily: 'var(--font-serif)', color: 'color-mix(in srgb, var(--color-amber-100) 95%, transparent)' }}
       />
-      <span className={`text-xs mt-1 block ${roomName.length >= 20 ? 'text-amber-500' : 'text-amber-600/50'}`} style={{ fontFamily: 'Georgia, serif' }}>{roomName.length}/20 characters</span>
+      <span className={`font-serif text-xs mt-1 block ${roomName.length >= 20 ? 'text-amber-500' : 'text-amber-600/50'}`}>{roomName.length}/20 characters</span>
     </div>
   );
 }
@@ -123,7 +123,7 @@ function RoomCodeInput({ roomId, isChecking, availabilityStatus, isValidLength, 
 }) {
   return (
     <div>
-      <label className="block text-sm text-amber-300/80 mb-1.5 sm:mb-2" style={{ fontFamily: 'Georgia, serif' }}>Room Code</label>
+      <label className="block text-sm text-amber-300/80 mb-1.5 sm:mb-2 font-serif">Room Code</label>
       <div className="flex gap-2">
         <div className="flex-1 relative">
           <input
@@ -148,8 +148,8 @@ function RoomCodeInput({ roomId, isChecking, availabilityStatus, isValidLength, 
         </button>
       </div>
       <div className="mt-1.5 flex items-center justify-between flex-wrap gap-1">
-        <span className={`text-xs ${roomId.length < ROOM_CODE_MIN ? 'text-amber-500' : 'text-amber-600/50'}`} style={{ fontFamily: 'Georgia, serif' }}>{roomId.length}/{ROOM_CODE_MIN}-{ROOM_CODE_MAX} characters</span>
-        {availabilityStatus === 'taken' ? <span className="text-xs text-red-400" style={{ fontFamily: 'Georgia, serif' }}>Code already in use</span> : null}
+        <span className={`font-serif text-xs ${roomId.length < ROOM_CODE_MIN ? 'text-amber-500' : 'text-amber-600/50'}`}>{roomId.length}/{ROOM_CODE_MIN}-{ROOM_CODE_MAX} characters</span>
+        {availabilityStatus === 'taken' ? <span className="text-xs text-red-400 font-serif">Code already in use</span> : null}
       </div>
     </div>
   );
@@ -159,12 +159,12 @@ function RoomCodeInput({ roomId, isChecking, availabilityStatus, isValidLength, 
 function VisibilitySelector({ isPublic, onChange }: { isPublic: boolean; onChange: (isPublic: boolean) => void }) {
   return (
     <div>
-      <label className="block text-sm text-amber-300/80 mb-1.5 sm:mb-2" style={{ fontFamily: 'Georgia, serif' }}>Visibility</label>
+      <label className="block text-sm text-amber-300/80 mb-1.5 sm:mb-2 font-serif">Visibility</label>
       <div className="flex gap-2">
-        <button onClick={() => onChange(true)} className={`flex-1 py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg border transition-all cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base ${getVisibilityButtonClass(isPublic)}`} style={{ background: getVisibilityButtonBackground(isPublic), fontFamily: 'Georgia, serif' }}>
+        <button onClick={() => onChange(true)} className={`flex-1 py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg border transition-all cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base ${getVisibilityButtonClass(isPublic)}`} style={{ background: getVisibilityButtonBackground(isPublic), fontFamily: 'var(--font-serif)' }}>
           <Globe className="w-4 h-4" /> Public
         </button>
-        <button onClick={() => onChange(false)} className={`flex-1 py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg border transition-all cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base ${getVisibilityButtonClass(!isPublic)}`} style={{ background: getVisibilityButtonBackground(!isPublic), fontFamily: 'Georgia, serif' }}>
+        <button onClick={() => onChange(false)} className={`flex-1 py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg border transition-all cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base ${getVisibilityButtonClass(!isPublic)}`} style={{ background: getVisibilityButtonBackground(!isPublic), fontFamily: 'var(--font-serif)' }}>
           <Lock className="w-4 h-4" /> Private
         </button>
       </div>
@@ -176,12 +176,12 @@ function VisibilitySelector({ isPublic, onChange }: { isPublic: boolean; onChang
 function MaxPlayersSelector({ maxPlayers, onChange }: { maxPlayers: number; onChange: (num: number) => void }) {
   return (
     <div>
-      <label className="block text-sm text-amber-300/80 mb-1.5 sm:mb-2 flex items-center gap-2" style={{ fontFamily: 'Georgia, serif' }}>
+      <label className="block text-sm text-amber-300/80 mb-1.5 sm:mb-2 flex items-center gap-2 font-serif">
         <Users className="w-4 h-4 text-amber-500/60" />Max Players
       </label>
       <div className="grid grid-cols-4 gap-2">
         {[3, 4, 5, 6].map((num) => (
-          <button key={num} onClick={() => onChange(num)} className={`py-2.5 sm:py-3 rounded-lg border transition-all cursor-pointer text-sm sm:text-base ${getMaxPlayersButtonClass(maxPlayers === num)}`} style={{ background: getMaxPlayersButtonBackground(maxPlayers === num), fontFamily: 'Georgia, serif' }}>
+          <button key={num} onClick={() => onChange(num)} className={`py-2.5 sm:py-3 rounded-lg border transition-all cursor-pointer text-sm sm:text-base ${getMaxPlayersButtonClass(maxPlayers === num)}`} style={{ background: getMaxPlayersButtonBackground(maxPlayers === num), fontFamily: 'var(--font-serif)' }}>
             {num}
           </button>
         ))}
@@ -195,7 +195,7 @@ function DialogActions({ onClose, onCreate, canCreate, isChecking }: { onClose: 
   return (
     <div className="px-4 sm:px-6 py-4 sm:pb-5 flex gap-3 sticky bottom-0 border-t border-amber-800/30" style={{ background: 'linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--surface), black 50%) 98%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 42%) 100%, transparent) 100%)' }}>
       <button onClick={onClose} className="relative flex-1 py-3 rounded border border-amber-700/40 hover:border-amber-600/50 hover:bg-amber-900/20 text-amber-300/80 text-sm transition-all cursor-pointer active:scale-[0.98]"
-        style={{ background: 'linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--surface), black 10%) 90%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 35%) 90%, transparent) 100%)', fontFamily: 'Georgia, serif' }}>
+        style={{ background: 'linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--surface), black 10%) 90%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 35%) 90%, transparent) 100%)', fontFamily: 'var(--font-serif)' }}>
         {/* Corner accents */}
         <div className="absolute top-0.5 left-0.5 w-1.5 h-1.5 border-t border-l border-amber-600/30 pointer-events-none" />
         <div className="absolute top-0.5 right-0.5 w-1.5 h-1.5 border-t border-r border-amber-600/30 pointer-events-none" />
@@ -205,7 +205,7 @@ function DialogActions({ onClose, onCreate, canCreate, isChecking }: { onClose: 
       </button>
       <button onClick={onCreate} disabled={!canCreate} className="relative flex-1 py-3 rounded font-medium transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer active:scale-[0.98] flex items-center justify-center gap-2"
         style={{ background: canCreate ? 'linear-gradient(180deg, var(--accent-cta-top) 0%, var(--accent-cta-mid) 50%, var(--accent-cta-bottom) 100%)' : 'linear-gradient(180deg, color-mix(in srgb, var(--color-amber-600) 30%, transparent) 0%, color-mix(in srgb, var(--color-amber-700) 20%, transparent) 100%)',
-          boxShadow: canCreate ? '0 4px 20px color-mix(in srgb, var(--accent-deep) 30%, transparent), inset 0 1px 0 rgba(255,255,255,0.2)' : 'none', fontFamily: 'Georgia, serif', color: canCreate ? '#1a1510' : 'color-mix(in srgb, var(--color-amber-100) 50%, transparent)' }}>
+          boxShadow: canCreate ? '0 4px 20px color-mix(in srgb, var(--accent-deep) 30%, transparent), inset 0 1px 0 rgba(255,255,255,0.2)' : 'none', fontFamily: 'var(--font-serif)', color: canCreate ? '#1a1510' : 'color-mix(in srgb, var(--color-amber-100) 50%, transparent)' }}>
         {/* Border frame */}
         <div className="absolute inset-0 border-2 border-amber-800/20 rounded pointer-events-none" />
         {/* Corner accents */}
@@ -225,7 +225,7 @@ function DialogActions({ onClose, onCreate, canCreate, isChecking }: { onClose: 
 function DialogFooter() {
   return (
     <div className="px-4 sm:px-6 py-3 border-t border-amber-700/20">
-      <div className="flex items-center justify-center gap-3 text-[10px] sm:text-xs" style={{ fontFamily: 'Georgia, serif' }}>
+      <div className="flex items-center justify-center gap-3 text-[10px] sm:text-xs font-serif">
         <Link href="/privacy" className="text-amber-600/30 hover:text-amber-400 transition-colors">Privacy</Link>
         <span className="text-amber-700/20">·</span>
         <Link href="/imprint" className="text-amber-600/30 hover:text-amber-400 transition-colors">Imprint</Link>

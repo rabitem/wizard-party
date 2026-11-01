@@ -5,7 +5,7 @@ import { KeyRound, Mail, ShieldCheck } from 'lucide-react';
 
 import { authClient, unwrap } from '@/lib/account/auth-client';
 
-import { Button, Field, Notice, SERIF, errorMessage } from '../ui';
+import { Button, Field, Notice, errorMessage } from '../ui';
 
 type Method = 'totp' | 'backup' | 'otp';
 
@@ -67,7 +67,7 @@ export function TwoFactorChallenge({ methods, onVerified, onCancel }: { methods:
           <ShieldCheck className="w-5 h-5" />
         </span>
         <div>
-          <h2 className="text-amber-100 text-lg" style={SERIF}>Two-step verification</h2>
+          <h2 className="text-amber-100 text-lg font-serif">Two-step verification</h2>
           <p className="text-xs text-amber-200/50">{COPY[method].hint}</p>
         </div>
       </div>

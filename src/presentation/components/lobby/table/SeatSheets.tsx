@@ -5,7 +5,7 @@ import { Bot, Crown, Link2, UserMinus, UserPlus, VolumeX, Volume2 } from 'lucide
 import { LobbySheet } from './LobbySheet';
 import { LobbyAddBotDecor } from '../skins/LobbyDecor';
 import { LobbyIcon } from '../skins/LobbySkinText';
-import { CHIP_CLASS, GOLD_BUTTON_STYLE, SERIF } from './lobby-styles';
+import { CHIP_CLASS, GOLD_BUTTON_STYLE } from './lobby-styles';
 import type { BotDifficulty, LobbySeatView } from './lobby-view.types';
 
 const BOT_LEVELS: { value: BotDifficulty; label: string }[] = [
@@ -25,8 +25,8 @@ function SheetAction({ icon, label, hint, tone = 'default', onClick }: { icon: R
     >
       <span className={`w-9 h-9 rounded-full border flex items-center justify-center ${tone === 'danger' ? 'border-red-500/40 text-red-300' : 'border-amber-700/50 text-amber-300'}`}>{icon}</span>
       <span className="flex-1 min-w-0">
-        <span className={`block text-[15px] ${tone === 'danger' ? 'text-red-200' : 'text-amber-100'}`} style={SERIF}>{label}</span>
-        {hint ? <span className="block text-xs text-amber-500/80" style={SERIF}>{hint}</span> : null}
+        <span className={`font-serif block text-[15px] ${tone === 'danger' ? 'text-red-200' : 'text-amber-100'}`}>{label}</span>
+        {hint ? <span className="block text-xs text-amber-500/80 font-serif">{hint}</span> : null}
       </span>
     </button>
   );
@@ -59,10 +59,10 @@ function KickAction({ name, onKick }: { name: string; onKick: () => void }) {
   }
   return (
     <div className="rounded-xl border border-red-500/40 bg-red-950/30 p-3">
-      <p className="text-sm text-red-100" style={SERIF}>Remove {name}? They can&apos;t rejoin this table.</p>
+      <p className="text-sm text-red-100 font-serif">Remove {name}? They can&apos;t rejoin this table.</p>
       <div className="mt-3 flex gap-2">
-        <button type="button" onClick={() => setConfirming(false)} className="flex-1 h-10 rounded-lg border border-amber-700/40 text-amber-200 text-sm cursor-pointer" style={SERIF}>Keep</button>
-        <button type="button" onClick={onKick} className="flex-1 h-10 rounded-lg bg-red-600/80 hover:bg-red-600 text-red-50 text-sm cursor-pointer" style={SERIF}>Remove</button>
+        <button type="button" onClick={() => setConfirming(false)} className="flex-1 h-10 rounded-lg border border-amber-700/40 text-amber-200 text-sm cursor-pointer font-serif">Keep</button>
+        <button type="button" onClick={onKick} className="flex-1 h-10 rounded-lg bg-red-600/80 hover:bg-red-600 text-red-50 text-sm cursor-pointer font-serif">Remove</button>
       </div>
     </div>
   );
@@ -112,7 +112,7 @@ export function OpenSeatSheet({ seatNumber, isHost, canInviteFriends, onClose, o
       {isHost ? (
         <div className="relative isolate mt-4 pt-4 border-t border-amber-800/30">
           <LobbyAddBotDecor />
-          <p className="relative text-sm text-amber-100 mb-2 flex items-center gap-2" style={SERIF}>
+          <p className="relative text-sm text-amber-100 mb-2 flex items-center gap-2 font-serif">
             <LobbyIcon id="addBot" className="w-4 h-4 text-amber-400"><Bot className="w-4 h-4 text-amber-400" /></LobbyIcon>Seat a bot
           </p>
           <div className="flex flex-wrap gap-1.5 mb-3" role="radiogroup" aria-label="Bot difficulty">
@@ -123,8 +123,7 @@ export function OpenSeatSheet({ seatNumber, isHost, canInviteFriends, onClose, o
                 role="radio"
                 aria-checked={difficulty === level.value}
                 onClick={() => setDifficulty(level.value)}
-                className={`${CHIP_CLASS} cursor-pointer ${difficulty === level.value ? 'border-amber-400/80 bg-amber-600/30 text-amber-50' : 'border-amber-800/60 text-amber-400/90 hover:border-amber-600/60'}`}
-                style={SERIF}
+                className={`font-serif ${CHIP_CLASS} cursor-pointer ${difficulty === level.value ? 'border-amber-400/80 bg-amber-600/30 text-amber-50' : 'border-amber-800/60 text-amber-400/90 hover:border-amber-600/60'}`}
               >
                 {level.label}
               </button>

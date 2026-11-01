@@ -11,7 +11,6 @@ import { TOURNAMENT_ROUTES } from '@/presentation/config/tournament.config';
 
 import { TITLE_GLOW } from '../account/account-surfaces';
 import { AccountShell } from '../account/AccountShell';
-import { SERIF } from '../account/ui';
 import { TournamentAccessGate } from './TournamentAccessGate';
 import { TournamentForm } from './TournamentForm';
 import { TournamentMessage, TournamentSkeleton, TournamentsUnavailable } from './TournamentStates';
@@ -28,7 +27,7 @@ type Loaded =
 
 function BackLink({ tournamentId }: { tournamentId: string }) {
   return (
-    <Link href={TOURNAMENT_ROUTES.detail(tournamentId)} className="text-sm text-amber-300/80 underline underline-offset-2 hover:text-amber-100" style={SERIF}>
+    <Link href={TOURNAMENT_ROUTES.detail(tournamentId)} className="text-sm text-amber-300/80 underline underline-offset-2 hover:text-amber-100 font-serif">
       Back to the tournament
     </Link>
   );
@@ -109,7 +108,7 @@ export function EditTournamentView({ tournamentId }: { tournamentId: string }) {
     <AccountShell width="wide">
       <div className="mx-auto max-w-2xl space-y-5">
         <header className="text-center">
-          <h1 className="text-2xl sm:text-3xl text-amber-50" style={{ ...SERIF, textShadow: TITLE_GLOW }}>
+          <h1 className="text-2xl sm:text-3xl text-amber-50" style={{ fontFamily: 'var(--font-serif)', textShadow: TITLE_GLOW }}>
             Edit tournament
           </h1>
           <p className="mt-1.5 text-sm text-amber-200/50">Changes apply to everyone registered.</p>

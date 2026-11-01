@@ -12,7 +12,6 @@ interface ErrorProps {
   reset: () => void;
 }
 
-const SERIF = { fontFamily: "Georgia, serif" } as const;
 
 export default function Error({ error, reset }: ErrorProps) {
   useEffect(() => {
@@ -24,7 +23,7 @@ export default function Error({ error, reset }: ErrorProps) {
     <ErrorPageShell
       kind="error"
       footnote={error.digest ? (
-        <p className="mt-6 text-red-400/50 text-xs" style={SERIF}>
+        <p className="mt-6 text-red-400/50 text-xs font-serif">
           Curse ID: {error.digest}
         </p>
       ) : null}
@@ -33,7 +32,7 @@ export default function Error({ error, reset }: ErrorProps) {
         onClick={reset}
         className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded border-2 border-amber-600/50 text-amber-100 transition-all hover:border-amber-500/60 cursor-pointer"
         style={{
-          ...SERIF,
+          fontFamily: 'var(--font-serif)',
           background: THEME_SURFACE.ACTIVE_BG,
           boxShadow: "0 0 20px var(--glow)",
         }}
@@ -44,7 +43,7 @@ export default function Error({ error, reset }: ErrorProps) {
       <Link
         href="/"
         className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded border text-amber-200/80 transition-all hover:text-amber-100"
-        style={{ ...SERIF, background: "var(--surface)", borderColor: "var(--surface-border)" }}
+        style={{ fontFamily: 'var(--font-serif)', background: "var(--surface)", borderColor: "var(--surface-border)" }}
       >
         <Home className="w-4 h-4" />
         Return to the Tavern

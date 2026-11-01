@@ -10,7 +10,7 @@ import { socialApi } from '@/lib/social/social-api';
 import { useAccount } from '@/presentation/providers/AccountProvider';
 import { useSocial } from '@/presentation/providers/SocialProvider';
 
-import { SERIF, errorMessage } from '../account/ui';
+import { errorMessage } from '../account/ui';
 import { PresenceAvatar } from './PresenceAvatar';
 import { MODE_COLORS, MODE_LABELS } from './social-format';
 
@@ -45,7 +45,7 @@ export function StatusPicker() {
       <button type="button" onClick={() => setOpen((value) => !value)} aria-expanded={open} className="flex items-center gap-3 w-full rounded-xl px-2 py-1.5 hover:bg-amber-900/20 transition-colors cursor-pointer text-left">
         <PresenceAvatar avatarId={undefined} level={overview?.progression.level ?? 1} status={MODE_STATUS[current]} size="lg" />
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-base text-amber-50" style={SERIF}>{user?.displayUsername ?? '…'}</span>
+          <span className="block truncate text-base text-amber-50 font-serif">{user?.displayUsername ?? '…'}</span>
           <span className="flex items-center gap-1.5 text-xs" style={{ color: MODE_COLORS[current] }}>
             {MODE_LABELS[current].label}
             <ChevronDown className={`w-3.5 h-3.5 transition-transform ${open ? 'rotate-180' : ''}`} />
@@ -61,7 +61,7 @@ export function StatusPicker() {
                 <button type="button" role="menuitemradio" aria-checked={option === current} onClick={() => void choose(option)} className={`w-full flex items-start gap-2.5 rounded-lg px-3 py-2 text-left cursor-pointer hover:bg-amber-900/30 ${option === current ? 'bg-amber-900/25' : ''}`}>
                   <span className="mt-1.5 w-2.5 h-2.5 rounded-full shrink-0" style={{ background: MODE_COLORS[option] }} />
                   <span>
-                    <span className="block text-sm text-amber-100" style={SERIF}>{MODE_LABELS[option].label}</span>
+                    <span className="block text-sm text-amber-100 font-serif">{MODE_LABELS[option].label}</span>
                     <span className="block text-[11px] text-amber-200/45">{MODE_LABELS[option].description}</span>
                   </span>
                 </button>

@@ -8,7 +8,6 @@ import type { ChampionView } from '@shared/application/use-cases/tournament';
 import { TOURNAMENT_ROUTES, TOURNAMENT_UI } from '@/presentation/config/tournament.config';
 
 import { INSET_RAISED_BG } from '../account/account-surfaces';
-import { SERIF } from '../account/ui';
 import { PlayerMonogram } from './TournamentPlayer';
 
 /** Horizontal strip of the latest champions; swipeable on phones. */
@@ -16,7 +15,7 @@ export function RecentChampionsStrip({ champions }: { champions: readonly Champi
   if (champions.length === 0) return null;
   return (
     <section aria-labelledby="recent-champions">
-      <h2 id="recent-champions" className="mb-2.5 flex items-center gap-2 text-xs uppercase tracking-widest text-amber-400/70" style={SERIF}>
+      <h2 id="recent-champions" className="mb-2.5 flex items-center gap-2 text-xs uppercase tracking-widest text-amber-400/70 font-serif">
         <Crown className="w-4 h-4 text-amber-500/70" aria-hidden />
         Recent champions
       </h2>
@@ -30,7 +29,7 @@ export function RecentChampionsStrip({ champions }: { champions: readonly Champi
             >
               <PlayerMonogram name={row.champion.displayName} highlight />
               <span className="min-w-0">
-                <span className="block truncate text-sm text-amber-100" style={SERIF}>
+                <span className="block truncate text-sm text-amber-100 font-serif">
                   {row.champion.displayName}
                 </span>
                 <span className="block truncate text-[11px] text-amber-200/45">

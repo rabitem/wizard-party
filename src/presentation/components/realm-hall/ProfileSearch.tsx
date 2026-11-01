@@ -8,7 +8,6 @@ import type { PublicPlayerCard } from '@shared/domain/social';
 import { PlayerAvatar } from '../account/PlayerAvatar';
 import { useProfileSearch, type ProfileSearchState } from './useProfileSearch';
 
-const SERIF = { fontFamily: 'Georgia, serif' } as const;
 
 /** The field sits on the dock on wide screens, alone over the page on phones (so nearly opaque there). */
 const FIELD_BG = {
@@ -62,12 +61,12 @@ function SearchResults({ listId, state, query, active, phone, onPick, onHover }:
             className={`flex items-center gap-3 px-3 py-2 cursor-pointer ${index === active ? 'bg-amber-900/40' : ''}`}
           >
             <PlayerAvatar avatarId={player.avatar ?? 'wizard'} level={player.level} size="sm" />
-            <span className="min-w-0 flex-1 truncate text-sm text-amber-50" style={SERIF}>{player.displayName}</span>
-            <span className="text-xs text-amber-300/80 tabular-nums" style={SERIF}>Level {player.level}</span>
+            <span className="min-w-0 flex-1 truncate text-sm text-amber-50 font-serif">{player.displayName}</span>
+            <span className="text-xs text-amber-300/80 tabular-nums font-serif">Level {player.level}</span>
           </li>
         ))}
       </ul>
-      {text ? <p role="status" className="px-3 py-3 text-sm text-amber-200/80" style={SERIF}>{text}</p> : null}
+      {text ? <p role="status" className="px-3 py-3 text-sm text-amber-200/80 font-serif">{text}</p> : null}
     </div>
   );
 }
@@ -153,8 +152,7 @@ export function ProfileSearch() {
           maxLength={32}
           autoComplete="off"
           spellCheck={false}
-          className="focus-shown-by-parent min-w-0 flex-1 bg-transparent text-sm text-amber-50 placeholder:text-amber-200/55"
-          style={SERIF}
+          className="focus-shown-by-parent min-w-0 flex-1 bg-transparent text-sm text-amber-50 placeholder:text-amber-200/55 font-serif"
         />
         {state.status === 'loading' ? <Loader2 className="w-4 h-4 shrink-0 animate-spin text-amber-300/70" aria-hidden /> : null}
         {query ? (

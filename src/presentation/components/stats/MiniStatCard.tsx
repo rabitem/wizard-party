@@ -15,7 +15,7 @@ export function MiniStatCard({ icon, value, label }: MiniStatCardProps) {
     >
       <div className="flex justify-center mb-1">{icon}</div>
       <div className="text-lg font-semibold text-amber-200">{value}</div>
-      <div className="text-[9px] text-amber-600/50 uppercase" style={{ fontFamily: 'Georgia, serif' }}>
+      <div className="text-[9px] text-amber-600/50 uppercase font-serif">
         {label}
       </div>
     </div>

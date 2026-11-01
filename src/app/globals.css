@@ -256,6 +256,12 @@
   --font-sans: 'Inter Variable', system-ui, sans-serif;
 }
 
+/* The site's one serif: every heading and label (font-serif, or var(--font-serif) in inline styles).
+   static, because inline styles read the variable without any utility using it. */
+@theme static {
+  --font-serif: Georgia, 'Times New Roman', serif;
+}
+
 * {
   box-sizing: border-box;
 }

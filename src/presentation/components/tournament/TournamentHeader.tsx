@@ -10,7 +10,7 @@ import type { TournamentDetailView } from '@shared/application/use-cases/tournam
 import { TOURNAMENT_ROUTES } from '@/presentation/config/tournament.config';
 
 import { HEADER_HIGHLIGHT, TITLE_GLOW } from '../account/account-surfaces';
-import { Button, Panel, SERIF } from '../account/ui';
+import { Button, Panel } from '../account/ui';
 import { ShareTournamentDialog } from './ShareTournamentDialog';
 import { PlayerName } from './TournamentPlayer';
 import { TournamentStatusBadge } from './TournamentStatusBadge';
@@ -31,12 +31,12 @@ export function TournamentHeader({ detail, now }: { detail: TournamentDetailView
         <div className="flex flex-wrap items-center gap-2">
           <TournamentStatusBadge status={tournament.status} />
           {tournament.visibility === 'private' ? (
-            <span className="inline-flex items-center gap-1 text-[11px] uppercase tracking-wider text-amber-400/70" style={SERIF}>
+            <span className="inline-flex items-center gap-1 text-[11px] uppercase tracking-wider text-amber-400/70 font-serif">
               <Lock className="w-3 h-3" aria-hidden /> Private
             </span>
           ) : null}
         </div>
-        <h1 className="mt-2 break-words text-2xl sm:text-3xl text-amber-50" style={{ ...SERIF, textShadow: TITLE_GLOW }}>
+        <h1 className="mt-2 break-words text-2xl sm:text-3xl text-amber-50" style={{ fontFamily: 'var(--font-serif)', textShadow: TITLE_GLOW }}>
           {tournament.name}
         </h1>
         <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm text-amber-200/60">
@@ -56,7 +56,7 @@ export function TournamentHeader({ detail, now }: { detail: TournamentDetailView
         </div>
         <ul className="mt-3 flex flex-wrap gap-1.5" aria-label="Setup">
           {settingsChips(tournament.format, tournament.settings).map((chip) => (
-            <li key={chip} className="rounded-full border border-amber-800/40 bg-black/20 px-2.5 py-1 text-[11px] text-amber-200/70" style={SERIF}>
+            <li key={chip} className="rounded-full border border-amber-800/40 bg-black/20 px-2.5 py-1 text-[11px] text-amber-200/70 font-serif">
               {chip}
             </li>
           ))}
@@ -72,8 +72,7 @@ export function TournamentHeader({ detail, now }: { detail: TournamentDetailView
             {viewer.canEdit ? (
               <Link
                 href={TOURNAMENT_ROUTES.edit(tournament.id)}
-                className="inline-flex items-center justify-center gap-2 rounded-xl px-4 min-h-11 text-sm border border-transparent text-amber-300/80 hover:text-amber-100 hover:bg-amber-900/20 transition-all"
-                style={SERIF}
+                className="inline-flex items-center justify-center gap-2 rounded-xl px-4 min-h-11 text-sm border border-transparent text-amber-300/80 hover:text-amber-100 hover:bg-amber-900/20 transition-all font-serif"
               >
                 <Pencil className="w-4 h-4" aria-hidden />
                 Edit

@@ -23,7 +23,7 @@ function HeaderFlourish({ isUrgent }: { isUrgent: boolean }) {
 function PauseTitle({ isWaitingForMe, isUrgent }: { isWaitingForMe: boolean; isUrgent: boolean }) {
   return (
     <>
-      <h2 className="text-lg sm:text-xl text-center mb-2 tracking-wide" style={{ fontFamily: 'Georgia, serif', color: isUrgent ? '#e8a89a' : '#e8d5b5', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+      <h2 className="text-lg sm:text-xl text-center mb-2 tracking-wide" style={{ fontFamily: 'var(--font-serif)', color: isUrgent ? '#e8a89a' : '#e8d5b5', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
         {isWaitingForMe ? 'Return to Battle' : 'A Champion Has Departed'}
       </h2>
       <div className="flex items-center justify-center gap-2 mb-4 sm:mb-5">
@@ -38,7 +38,7 @@ function PauseTitle({ isWaitingForMe, isUrgent }: { isWaitingForMe: boolean; isU
 /** Player message section */
 function PlayerMessage({ isWaitingForMe, playerName }: { isWaitingForMe: boolean; playerName: string }) {
   return (
-    <div className="text-center mb-5 sm:mb-6 text-sm sm:text-base" style={{ fontFamily: 'Georgia, serif' }}>
+    <div className="text-center mb-5 sm:mb-6 text-sm sm:text-base font-serif">
       {isWaitingForMe ? <p className="text-amber-300/90">The realm awaits your return...</p> : (
         <p className="text-amber-200/70 min-w-0"><span className={`text-amber-300 font-medium inline-block max-w-[180px] align-bottom ${NAME_SCORE_TEXT_CLASS}`} title={playerName}>{playerName}</span> has left the battlefield</p>
       )}

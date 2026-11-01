@@ -35,10 +35,10 @@ export function LearnToPlaySection({ onOpenTutorial }: LearnToPlaySectionProps) 
             <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500/80" />
           </div>
           <div className="text-left">
-            <div className="text-amber-100/90 text-sm sm:text-base" style={{ fontFamily: 'Georgia, serif' }}>
+            <div className="text-amber-100/90 text-sm sm:text-base font-serif">
               New to Wizard?
             </div>
-            <div className="text-amber-200/75 text-xs" style={{ fontFamily: 'Georgia, serif' }}>
+            <div className="text-amber-200/75 text-xs font-serif">
               Learn the rules in 2 minutes
             </div>
           </div>

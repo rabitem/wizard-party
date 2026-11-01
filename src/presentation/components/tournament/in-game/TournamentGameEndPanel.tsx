@@ -6,7 +6,6 @@ import type { TournamentMatchRoomState } from '@shared/domain/tournament';
 
 import { resultStatus, type ResultStatusTone } from './tournament-match-state';
 
-const SERIF = { fontFamily: 'Georgia, serif' } as const;
 
 function StatusIcon({ tone }: { tone: ResultStatusTone }) {
   switch (tone) {
@@ -30,7 +29,7 @@ export function TournamentResultNotice({ match }: { match: Pick<TournamentMatchR
     <div className="mx-4 mb-3 flex items-start gap-2.5 rounded-lg border border-amber-700/40 px-3 py-2" style={{ background: 'color-mix(in srgb, color-mix(in srgb, var(--surface), white 6%) 60%, transparent)' }}>
       <Trophy className="w-4 h-4 mt-0.5 shrink-0 text-amber-400" aria-hidden />
       <div className="min-w-0">
-        <p className="text-sm text-amber-100 truncate" style={SERIF} title={match.label}>
+        <p className="text-sm text-amber-100 truncate font-serif" title={match.label}>
           {match.label}
         </p>
         <p
@@ -58,7 +57,7 @@ export function BackToTournamentButton({ onClick }: { onClick: () => void }) {
         border: '1px solid var(--accent-bright)',
         color: '#1a1510',
         boxShadow: '0 4px 16px color-mix(in srgb, var(--accent) 30%, transparent)',
-        ...SERIF,
+        fontFamily: 'var(--font-serif)',
       }}
     >
       <ArrowLeft className="w-4 h-4" aria-hidden />

@@ -9,7 +9,6 @@ import { TOURNAMENT_ROUTES } from '@/presentation/config/tournament.config';
 import { useTournamentClock } from '@/presentation/hooks/useTournamentClock';
 
 import { INSET_BG } from '../account/account-surfaces';
-import { SERIF } from '../account/ui';
 import { TournamentStatusBadge } from './TournamentStatusBadge';
 import { fieldFill, fieldLabel, scheduleLine } from './tournament-view-model';
 
@@ -30,7 +29,7 @@ export function TournamentCard({ tournament, footnote }: { tournament: Tournamen
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <TournamentStatusBadge status={tournament.status} />
-            <span className="text-[11px] uppercase tracking-wider text-amber-500/60" style={SERIF}>
+            <span className="text-[11px] uppercase tracking-wider text-amber-500/60 font-serif">
               {tournament.formatName}
             </span>
             {tournament.visibility === 'private' ? (
@@ -39,18 +38,18 @@ export function TournamentCard({ tournament, footnote }: { tournament: Tournamen
               </span>
             ) : null}
           </div>
-          <h3 className="mt-1.5 truncate text-base sm:text-lg text-amber-50 group-hover:text-white" style={SERIF}>
+          <h3 className="mt-1.5 truncate text-base sm:text-lg text-amber-50 group-hover:text-white font-serif">
             {tournament.name}
           </h3>
           <p className="mt-0.5 text-xs text-amber-200/50">
             Hosted by {tournament.host.displayName} · {scheduleLine(tournament, now)}
           </p>
           {tournament.champion ? (
-            <p className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-amber-300" style={SERIF}>
+            <p className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-amber-300 font-serif">
               <Crown className="w-3.5 h-3.5" aria-hidden /> Champion: {tournament.champion.displayName}
             </p>
           ) : null}
-          {footnote ? <p className="mt-1 text-xs text-amber-400/80" style={SERIF}>{footnote}</p> : null}
+          {footnote ? <p className="mt-1 text-xs text-amber-400/80 font-serif">{footnote}</p> : null}
         </div>
         <ChevronRight className="mt-6 w-5 h-5 shrink-0 text-amber-600/40 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-400/70" aria-hidden />
       </div>

@@ -21,7 +21,7 @@ export default function NotFound() {
         className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded border-2 border-amber-600/50 text-amber-100 transition-all hover:border-amber-500/60"
         style={{
           background: THEME_SURFACE.ACTIVE_BG,
-          fontFamily: "Georgia, serif",
+          fontFamily: 'var(--font-serif)',
           boxShadow: "0 0 20px var(--glow)",
         }}
       >

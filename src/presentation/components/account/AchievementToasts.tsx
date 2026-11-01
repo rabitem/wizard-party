@@ -8,7 +8,6 @@ import { ACHIEVEMENTS, type LevelUp } from '@shared/domain/account';
 import { GLOW_SHADOW, TOAST_BG } from './account-surfaces';
 import { AchievementIcon, TIER_STYLES } from './AchievementIcon';
 import { PlayerAvatar } from './PlayerAvatar';
-import { SERIF } from './ui';
 
 const VISIBLE_MS = 5_000;
 
@@ -78,10 +77,10 @@ export function AccountToasts({ toasts, onDismiss }: { toasts: AccountToast[]; o
           >
             {content.icon}
             <span className="min-w-0">
-              <span className={`block text-[10px] uppercase tracking-[0.2em] ${content.eyebrowClass}`} style={SERIF}>
+              <span className={`font-serif block text-[10px] uppercase tracking-[0.2em] ${content.eyebrowClass}`}>
                 {content.eyebrow}
               </span>
-              <span className="block text-amber-50 text-sm truncate" style={SERIF}>{content.title}</span>
+              <span className="block text-amber-50 text-sm truncate font-serif">{content.title}</span>
               <span className="block text-amber-200/50 text-xs line-clamp-2">{content.detail}</span>
             </span>
           </motion.button>

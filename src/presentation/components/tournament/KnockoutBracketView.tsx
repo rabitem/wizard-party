@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { Crown, Network } from 'lucide-react';
 
-import { Panel, SERIF, SectionHeading } from '../account/ui';
+import { Panel, SectionHeading } from '../account/ui';
 import { MatchTableCard } from './MatchTableCard';
 import type { RoundsViewProps } from './SeriesRoundsView';
 import { advanceCaption, managesTables } from './tournament-detail-model';
@@ -25,7 +25,7 @@ export function KnockoutBracketView({ detail, now, resolving, onResolve }: Round
             {columns.map((column) => (
               <li key={column.round} className="w-[min(18rem,80vw)] shrink-0" aria-label={column.label}>
                 <div className="mb-2 flex items-baseline justify-between gap-2 px-1">
-                  <h3 className={`flex items-center gap-1.5 text-sm ${column.isFinal ? 'text-amber-300' : 'text-amber-100'}`} style={SERIF}>
+                  <h3 className={`font-serif flex items-center gap-1.5 text-sm ${column.isFinal ? 'text-amber-300' : 'text-amber-100'}`}>
                     {column.isFinal ? <Crown className="h-4 w-4" aria-hidden /> : null}
                     {column.label}
                   </h3>
@@ -36,7 +36,7 @@ export function KnockoutBracketView({ detail, now, resolving, onResolve }: Round
                   )}
                 </div>
                 {column.upcoming ? (
-                  <div className="rounded-2xl border border-dashed border-amber-800/40 px-3 py-6 text-center text-xs text-amber-200/35" style={SERIF}>
+                  <div className="rounded-2xl border border-dashed border-amber-800/40 px-3 py-6 text-center text-xs text-amber-200/35 font-serif">
                     To be decided
                   </div>
                 ) : (

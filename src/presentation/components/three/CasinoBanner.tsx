@@ -52,7 +52,7 @@ function BannerNeonText() {
       >
         <div
           style={{
-            fontFamily: 'Georgia, serif',
+            fontFamily: 'var(--font-serif)',
             fontSize: '28px',
             fontWeight: 'bold',
             color: '#66ffaa',

@@ -162,8 +162,8 @@ function TutorialHeader({ step, currentStep, totalSteps, onClose }: { step: Tuto
             <Icon className="w-5 h-5 text-amber-400/80" />
           </div>
           <div>
-            <h2 className="text-lg text-amber-200/90 tracking-wide" style={{ fontFamily: 'Georgia, serif' }}>{step.title}</h2>
-            <p className="text-xs text-amber-600/60" style={{ fontFamily: 'Georgia, serif' }}>Chapter {currentStep + 1} of {totalSteps}</p>
+            <h2 className="text-lg text-amber-200/90 tracking-wide font-serif">{step.title}</h2>
+            <p className="text-xs text-amber-600/60 font-serif">Chapter {currentStep + 1} of {totalSteps}</p>
           </div>
         </div>
         <button onClick={onClose} className="group relative p-2 transition-all cursor-pointer" style={{ background: THEME_SURFACE.CONTROL_BG }}>
@@ -187,7 +187,7 @@ function TutorialCardList({ cards }: { cards: readonly CardType[] }) {
       {cards.map((type) => {
         const entry = getCardCatalogEntry(type);
         return (
-          <li key={type} className="pl-4 border-l-2 border-amber-800/30" style={{ fontFamily: 'Georgia, serif' }}>
+          <li key={type} className="pl-4 border-l-2 border-amber-800/30 font-serif">
             <p className="text-sm text-amber-200/85">
               {entry.name} <span className="text-xs italic text-amber-600/60">({entry.germanName})</span>
               <span className="text-amber-500/70"> — {entry.rank}</span>
@@ -222,10 +222,10 @@ function ProgressIndicators({ steps, currentStep, onStepClick }: { steps: readon
 function NavigationButtons({ currentStep, totalSteps, onPrev, onNext }: { currentStep: number; totalSteps: number; onPrev: () => void; onNext: () => void }) {
   return (
     <div className="flex gap-3 px-6 pb-6">
-      <button onClick={onPrev} disabled={currentStep === 0} className="flex-1 py-3 rounded border-2 border-amber-800/40 text-amber-300/80 transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed hover:border-amber-700/50" style={{ background: THEME_SURFACE.CONTROL_BG, fontFamily: 'Georgia, serif' }}>
+      <button onClick={onPrev} disabled={currentStep === 0} className="flex-1 py-3 rounded border-2 border-amber-800/40 text-amber-300/80 transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed hover:border-amber-700/50" style={{ background: THEME_SURFACE.CONTROL_BG, fontFamily: 'var(--font-serif)' }}>
         <ChevronLeft className="w-4 h-4" />Previous
       </button>
-      <button onClick={onNext} className="flex-1 py-3 rounded border-2 border-amber-600/50 text-amber-100 transition-all cursor-pointer flex items-center justify-center gap-2 hover:border-amber-500/60" style={{ background: THEME_SURFACE.ACTIVE_BG, fontFamily: 'Georgia, serif', boxShadow: '0 0 20px color-mix(in srgb, var(--color-amber-700) 20%, transparent)' }}>
+      <button onClick={onNext} className="flex-1 py-3 rounded border-2 border-amber-600/50 text-amber-100 transition-all cursor-pointer flex items-center justify-center gap-2 hover:border-amber-500/60" style={{ background: THEME_SURFACE.ACTIVE_BG, fontFamily: 'var(--font-serif)', boxShadow: '0 0 20px color-mix(in srgb, var(--color-amber-700) 20%, transparent)' }}>
         {currentStep === totalSteps - 1 ? 'Begin Thy Quest!' : <>Continue<ChevronRight className="w-4 h-4" /></>}
       </button>
     </div>
@@ -252,7 +252,7 @@ export function TutorialModal({ isOpen, onClose }: TutorialModalProps) {
             <div className="flex-1 px-8 py-6 overflow-y-auto">
               <AnimatePresence mode="wait">
                 <motion.div key={currentStep} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }} className="space-y-4">
-                  {step.content.map((line) => <p key={line} className={`text-base ${line.startsWith('•') ? 'text-amber-300/70 pl-4' : 'text-amber-200/80'}`} style={{ fontFamily: 'Georgia, serif' }}>{line}</p>)}
+                  {step.content.map((line) => <p key={line} className={`font-serif text-base ${line.startsWith('•') ? 'text-amber-300/70 pl-4' : 'text-amber-200/80'}`}>{line}</p>)}
                   {step.cards ? <TutorialCardList cards={step.cards} /> : null}
                   {step.showExpansionGuide ? <div className="pt-2 border-t border-amber-800/30"><ExpansionGuide /></div> : null}
                 </motion.div>

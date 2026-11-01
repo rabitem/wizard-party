@@ -3,7 +3,6 @@
 import { useEffect, useId } from 'react';
 import { motion } from 'motion/react';
 import { X } from 'lucide-react';
-import { SERIF } from './lobby-styles';
 import { LobbyPanelBackdrop, LobbyPanelDecor } from '../skins/LobbyDecor';
 import type { LobbyPanelVariant } from '../skins/lobby-skin.types';
 
@@ -49,8 +48,8 @@ export function LobbySheet({ title, subtitle, onClose, children, footer, skinVar
         <div className="mx-auto mt-2.5 w-10 h-1 rounded-full bg-amber-700/50 sm:hidden" />
         <div className="flex items-start justify-between gap-3 px-5 pt-3 sm:pt-5 pb-2">
           <div className="min-w-0">
-            <h2 id={titleId} className="text-amber-100 text-lg" style={SERIF}>{title}</h2>
-            {subtitle ? <p className="text-amber-500/80 text-xs mt-0.5" style={SERIF}>{subtitle}</p> : null}
+            <h2 id={titleId} className="text-amber-100 text-lg font-serif">{title}</h2>
+            {subtitle ? <p className="text-amber-500/80 text-xs mt-0.5 font-serif">{subtitle}</p> : null}
           </div>
           <button type="button" onClick={onClose} aria-label="Close" className="w-9 h-9 shrink-0 rounded-full flex items-center justify-center text-amber-500/70 hover:text-amber-200 hover:bg-amber-900/30 cursor-pointer">
             <X className="w-5 h-5" />

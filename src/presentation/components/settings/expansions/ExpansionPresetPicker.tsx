@@ -36,7 +36,7 @@ function PresetCard({ preset, onSelect, disabled }: PresetCardProps) {
       style={{
         background: preset.isActive ? ACTIVE_BACKGROUND : IDLE_BACKGROUND,
         boxShadow: preset.isActive ? '0 0 12px color-mix(in srgb, var(--accent) 15%, transparent)' : 'none',
-        fontFamily: 'Georgia, serif',
+        fontFamily: 'var(--font-serif)',
       }}
     >
       <span className={`text-sm leading-tight ${preset.isActive ? 'text-amber-100' : 'text-amber-200/80'}`}>
@@ -60,7 +60,7 @@ export function ExpansionPresetPicker({
 }: ExpansionPresetPickerProps) {
   return (
     <div>
-      <div className="flex items-center justify-between mb-2" style={{ fontFamily: 'Georgia, serif' }}>
+      <div className="flex items-center justify-between mb-2 font-serif">
         <span className="text-xs text-amber-500/60 uppercase tracking-wider">
           {EXPANSIONS_UI_CONFIG.PRESETS_HEADING}
         </span>

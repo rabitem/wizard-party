@@ -22,7 +22,7 @@ export function ControlsEmotesView({ onBack, onSendEmote }: ControlsEmotesViewPr
         className="flex items-center gap-1 text-amber-400 text-xs mb-3 cursor-pointer hover:text-amber-300 transition-colors"
       >
         <ChevronLeft className="w-4 h-4" />
-        <span style={{ fontFamily: 'Georgia, serif' }}>Back</span>
+        <span className="font-serif">Back</span>
       </button>
       <ScrollIndicator maxHeight="40vh">
         <div className="grid grid-cols-5 gap-3 py-3">

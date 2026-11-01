@@ -21,10 +21,10 @@ export function SpecialCardNoticeFeed({ notices }: { notices: SpecialCardNotice[
             className={`flex items-center gap-2 px-3 py-1.5 border ${style.borderClass} shadow-lg animate-in fade-in slide-in-from-top-2`}
             style={{ background: THEME_SURFACE.MODAL_BG }}
           >
-            <span className={`text-[10px] font-bold ${style.textClass}`} style={{ fontFamily: 'Georgia, serif' }}>
+            <span className={`font-serif text-[10px] font-bold ${style.textClass}`}>
               {getCardCatalogEntry(notice.cardType).cornerLabel}
             </span>
-            <span className="text-amber-100/90 text-xs" style={{ fontFamily: 'Georgia, serif' }}>{notice.message}</span>
+            <span className="text-amber-100/90 text-xs font-serif">{notice.message}</span>
           </div>
         );
       })}

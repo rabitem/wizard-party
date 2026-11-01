@@ -17,8 +17,7 @@ export function TableThemeSection({ selectedTheme, onSelect }: TableThemeSection
         <div className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-700/30" />
         <Table className="w-4 h-4 text-amber-500/60" />
         <span
-          className="text-xs text-amber-400/70 uppercase tracking-widest"
-          style={{ fontFamily: 'Georgia, serif' }}
+          className="text-xs text-amber-400/70 uppercase tracking-widest font-serif"
         >
           Battle Table
         </span>
@@ -47,8 +46,7 @@ export function TableThemeSection({ selectedTheme, onSelect }: TableThemeSection
                 className={`w-full h-8 rounded bg-gradient-to-br ${theme.bg} mb-2 border border-amber-900/30`}
               />
               <span
-                className="text-sm text-amber-200/90"
-                style={{ fontFamily: 'Georgia, serif' }}
+                className="text-sm text-amber-200/90 font-serif"
               >
                 {theme.name}
               </span>

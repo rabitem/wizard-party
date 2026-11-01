@@ -34,7 +34,7 @@ function NoRoomCodeView() {
         style={{ background: 'var(--surface)', border: '2px solid var(--surface-border)' }}
       >
         <i className="ra ra-scroll-unfurled text-5xl mb-4" style={{ color: 'var(--accent)' }} />
-        <h1 className="text-2xl font-bold mb-2" style={{ color: 'var(--color-amber-100)', fontFamily: 'Georgia, serif' }}>
+        <h1 className="text-2xl font-bold mb-2" style={{ color: 'var(--color-amber-100)', fontFamily: 'var(--font-serif)' }}>
           No room code found
         </h1>
         <p className="mb-6" style={{ color: 'var(--text-muted)' }}>
@@ -96,12 +96,12 @@ export function JoinClient({ roomCode }: JoinClientProps) {
             <i className="ra ra-crystal-wand text-4xl" style={{ color: 'var(--accent-bright)' }} />
             <h1
               className="text-3xl font-bold"
-              style={{ color: 'var(--color-amber-100)', fontFamily: 'Georgia, serif' }}
+              style={{ color: 'var(--color-amber-100)', fontFamily: 'var(--font-serif)' }}
             >
               Join the Game!
             </h1>
           </div>
-          <p style={{ color: 'var(--text-muted)', fontFamily: 'Georgia, serif' }}>
+          <p style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-serif)' }}>
             You&apos;ve been invited to play Wizard Party
           </p>
         </div>
@@ -114,7 +114,7 @@ export function JoinClient({ roomCode }: JoinClientProps) {
             className="flex flex-col items-center justify-center gap-3 p-6 rounded-lg mb-6"
             style={{ background: 'color-mix(in srgb, var(--accent) 10%, transparent)', border: '2px solid var(--surface-border)' }}
           >
-            <span style={{ color: 'var(--text-muted)', fontFamily: 'Georgia, serif', fontSize: '0.875rem' }}>Room code</span>
+            <span style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-serif)', fontSize: '0.875rem' }}>Room code</span>
             <span
               className="font-mono font-bold text-4xl tracking-widest"
               style={{ color: 'var(--accent-bright)' }}
@@ -126,7 +126,7 @@ export function JoinClient({ roomCode }: JoinClientProps) {
           {/* Loading indicator */}
           <div className="flex items-center justify-center gap-3 mb-6" style={{ color: 'var(--text-muted)' }}>
             <i className="ra ra-cycle animate-spin text-xl" style={{ color: 'var(--accent)' }} />
-            <span style={{ fontFamily: 'Georgia, serif' }}>Joining room...</span>
+            <span className="font-serif">Joining room...</span>
           </div>
 
           {/* Manual join button */}

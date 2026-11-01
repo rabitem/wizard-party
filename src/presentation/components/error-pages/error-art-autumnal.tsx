@@ -9,7 +9,7 @@ import styles from './error-page.module.css';
 export function ConfusedPumpkin() {
   return (
     <g>
-      <text x="112" y="44" fontSize="34" fontFamily="Georgia, serif" fill="#fbbf24" className={styles.pulse}>?</text>
+      <text x="112" y="44" fontSize="34" fill="#fbbf24" className={`font-serif ${styles.pulse}`}>?</text>
       <g className={styles.bob}>
         <path d="M80 44 C78 34 82 26 90 22" stroke="#4d7c0f" strokeWidth="6" strokeLinecap="round" fill="none" />
         <ellipse cx="56" cy="92" rx="30" ry="40" fill="#c2410c" />
@@ -44,7 +44,7 @@ export function LostLeaf() {
           <ellipse cx="0" cy="12" rx="4" ry="5" fill="#1c1004" />
         </g>
       </g>
-      <text x="128" y="30" fontSize="26" fontFamily="Georgia, serif" fill="#fbbf24" className={styles.pulse}>?</text>
+      <text x="128" y="30" fontSize="26" fill="#fbbf24" className={`font-serif ${styles.pulse}`}>?</text>
     </g>
   );
 }

@@ -227,7 +227,7 @@ export function TurnTimerSoundboard({
             <Clock className={`h-4 w-4 flex-shrink-0 ${timer.expired ? 'text-red-300' : 'text-amber-400'}`} />
             <div className="min-w-0 flex-1">
               <div className="flex items-center justify-between gap-3">
-                <span className="min-w-0 text-sm text-amber-100" style={{ fontFamily: 'Georgia, serif' }}>
+                <span className="min-w-0 text-sm text-amber-100 font-serif">
                   {sizeClasses.showPhase ? (
                     <>
                       <span className="text-amber-500/70">{getPhaseLabel(timer.phase)}</span>

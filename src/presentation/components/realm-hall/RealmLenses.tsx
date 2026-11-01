@@ -6,7 +6,6 @@ import { RealmGlyphIcon } from '../room-browser/realm-mascots';
 import { HALL_LOADER } from '@/presentation/config/realm-hall.config';
 import { switchRealm } from './hall-loading-store';
 
-const SERIF = { fontFamily: 'Georgia, serif' } as const;
 
 /**
  * The realm lenses at the hall's door: one round lens per realm, painted with that realm's felt
@@ -47,7 +46,7 @@ export function RealmLenses({ className = '' }: { className?: string }) {
           );
         })}
       </div>
-      <p aria-live="polite" className="text-xs text-amber-100 text-center lg:text-left max-w-[16rem] [text-shadow:0_1px_3px_rgba(0,0,0,0.95),0_0_10px_rgba(0,0,0,0.8)]" style={SERIF}>
+      <p aria-live="polite" className="text-xs text-amber-100 text-center lg:text-left max-w-[16rem] [text-shadow:0_1px_3px_rgba(0,0,0,0.95),0_0_10px_rgba(0,0,0,0.8)] font-serif">
         {active ? <><span className="text-amber-100">{active.pack.name}</span> · {active.pack.tagline}</> : ' '}
       </p>
     </div>

@@ -87,7 +87,7 @@ export function StandingsTab({ sortedPlayers, localPlayerId, stats }: StandingsT
                       className={`font-semibold text-base ${NAME_SCORE_TEXT_FLEX_CLASS}`}
                       style={{
                         color: index === 0 ? 'var(--accent-bright)' : 'var(--color-amber-100)',
-                        fontFamily: 'Georgia, serif',
+                        fontFamily: 'var(--font-serif)',
                       }}
                     >
                       {player.name}
@@ -112,7 +112,7 @@ export function StandingsTab({ sortedPlayers, localPlayerId, stats }: StandingsT
                   style={{
                     ...getNameScoreValueStyle(1, [player.score], 44),
                     color: index === 0 ? 'var(--accent-bright)' : 'var(--accent)',
-                    fontFamily: 'Georgia, serif',
+                    fontFamily: 'var(--font-serif)',
                   }}
                 >
                   {player.score}

@@ -27,7 +27,7 @@ function DropdownHeader({ label }: { label: string }) {
   return (
     <div className="flex items-center justify-center gap-2 mb-3">
       <div className="h-px w-6 bg-gradient-to-r from-transparent to-amber-700/30" />
-      <span className="text-amber-600/60 text-[10px] uppercase tracking-widest" style={{ fontFamily: 'Georgia, serif' }}>
+      <span className="text-amber-600/60 text-[10px] uppercase tracking-widest font-serif">
         {label}
       </span>
       <div className="h-px w-6 bg-gradient-to-l from-transparent to-amber-700/30" />
@@ -43,7 +43,7 @@ function QuickMessageButton({ message, onClick }: { message: string; onClick: ()
       className="px-4 py-2.5 text-sm text-amber-200/90 rounded border border-amber-800/40 hover:border-amber-700/50 transition-all cursor-pointer active:scale-95 text-center"
       style={{
         background: THEME_SURFACE.CONTROL_BG,
-        fontFamily: 'Georgia, serif',
+        fontFamily: 'var(--font-serif)',
       }}
     >
       {message}

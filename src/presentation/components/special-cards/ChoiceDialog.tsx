@@ -13,7 +13,6 @@ import { SeasonalEmblem } from '@/presentation/components/seasonal';
 const PANEL_BACKGROUND = THEME_SURFACE.PANEL_BG;
 const PANEL_SHADOW = THEME_SURFACE.POPOVER_SHADOW;
 const SHEET_MAX_HEIGHT_PERCENT = 70;
-const SERIF = { fontFamily: 'Georgia, serif' } as const;
 
 /** Corner accents for dialog boxes */
 export function CornerAccents() {
@@ -36,7 +35,7 @@ function ReopenButton({ label, icon, onReopen }: { label: string; icon: string; 
       style={{ background: PANEL_BACKGROUND, boxShadow: 'inset 0 0 20px rgba(0,0,0,0.4), 0 0 20px color-mix(in srgb, var(--color-amber-800) 30%, transparent)' }}
     >
       <i className={`ra ${icon} text-amber-500`} />
-      <span className="text-amber-200 text-sm font-medium" style={SERIF}>{label}</span>
+      <span className="text-amber-200 text-sm font-medium font-serif">{label}</span>
     </button>
   );
 }
@@ -137,7 +136,7 @@ export function ChoiceDialog({ sheetId, title, icon, isMobile, children, dismiss
           <div className="flex items-center justify-center gap-3">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-700/40" />
             <i className={`ra ${icon} text-amber-500 text-xl`} />
-            <h2 className="text-lg text-amber-200 tracking-wide" style={SERIF}>{title}</h2>
+            <h2 className="text-lg text-amber-200 tracking-wide font-serif">{title}</h2>
             <i className={`ra ${icon} text-amber-500 text-xl`} />
             <div className="h-px flex-1 bg-gradient-to-l from-transparent to-amber-700/40" />
           </div>
@@ -160,7 +159,7 @@ export function WaitingNotice({ message, isMobile, blocking = false }: { message
       <CornerAccents />
       <div className="flex items-center gap-2 sm:gap-3">
         <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin text-amber-500" />
-        <span className="text-amber-200/90 text-xs sm:text-sm" style={SERIF}>{message}</span>
+        <span className="text-amber-200/90 text-xs sm:text-sm font-serif">{message}</span>
       </div>
     </div>
   );
@@ -181,7 +180,7 @@ export function WaitingNotice({ message, isMobile, blocking = false }: { message
 export function ChoiceDialogBody({ hint, children }: { hint: ReactNode; children: ReactNode }) {
   return (
     <div className="px-4 py-4 sm:px-6 sm:py-5">
-      <p className="text-center text-amber-400/70 mb-4 text-xs sm:text-sm" style={SERIF}>{hint}</p>
+      <p className="text-center text-amber-400/70 mb-4 text-xs sm:text-sm font-serif">{hint}</p>
       {children}
       <div className="flex items-center justify-center gap-2 mt-4">
         <div className="h-px w-8 bg-gradient-to-r from-transparent to-amber-700/30" />

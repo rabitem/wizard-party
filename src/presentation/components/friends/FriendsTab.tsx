@@ -10,13 +10,13 @@ import { socialApi } from '@/lib/social/social-api';
 import { useSocial, useSocialPanel } from '@/presentation/providers/SocialProvider';
 
 import { PlayerAvatar } from '../account/PlayerAvatar';
-import { Notice, SERIF } from '../account/ui';
+import { Notice } from '../account/ui';
 import { FriendRow } from './FriendRow';
 import { useSocialActions } from './useSocialActions';
 
 function SectionTitle({ children, count }: { children: React.ReactNode; count?: number }) {
   return (
-    <h3 className="flex items-center gap-2 px-1 mt-4 mb-2 text-[11px] uppercase tracking-wider text-amber-400/60" style={SERIF}>
+    <h3 className="flex items-center gap-2 px-1 mt-4 mb-2 text-[11px] uppercase tracking-wider text-amber-400/60 font-serif">
       {children}
       {count !== undefined ? <span className="text-amber-500/40">{count}</span> : null}
     </h3>
@@ -29,7 +29,7 @@ function RequestRow({ request, incoming, actions }: { request: FriendRequestView
     <li className="flex items-center gap-3 rounded-xl border border-amber-700/30 px-3 py-2.5 animate-in" style={{ background: 'color-mix(in srgb, var(--color-amber-900) 25%, transparent)' }}>
       <PlayerAvatar avatarId={player.avatar ?? 'wizard'} level={player.level} size="sm" />
       <span className="min-w-0 flex-1">
-        <span className="block truncate text-sm text-amber-100" style={SERIF}>{player.displayName}</span>
+        <span className="block truncate text-sm text-amber-100 font-serif">{player.displayName}</span>
         <span className="block text-xs text-amber-200/45">{incoming ? 'wants to be friends' : 'request sent'}</span>
       </span>
       {incoming ? (
@@ -63,7 +63,7 @@ function AddByHandle({ actions }: { actions: ReturnType<typeof useSocialActions>
   return (
     <form onSubmit={submit} className="flex gap-2">
       <input value={handle} onChange={(event) => setHandle(event.target.value)} placeholder="Add by name" aria-label="Name to add" maxLength={21} className="wp-field min-w-0 flex-1 h-10 px-3 rounded-xl border border-amber-700/25 text-sm focus:outline-none focus:border-amber-500/60" style={{ background: 'color-mix(in srgb, color-mix(in srgb, var(--surface), black 60%) 60%, transparent)', color: 'color-mix(in srgb, var(--color-amber-100) 95%, transparent)' }} />
-      <button type="submit" disabled={actions.busy === 'add-handle'} className="inline-flex items-center gap-1.5 h-10 px-3 rounded-xl border border-amber-600/50 text-sm text-amber-100 hover:bg-amber-900/30 cursor-pointer disabled:opacity-50" style={SERIF}>
+      <button type="submit" disabled={actions.busy === 'add-handle'} className="inline-flex items-center gap-1.5 h-10 px-3 rounded-xl border border-amber-600/50 text-sm text-amber-100 hover:bg-amber-900/30 cursor-pointer disabled:opacity-50 font-serif">
         <UserPlus className="w-4 h-4" /> Add
       </button>
     </form>
@@ -90,9 +90,9 @@ export function FriendsTab() {
       {friends.length === 0 ? (
         <div className="mt-8 text-center px-4">
           <Users className="w-10 h-10 mx-auto text-amber-700/50" />
-          <p className="mt-3 text-sm text-amber-200/60" style={SERIF}>No friends yet</p>
+          <p className="mt-3 text-sm text-amber-200/60 font-serif">No friends yet</p>
           <p className="mt-1 text-xs text-amber-200/40">Add players by their name, search for them, or add the people you just played with.</p>
-          <button type="button" onClick={() => open('find')} className="mt-4 h-10 px-4 rounded-xl border border-amber-600/50 text-sm text-amber-100 hover:bg-amber-900/30 cursor-pointer" style={SERIF}>Find players</button>
+          <button type="button" onClick={() => open('find')} className="mt-4 h-10 px-4 rounded-xl border border-amber-600/50 text-sm text-amber-100 hover:bg-amber-900/30 cursor-pointer font-serif">Find players</button>
         </div>
       ) : null}
 

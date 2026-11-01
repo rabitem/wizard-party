@@ -26,7 +26,7 @@ function WaitingLine({ name }: { name: string }) {
   return (
     <div className="flex items-center gap-2 py-1 min-w-0">
       <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse flex-shrink-0" />
-      <span className="text-amber-200/70 text-sm min-w-0" style={{ fontFamily: 'Georgia, serif' }}>
+      <span className="text-amber-200/70 text-sm min-w-0 font-serif">
         Waiting for <span className={`text-amber-300 font-medium inline-block align-bottom max-w-[220px] ${NAME_SCORE_TEXT_CLASS}`}>{name}</span>
       </span>
     </div>

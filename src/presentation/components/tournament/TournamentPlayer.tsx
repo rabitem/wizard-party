@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { Bot } from 'lucide-react';
 
 import { publicProfilePath } from '../account/public/public-profile-links';
-import { SERIF } from '../account/ui';
 
 const INITIAL_FALLBACK = '?';
 
@@ -14,8 +13,7 @@ export function PlayerMonogram({ name, isBot = false, highlight = false, size = 
   return (
     <span
       aria-hidden
-      className={`inline-flex shrink-0 items-center justify-center rounded-full border ${box} ${highlight ? 'border-amber-400/70 text-amber-100 bg-amber-800/50' : 'border-amber-800/50 text-amber-300/80 bg-black/30'}`}
-      style={SERIF}
+      className={`font-serif inline-flex shrink-0 items-center justify-center rounded-full border ${box} ${highlight ? 'border-amber-400/70 text-amber-100 bg-amber-800/50' : 'border-amber-800/50 text-amber-300/80 bg-black/30'}`}
     >
       {isBot ? <Bot className="w-3.5 h-3.5" /> : (name.trim()[0] ?? INITIAL_FALLBACK).toUpperCase()}
     </span>
@@ -31,9 +29,9 @@ export function PlayerName({ displayName, username, isViewer = false, className 
     </>
   );
   const classes = `inline-flex min-w-0 items-center gap-1.5 ${isViewer ? 'text-amber-100' : 'text-amber-50/90'} ${className}`;
-  if (!username) return <span className={classes} style={SERIF}>{label}</span>;
+  if (!username) return <span className={`${classes} font-serif`}>{label}</span>;
   return (
-    <Link href={publicProfilePath(username)} className={`${classes} hover:text-white hover:underline underline-offset-2`} style={SERIF}>
+    <Link href={publicProfilePath(username)} className={`font-serif ${classes} hover:text-white hover:underline underline-offset-2`}>
       {label}
     </Link>
   );

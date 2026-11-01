@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Check, Copy, Eye, Globe, Hourglass, Lock, LogOut, Settings2, Share2, Sparkles, Timer, UserPlus, X } from 'lucide-react';
 import { PlayerAvatar } from '../../account/PlayerAvatar';
-import { CHIP_CLASS, GOLD_BUTTON_STYLE, SERIF, SURFACE_STYLE } from './lobby-styles';
+import { CHIP_CLASS, GOLD_BUTTON_STYLE, SURFACE_STYLE } from './lobby-styles';
 import type { LobbyInviteView, RuleChip, StartReadiness } from './lobby-view.types';
 import { LobbyPanelBackdrop, LobbyPanelDecor, LobbyStartButtonDecor } from '../skins/LobbyDecor';
 import { LobbyCopy, LobbyIcon } from '../skins/LobbySkinText';
@@ -41,7 +41,7 @@ export function LobbyTopBar({ roomId, isPublic, onCopyLink, onShare, onOpenSetti
         <span className="font-mono text-base tracking-[0.25em] uppercase">{roomId}</span>
         {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-amber-500/80" />}
       </button>
-      <span className={`${CHIP_CLASS} border-amber-800/50 text-amber-400/90`} style={SERIF}>
+      <span className={`font-serif ${CHIP_CLASS} border-amber-800/50 text-amber-400/90`}>
         {isPublic ? <Globe className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
         {isPublic ? 'Public' : 'Private'}
       </span>
@@ -82,14 +82,13 @@ export function InvitedStrip({ invites, canInvite, onRevoke, onInvite }: Invited
   if (!canInvite && visible.length === 0) return null;
   return (
     <div className="flex flex-wrap items-center gap-1.5">
-      {visible.length ? <span className="text-xs text-amber-500/90 mr-0.5" style={SERIF}>Invited</span> : null}
+      {visible.length ? <span className="text-xs text-amber-500/90 mr-0.5 font-serif">Invited</span> : null}
       {visible.map((invite) => {
         const live = invite.state === 'pending' || invite.state === 'seen';
         return (
           <span
             key={invite.id}
-            className={`inline-flex items-center gap-1.5 pl-0.5 pr-1 py-0.5 rounded-full border text-xs ${live ? 'border-amber-700/50 text-amber-100' : 'border-amber-900/50 text-amber-600/80'}`}
-            style={SERIF}
+            className={`font-serif inline-flex items-center gap-1.5 pl-0.5 pr-1 py-0.5 rounded-full border text-xs ${live ? 'border-amber-700/50 text-amber-100' : 'border-amber-900/50 text-amber-600/80'}`}
           >
             <PlayerAvatar avatarId={invite.avatarId} size="xs" />
             {invite.name}
@@ -106,7 +105,7 @@ export function InvitedStrip({ invites, canInvite, onRevoke, onInvite }: Invited
         );
       })}
       {canInvite ? (
-        <button type="button" onClick={onInvite} className={`${CHIP_CLASS} border-dashed border-amber-600/60 text-amber-300 hover:text-amber-100 cursor-pointer`} style={SERIF}>
+        <button type="button" onClick={onInvite} className={`font-serif ${CHIP_CLASS} border-dashed border-amber-600/60 text-amber-300 hover:text-amber-100 cursor-pointer`}>
           <UserPlus className="w-3.5 h-3.5" />Invite friends
         </button>
       ) : null}
@@ -128,16 +127,15 @@ export function RulesChips({ chips, highlightId, onOpen }: RulesChipsProps) {
       {chips.map((chip) => (
         <span
           key={chip.id}
-          className={`${CHIP_CLASS} transition-colors duration-700 ${
+          className={`font-serif ${CHIP_CLASS} transition-colors duration-700 ${
             chip.id === highlightId ? 'border-amber-300 bg-amber-500/35 text-amber-50' : chip.isHouseRule ? 'border-amber-600/60 text-amber-200' : 'border-amber-800/50 text-amber-400/90'
           }`}
-          style={SERIF}
         >
           {chip.icon === 'timer' ? <Timer className="w-3 h-3" /> : null}
           {chip.label}
         </span>
       ))}
-      <span className="text-xs text-amber-500/80 underline underline-offset-2 decoration-amber-700/60 ml-1" style={SERIF}>All rules</span>
+      <span className="text-xs text-amber-500/80 underline underline-offset-2 decoration-amber-700/60 ml-1 font-serif">All rules</span>
     </button>
   );
 }
@@ -168,7 +166,7 @@ export function LobbyBottomBar({ isHost, isReady, readiness, playerCount, isStar
     >
       <LobbyPanelBackdrop variant="actions" />
       <LobbyPanelDecor variant="actions" />
-      <p className="text-center text-xs text-amber-500/90 mb-2.5" style={SERIF} aria-live="polite">{readiness.reason}</p>
+      <p className="text-center text-xs text-amber-500/90 mb-2.5 font-serif" aria-live="polite">{readiness.reason}</p>
       <div className="flex gap-2">
         <button type="button" onClick={onLeave} aria-label="Leave table" className="w-12 h-12 shrink-0 rounded-xl border border-amber-700/50 text-amber-300 flex items-center justify-center cursor-pointer hover:text-amber-100 hover:bg-amber-900/25">
           <LogOut className="w-5 h-5" />
@@ -180,10 +178,9 @@ export function LobbyBottomBar({ isHost, isReady, readiness, playerCount, isStar
             type="button"
             onClick={onToggleReady}
             aria-pressed={isReady}
-            className={`relative isolate flex-1 h-12 rounded-xl border-2 flex items-center justify-center gap-2 text-base cursor-pointer active:scale-[0.98] transition-colors ${
+            className={`font-serif relative isolate flex-1 h-12 rounded-xl border-2 flex items-center justify-center gap-2 text-base cursor-pointer active:scale-[0.98] transition-colors ${
               isReady ? 'border-emerald-500/70 bg-emerald-900/30 text-emerald-100' : 'border-amber-500/60 text-amber-100 hover:bg-amber-900/25'
             }`}
-            style={SERIF}
           >
             {/* Theme decor only while not ready, so the green ready state stays unmistakable. */}
             {isReady ? null : <LobbyStartButtonDecor mode="guest" />}

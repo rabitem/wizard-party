@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { Check, Copy, Eye, Search } from 'lucide-react';
 import { PlayerAvatar } from '../../account/PlayerAvatar';
 import { LobbySheet } from './LobbySheet';
-import { FIELD_BG, GOLD_BUTTON_STYLE, SERIF } from './lobby-styles';
+import { FIELD_BG, GOLD_BUTTON_STYLE } from './lobby-styles';
 import type { LobbyFriendView } from './lobby-view.types';
 
 interface InviteSheetProps {
@@ -36,21 +36,21 @@ function FriendRow({ friend, busy, onInvite, onRevoke }: { friend: LobbyFriendVi
         <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full ring-2 ring-black/60 ${DOT[friend.presence]}`} />
       </span>
       <div className="flex-1 min-w-0">
-        <p className="text-amber-100 text-[15px] truncate" style={SERIF}>{friend.name}</p>
+        <p className="text-amber-100 text-[15px] truncate font-serif">{friend.name}</p>
         {friend.isSeated ? (
-          <p className="text-xs text-emerald-300/90" style={SERIF}>At your table</p>
+          <p className="text-xs text-emerald-300/90 font-serif">At your table</p>
         ) : invited ? (
-          <p className="text-xs text-amber-500/90 flex items-center gap-1" style={SERIF}>
+          <p className="text-xs text-amber-500/90 flex items-center gap-1 font-serif">
             {friend.inviteState === 'seen' ? <><Eye className="w-3 h-3" />Invite seen</> : 'Invite sent'}
           </p>
         ) : friend.inviteState === 'declined' ? (
-          <p className="text-xs text-red-300/80" style={SERIF}>Declined</p>
+          <p className="text-xs text-red-300/80 font-serif">Declined</p>
         ) : null}
       </div>
       {friend.isSeated ? (
         <Check className="w-5 h-5 text-emerald-400" aria-label="Seated" />
       ) : invited && friend.inviteId ? (
-        <button type="button" onClick={onRevoke} disabled={busy} className="h-9 px-3 rounded-lg text-xs text-amber-300 border border-amber-700/60 hover:border-red-400/60 hover:text-red-200 cursor-pointer disabled:opacity-50" style={SERIF}>
+        <button type="button" onClick={onRevoke} disabled={busy} className="h-9 px-3 rounded-lg text-xs text-amber-300 border border-amber-700/60 hover:border-red-400/60 hover:text-red-200 cursor-pointer disabled:opacity-50 font-serif">
           Revoke
         </button>
       ) : (
@@ -88,13 +88,13 @@ export function InviteSheet({ friends, isLoading, shareUrl, busyUserId, message,
             placeholder="Search friends"
             aria-label="Search friends"
             className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-amber-700/40 text-amber-50 placeholder-amber-600/50 text-base"
-            style={{ background: FIELD_BG, ...SERIF }}
+            style={{ background: FIELD_BG, fontFamily: 'var(--font-serif)' }}
           />
         </div>
       ) : null}
 
       {message ? (
-        <p role={message.tone === 'error' ? 'alert' : 'status'} className={`mb-3 text-xs ${message.tone === 'error' ? 'text-red-300' : 'text-emerald-300'}`} style={SERIF}>{message.text}</p>
+        <p role={message.tone === 'error' ? 'alert' : 'status'} className={`font-serif mb-3 text-xs ${message.tone === 'error' ? 'text-red-300' : 'text-emerald-300'}`}>{message.text}</p>
       ) : null}
 
       {isLoading ? (
@@ -107,14 +107,14 @@ export function InviteSheet({ friends, isLoading, shareUrl, busyUserId, message,
           ))}
         </ul>
       ) : friends.length === 0 ? (
-        <p className="py-4 text-sm text-amber-400/90" style={SERIF}>Add friends from their profile or the social panel to invite them with one tap.</p>
+        <p className="py-4 text-sm text-amber-400/90 font-serif">Add friends from their profile or the social panel to invite them with one tap.</p>
       ) : (
         GROUPS.map((group) => {
           const members = filtered.filter(group.match);
           if (!members.length) return null;
           return (
             <section key={group.id} className="mb-3">
-              <h3 className="text-sm text-amber-100 mb-0.5" style={SERIF}>{group.label}</h3>
+              <h3 className="text-sm text-amber-100 mb-0.5 font-serif">{group.label}</h3>
               <ul>
                 {members.map((friend) => (
                   <FriendRow
@@ -133,10 +133,10 @@ export function InviteSheet({ friends, isLoading, shareUrl, busyUserId, message,
 
       <div className="mt-2 p-3 rounded-xl border border-dashed border-amber-700/50 flex items-center gap-3">
         <div className="flex-1 min-w-0">
-          <p className="text-amber-100 text-sm" style={SERIF}>Not friends yet?</p>
-          <p className="text-xs text-amber-500/90 truncate" style={SERIF}>{shareUrl.replace(/^https?:\/\//, '')}</p>
+          <p className="text-amber-100 text-sm font-serif">Not friends yet?</p>
+          <p className="text-xs text-amber-500/90 truncate font-serif">{shareUrl.replace(/^https?:\/\//, '')}</p>
         </div>
-        <button type="button" onClick={copy} className="h-9 px-3 rounded-lg border border-amber-600/60 text-amber-100 text-xs flex items-center gap-1.5 cursor-pointer" style={SERIF}>
+        <button type="button" onClick={copy} className="h-9 px-3 rounded-lg border border-amber-600/60 text-amber-100 text-xs flex items-center gap-1.5 cursor-pointer font-serif">
           {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
           {copied ? 'Copied' : 'Copy link'}
         </button>

@@ -14,7 +14,6 @@ import { ChampionPodium } from './ChampionPodium';
 import { CATEGORY_COPY } from './leaderboard-format';
 import { useLeaderboards } from './useLeaderboards';
 
-const SERIF = { fontFamily: 'Georgia, serif' } as const;
 
 const ICONS: Record<LeaderboardCategory, LucideIcon> = {
   level: Sparkles,
@@ -25,7 +24,7 @@ const ICONS: Record<LeaderboardCategory, LucideIcon> = {
 
 function SectionHeader() {
   return (
-    <h2 className="text-2xl sm:text-3xl text-amber-50 mb-4" style={SERIF}>Hall of Champions</h2>
+    <h2 className="text-2xl sm:text-3xl text-amber-50 mb-4 font-serif">Hall of Champions</h2>
   );
 }
 
@@ -42,8 +41,7 @@ function CategoryTabs({ value, onChange }: { value: LeaderboardCategory; onChang
             role="tab"
             aria-selected={active}
             onClick={() => onChange(category)}
-            className={`shrink-0 inline-flex items-center gap-1.5 h-10 px-3.5 rounded-full border text-xs sm:text-sm transition-all cursor-pointer ${active ? 'border-amber-500/60 bg-amber-900/40 text-amber-100' : 'border-amber-900/40 text-amber-300/60 hover:text-amber-100 hover:border-amber-700/50'}`}
-            style={SERIF}
+            className={`font-serif shrink-0 inline-flex items-center gap-1.5 h-10 px-3.5 rounded-full border text-xs sm:text-sm transition-all cursor-pointer ${active ? 'border-amber-500/60 bg-amber-900/40 text-amber-100' : 'border-amber-900/40 text-amber-300/60 hover:text-amber-100 hover:border-amber-700/50'}`}
           >
             <Icon className="w-3.5 h-3.5" />
             {CATEGORY_COPY[category].label}
@@ -63,8 +61,8 @@ function EmptyState() {
   return (
     <div className="py-10 text-center">
       <Crown className="mx-auto mb-3 w-10 h-10 text-amber-700/40" strokeWidth={1.25} />
-      <p className="text-amber-100/90" style={SERIF}>The hall awaits its first champion.</p>
-      <p className="mt-1 text-xs text-amber-200/75" style={SERIF}>Finish a game with an account to claim the throne.</p>
+      <p className="text-amber-100/90 font-serif">The hall awaits its first champion.</p>
+      <p className="mt-1 text-xs text-amber-200/75 font-serif">Finish a game with an account to claim the throne.</p>
     </div>
   );
 }
@@ -74,13 +72,12 @@ function UnavailableState({ onRetry }: { onRetry: () => void }) {
   return (
     <div className="py-10 text-center" role="status">
       <Crown className="mx-auto mb-3 w-10 h-10 text-amber-700/40" strokeWidth={1.25} />
-      <p className="text-amber-100/90" style={SERIF}>The hall&apos;s records are out of reach right now.</p>
-      <p className="mt-1 text-xs text-amber-200/75" style={SERIF}>The champions are still there. Try again in a moment.</p>
+      <p className="text-amber-100/90 font-serif">The hall&apos;s records are out of reach right now.</p>
+      <p className="mt-1 text-xs text-amber-200/75 font-serif">The champions are still there. Try again in a moment.</p>
       <button
         type="button"
         onClick={onRetry}
-        className="mt-4 h-10 px-4 rounded-full border border-amber-700/50 text-sm text-amber-200 cursor-pointer hover:border-amber-500/60 hover:text-amber-100"
-        style={SERIF}
+        className="mt-4 h-10 px-4 rounded-full border border-amber-700/50 text-sm text-amber-200 cursor-pointer hover:border-amber-500/60 hover:text-amber-100 font-serif"
       >
         Try again
       </button>
@@ -94,7 +91,7 @@ function JoinHint({ listed }: { listed: boolean }) {
   if (listed || status === 'loading') return null;
   const [text, href, cta] = joinHintCopy(status === 'guest');
   return (
-    <p className="mt-4 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-xs text-amber-200/75" style={SERIF}>
+    <p className="mt-4 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-xs text-amber-200/75 font-serif">
       {text}
       <Link href={href} className="text-amber-400 underline decoration-amber-700/60 underline-offset-2 hover:text-amber-300">{cta}</Link>
     </p>
@@ -136,7 +133,7 @@ export function HallOfChampions() {
           <span id="hall-of-champions" className="sr-only">Top players</span>
           {leaderboards.status === 'error' ? <UnavailableState onRetry={leaderboards.retry} /> : <CategoryTabs value={category} onChange={setCategory} />}
           {category === 'win-rate' && leaderboards.status !== 'error' ? (
-            <p className="mt-2 text-[11px] text-amber-600/55" style={SERIF}>Players with at least {LEADERBOARD_RULES.MIN_GAMES_FOR_WIN_RATE} games.</p>
+            <p className="mt-2 text-[11px] text-amber-600/55 font-serif">Players with at least {LEADERBOARD_RULES.MIN_GAMES_FOR_WIN_RATE} games.</p>
           ) : null}
 
           {leaderboards.status === 'loading' ? <LoadingState /> : null}

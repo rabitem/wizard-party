@@ -17,8 +17,7 @@ export function CardThemeSection({ selectedTheme, onSelect }: CardThemeSectionPr
         <div className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-700/30" />
         <Layers className="w-4 h-4 text-amber-500/60" />
         <span
-          className="text-xs text-amber-400/70 uppercase tracking-widest"
-          style={{ fontFamily: 'Georgia, serif' }}
+          className="text-xs text-amber-400/70 uppercase tracking-widest font-serif"
         >
           Card Heraldry
         </span>
@@ -28,8 +27,7 @@ export function CardThemeSection({ selectedTheme, onSelect }: CardThemeSectionPr
         <div className="h-px flex-1 bg-gradient-to-l from-transparent to-amber-700/30" />
       </div>
       <p
-        className="text-xs text-amber-500/60 mb-3 text-center italic"
-        style={{ fontFamily: 'Georgia, serif' }}
+        className="text-xs text-amber-500/60 mb-3 text-center italic font-serif"
       >
         Partially supported — full theme integration coming soon
       </p>
@@ -52,16 +50,14 @@ export function CardThemeSection({ selectedTheme, onSelect }: CardThemeSectionPr
             <div className="flex flex-col gap-2">
               <div className="flex justify-between items-center">
                 <span
-                  className="text-sm text-amber-200/90"
-                  style={{ fontFamily: 'Georgia, serif' }}
+                  className="text-sm text-amber-200/90 font-serif"
                 >
                   {theme.name}
                 </span>
                 {theme.isNew ? <NewBadge /> : null}
               </div>
               <p
-                className="text-xs text-amber-500/50 text-left"
-                style={{ fontFamily: 'Georgia, serif' }}
+                className="text-xs text-amber-500/50 text-left font-serif"
               >
                 {theme.description}
               </p>

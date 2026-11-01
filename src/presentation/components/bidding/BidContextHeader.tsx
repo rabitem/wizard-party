@@ -32,12 +32,12 @@ function TrumpSummary({ trumpSuit, compact }: { trumpSuit: Suit | null; compact:
       {suit ? (
         <span className="flex items-center gap-1" style={{ color: getHudSuitColor(suit.accent) }}>
           <i className={`ra ${suit.symbol} text-base leading-none`} />
-          {compact ? null : <span className="text-sm leading-none" style={{ fontFamily: 'Georgia, serif' }}>{suit.name}</span>}
+          {compact ? null : <span className="text-sm leading-none font-serif">{suit.name}</span>}
         </span>
       ) : (
         <span className="flex items-center gap-1 text-amber-500/70">
           <i className="ra ra-cancel text-base leading-none" />
-          {compact ? null : <span className="text-sm leading-none" style={{ fontFamily: 'Georgia, serif' }}>None</span>}
+          {compact ? null : <span className="text-sm leading-none font-serif">None</span>}
         </span>
       )}
     </div>

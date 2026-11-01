@@ -48,7 +48,7 @@ export function MedievalControlButton({
       ) : (
         <Icon className="w-6 h-6 text-amber-400 relative" />
       )}
-      <span className="text-xs text-amber-200 relative" style={{ fontFamily: 'Georgia, serif' }}>
+      <span className="text-xs text-amber-200 relative font-serif">
         {label}
       </span>
     </button>

@@ -46,14 +46,14 @@ export function RuleVolumeSliderRow({
         <Volume2 className={`w-5 h-5 mt-0.5 flex-shrink-0 ${isModified ? 'text-amber-400' : 'text-amber-500/60'}`} />
         <div className="min-w-0 flex-1">
           <div className="flex items-center justify-between gap-3">
-            <span className="block text-amber-200/80" style={{ fontFamily: 'Georgia, serif' }}>
+            <span className="block text-amber-200/80 font-serif">
               {title}
             </span>
-            <span className="text-sm text-amber-300/80 tabular-nums" style={{ fontFamily: 'Georgia, serif' }}>
+            <span className="text-sm text-amber-300/80 tabular-nums font-serif">
               {percentage}%
             </span>
           </div>
-          <p className="text-xs text-amber-600/60 mt-0.5" style={{ fontFamily: 'Georgia, serif' }}>
+          <p className="text-xs text-amber-600/60 mt-0.5 font-serif">
             {description}
           </p>
           <input

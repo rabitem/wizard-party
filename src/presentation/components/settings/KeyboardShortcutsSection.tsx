@@ -17,8 +17,7 @@ export function KeyboardShortcutsSection() {
         <div className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-700/30" />
         <Keyboard className="w-4 h-4 text-amber-500/60" />
         <span
-          className="text-xs text-amber-400/70 uppercase tracking-widest"
-          style={{ fontFamily: 'Georgia, serif' }}
+          className="text-xs text-amber-400/70 uppercase tracking-widest font-serif"
         >
           Bindings
         </span>
@@ -33,8 +32,7 @@ export function KeyboardShortcutsSection() {
         {SHORTCUTS.map((shortcut) => (
           <div key={shortcut.key} className="flex justify-between items-center">
             <span
-              className="text-amber-200/70"
-              style={{ fontFamily: 'Georgia, serif' }}
+              className="text-amber-200/70 font-serif"
             >
               {shortcut.action}
             </span>

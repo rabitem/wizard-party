@@ -7,7 +7,7 @@ import { Trophy } from 'lucide-react';
 import { TROPHY_TIER_STYLES, TournamentTrophyIcon } from '@/presentation/components/tournament/TournamentTrophyIcon';
 
 import { INSET_RAISED_BG } from '../account-surfaces';
-import { Panel, SERIF, SectionHeading } from '../ui';
+import { Panel, SectionHeading } from '../ui';
 import { CABINET_COUNTED_TIERS, trophyCaption, trophyTournamentLabel, type TrophyCabinetEntry, type TrophyTierCounts } from './trophy-cabinet';
 
 function TierCounters({ counts }: { counts: TrophyTierCounts }) {
@@ -37,7 +37,7 @@ function TrophyTile({ entry }: { entry: TrophyCabinetEntry }) {
       <TournamentTrophyIcon icon={entry.icon} tier={entry.tier} title={entry.name} />
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline gap-2 min-w-0">
-          <span className="text-sm text-amber-50 truncate" style={SERIF} title={entry.description}>
+          <span className="text-sm text-amber-50 truncate font-serif" title={entry.description}>
             {entry.name}
           </span>
           {entry.xp !== null && entry.xp > 0 ? <span className="shrink-0 text-[10px] text-amber-400/70 tabular-nums">+{entry.xp} XP</span> : null}
@@ -70,7 +70,7 @@ export function TrophyCabinet({ entries, counts, empty, description }: TrophyCab
       <div className="p-4 sm:p-5">
         <SectionHeading icon={<Trophy className="w-4 h-4" />} title="Trophy cabinet" description={description} action={<TierCounters counts={counts} />} />
         {entries.length === 0 ? (
-          <div className="text-sm text-amber-200/45" style={SERIF}>
+          <div className="text-sm text-amber-200/45 font-serif">
             {empty}
           </div>
         ) : (

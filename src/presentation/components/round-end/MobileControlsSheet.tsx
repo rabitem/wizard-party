@@ -52,7 +52,7 @@ export function MobileControlsSheet({
               <div className="absolute bottom-0.5 left-0.5 w-1.5 h-1.5 border-b border-l border-amber-600/40" />
               <div className="absolute bottom-0.5 right-0.5 w-1.5 h-1.5 border-b border-r border-amber-600/40" />
               <Sparkles className="w-6 h-6 text-amber-400 relative" />
-              <span className="text-xs text-amber-200 relative" style={{ fontFamily: 'Georgia, serif' }}>Sigils</span>
+              <span className="text-xs text-amber-200 relative font-serif">Sigils</span>
             </button>
             <button
               onClick={() => setControlsView('chat')}
@@ -68,7 +68,7 @@ export function MobileControlsSheet({
               <div className="absolute bottom-0.5 left-0.5 w-1.5 h-1.5 border-b border-l border-amber-600/40" />
               <div className="absolute bottom-0.5 right-0.5 w-1.5 h-1.5 border-b border-r border-amber-600/40" />
               <MessageCircle className="w-6 h-6 text-amber-400 relative" />
-              <span className="text-xs text-amber-200 relative" style={{ fontFamily: 'Georgia, serif' }}>Chat</span>
+              <span className="text-xs text-amber-200 relative font-serif">Chat</span>
             </button>
           </div>
         </div>
@@ -100,7 +100,7 @@ export function MobileControlsSheet({
                   className="group relative px-3 py-3 text-sm text-amber-200/90 transition-all cursor-pointer active:scale-95 text-center"
                   style={{
                     background: THEME_SURFACE.MODAL_BG,
-                    fontFamily: 'Georgia, serif',
+                    fontFamily: 'var(--font-serif)',
                   }}
                 >
                   <div className="absolute inset-0 border border-amber-800/40 group-hover:border-amber-700/50 transition-colors" />

@@ -5,7 +5,7 @@ import { MailCheck, RotateCw } from 'lucide-react';
 
 import { authClient, unwrap } from '@/lib/account/auth-client';
 
-import { Button, Notice, SERIF, errorMessage } from '../ui';
+import { Button, Notice, errorMessage } from '../ui';
 import { CodeField } from './CodeField';
 import { isCompleteCode } from './auth-flow.utils';
 import { useResendCooldown } from './useResendCooldown';
@@ -80,7 +80,7 @@ export function EmailCodeStep({ email, sentAt, notice, password, onVerified, onB
           <MailCheck className="w-5 h-5" />
         </span>
         <div className="min-w-0">
-          <h2 className="text-amber-100 text-lg" style={SERIF}>Confirm your email</h2>
+          <h2 className="text-amber-100 text-lg font-serif">Confirm your email</h2>
           <p className="text-xs sm:text-sm text-amber-200/55 leading-relaxed">
             Enter the 6-digit code we sent to <span className="text-amber-200/90 break-all">{email}</span>.
           </p>

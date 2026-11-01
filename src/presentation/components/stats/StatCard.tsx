@@ -36,12 +36,12 @@ export function StatCard({ icon, label, value, subtext, color }: StatCardProps) 
     >
       <div className="flex items-center gap-2 mb-2">
         <span className={c.icon}>{icon}</span>
-        <span className={`text-[10px] uppercase tracking-wider ${c.label}`} style={{ fontFamily: 'Georgia, serif' }}>
+        <span className={`font-serif text-[10px] uppercase tracking-wider ${c.label}`}>
           {label}
         </span>
       </div>
       <div className={`text-2xl font-bold ${c.value}`}>{value}</div>
-      <div className={`text-[10px] mt-1 ${c.subtext}`} style={{ fontFamily: 'Georgia, serif' }}>
+      <div className={`font-serif text-[10px] mt-1 ${c.subtext}`}>
         {subtext}
       </div>
     </div>

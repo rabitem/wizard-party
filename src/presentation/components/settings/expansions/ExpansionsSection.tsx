@@ -51,7 +51,7 @@ export function ExpansionsSection({
       >
         <div className="flex items-center gap-3 min-w-0">
           <Sparkles className="w-5 h-5 flex-shrink-0 text-amber-500/70" />
-          <span className="text-amber-200/90 truncate" style={{ fontFamily: 'Georgia, serif' }}>
+          <span className="text-amber-200/90 truncate font-serif">
             {EXPANSIONS_UI_CONFIG.SECTION_TITLE}
           </span>
           {viewModel.enabledCount > 0 && (
@@ -72,7 +72,7 @@ export function ExpansionsSection({
           className="p-3 space-y-4 border-t border-amber-800/20"
           style={{ background: THEME_SURFACE.CARD_BG_SOFT }}
         >
-          <p className="text-xs text-amber-600/60" style={{ fontFamily: 'Georgia, serif' }}>
+          <p className="text-xs text-amber-600/60 font-serif">
             {EXPANSIONS_UI_CONFIG.SECTION_SUBTITLE}
           </p>
 
@@ -85,7 +85,7 @@ export function ExpansionsSection({
           />
 
           <div>
-            <div className="flex items-baseline justify-between gap-2 mb-2" style={{ fontFamily: 'Georgia, serif' }}>
+            <div className="flex items-baseline justify-between gap-2 mb-2 font-serif">
               <span className="text-xs text-amber-500/60 uppercase tracking-wider">
                 {EXPANSIONS_UI_CONFIG.CARDS_HEADING}
               </span>
@@ -99,7 +99,7 @@ export function ExpansionsSection({
               ))}
             </div>
             {viewModel.enabledCount > 0 && (
-              <p className="mt-2 text-[11px] text-amber-600/60" style={{ fontFamily: 'Georgia, serif' }}>
+              <p className="mt-2 text-[11px] text-amber-600/60 font-serif">
                 {EXPANSIONS_UI_CONFIG.ROUND_COUNT_NOTE}
               </p>
             )}

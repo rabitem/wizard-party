@@ -73,8 +73,7 @@ export function LoadingOverlay() {
             {/* Text */}
             <div className="text-center">
               <div
-                className="text-amber-200/80 tracking-wider"
-                style={{ fontFamily: 'Georgia, serif' }}
+                className="text-amber-200/80 tracking-wider font-serif"
               >
                 Preparing the Table
               </div>

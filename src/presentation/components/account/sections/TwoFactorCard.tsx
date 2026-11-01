@@ -7,7 +7,7 @@ import { Copy, ShieldCheck, ShieldOff } from 'lucide-react';
 import { authClient, unwrap } from '@/lib/account/auth-client';
 import { useAccount } from '@/presentation/providers/AccountProvider';
 
-import { Button, Field, Notice, Panel, SERIF, SectionHeading, errorMessage } from '../ui';
+import { Button, Field, Notice, Panel, SectionHeading, errorMessage } from '../ui';
 
 type Step = { kind: 'idle' } | { kind: 'password'; purpose: 'enable' | 'disable' | 'codes' } | { kind: 'scan'; totpURI: string; backupCodes: string[] } | { kind: 'codes'; backupCodes: string[] };
 
@@ -140,13 +140,13 @@ export function TwoFactorCard({ hasPassword }: { hasPassword: boolean }) {
                 <QRCodeSVG value={step.totpURI} size={164} bgColor="#f6efe2" fgColor="#1a1510" level="M" />
               </div>
               <div className="text-sm text-amber-200/70 space-y-2 min-w-0">
-                <p style={SERIF}>1. Scan the code with your authenticator app.</p>
+                <p className="font-serif">1. Scan the code with your authenticator app.</p>
                 {secret ? (
                   <p className="text-xs text-amber-200/45 break-all">
                     Can’t scan? Enter this key: <span className="font-mono text-amber-200/80">{secret}</span>
                   </p>
                 ) : null}
-                <p style={SERIF}>2. Enter the 6-digit code it shows.</p>
+                <p className="font-serif">2. Enter the 6-digit code it shows.</p>
               </div>
             </div>
             <Field label="Code from your app" inputMode="numeric" autoComplete="one-time-code" maxLength={6} value={code} onChange={(event) => setCode(event.target.value)} required />

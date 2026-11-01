@@ -22,7 +22,7 @@ export function TournamentMatchBadge({ match }: { match: Pick<TournamentMatchRoo
   return (
     <div
       className="mt-1.5 inline-flex max-w-[60vw] sm:max-w-xs flex-col items-start px-2 py-1 border border-amber-700/40 text-[10px] sm:text-xs text-amber-200/85"
-      style={{ background: 'var(--surface)', fontFamily: 'Georgia, serif', backdropFilter: 'blur(8px)' }}
+      style={{ background: 'var(--surface)', fontFamily: 'var(--font-serif)', backdropFilter: 'blur(8px)' }}
       title={deadline ? `${match.label} · ${deadline}` : match.label}
     >
       <span className="inline-flex max-w-full items-center gap-1.5">

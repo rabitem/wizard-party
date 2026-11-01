@@ -9,7 +9,6 @@ import { inboxItemState, type InboxItem } from '@shared/domain/social';
 import { useSocialPanel } from '@/presentation/providers/SocialProvider';
 
 import { PlayerAvatar } from '../account/PlayerAvatar';
-import { SERIF } from '../account/ui';
 import { InboxActions, useInboxAction } from './InboxEntry';
 import { rendererFor } from './inbox-renderers';
 
@@ -43,7 +42,7 @@ function Toast({ item, onDismiss }: { item: InboxItem; onDismiss: (id: string) =
           <PlayerAvatar avatarId={item.actor?.avatar ?? 'wizard'} level={item.actor?.level ?? 1} size="md" />
         </motion.span>
         <button type="button" className="min-w-0 flex-1 text-left cursor-pointer" onClick={() => open('inbox')}>
-          <span className="block text-sm text-amber-50 leading-snug" style={SERIF}>{renderer.title(item)}</span>
+          <span className="block text-sm text-amber-50 leading-snug font-serif">{renderer.title(item)}</span>
           {renderer.detail ? <span className="block text-xs text-amber-200/45 mt-0.5">{renderer.detail(item)}</span> : null}
           {renderer.live ? <span className="block text-xs mt-0.5">{renderer.live(item, actionable)}</span> : null}
           {action.error ? <span className="block text-xs text-red-300 mt-1">{action.error}</span> : null}

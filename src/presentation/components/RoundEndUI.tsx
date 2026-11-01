@@ -65,7 +65,7 @@ function RoundHeader({ currentRound, maxRounds, isMobile }: { currentRound: numb
           <div className={`${isMobile ? 'text-[8px]' : 'text-[10px]'} text-amber-600/60 uppercase tracking-[0.3em] mb-0.5`}>
             Round {currentRound} of {maxRounds}
           </div>
-          <div className={`${isMobile ? 'text-base' : 'text-xl'} text-amber-200/90 tracking-wide`} style={{ fontFamily: 'Georgia, serif' }}>
+          <div className={`font-serif ${isMobile ? 'text-base' : 'text-xl'} text-amber-200/90 tracking-wide`}>
             Battle Complete
           </div>
         </div>

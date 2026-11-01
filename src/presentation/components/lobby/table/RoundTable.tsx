@@ -6,7 +6,7 @@ import { Bot, Check, Crown, Plus, WifiOff } from 'lucide-react';
 import { PlayerAvatar } from '../../account/PlayerAvatar';
 import type { TableThemePalette } from '@/presentation/config/table-theme.config';
 import type { LobbySeatView } from './lobby-view.types';
-import { SERIF, TABLE_BOX_CLASS } from './lobby-styles';
+import { TABLE_BOX_CLASS } from './lobby-styles';
 import { LobbyAvatarFrame } from '../skins/LobbyDecor';
 import { LobbyIcon } from '../skins/LobbySkinText';
 
@@ -67,7 +67,7 @@ function GuestBadge() {
     // A see-through sash across the avatar's top-right corner, clipped to the circle, so the
     // avatar icon in the middle stays uncovered.
     <span className="absolute inset-0 rounded-full overflow-hidden pointer-events-none" aria-hidden>
-      <span className="absolute left-[74%] top-[26%] w-full -translate-x-1/2 -translate-y-1/2 rotate-45 border-y border-amber-600/45 bg-black/55 text-center text-[8px] leading-3 uppercase tracking-[0.14em] text-amber-200/95" style={SERIF}>
+      <span className="absolute left-[74%] top-[26%] w-full -translate-x-1/2 -translate-y-1/2 rotate-45 border-y border-amber-600/45 bg-black/55 text-center text-[8px] leading-3 uppercase tracking-[0.14em] text-amber-200/95 font-serif">
         Guest
       </span>
     </span>
@@ -113,10 +113,10 @@ function TakenSeat({ seat, index, onClick }: { seat: LobbySeatView; index: numbe
         <SeatBadge seat={seat} />
         {seat.isGuest ? <GuestBadge /> : null}
       </span>
-      <span className="mt-1 max-w-full truncate text-xs text-amber-50 drop-shadow" style={SERIF}>
+      <span className="mt-1 max-w-full truncate text-xs text-amber-50 drop-shadow font-serif">
         {seat.name}{seat.isLocal ? <span className="text-amber-400/80"> (you)</span> : null}
       </span>
-      <span className={`text-[10px] leading-tight ${!seat.isConnected ? 'text-amber-400' : seat.isHost ? 'text-amber-300' : seat.isReady ? 'text-emerald-300/90' : 'text-amber-500/80'}`} style={SERIF}>
+      <span className={`font-serif text-[10px] leading-tight ${!seat.isConnected ? 'text-amber-400' : seat.isHost ? 'text-amber-300' : seat.isReady ? 'text-emerald-300/90' : 'text-amber-500/80'}`}>
         {status}
       </span>
     </motion.button>
@@ -129,7 +129,7 @@ function OpenSeat({ seatNumber, onClick }: { seatNumber: number; onClick: () => 
       <span className="w-14 h-14 rounded-full border-2 border-dashed border-amber-600/60 flex items-center justify-center text-amber-400/90 transition-colors group-hover:border-amber-400 group-hover:text-amber-200 group-focus-visible:ring-2 group-focus-visible:ring-amber-400" style={{ background: 'var(--surface)' }}>
         <LobbyIcon id="emptySeat" className="w-6 h-6"><Plus className="w-6 h-6" /></LobbyIcon>
       </span>
-      <span className="mt-1 text-[11px] text-amber-500/90" style={SERIF}>Open seat</span>
+      <span className="mt-1 text-[11px] text-amber-500/90 font-serif">Open seat</span>
     </button>
   );
 }
@@ -156,8 +156,8 @@ export function RoundTable({ seats, maxPlayers, palette, onSeatClick, onEmptySea
       <div className="absolute inset-0 flex items-center justify-center text-center pointer-events-none">
         {/* Own backdrop so the count stays readable on light felts (e.g. the manga table). */}
         <div className="px-4 py-2 @min-[34rem]/table:px-5 @min-[34rem]/table:py-3 rounded-2xl bg-black/40 backdrop-blur-[2px]">
-          <p className="text-amber-50 text-sm @min-[34rem]/table:text-lg" style={SERIF}>{seats.length} of {seatCount} seated</p>
-          <p className="text-[11px] @min-[34rem]/table:text-sm mt-0.5 text-amber-100/75" style={SERIF}>
+          <p className="text-amber-50 text-sm @min-[34rem]/table:text-lg font-serif">{seats.length} of {seatCount} seated</p>
+          <p className="text-[11px] @min-[34rem]/table:text-sm mt-0.5 text-amber-100/75 font-serif">
             {ready} ready{away ? ` · ${away} reconnecting` : ''}
           </p>
         </div>

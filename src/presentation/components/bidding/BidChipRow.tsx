@@ -52,8 +52,7 @@ export function BidChipRow({ selectedBid, maxBid, forbiddenBid, onBidChange }: B
               disabled={isForbidden}
               aria-pressed={isSelected}
               aria-label={isForbidden ? `Bid ${bid} (forbidden)` : `Bid ${bid}`}
-              className={`hud-tap-target h-8 min-w-8 flex-shrink-0 rounded-lg border px-1 text-sm font-medium transition-all cursor-pointer ${getChipClass(isForbidden, isSelected)}`}
-              style={{ fontFamily: 'Georgia, serif' }}
+              className={`font-serif hud-tap-target h-8 min-w-8 flex-shrink-0 rounded-lg border px-1 text-sm font-medium transition-all cursor-pointer ${getChipClass(isForbidden, isSelected)}`}
             >
               {isForbidden ? <Ban className="mx-auto h-3.5 w-3.5" /> : bid}
             </button>

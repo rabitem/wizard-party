@@ -16,19 +16,19 @@ export function RoundStats({ currentRound, maxRounds, players, isMobile = false 
   return (
     <div className={`${isMobile ? 'mx-2 mb-2 py-1.5 px-2' : 'mx-6 mb-4 py-3 px-4'} flex items-center justify-around rounded border border-amber-800/30 bg-black/30`}>
       <div className="text-center">
-        <div className={`text-amber-400 font-bold ${isMobile ? 'text-sm' : ''}`} style={{ fontFamily: 'Georgia, serif' }}>{currentRound}</div>
+        <div className={`font-serif text-amber-400 font-bold ${isMobile ? 'text-sm' : ''}`}>{currentRound}</div>
         <div className={`${isMobile ? 'text-[8px]' : 'text-[9px]'} text-amber-200/40 uppercase tracking-wider`}>Cards</div>
       </div>
       <div className="text-amber-700/40">|</div>
       <div className="text-center">
-        <div className={`text-emerald-400 font-bold ${isMobile ? 'text-sm' : ''}`} style={{ fontFamily: 'Georgia, serif' }}>
+        <div className={`font-serif text-emerald-400 font-bold ${isMobile ? 'text-sm' : ''}`}>
           {perfectCount}
         </div>
         <div className={`${isMobile ? 'text-[8px]' : 'text-[9px]'} text-amber-200/40 uppercase tracking-wider`}>Perfect</div>
       </div>
       <div className="text-amber-700/40">|</div>
       <div className="text-center">
-        <div className={`text-amber-400 font-bold ${isMobile ? 'text-sm' : ''}`} style={{ fontFamily: 'Georgia, serif' }}>
+        <div className={`font-serif text-amber-400 font-bold ${isMobile ? 'text-sm' : ''}`}>
           {remainingRounds}
         </div>
         <div className={`${isMobile ? 'text-[8px]' : 'text-[9px]'} text-amber-200/40 uppercase tracking-wider`}>Remain</div>

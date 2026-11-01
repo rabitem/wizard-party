@@ -11,7 +11,6 @@ import { summarizeRules } from '../../lobby/table';
 import { MatchWaitingRoster } from './MatchWaitingRoster';
 import { TournamentMatchBanner } from './TournamentMatchBanner';
 
-const SERIF = { fontFamily: 'Georgia, serif' } as const;
 
 interface TournamentMatchLobbyProps {
   match: TournamentMatchRoomState;
@@ -30,10 +29,9 @@ function MatchRules({ rulesetConfig }: { rulesetConfig: IRulesetConfig }) {
         {chips.map((chip) => (
           <li
             key={chip.id}
-            className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs ${
+            className={`font-serif inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs ${
               chip.isHouseRule ? 'border-amber-600/60 text-amber-200' : 'border-amber-800/50 text-amber-400/90'
             }`}
-            style={SERIF}
           >
             {chip.icon === 'timer' ? <Timer className="w-3 h-3" aria-hidden /> : null}
             {chip.label}
@@ -78,7 +76,7 @@ function MatchLobbyActions({ match, onBackToTournament }: Pick<TournamentMatchLo
           type="button"
           onClick={onBackToTournament}
           className="py-3 px-4 rounded-xl border border-amber-700/40 hover:border-amber-600/50 hover:bg-amber-900/20 text-amber-300/80 transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
-          style={{ background: 'linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--surface), black 10%) 90%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 35%) 90%, transparent) 100%)', ...SERIF }}
+          style={{ background: 'linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--surface), black 10%) 90%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 35%) 90%, transparent) 100%)', fontFamily: 'var(--font-serif)' }}
           title="Back to the tournament"
         >
           <ArrowLeft className="w-4 h-4" aria-hidden />
@@ -87,7 +85,7 @@ function MatchLobbyActions({ match, onBackToTournament }: Pick<TournamentMatchLo
         </button>
         <div
           className="flex-1 flex items-center justify-center gap-3 py-3.5 px-4 rounded-xl border border-amber-700/40 text-amber-400/70"
-          style={{ background: 'linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--surface), black 10%) 90%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 35%) 90%, transparent) 100%)', ...SERIF }}
+          style={{ background: 'linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--surface), black 10%) 90%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 35%) 90%, transparent) 100%)', fontFamily: 'var(--font-serif)' }}
           role="status"
         >
           {match.expired ? <CalendarX className="w-5 h-5" aria-hidden /> : <Loader2 className="w-5 h-5 animate-spin" aria-hidden />}

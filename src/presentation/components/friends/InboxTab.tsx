@@ -7,7 +7,6 @@ import { CheckCheck, Inbox } from 'lucide-react';
 import { socialApi } from '@/lib/social/social-api';
 import { useSocial } from '@/presentation/providers/SocialProvider';
 
-import { SERIF } from '../account/ui';
 import { InboxEntry } from './InboxEntry';
 
 const CLOCK_TICK_MS = 30_000;
@@ -33,7 +32,7 @@ export function InboxTab() {
     return (
       <div className="mt-10 text-center px-4">
         <Inbox className="w-10 h-10 mx-auto text-amber-700/50" />
-        <p className="mt-3 text-sm text-amber-200/60" style={SERIF}>Your inbox is empty</p>
+        <p className="mt-3 text-sm text-amber-200/60 font-serif">Your inbox is empty</p>
         <p className="mt-1 text-xs text-amber-200/40">Friend requests and game invites land here.</p>
       </div>
     );
@@ -52,7 +51,7 @@ export function InboxTab() {
         </AnimatePresence>
       </ul>
       {inbox.hasMore ? (
-        <button type="button" onClick={() => void inbox.loadMore()} className="mt-3 w-full h-10 rounded-xl border border-amber-900/40 text-xs text-amber-200/60 hover:text-amber-100 cursor-pointer" style={SERIF}>
+        <button type="button" onClick={() => void inbox.loadMore()} className="mt-3 w-full h-10 rounded-xl border border-amber-900/40 text-xs text-amber-200/60 hover:text-amber-100 cursor-pointer font-serif">
           Load older
         </button>
       ) : null}

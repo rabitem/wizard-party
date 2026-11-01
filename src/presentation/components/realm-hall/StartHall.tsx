@@ -29,7 +29,6 @@ import { useHallScrollProgress } from './useHallScrollProgress';
 
 const RealmHallCanvas = dynamic(() => import('./RealmHallCanvas').then((module) => module.RealmHallCanvas), { ssr: false });
 
-const SERIF = { fontFamily: 'Georgia, serif' } as const;
 
 interface StartHallProps {
   playCard: ComponentProps<typeof PlayCard>;
@@ -41,7 +40,7 @@ interface StartHallProps {
 /** Under the play form: scrolling walks you through the room to the table. */
 function WalkCue() {
   return (
-    <p className="mt-4 flex items-center justify-center gap-2 text-sm text-amber-200/80" style={SERIF}>
+    <p className="mt-4 flex items-center justify-center gap-2 text-sm text-amber-200/80 font-serif">
       Scroll to walk to the table
       <ChevronDown className="w-4 h-4 motion-safe:animate-bounce" aria-hidden />
     </p>
@@ -53,8 +52,8 @@ function TableStation({ onQuickJoin, onCreateRoom }: { onQuickJoin: () => void; 
   return (
     <HallStation side="center" label="Your seat" panel={false} className="md:items-end md:pb-[14svh]">
       <div className="text-center">
-        <h2 className="text-4xl sm:text-5xl leading-tight text-amber-50 [text-wrap:balance]" style={SERIF}>Your seat is waiting</h2>
-        <p className="mt-3 text-base sm:text-lg text-amber-200/85" style={SERIF}>Three to six players, any mix of friends and bots.</p>
+        <h2 className="text-4xl sm:text-5xl leading-tight text-amber-50 [text-wrap:balance] font-serif">Your seat is waiting</h2>
+        <p className="mt-3 text-base sm:text-lg text-amber-200/85 font-serif">Three to six players, any mix of friends and bots.</p>
         <div className="mt-7 mx-auto max-w-sm space-y-2.5">
           <button
             type="button"
@@ -67,8 +66,7 @@ function TableStation({ onQuickJoin, onCreateRoom }: { onQuickJoin: () => void; 
           <button
             type="button"
             onClick={onCreateRoom}
-            className="w-full h-11 rounded-xl border border-amber-700/50 flex items-center justify-center gap-2 text-sm text-amber-100 cursor-pointer hover:bg-amber-900/25 hover:border-amber-500/60 active:scale-[0.98]"
-            style={SERIF}
+            className="w-full h-11 rounded-xl border border-amber-700/50 flex items-center justify-center gap-2 text-sm text-amber-100 cursor-pointer hover:bg-amber-900/25 hover:border-amber-500/60 active:scale-[0.98] font-serif"
           >
             <Settings2 className="w-4 h-4" aria-hidden />Create room
           </button>

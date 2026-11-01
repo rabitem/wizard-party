@@ -91,7 +91,7 @@ function SoundboardOptionCard({
         disabled={!canUseSoundboard}
         className={`min-h-14 w-full rounded px-2.5 py-2 text-left transition-colors active:translate-y-px ${canUseSoundboard ? 'cursor-pointer hover:border-amber-600/50 hover:bg-amber-900/25' : 'cursor-not-allowed opacity-45 grayscale'}`}
       >
-        <span className="block truncate pr-7 text-sm text-amber-100" style={{ fontFamily: 'Georgia, serif' }}>
+        <span className="block truncate pr-7 text-sm text-amber-100 font-serif">
           {option.label}
         </span>
         <span className="mt-0.5 block truncate text-[10px] uppercase tracking-wider text-amber-600/60">
@@ -137,7 +137,7 @@ export function TurnTimerSoundboardPanel({
       <div className="flex items-center justify-between gap-3 border-b border-amber-800/30 px-3 py-2">
         <div className="flex min-w-0 items-center gap-2">
           <Music className="h-4 w-4 flex-shrink-0 text-amber-400" />
-          <span className="min-w-0 truncate text-sm text-amber-200" style={{ fontFamily: 'Georgia, serif' }}>
+          <span className="min-w-0 truncate text-sm text-amber-200 font-serif">
             Soundboard for {targetName}
           </span>
           <span className={`rounded border px-1.5 py-0.5 text-[10px] uppercase tracking-wider ${canUseSoundboard ? 'border-red-600/40 text-red-200' : 'border-stone-700/60 text-stone-400'}`}>

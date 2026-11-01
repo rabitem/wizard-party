@@ -108,8 +108,7 @@ function CategorySection({
         <div className="flex items-center gap-3">
           <Icon className="w-5 h-5 text-amber-500/70" />
           <span
-            className="text-amber-200/90"
-            style={{ fontFamily: 'Georgia, serif' }}
+            className="text-amber-200/90 font-serif"
           >
             {categoryName}
           </span>
@@ -167,8 +166,7 @@ export function RulesetSection({
         <div className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-700/30" />
         <Scroll className="w-4 h-4 text-amber-500/60" />
         <span
-          className="text-xs text-amber-400/70 uppercase tracking-widest"
-          style={{ fontFamily: 'Georgia, serif' }}
+          className="text-xs text-amber-400/70 uppercase tracking-widest font-serif"
         >
           Game Rules
         </span>
@@ -189,8 +187,7 @@ export function RulesetSection({
         >
           <Info className="w-4 h-4 text-amber-500/50 flex-shrink-0" />
           <span
-            className="text-xs text-amber-500/60"
-            style={{ fontFamily: 'Georgia, serif' }}
+            className="text-xs text-amber-500/60 font-serif"
           >
             Only the host can modify game rules
           </span>

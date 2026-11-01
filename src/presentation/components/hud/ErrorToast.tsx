@@ -60,8 +60,7 @@ export function ErrorToast({ message, onDismiss }: ErrorToastProps) {
             </div>
 
             <h3
-              className="text-center text-lg text-red-300/90 mb-3"
-              style={{ fontFamily: 'Georgia, serif' }}
+              className="text-center text-lg text-red-300/90 mb-3 font-serif"
             >
               Action Denied
             </h3>
@@ -77,7 +76,7 @@ export function ErrorToast({ message, onDismiss }: ErrorToastProps) {
               className="w-full py-2.5 rounded border-2 border-red-700/50 font-medium transition-all cursor-pointer active:scale-[0.98] flex items-center justify-center gap-2"
               style={{
                 background: 'linear-gradient(180deg, rgba(139,50,50,0.4) 0%, rgba(100,30,30,0.3) 100%)',
-                fontFamily: 'Georgia, serif',
+                fontFamily: 'var(--font-serif)',
                 color: '#fca5a5',
                 textShadow: '0 1px 2px rgba(0,0,0,0.5)',
               }}

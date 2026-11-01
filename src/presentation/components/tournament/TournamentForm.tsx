@@ -10,7 +10,7 @@ import { countNonDefaultRules } from '@shared/domain/value-objects/ruleset-valid
 import { BOT_DIFFICULTY_OPTIONS } from '@/presentation/config/tournament.config';
 
 import { FIELD_BG, INSET_BG } from '../account/account-surfaces';
-import { Button, Field, Notice, Panel, SERIF, SectionHeading, Toggle } from '../account/ui';
+import { Button, Field, Notice, Panel, SectionHeading, Toggle } from '../account/ui';
 import { RulesetSection } from '../settings';
 import { FieldLabel, FieldMessage, Segmented, Stepper, TextArea, type SegmentOption } from './TournamentFormControls';
 import {
@@ -74,7 +74,7 @@ function StructurePreview({ state }: { state: TournamentFormState }) {
     <div className="rounded-xl border border-amber-800/30 px-3.5 py-3 text-xs sm:text-sm leading-relaxed" style={{ background: INSET_BG }} aria-live="polite">
       {preview.tables ? (
         <p className="text-amber-100/85">
-          <span style={SERIF}>A full field of {state.maxEntrants}:</span> {describeSeating(preview.tables)} in round 1,{' '}
+          <span className="font-serif">A full field of {state.maxEntrants}:</span> {describeSeating(preview.tables)} in round 1,{' '}
           {preview.rounds === 1 ? 'one round' : `${preview.rounds} rounds`}
           {state.format === 'knockout' ? ' if every table is played' : ''}.
         </p>
@@ -102,7 +102,7 @@ function RulesDisclosure({ state, onChange }: { state: TournamentFormState; onCh
         style={{ background: INSET_BG }}
       >
         <span>
-          <span className="block text-sm text-amber-100" style={SERIF}>
+          <span className="block text-sm text-amber-100 font-serif">
             {modified === 0 ? 'Standard rules' : `${modified} custom rule${modified === 1 ? '' : 's'}`}
           </span>
           <span className="block text-xs text-amber-200/45">Every table of the tournament plays these rules.</span>

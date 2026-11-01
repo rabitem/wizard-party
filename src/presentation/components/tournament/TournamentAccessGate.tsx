@@ -8,7 +8,6 @@ import { useAccount } from '@/presentation/providers/AccountProvider';
 import { useTournamentAvailability } from '@/presentation/hooks/useTournamentAvailability';
 import { TOURNAMENT_ROUTES } from '@/presentation/config/tournament.config';
 
-import { SERIF } from '../account/ui';
 import { TournamentMessage, TournamentSkeleton, TournamentsUnavailable } from './TournamentStates';
 import { hostAccess } from './tournament-view-model';
 
@@ -32,7 +31,7 @@ export function TournamentAccessGate({ next, children }: { next: string; childre
         icon={<LogIn className="w-10 h-10" strokeWidth={1.25} />}
         title="Sign in to host tournaments"
         action={
-          <Link href={TOURNAMENT_ROUTES.signIn(next)} className={LINK_CLASS} style={SERIF}>
+          <Link href={TOURNAMENT_ROUTES.signIn(next)} className={`${LINK_CLASS} font-serif`}>
             Sign in
           </Link>
         }

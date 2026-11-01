@@ -54,8 +54,7 @@ export default function ImprintPage() {
         {/* Back Button */}
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-amber-400/70 hover:text-amber-300 transition-colors mb-8 group"
-          style={{ fontFamily: "Georgia, serif" }}
+          className="inline-flex items-center gap-2 text-amber-400/70 hover:text-amber-300 transition-colors mb-8 group font-serif"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           Return to the Tavern
@@ -86,14 +85,12 @@ export default function ImprintPage() {
               </div>
               <div>
                 <h1
-                  className="text-2xl text-amber-200/90"
-                  style={{ fontFamily: "Georgia, serif" }}
+                  className="text-2xl text-amber-200/90 font-serif"
                 >
                   Legal Notice
                 </h1>
                 <p
-                  className="text-amber-600/60 text-sm"
-                  style={{ fontFamily: "Georgia, serif" }}
+                  className="text-amber-600/60 text-sm font-serif"
                 >
                   Information according to German law (§ 5 TMG)
                 </p>
@@ -118,15 +115,13 @@ export default function ImprintPage() {
               }}
             >
               <h2
-                className="text-lg text-amber-200/90 mb-4 flex items-center gap-2"
-                style={{ fontFamily: "Georgia, serif" }}
+                className="text-lg text-amber-200/90 mb-4 flex items-center gap-2 font-serif"
               >
                 <SeasonalEmblem size={14} className="opacity-70" />
                 Responsible for Content
               </h2>
               <div
-                className="text-amber-300/70 space-y-1"
-                style={{ fontFamily: "Georgia, serif" }}
+                className="text-amber-300/70 space-y-1 font-serif"
               >
                 <p className="text-amber-200/90">{IMPRINT.name}</p>
                 {IMPRINT.addressLines.map((line) => (
@@ -147,15 +142,13 @@ export default function ImprintPage() {
               }}
             >
               <h2
-                className="text-lg text-amber-200/90 mb-4 flex items-center gap-2"
-                style={{ fontFamily: "Georgia, serif" }}
+                className="text-lg text-amber-200/90 mb-4 flex items-center gap-2 font-serif"
               >
                 <SeasonalEmblem size={14} className="opacity-70" />
                 Contact
               </h2>
               <div
-                className="text-amber-300/70 space-y-3"
-                style={{ fontFamily: "Georgia, serif" }}
+                className="text-amber-300/70 space-y-3 font-serif"
               >
                 {IMPRINT.email ? (
                   <p className="flex items-center gap-2">
@@ -190,16 +183,14 @@ export default function ImprintPage() {
               }}
             >
               <h2
-                className="text-lg text-amber-200/90 mb-4 flex items-center gap-2"
-                style={{ fontFamily: "Georgia, serif" }}
+                className="text-lg text-amber-200/90 mb-4 flex items-center gap-2 font-serif"
               >
                 <Shield className="w-4 h-4 text-amber-600/60" />
                 Disclaimer
               </h2>
 
               <div
-                className="space-y-6 text-amber-300/70 text-sm leading-relaxed"
-                style={{ fontFamily: "Georgia, serif" }}
+                className="space-y-6 text-amber-300/70 text-sm leading-relaxed font-serif"
               >
                 <div>
                   <h3 className="text-amber-200/90 mb-2">Liability for Content</h3>
@@ -260,15 +251,13 @@ export default function ImprintPage() {
               }}
             >
               <h2
-                className="text-lg text-amber-200/90 mb-4 flex items-center gap-2"
-                style={{ fontFamily: "Georgia, serif" }}
+                className="text-lg text-amber-200/90 mb-4 flex items-center gap-2 font-serif"
               >
                 <SeasonalEmblem size={14} className="opacity-70" />
                 About Wizard Party
               </h2>
               <div
-                className="text-amber-300/70 text-sm leading-relaxed space-y-3"
-                style={{ fontFamily: "Georgia, serif" }}
+                className="text-amber-300/70 text-sm leading-relaxed space-y-3 font-serif"
               >
                 <p>
                   Wizard Party is a free online multiplayer card game, developed as a private hobby
@@ -284,8 +273,7 @@ export default function ImprintPage() {
         {/* Footer Links */}
         <div className="mt-12 pt-8 border-t border-amber-700/30">
           <div
-            className="flex items-center justify-center gap-4 text-sm"
-            style={{ fontFamily: "Georgia, serif" }}
+            className="flex items-center justify-center gap-4 text-sm font-serif"
           >
             <Link href="/privacy" className="text-amber-500/60 hover:text-amber-400 transition-colors">
               Privacy Policy

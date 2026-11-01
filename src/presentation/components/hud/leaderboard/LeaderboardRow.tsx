@@ -58,7 +58,7 @@ function CompactRow({ entry, isLocal, isCurrentTurn, scale }: { entry: Leaderboa
       <PositionBadge position={entry.position} size="sm" scale={scale} />
       <span
         className={`${COMPACT_LEADERBOARD_NAME_TEXT_CLASS} ${getRowTextClass(isCurrentTurn, isLocal)}`}
-        style={{ fontFamily: 'Georgia, serif', fontSize: `${10 * scale}px`, maxWidth: `${50 * scale}px` }}
+        style={{ fontFamily: 'var(--font-serif)', fontSize: `${10 * scale}px`, maxWidth: `${50 * scale}px` }}
       >
         {entry.player.name.split(' ')[0]}
       </span>
@@ -67,7 +67,7 @@ function CompactRow({ entry, isLocal, isCurrentTurn, scale }: { entry: Leaderboa
         style={{
           ...getCompactLeaderboardScoreStyle(scale, [entry.player.score]),
           color: isLocal ? 'var(--accent-bright)' : 'var(--accent)',
-          fontFamily: 'Georgia, serif',
+          fontFamily: 'var(--font-serif)',
           fontSize: `${12 * scale}px`,
         }}
       >
@@ -114,7 +114,7 @@ export function LeaderboardRow({ entry, isLocal, isCurrentTurn, compact = false,
             className={LEADERBOARD_NAME_TEXT_CLASS}
             style={{
               color: getNameColor(isCurrentTurn, isLocal),
-              fontFamily: 'Georgia, serif',
+              fontFamily: 'var(--font-serif)',
               fontSize: `${13 * scale}px`,
             }}
           >
@@ -175,7 +175,7 @@ export function LeaderboardRow({ entry, isLocal, isCurrentTurn, compact = false,
         )}
         <div
           className="font-bold"
-          style={{ color: isLocal ? 'var(--accent-bright)' : 'var(--accent)', fontFamily: 'Georgia, serif', fontSize: `${16 * scale}px` }}
+          style={{ color: isLocal ? 'var(--accent-bright)' : 'var(--accent)', fontFamily: 'var(--font-serif)', fontSize: `${16 * scale}px` }}
         >
           {entry.player.score}
         </div>

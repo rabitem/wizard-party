@@ -49,7 +49,7 @@ export function GameEndHeader({ winner, isWinner }: GameEndHeaderProps) {
 
       <h1
         className="text-3xl font-bold mb-1"
-        style={{ color: 'var(--color-amber-100)', fontFamily: 'Georgia, serif' }}
+        style={{ color: 'var(--color-amber-100)', fontFamily: 'var(--font-serif)' }}
       >
         {isWinner ? 'Victory!' : 'Game Over'}
       </h1>

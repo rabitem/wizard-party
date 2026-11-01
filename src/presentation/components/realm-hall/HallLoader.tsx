@@ -7,7 +7,6 @@ import { useSeasonalPack } from '@/presentation/components/settings/useSeasonalP
 import { REALM_OPTIONS } from '../room-browser/realm-switcher.config';
 import { useHallLoading } from './hall-loading-store';
 
-const SERIF = { fontFamily: 'Georgia, serif' } as const;
 
 /**
  * Three cards that riffle over one another while the room loads. A CSS animation (.hall-shuffle-card
@@ -109,7 +108,7 @@ export function HallLoader() {
           >
             <ShufflingCards />
             <span className="min-w-0">
-              <span className="block text-sm text-amber-100" style={SERIF}>
+              <span className="block text-sm text-amber-100 font-serif">
                 Setting up the {realmName} room
               </span>
               <AnimatePresence mode="wait" initial={false}>
@@ -119,8 +118,7 @@ export function HallLoader() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -4 }}
                   transition={{ duration: 0.22 }}
-                  className="block text-xs text-amber-200/75 italic"
-                  style={SERIF}
+                  className="block text-xs text-amber-200/75 italic font-serif"
                 >
                   {line}
                 </motion.span>

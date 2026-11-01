@@ -39,7 +39,6 @@ interface ConnectionStatusOverlayProps {
   onLeave: () => void;
 }
 
-const SERIF = { fontFamily: 'Georgia, serif' } as const;
 
 /** The blocking prompt of the game page and the lobby for a superseded or failed connection. */
 export function ConnectionStatusOverlay({ status, onTakeOver, onRetry, onLeave }: ConnectionStatusOverlayProps) {
@@ -51,11 +50,11 @@ export function ConnectionStatusOverlay({ status, onTakeOver, onRetry, onLeave }
       <div className="relative border border-amber-700/40 rounded-xl p-6 max-w-sm mx-4 shadow-2xl" style={{ background: THEME_SURFACE.MODAL_BG }}>
         <SeasonalCorner position="top-right" size={32} />
         <SeasonalCorner position="bottom-left" size={32} />
-        <h3 id="connection-status-title" className="text-amber-100 text-lg font-semibold mb-3" style={SERIF}>{prompt.title}</h3>
-        <p className="text-amber-200/70 text-sm mb-6" style={SERIF}>{prompt.body}</p>
+        <h3 id="connection-status-title" className="text-amber-100 text-lg font-semibold mb-3 font-serif">{prompt.title}</h3>
+        <p className="text-amber-200/70 text-sm mb-6 font-serif">{prompt.body}</p>
         <div className="flex gap-3">
-          <button type="button" onClick={onLeave} className="flex-1 px-4 py-2.5 rounded-lg border border-amber-600/30 text-amber-200/80 hover:bg-amber-900/20 transition-colors" style={SERIF}>Leave</button>
-          <button type="button" onClick={onAction} className="flex-1 px-4 py-2.5 rounded-lg bg-amber-700/70 border border-amber-500/50 text-amber-50 hover:bg-amber-600/70 transition-colors" style={SERIF}>{prompt.action.label}</button>
+          <button type="button" onClick={onLeave} className="flex-1 px-4 py-2.5 rounded-lg border border-amber-600/30 text-amber-200/80 hover:bg-amber-900/20 transition-colors font-serif">Leave</button>
+          <button type="button" onClick={onAction} className="flex-1 px-4 py-2.5 rounded-lg bg-amber-700/70 border border-amber-500/50 text-amber-50 hover:bg-amber-600/70 transition-colors font-serif">{prompt.action.label}</button>
         </div>
       </div>
     </div>

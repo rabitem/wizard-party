@@ -7,7 +7,6 @@ import type { TournamentJoinRejection } from '@/presentation/hooks/connection/to
 
 import { rejectionCopy } from './tournament-match-state';
 
-const SERIF = { fontFamily: 'Georgia, serif' } as const;
 
 /**
  * Shown instead of the join form when the game worker refused a seat at a tournament table (no
@@ -27,10 +26,10 @@ export function TournamentJoinRejected({ rejection }: { rejection: Pick<Tourname
             <Ticket className="w-8 h-8 text-amber-500/70" aria-hidden />
           </div>
         </div>
-        <h1 className="text-2xl text-amber-100/95 mb-2" style={SERIF}>
+        <h1 className="text-2xl text-amber-100/95 mb-2 font-serif">
           {copy.title}
         </h1>
-        <p className="text-amber-200/55 text-sm mb-8" style={SERIF}>
+        <p className="text-amber-200/55 text-sm mb-8 font-serif">
           {copy.body}
         </p>
         <Link
@@ -40,12 +39,12 @@ export function TournamentJoinRejected({ rejection }: { rejection: Pick<Tourname
             background: 'linear-gradient(180deg, var(--accent-cta-top) 0%, var(--accent-cta-mid) 50%, var(--accent-cta-bottom) 100%)',
             boxShadow: '0 4px 20px color-mix(in srgb, var(--accent-deep) 30%, transparent), inset 0 1px 0 rgba(255,255,255,0.2)',
             color: '#1a1510',
-            ...SERIF,
+            fontFamily: 'var(--font-serif)',
           }}
         >
           {copy.action.label}
         </Link>
-        <Link href="/" className="mt-4 inline-flex items-center gap-1.5 text-amber-500/50 text-sm hover:text-amber-400 transition-colors" style={SERIF}>
+        <Link href="/" className="mt-4 inline-flex items-center gap-1.5 text-amber-500/50 text-sm hover:text-amber-400 transition-colors font-serif">
           <Home className="w-3.5 h-3.5" aria-hidden />
           Home
         </Link>

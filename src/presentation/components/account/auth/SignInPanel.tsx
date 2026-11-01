@@ -10,7 +10,7 @@ import { useAuthCapabilities } from '@/presentation/hooks/account/useAuthCapabil
 import { useAccount } from '@/presentation/providers/AccountProvider';
 
 import { ProviderButtons } from '../ProviderButtons';
-import { Button, Divider, Notice, SERIF, errorMessage } from '../ui';
+import { Button, Divider, Notice, errorMessage } from '../ui';
 import { CredentialsForm, type CredentialsValues } from './CredentialsForm';
 import { EmailCodeStep } from './EmailCodeStep';
 import { ForgotPasswordFlow } from './ForgotPasswordFlow';
@@ -34,7 +34,7 @@ const LINK_CLASS = 'min-h-11 px-1 text-amber-400 hover:text-amber-300 cursor-poi
 function ModeSwitch({ mode, onSwitch }: { mode: SignInMode; onSwitch: (mode: SignInMode) => void }) {
   const toSignUp = mode === 'sign-in';
   return (
-    <p className="mt-6 text-center text-sm text-amber-200/55" style={SERIF}>
+    <p className="mt-6 text-center text-sm text-amber-200/55 font-serif">
       {toSignUp ? 'New here? ' : 'Already have an account? '}
       <button type="button" className={LINK_CLASS} onClick={() => onSwitch(toSignUp ? 'sign-up' : 'sign-in')}>
         {toSignUp ? 'Create an account' : 'Sign in'}
@@ -144,7 +144,7 @@ export function SignInPanel({ initialMode = 'sign-in', next }: { initialMode?: S
 
   return (
     <div>
-      <h1 className="text-2xl sm:text-3xl text-amber-50 text-center" style={{ ...SERIF, textShadow: '0 2px 20px color-mix(in srgb, var(--accent-deep) 25%, transparent)' }}>
+      <h1 className="text-2xl sm:text-3xl text-amber-50 text-center" style={{ fontFamily: 'var(--font-serif)', textShadow: '0 2px 20px color-mix(in srgb, var(--accent-deep) 25%, transparent)' }}>
         {title}
       </h1>
       <p className="mt-2 mb-6 text-center text-sm text-amber-200/55 leading-relaxed">{subtitle}</p>
