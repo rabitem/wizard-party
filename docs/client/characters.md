@@ -89,7 +89,42 @@ one posed figure (the idle clip at `CHARACTER_PORTRAIT.POSE_SECONDS`), framed on
 on a transparent background. Renders run one at a time and are cached per look
 (`portraitKey`, `CHARACTER_PORTRAIT.CACHE_LIMIT`). Until a render is ready, or without WebGL, the
 component shows an empty circle of the same size. Server-rendered images (emails, Open Graph
-cards) cannot use it.
+cards) cannot use it; they draw portrait sprites.
+
+## Portrait sprites
+
+Images rendered on the server with `next/og` show committed PNG portraits from
+`public/characters/portraits/`:
+
+| Image | Where |
+| --- | --- |
+| The two players on invite and friend request emails | `src/infrastructure/email/player-pair-card.tsx` |
+| A public profile's link preview (Open Graph and Twitter) | `src/app/u/[username]/opengraph-image.tsx`, `twitter-image.tsx` |
+
+- **Key.** A sprite shows a head, its headwear and a palette, the slots a bust shows most:
+  `<head>_<headwear>_<palette>.png`, e.g. `mage_mage-hat_classic.png`. The other slots are fixed:
+  the outfit of the head's set, no cape, props or familiar. A hood only comes without headwear, so
+  there are 4 x 4 + 1 head and headwear pairs in 9 palettes: 153 sprites plus `silhouette.png` for
+  a player without a look, 192 px, palette PNGs, about 1.5 MB together.
+- **Mapping.** `portraitSpriteFile(appearance)` and `portraitSpritePath(appearance)`
+  (`shared/domain/character/portrait-sprites.ts`) pick the file. Like `repairAppearance`, an unknown
+  part falls back to the default one and a hood drops its headwear; `null` is the silhouette.
+  `portraitSprites()` lists every sprite with the look it is rendered from.
+- **Reading.** `portraitSpriteDataUrl` (`src/infrastructure/character/portrait-sprite-image.ts`)
+  reads a sprite from disk as a data URL for `<img>` in `next/og`, cached per process. Nothing
+  fetches over the network. Every route that renders one lists `./public/characters/portraits/**`
+  in `outputFileTracingIncludes` (`next.config.ts`), or the serverless bundle lacks the files.
+- **Rendering.** `npm run characters:sprites` (`scripts/characters/render-portrait-sprites.mjs`)
+  opens `/dev/characters/sprites` in headless Chromium (WebGL through SwiftShader). The page exposes
+  `renderCharacterPortrait` and the sprite list; the script renders each look, scales it to the
+  sprite size, quantizes it with `sharp` and replaces the directory. Start the app first
+  (`npm run dev`, or pass `--url`).
+- `shared/domain/character/portrait-sprites.test.ts` checks that the directory holds exactly the
+  listed sprites and that every valid look maps to one of them.
+
+Regenerate and commit the sprites after a change to the heads, headwear, palettes, outfits,
+`CLOTHING_CELLS` or the portrait framing (`CHARACTER_PORTRAIT`). A new head, headwear or palette
+makes the test fail until they are rendered.
 
 ## In the UI
 
@@ -137,11 +172,12 @@ player's look. Bots get their look on the client, by difficulty.
 `/dev/characters` (local dev and Vercel previews only) shows every part, palette and clip on the
 real assets, without accounts or unlocks, reports invalid combinations, and renders the look's
 portrait in every palette. The first visit in `next dev` takes a few seconds while the route
-compiles.
+compiles. `/dev/characters/sprites`, served the same way, is the page the sprite script drives.
 
 ## Changing assets
 
 - **A KayKit part**: add the catalog part first (accounts doc), map it in the manifest's `parts`,
-  then run `npm run characters:build` and commit the rebuilt files.
+  then run `npm run characters:build` and commit the rebuilt files. A new head, headwear or palette
+  also needs `npm run characters:sprites` ([Portrait sprites](#portrait-sprites)).
 - **A clip**: add it to the manifest's `clips` and to `CHARACTER_CLIPS`, then rebuild.
 - **Another upstream file**: add it to `files` with its SHA-256 (`sha256sum`) from the pinned commit.

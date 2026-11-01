@@ -38,15 +38,19 @@ const nextConfig: NextConfig = {
   },
   // Disable browser source maps in production to avoid WASM source map errors
   productionBrowserSourceMaps: false,
-  // Invite and friend request emails render an avatar card with the icon font, read from disk.
+  // Invite and friend request emails render a card of both players' portrait sprites with the icon
+  // font, read from disk (src/infrastructure/email/player-pair-card.tsx).
   outputFileTracingIncludes: {
-    '/api/social/invites': ['./public/fonts/rpgawesome-webfont.ttf'],
-    '/api/social/friends': ['./public/fonts/rpgawesome-webfont.ttf'],
+    '/api/social/invites': ['./public/fonts/rpgawesome-webfont.ttf', './public/characters/portraits/**'],
+    '/api/social/friends': ['./public/fonts/rpgawesome-webfont.ttf', './public/characters/portraits/**'],
     // Link previews read their serif and the room captures from disk (src/app/_og/og-kit.tsx).
     '/opengraph-image': ['./assets/og/**'],
     '/twitter-image': ['./assets/og/**'],
     '/share/og': ['./assets/og/**'],
     '/join/og': ['./assets/og/**'],
+    // A public profile's preview also draws the player's portrait sprite.
+    '/u/[username]/opengraph-image': ['./assets/og/**', './public/characters/portraits/**'],
+    '/u/[username]/twitter-image': ['./assets/og/**', './public/characters/portraits/**'],
   },
   images: {
     formats: ["image/avif", "image/webp"],

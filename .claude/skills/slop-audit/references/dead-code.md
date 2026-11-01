@@ -101,7 +101,9 @@ that reference assets:
 - CSS `url()`: `src/styles/rpg-awesome.css`;
 - `src/app/layout.tsx` metadata, `public/manifest.json`, `next.config.ts` headers and
   `outputFileTracingIncludes`;
-- server-side reads: `src/infrastructure/email/player-pair-card.tsx` loads the icon font from disk;
+- server-side reads: `src/infrastructure/email/player-pair-card.tsx` loads the icon font from disk,
+  and `src/infrastructure/character/portrait-sprite-image.ts` the sprites in
+  `public/characters/portraits/` (by computed file name, so a search for one finds nothing);
 - email HTML: `src/infrastructure/email/email-layout.ts` links `/favicon.png` by absolute URL.
   Emails already sent keep pointing at it.
 

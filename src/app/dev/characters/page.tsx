@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { CharacterViewer } from './CharacterViewer';
+import { CHARACTER_DEV_PAGES_SERVED } from './dev-only';
 
-// Checks the character assets: every part and clip, without accounts or unlocks. Served in local
-// dev and on Vercel preview deployments, never on the production site.
-const IS_SERVED = process.env.NODE_ENV !== 'production' || process.env.VERCEL_ENV === 'preview';
+// Checks the character assets: every part and clip.
 
 export const metadata: Metadata = {
   title: 'Characters (dev)',
@@ -12,6 +11,6 @@ export const metadata: Metadata = {
 };
 
 export default function CharactersPage() {
-  if (!IS_SERVED) notFound();
+  if (!CHARACTER_DEV_PAGES_SERVED) notFound();
   return <CharacterViewer />;
 }

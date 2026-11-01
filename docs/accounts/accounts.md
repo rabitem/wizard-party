@@ -100,8 +100,8 @@ key the dependent feature is skipped or reduced; `.env.example` says which.
   `CHANGE_COOLDOWN_MS` and the first rename is free; casing edits are free. The casing must spell
   the stored name.
 - **Avatar.** Players are shown as their character (see Characters). The old `avatar` id can no
-  longer be chosen; it still decides the derived look until a look is saved, and emails and the
-  seat mark on the 3D table still draw it. A guest has no character: a silhouette, and a guest badge
+  longer be chosen; it still decides the derived look until a look is saved, and the seat mark on
+  the 3D table still draws it. Emails and link previews show portrait sprites of the look. A guest has no character: a silhouette, and a guest badge
   on their own lobby seat. Other seats never show the badge: a seat without account data may also
   be a blocked or hidden account.
 - A signed-in player always sits under their username (`usePlayerName`).
@@ -169,7 +169,9 @@ key the dependent feature is skipped or reduced; `.env.example` says which.
 - **What others see** is `displayedAppearance(stored, avatar)`: the saved look while every part is
   still valid, else the derived one; unlocks are not checked again. Social players (the
   `social_players` view, migration `0111`), inbox actors, sent invites, public profiles and
-  leaderboard entries carry it as `appearance` next to the old `avatar`, which emails still draw.
+  leaderboard entries carry it as `appearance` next to the old `avatar`, which nothing on the server
+  draws any more: social emails and the profile link preview show the look's portrait sprite
+  ([../client/characters.md](../client/characters.md#portrait-sprites)).
   Saving a look purges the player's public profile and the leaderboards.
 - **The editor** is the Character tab of `/account` (`components/account/character/`). Each choice
   goes through `withPart`, which keeps the look valid: a two-handed prop empties the off hand, a
@@ -196,6 +198,10 @@ key the dependent feature is skipped or reduced; `.env.example` says which.
   and purges the leaderboards. Profile, visibility and pin routes call it; renames, name and avatar
   edits and deletion go through Better Auth and call it from the user hooks
   (`public-profile-hooks.ts`).
+- The link preview (`opengraph-image.tsx`, `twitter-image.tsx` in `src/app/u/[username]/`) shows
+  the look's portrait sprite, name, level, title and games played and won, from the same cached
+  data (`load-profile.ts`), so the tag purges it too. A private, missing or misspelled profile gets
+  the site's own preview.
 - The Hall of Champions lists only players with a public profile: the reader filters on
   `is_public` (`postgres-leaderboard-reader.ts`), and `LEADERBOARD_RULES` sets board size and
   eligibility.

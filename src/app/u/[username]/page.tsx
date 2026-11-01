@@ -1,15 +1,12 @@
 import type { Metadata } from 'next';
-import { unstable_cache } from 'next/cache';
 import { notFound, permanentRedirect } from 'next/navigation';
-import { cache } from 'react';
 
 import type { PublicProfile } from '@shared/domain/account/public-profile';
 
-import { getAccountServices } from '@/infrastructure/account/account-container';
-import { PUBLIC_PROFILE_REVALIDATE_SECONDS, publicProfileCacheTag } from '@/infrastructure/account/public-profile-cache';
-import { isDatabaseConfigured } from '@/infrastructure/db/neon';
 import { PublicProfileView } from '@/presentation/components/account/public/PublicProfileView';
 import { publicProfilePath, publicProfileUrl, resolveProfileHandle } from '@/presentation/components/account/public/public-profile-links';
+
+import { loadProfile } from './load-profile';
 
 export const runtime = 'nodejs';
 /**
@@ -27,19 +24,6 @@ type Props = {
 export function generateStaticParams(): { username: string }[] {
   return [];
 }
-
-/**
- * Profile data of one canonical handle, tagged so account and auth writes can purge every cached
- * page built from it (revalidatePublicProfiles). Shared by generateMetadata and the page, so one
- * request hits the database once.
- */
-const loadProfile = cache(async (username: string): Promise<PublicProfile | null> => {
-  if (!isDatabaseConfigured()) return null;
-  return unstable_cache(() => getAccountServices().getPublicProfile.execute(username), ['public-profile', username], {
-    tags: [publicProfileCacheTag(username)],
-    revalidate: PUBLIC_PROFILE_REVALIDATE_SECONDS,
-  })();
-});
 
 /** The profile behind the canonical URL; any other spelling of the handle redirects there. */
 async function profileForParams(params: Props['params']): Promise<PublicProfile | null> {
@@ -64,7 +48,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     alternates: { canonical: url },
     robots: { index: true, follow: true },
     openGraph: { type: 'profile', title: name, description, url, username: profile.displayName },
-    twitter: { card: 'summary', title: name, description },
+    // The images are opengraph-image.tsx and twitter-image.tsx: the player's character, name and level.
+    twitter: { card: 'summary_large_image', title: name, description },
   };
 }
 
