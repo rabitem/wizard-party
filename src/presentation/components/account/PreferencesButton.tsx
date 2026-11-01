@@ -8,7 +8,7 @@ import { SlidersHorizontal } from 'lucide-react';
 import { CONSTANTS } from '@/presentation/config/constants';
 import { useAccount } from '@/presentation/providers/AccountProvider';
 import { PreferencesPanel } from '@/presentation/components/settings';
-import { BottomSheet } from '@/presentation/components/ui';
+import { SettingsDrawer } from '@/presentation/components/settings/SettingsDrawer';
 
 import { BAR_BG } from './account-surfaces';
 
@@ -17,8 +17,8 @@ const BUTTON_CLASS = 'inline-flex items-center justify-center h-11 w-11 rounded-
 const BUTTON_STYLE = { background: BAR_BG, backdropFilter: 'blur(6px)' };
 
 /**
- * Home-screen entry to Preferences: the account tab when signed in, a sheet for guests, who have
- * no account page. `?preferences=open` (the in-game panel's link) opens the sheet directly.
+ * Home-screen entry to Preferences: the account tab when signed in, the settings drawer for guests,
+ * who have no account page. `?preferences=open` (the in-game panel's link) opens it directly.
  */
 export function PreferencesButton() {
   const { status } = useAccount();
@@ -51,9 +51,9 @@ export function PreferencesButton() {
       <button type="button" onClick={() => setOpened(true)} aria-label="Preferences" title="Preferences" disabled={status === 'loading'} className={`${BUTTON_CLASS} cursor-pointer disabled:opacity-50 disabled:cursor-default`} style={BUTTON_STYLE}>
         <SlidersHorizontal className="w-4 h-4" />
       </button>
-      <BottomSheet isOpen={isOpen} onClose={close} title="Preferences" subtitle="Saved on this device. Sign in to keep them on every device.">
+      <SettingsDrawer isOpen={isOpen} onClose={close} closeOnEscape title="Preferences" subtitle="Saved on this device. Sign in to keep them on every device." icon={<SlidersHorizontal className="w-5 h-5" />}>
         <PreferencesPanel />
-      </BottomSheet>
+      </SettingsDrawer>
     </>
   );
 }

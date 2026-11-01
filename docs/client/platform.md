@@ -66,14 +66,16 @@ it stays empty. Importing one copies it into the custom sounds like any upload.
 ## Settings surfaces
 
 All settings are the one `game-settings` document (`settings-persistence.ts`), edited through
-`useGameSettingsState`. Two surfaces show different parts of it:
+`useGameSettingsState`. Two surfaces show different parts of it, both in `SettingsDrawer` (a panel from
+the right on desktop, a bottom sheet that drags down on phones):
 
 - **In-game panel** (`SettingsPanel.tsx`): quick controls only. Sound on and off, volume, chaos
   mode and a sound pack (`SOUND_PACKS` in `settings/sound-packs.ts`, which sets the Wizard, Jester
   and trick-win sound together), card and table looks, the leaderboard, shortcuts and leaving.
 - **Preferences** (`PreferencesPanel.tsx`): single sound picks, sounds from recent tables, uploads,
   notifications, seasonal pack and app theme. The account page shows it as the Preferences tab;
-  guests open it from the home screen (`PreferencesButton`, also opened by `?preferences=open`).
+  guests open it in the drawer from the home screen (`PreferencesButton`, also opened by
+  `?preferences=open`; Escape closes it).
   The in-game panel links to it in a new tab (`CONSTANTS.ROUTES`) so the game keeps its connection.
 
 ## Web Audio
