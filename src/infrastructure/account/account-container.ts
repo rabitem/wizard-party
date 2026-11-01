@@ -5,6 +5,7 @@ import {
   EnsureProfileUseCase,
   ExportAccountDataUseCase,
   GetAccountOverviewUseCase,
+  GetCharacterUseCase,
   GetCommunityStatsUseCase,
   GetLeaderboardsUseCase,
   GetPublicProfileUseCase,
@@ -18,6 +19,7 @@ import {
   PurgeAccountStorageUseCase,
   RecordGameResultsUseCase,
   SaveAccountDocumentUseCase,
+  SaveCharacterUseCase,
   UpdateCustomSoundUseCase,
   UnpinGameUseCase,
   UpdateProfileUseCase,
@@ -27,6 +29,7 @@ import {
 import { PostgresTournamentHistoryReader } from '../tournament/postgres-tournament-history-reader';
 
 import { PostgresAccountDocumentRepository } from './postgres-account-document-repository';
+import { PostgresCharacterRepository } from './postgres-character-repository';
 import { PostgresCustomSoundRepository } from './postgres-custom-sound-repository';
 import { PostgresGameResultRepository } from './postgres-game-result-repository';
 import { PostgresPlayerProgressRepository } from './postgres-player-progress-repository';
@@ -46,6 +49,7 @@ function createAccountServices() {
   const sounds = new PostgresCustomSoundRepository();
   const blobs = new VercelBlobAudioStorage();
   const publicProfiles = new PostgresPublicProfileReader();
+  const characters = new PostgresCharacterRepository();
   // Completed tournaments feed award XP and tournament achievements.
   const tournamentHistory = new PostgresTournamentHistoryReader();
 
@@ -66,11 +70,13 @@ function createAccountServices() {
     importGuestProgress: new ImportGuestProgressUseCase(results, progress, calculator, clock),
     listDocuments: new ListAccountDocumentsUseCase(documents),
     saveDocument: new SaveAccountDocumentUseCase(documents),
+    getCharacter: new GetCharacterUseCase(characters, documents, calculator),
+    saveCharacter: new SaveCharacterUseCase(ensureProfile, characters, calculator),
     listCustomSounds: new ListCustomSoundsUseCase(sounds),
     uploadCustomSound: new UploadCustomSoundUseCase(sounds, blobs, clock),
     updateCustomSound: new UpdateCustomSoundUseCase(sounds),
     deleteCustomSound: new DeleteCustomSoundUseCase(sounds, blobs),
-    exportAccountData: new ExportAccountDataUseCase(profiles, results, progress, documents, sounds),
+    exportAccountData: new ExportAccountDataUseCase({ profiles, results, progress, documents, sounds, characters }),
     purgeAccountStorage: new PurgeAccountStorageUseCase(sounds, blobs),
     /** IProgressRefresher of the tournament context: recomputes everyone involved on completion. */
     progressRefresher: new PlayerProgressRefresher(calculator),

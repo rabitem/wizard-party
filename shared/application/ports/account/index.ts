@@ -126,3 +126,4 @@ export * from './public-profile.port';
 export * from './leaderboard.port';
 export * from './community-stats.port';
 export * from './tournament-history.port';
+export * from './character.port';

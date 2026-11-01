@@ -8,7 +8,8 @@ import type {
   StoredCustomSound,
 } from '../../ports/account';
 import { ExportAccountDataUseCase, PurgeAccountStorageUseCase } from './account-data.use-cases';
-import { MemoryGameResults, MemoryProfiles, MemoryProgress } from './account-test-fakes';
+import { DEFAULT_APPEARANCE } from '../../../domain/character';
+import { MemoryCharacters, MemoryGameResults, MemoryProfiles, MemoryProgress } from './account-test-fakes';
 
 const NOW = 1_800_000_000_000;
 const clock = { now: () => NOW };
@@ -60,7 +61,10 @@ describe('ExportAccountDataUseCase', () => {
     const settings: AccountDocument = { key: 'game-settings', data: { theme: 'dark' }, version: 3, updatedAt: NOW - 100 };
     const stores = storesFor({ u1: { sounds: [sound('u1', 'boom')], documents: [settings] }, u2: { sounds: [sound('u2', 'other')] } });
 
-    const exported = await new ExportAccountDataUseCase(profiles, results, progress, stores.documents, stores.sounds)
+    const characters = new MemoryCharacters();
+    await characters.save('u1', DEFAULT_APPEARANCE);
+    await characters.save('u2', { ...DEFAULT_APPEARANCE, palette: 'palette:shadow' });
+    const exported = await new ExportAccountDataUseCase({ profiles, results, progress, documents: stores.documents, sounds: stores.sounds, characters })
       .execute('u1', { email: 'u1@example.test', username: 'merlin' });
     // The download is JSON: anything that does not survive serialisation is lost to the player.
     const portable = JSON.parse(JSON.stringify(exported)) as typeof exported;
@@ -71,6 +75,7 @@ describe('ExportAccountDataUseCase', () => {
     expect(portable.progress.unlocked).toEqual({ 'first-game': NOW - 1500, 'first-win': NOW - 1500 });
     expect(portable.settings).toEqual([settings]);
     expect(portable.customSounds.map((s) => s.id)).toEqual(['boom']);
+    expect(portable.character).toEqual(DEFAULT_APPEARANCE);
     expect(Number.isNaN(Date.parse(portable.exportedAt))).toBe(false);
   });
 });

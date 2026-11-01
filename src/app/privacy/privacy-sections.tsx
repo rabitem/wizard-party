@@ -157,7 +157,7 @@ export const privacySections: SectionContent[] = [
             <li>Linked sign-in providers (Google, Discord, GitHub, if enabled): provider account ID, access and refresh tokens, granted scope</li>
             <li>Sessions: session token, expiry, IP address and user agent of the signed-in device</li>
             <li>One-time email codes (stored hashed, valid 10 minutes)</li>
-            <li>Profile: tagline, visibility settings</li>
+            <li>Profile: tagline, visibility settings, the character look you save (chosen parts and colours)</li>
             <li>Progress: results of finished games (placement, score, bids and tricks per round), statistics, XP, level, achievements, pinned games, imported guest statistics</li>
             <li>Synced settings and custom sounds you upload (audio file up to 2 MB plus name, duration and category)</li>
             <li>Friends: your friend list (with pins), sent and received friend requests, players you blocked, and your friend and invite settings</li>
