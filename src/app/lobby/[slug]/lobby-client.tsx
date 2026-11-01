@@ -317,7 +317,7 @@ function LobbyRoom({ slug }: LobbyClientProps) {
   }, [isConnected, isCorrectRoom, slug]);
 
   const isSeated = isConnected && isCorrectRoom && !!playerId;
-  const isAutoRejoining = calcIsAutoRejoining({ canAutoRejoin, autoRejoinState, isConnected, error });
+  const isAutoRejoining = calcIsAutoRejoining({ canAutoRejoin, autoRejoinState, status: connectionStatus, error });
   const effectiveIsJoining = calcEffectiveIsJoining(manualJoinTriggered, isAutoRejoining, isSeated);
 
   const handleJoin = () => {
