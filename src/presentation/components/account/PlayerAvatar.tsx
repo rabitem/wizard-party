@@ -1,12 +1,9 @@
 'use client';
 
-import { useSyncExternalStore } from 'react';
-
 import { equippedCosmetics, type AvatarFrameId } from '@shared/domain/account';
 import type { CharacterAppearance } from '@shared/domain/character';
 
 import { useLocalAppearance } from '@/presentation/hooks/account/useLocalAppearance';
-import { useAccount } from '@/presentation/providers/AccountProvider';
 // By path: the character barrel also exports the 3D figure, which avatar-only pages never need.
 import { CharacterFace } from '@/presentation/components/character/CharacterFace';
 
