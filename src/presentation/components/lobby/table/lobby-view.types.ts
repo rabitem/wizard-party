@@ -13,6 +13,11 @@ export interface LobbySeatView {
   graceEndsAt: number | null;
   /** Signed-in player behind the seat (enables friend actions). */
   hasAccount: boolean;
+  /**
+   * Plays as a guest: a random avatar and a guest badge. Only the local seat can know this; for
+   * other seats a missing account may also be a blocked or hidden one, so they never show it.
+   */
+  isGuest: boolean;
 }
 
 export type LobbyInviteState = 'pending' | 'seen' | 'accepted' | 'declined' | 'expired' | 'revoked';

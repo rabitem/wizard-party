@@ -88,6 +88,7 @@ function lobbyScreen(game: IGameState, seatId: string): LobbyScreen {
     hostId: game.hostId,
     localPlayerId: seatId,
     localAvatarId: HARNESS_AVATAR,
+    localIsGuest: false,
     fallbackAvatarIds: [HARNESS_AVATAR],
     accounts: NO_ACCOUNTS,
     graceEndsAt: NO_GRACE,

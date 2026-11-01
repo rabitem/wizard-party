@@ -2,6 +2,7 @@
 
 import { LeaderboardEntry } from './types';
 import { getPlayerAvatarIcon } from './utils';
+import { useAvatarId } from '../../account/PlayerAvatar';
 import { PositionBadge } from './PositionBadge';
 import { PlayerConnectionDot } from '../../PlayerConnectionDot';
 import { SeatFriendAction } from '../../friends';
@@ -78,7 +79,8 @@ function CompactRow({ entry, isLocal, isCurrentTurn, scale }: { entry: Leaderboa
 
 /** Player avatar with connection indicator */
 function PlayerAvatar({ entry, isLocal, avatarSize }: { entry: LeaderboardEntry; isLocal: boolean; avatarSize: number }) {
-  const avatarIcon = getPlayerAvatarIcon(isLocal, entry.originalIndex);
+  const localAvatarId = useAvatarId();
+  const avatarIcon = getPlayerAvatarIcon(isLocal, entry.originalIndex, localAvatarId);
   return (
     <div className="relative flex-shrink-0">
       <div className="flex items-center justify-center border border-amber-800/40" style={{ width: avatarSize, height: avatarSize, background: THEME_SURFACE.CONTROL_BG }}>

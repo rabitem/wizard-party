@@ -62,7 +62,7 @@ export function AutumnPanelDecor({ variant }: LobbyPanelDecorProps) {
       <span className={styles.plankEdge} />
       <LeafPile className={styles.pileLeft} />
       {variant === 'count' ? null : <LeafPile className={styles.pileRight} />}
-      {variant === 'players' || variant === 'avatar' ? <AppleBasket /> : null}
+      {variant === 'players' ? <AppleBasket /> : null}
     </>
   );
 }

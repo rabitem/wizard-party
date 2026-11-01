@@ -10,7 +10,6 @@ const BORDERS: Record<LobbyPanelVariant, string> = {
   players: C.blue,
   rules: C.green,
   actions: C.gray,
-  avatar: C.red,
 };
 
 /** Scanlines and a faint pixel grid behind every panel; the actions bar gets a brick floor. */
@@ -26,12 +25,8 @@ export function PixelPanelDecor({ variant }: LobbyPanelDecorProps) {
   return (
     <span className="absolute inset-0 rounded-[inherit]" style={vars}>
       <span className={styles.panelBorder} />
-      {variant === 'avatar' ? null : (
-        <>
-          <PixelSprite rows={COIN} className={styles.coinA} />
-          {variant === 'players' ? <PixelSprite rows={COIN} className={styles.coinB} /> : null}
-        </>
-      )}
+      <PixelSprite rows={COIN} className={styles.coinA} />
+      {variant === 'players' ? <PixelSprite rows={COIN} className={styles.coinB} /> : null}
     </span>
   );
 }

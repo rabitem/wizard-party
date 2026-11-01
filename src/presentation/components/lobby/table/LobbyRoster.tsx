@@ -54,6 +54,7 @@ export function LobbyRoster({ seats, maxPlayers, className = '', onSeatClick, on
               )}
               <span className={`min-w-0 flex-1 truncate text-sm text-amber-50 ${seat.isConnected ? '' : 'opacity-60'}`} style={SERIF}>
                 {seat.name}{seat.isLocal ? <span className="text-amber-400/80"> (you)</span> : null}
+                {seat.isGuest ? <span className="text-amber-500/70 text-xs"> · guest</span> : null}
               </span>
               <span className={`shrink-0 inline-flex items-center gap-1 text-xs ${statusTone(seat)}`} style={SERIF}>
                 <StatusIcon seat={seat} />

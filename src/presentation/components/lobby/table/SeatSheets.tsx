@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Bot, Crown, Link2, Palette, UserMinus, UserPlus, VolumeX, Volume2 } from 'lucide-react';
+import { Bot, Crown, Link2, UserMinus, UserPlus, VolumeX, Volume2 } from 'lucide-react';
 import { LobbySheet } from './LobbySheet';
 import { LobbyAddBotDecor } from '../skins/LobbyDecor';
 import { LobbyIcon } from '../skins/LobbySkinText';
@@ -38,7 +38,6 @@ interface SeatActionSheetProps {
   isMuted?: boolean;
   friendAction?: React.ReactNode;
   onClose: () => void;
-  onChangeAvatar: () => void;
   onKick: () => void;
   onMakeHost: () => void;
   onRemoveBot: () => void;
@@ -69,15 +68,14 @@ function KickAction({ name, onKick }: { name: string; onKick: () => void }) {
   );
 }
 
-/** What you can do with a seated player: host tools, mute, friend request, your own avatar. */
-export function SeatActionSheet({ seat, isHost, isMuted, friendAction, onClose, onChangeAvatar, onKick, onMakeHost, onRemoveBot, onToggleMute }: SeatActionSheetProps) {
+/** What you can do with another seated player: host tools, mute, friend request. */
+export function SeatActionSheet({ seat, isHost, isMuted, friendAction, onClose, onKick, onMakeHost, onRemoveBot, onToggleMute }: SeatActionSheetProps) {
   const title = seat.isLocal ? 'Your seat' : seat.name;
   const isOtherHuman = !seat.isLocal && !seat.isBot;
 
   return (
     <LobbySheet title={title} subtitle={seatSubtitle(seat)} onClose={onClose}>
       <div className="space-y-1">
-        {seat.isLocal ? <SheetAction icon={<Palette className="w-4 h-4" />} label="Change avatar" onClick={onChangeAvatar} /> : null}
         {isOtherHuman && friendAction ? <div className="px-3 py-2">{friendAction}</div> : null}
         {isOtherHuman && onToggleMute ? (
           <SheetAction icon={isMuted ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />} label={isMuted ? 'Unmute chat and emotes' : 'Mute chat and emotes'} onClick={onToggleMute} />

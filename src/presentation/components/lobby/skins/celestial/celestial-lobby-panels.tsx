@@ -9,7 +9,7 @@ export function CelestialPanelBackdrop({ variant }: LobbyPanelDecorProps) {
   return (
     <>
       <span className={styles.starDust} />
-      {variant === 'players' || variant === 'avatar' ? <span className={styles.nebula} /> : null}
+      {variant === 'players' ? <span className={styles.nebula} /> : null}
     </>
   );
 }
