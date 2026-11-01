@@ -9,3 +9,4 @@ export * from './custom-sounds.use-cases';
 export * from './account-data.use-cases';
 export * from './leaderboard.use-cases';
 export * from './community-stats.use-cases';
+export * from './character.use-cases';

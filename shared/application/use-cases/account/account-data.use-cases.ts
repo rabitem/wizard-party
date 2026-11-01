@@ -1,29 +1,36 @@
 import type {
   IAccountDocumentRepository,
   IAudioBlobStorage,
+  ICharacterRepository,
   ICustomSoundRepository,
   IGameResultRepository,
   IPlayerProgressRepository,
   IProfileRepository,
 } from '../../ports/account';
 
+/** Every store the export reads; a new store of player data belongs here. */
+export interface AccountDataStores {
+  profiles: IProfileRepository;
+  results: IGameResultRepository;
+  progress: IPlayerProgressRepository;
+  documents: IAccountDocumentRepository;
+  sounds: ICustomSoundRepository;
+  characters: ICharacterRepository;
+}
+
 /** GDPR Art. 20: everything stored about the player in a portable format. */
 export class ExportAccountDataUseCase {
-  constructor(
-    private readonly profiles: IProfileRepository,
-    private readonly results: IGameResultRepository,
-    private readonly progress: IPlayerProgressRepository,
-    private readonly documents: IAccountDocumentRepository,
-    private readonly sounds: ICustomSoundRepository
-  ) {}
+  constructor(private readonly stores: AccountDataStores) {}
 
   async execute(userId: string, identity: Record<string, unknown>) {
-    const [profile, results, progress, documents, sounds] = await Promise.all([
-      this.profiles.get(userId),
-      this.results.listAll(userId),
-      this.progress.get(userId),
-      this.documents.list(userId),
-      this.sounds.list(userId),
+    const { stores } = this;
+    const [profile, results, progress, documents, sounds, character] = await Promise.all([
+      stores.profiles.get(userId),
+      stores.results.listAll(userId),
+      stores.progress.get(userId),
+      stores.documents.list(userId),
+      stores.sounds.list(userId),
+      stores.characters.get(userId),
     ]);
     return {
       exportedAt: new Date().toISOString(),
@@ -33,6 +40,8 @@ export class ExportAccountDataUseCase {
       gameResults: results,
       settings: documents,
       customSounds: sounds,
+      /** The saved character look, or null while none was saved. */
+      character,
       /** Filled by other bounded contexts (e.g. friends and inbox) before download. */
       social: undefined as unknown,
       /** Filled by the tournament context (hosted and entered tournaments, results, trophies). */

@@ -149,6 +149,24 @@ key the dependent feature is skipped or reduced; `.env.example` says which.
   `GET /api/leaderboard` (the Hall of Champions) read Postgres and are cached for a short time by
   Next's data cache.
 
+### Characters
+
+- A character is one part per slot (`CHARACTER_SLOTS`: head, outfit, headwear, cape, main hand,
+  off hand, palette, familiar), stored as `CharacterAppearance` JSON in
+  `player_profiles.appearance`. The catalog, unlock rules and validation are pure domain code in
+  `shared/domain/character/`; rendering keys off part ids, so ids never change once shipped.
+- **Unlocks are derived**, like level rewards: a part is `starter`, needs a `level`, or needs an
+  `achievement` (one that is unlocked or complete). Nothing about unlocks is stored. The server
+  checks every save (`validateAppearance`): unknown parts, parts in the wrong slot, locked parts,
+  a two-handed prop with something in the off hand, and headwear on a hood are refused with
+  `422` and the reason as the message.
+- **No backfill.** While `appearance` is NULL, `GetCharacterUseCase` derives a look from the
+  avatar in the synced `game-settings` document (`appearanceForLegacyAvatar`, starter parts
+  only). A stored look whose parts are no longer allowed is repaired slot by slot on read
+  (`repairAppearance`).
+- Characters are not shown anywhere yet: avatars still render from the `avatar` setting until
+  the presentation switches over.
+
 ### Public profiles
 
 - `/u/<username>` exists while `player_profiles.is_public` is true (the default, see
@@ -194,6 +212,7 @@ session, error mapping. Tournament routes wrap it in `tournamentRoute()`
 | `POST /api/account/import` | session | one-time guest import `{ stats, history }` |
 | `GET /api/account/documents`, `PUT /api/account/documents/[key]` | session | synced settings documents |
 | `GET`, `POST /api/account/sounds`, `PATCH`, `DELETE /api/account/sounds/[id]` | session | custom sounds; upload is multipart (`file`, `metadata`) |
+| `GET`, `PUT /api/account/character` | session | the character look, whether it was saved, and the unlocked part ids; save `{ appearance }` |
 | `GET /api/account/export` | session | JSON download of everything stored, including the social and tournament parts |
 | `GET /api/account/capabilities` | public | `DeploymentCapabilities`, cached for five minutes |
 | `/api/auth/*` | Better Auth | sign-in, sign-up, codes, two-factor, passkeys, sessions, deletion |
@@ -245,6 +264,10 @@ Env vars, secrets and their defaults for accounts are in
 - **Level reward.** Append to `LEVEL_TITLES` (`progression.ts`), `AVATAR_FRAMES` or
   `PROFILE_BANNERS` (`level-rewards.ts`), and add the CSS of a frame or banner to
   `src/presentation/components/account/cosmetic-styles.ts`, which is typed by cosmetic id.
+- **Character part.** Append to `CHARACTER_PARTS` (`shared/domain/character/character-catalog.ts`)
+  with its slot and unlock. An achievement unlock must name an existing achievement id
+  (`character.test.ts` checks it). Never rename or remove a shipped id: stored looks reference it,
+  and `repairAppearance` would quietly reset that slot.
 - **Public profile field.** Add it to `PublicProfileSource` (reader SQL in
   `postgres-public-profile-reader.ts`) and expose it explicitly in `buildPublicProfile()`; anything
   not listed stays private. Update the public profile section of the privacy policy
@@ -276,13 +299,15 @@ Env vars, secrets and their defaults for accounts are in
 | `0105_social.sql`, `0106_friend_request_emails.sql` | friends, requests, blocks, inbox, social settings on `player_profiles`, the `social_players` view (see [social.md](social.md)) |
 | `0107_one_player_name.sql` | usernames for accounts without one, `usernameChangedAt`, `NOT NULL` names |
 | `0108_tournaments.sql`, `0109_tournament_match_activity.sql` | tournaments and live match state (see [tournaments.md](tournaments.md)) |
+| `0110_character_appearance.sql` | `player_profiles.appearance` (nullable, no backfill) |
 
 ## Tests
 
 | Contract | Suite |
 | --- | --- |
 | Stats, XP, levels, rewards, achievements, usernames, public profile, leaderboard | `shared/domain/account/*.test.ts` |
-| Recording, import, history, profile, export, public profile use cases | `shared/application/use-cases/account/*.test.ts` |
+| Character catalog, unlocks, validation, repair, legacy avatars | `shared/domain/character/character.test.ts` |
+| Recording, import, history, profile, export, public profile, character use cases | `shared/application/use-cases/account/*.test.ts` |
 | Global totals | `shared/domain/stats/global-stats.test.ts`, `shared/application/use-cases/stats/global-stats.use-cases.test.ts`, `src/infrastructure/stats/redis-global-stats-store.test.ts` |
 | Auth configuration, sign-in guards, username hooks | `src/infrastructure/auth/auth-options.integration.test.ts`, `username-hooks.test.ts` |
 | Route wrapper: statuses, origin check, bounded bodies | `src/app/api/account/account-route.test.ts`, `account-route.read-json.test.ts` |

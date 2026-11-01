@@ -1,7 +1,9 @@
 import { EMPTY_STATS, type PlayerProfile, type PlayerStatsSummary, type ProfileChanges } from '../../../domain/account';
+import type { CharacterAppearance } from '../../../domain/character';
 import type { TournamentParticipation } from '../../../domain/tournament';
 import type {
   GameHistoryPageQuery,
+  ICharacterRepository,
   IClock,
   IGameResultRepository,
   IPlayerProgressRepository,
@@ -101,5 +103,16 @@ export class MemoryTournamentHistory implements ITournamentParticipationReader {
 
   async participations(userId: string) {
     return this.rows.get(userId) ?? [];
+  }
+}
+
+export class MemoryCharacters implements ICharacterRepository {
+  rows = new Map<string, unknown>();
+
+  async get(userId: string) {
+    return this.rows.get(userId) ?? null;
+  }
+  async save(userId: string, appearance: CharacterAppearance) {
+    this.rows.set(userId, appearance);
   }
 }
