@@ -1,4 +1,4 @@
-# Platform: storage, custom sound audio, Web Audio, multi-touch drag
+# Platform: storage, settings, custom sound audio, Web Audio, multi-touch drag
 
 Browser differences the app must survive without crashing or failing silently. Read this before
 you touch browser storage, audio playback or pointer handling on the hand cards. The seat tokens
@@ -42,6 +42,7 @@ references only, so one upload cannot exhaust the Web Storage budget.
 | `CustomSoundAudioLibrary` | `src/lib/sound/custom-sound-audio-library.ts` | Device audio by sound id, mirrored in a synchronous cache so settings reads and playback never wait on IndexedDB. Reports `unavailable` where IndexedDB is blocked; callers then keep audio inline in settings |
 | Custom sound audio coordinator | `src/presentation/components/settings/custom-sound-audio-coordinator.ts` | Keeps audio out of the settings blob |
 | Library caps | `src/lib/sound/custom-sound-library.config.ts` | Database and store names, per-sound and total byte caps |
+| `RecentTableSounds` | `src/lib/sound/recent-table-sounds.ts` | Sounds other players shared at recent tables, in their own database (`RECENT_TABLE_SOUNDS_CONFIG`), so Preferences can import them outside a room |
 
 The coordinator's invariants:
 
@@ -57,6 +58,23 @@ The coordinator's invariants:
 The caps are `CUSTOM_SOUND_LIBRARY_CONFIG.MAX_SOUND_BYTES` (the shared upload limit
 `CUSTOM_AUDIO_MAX_FILE_SIZE_BYTES`) per sound and `MAX_TOTAL_BYTES` for all custom sounds on the
 device (`exceedsCustomSoundLibraryCap`).
+
+At a table, `useRememberTableSounds` stores the shared sounds of the other players. The list keeps
+the newest `MAX_SOUNDS` for `MAX_AGE_MS` and is pruned on every write; where IndexedDB is blocked
+it stays empty. Importing one copies it into the custom sounds like any upload.
+
+## Settings surfaces
+
+All settings are the one `game-settings` document (`settings-persistence.ts`), edited through
+`useGameSettingsState`. Two surfaces show different parts of it:
+
+- **In-game panel** (`SettingsPanel.tsx`): quick controls only. Sound on and off, volume, chaos
+  mode and a sound pack (`SOUND_PACKS` in `settings/sound-packs.ts`, which sets the Wizard, Jester
+  and trick-win sound together), card and table looks, the leaderboard, shortcuts and leaving.
+- **Preferences** (`PreferencesPanel.tsx`): single sound picks, sounds from recent tables, uploads,
+  notifications, seasonal pack and app theme. The account page shows it as the Preferences tab;
+  guests open it from the home screen (`PreferencesButton`, also opened by `?preferences=open`).
+  The in-game panel links to it in a new tab (`CONSTANTS.ROUTES`) so the game keeps its connection.
 
 ## Web Audio
 
@@ -111,6 +129,8 @@ See [public/sounds/README.md](../../public/sounds/README.md). A sound is wired i
 | --- | --- |
 | `src/lib/storage/safe-storage.test.ts` | blocked and full storage, the memory overlay, write results |
 | `src/lib/sound/custom-sound-audio-library.test.ts`, `src/presentation/components/settings/custom-sound-audio-coordinator.test.ts` | the audio library and the settings invariants |
+| `src/lib/sound/recent-table-sounds.test.ts` | order, cap, age limit and blocked storage of sounds from recent tables |
+| `src/presentation/components/settings/sound-packs.test.ts` | each sound pack is distinct and matched exactly |
 | `src/lib/sound/audio-unlock.test.ts`, `audio-file-player.test.ts`, `noise-buffer-cache.test.ts`, `audio-context.service.test.ts` | unlock, decode cache and playback, noise buffers, context state |
 | `src/presentation/hooks/card-gesture-pointer.test.ts` | one pointer per gesture, the lock, pointer capture |
 | `src/presentation/hooks/useCardDragGesture.test.ts` | the drag threshold and the release outcome |

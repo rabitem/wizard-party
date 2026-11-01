@@ -11,6 +11,7 @@ export const GAME_RECORD_ROWS: [string, ...string[]][] = [
 
 export const STORAGE_ROWS: [string, ...string[]][] = [
     ["wizard-party-player-id, -username, -settings, -session, -recent-rooms, -player-stats and further wizard-party-* keys (local storage)", "Player ID, name, settings, sounds, statistics, tutorial state", "Until you clear your browser data", "Necessary"],
+    ["wizard-party-table-sounds (IndexedDB)", "Sounds other players shared at your recent tables, with their player name, so you can import them in Preferences; never leaves your device", "14 days, at most 24 sounds", "Necessary"],
     ["wizard-party-cookie-consent (local storage)", "Remembers your privacy choice, its version and date", "12 months", "Necessary"],
     ["better-auth.session_token / session_data (cookie)", "Keeps you signed in (accounts only)", "60 days / 5 minutes", "Necessary"],
     ["better-auth.two_factor, trust_device, dont_remember, last_used_login_method, OAuth state cookies", "Two-factor sign-in, trusted device, sign-in method hint", "10 minutes to 30 days", "Necessary"],

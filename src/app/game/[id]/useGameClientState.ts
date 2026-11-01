@@ -6,7 +6,7 @@ import { GamePhase, CardType, ICard, IGameState, type CustomSound, type ICardDec
 import { useGame } from '@/presentation/providers/GameProvider';
 import { useTournamentTable } from '@/presentation/providers/TournamentTableProvider';
 import { getRandomWizardSound, getRandomJesterSound } from '@/lib/sounds';
-import { getRandomCustomSoundForRole, loadGameSettings, type CustomAudioRole } from '@/presentation/components/settings';
+import { getRandomCustomSoundForRole, loadGameSettings, useRememberTableSounds, type CustomAudioRole } from '@/presentation/components/settings';
 import { useCardOrder } from '@/presentation/hooks/useCardOrder';
 import { createClientPhysicsState } from '@/presentation/utils/client-physics-state';
 import { scheduleAfterInput } from '@/presentation/utils/interaction-scheduler';
@@ -197,6 +197,7 @@ export function useGameClientState({ roomId, redirect = true }: UseGameClientSta
   const { match: tournamentMatch } = useTournamentTable();
   const { handAnimation, shuffleCards, sortCards, handleHandAnimationProgress, getOrderedCards } = useCardOrder();
   const uiState = useUIState();
+  useRememberTableSounds(game.sharedCustomSounds, game.playerId);
 
   const isCorrectRoom = game.gameState?.id === roomId;
   const isTrickAnimationPending = checkIsTrickAnimationPending(game);

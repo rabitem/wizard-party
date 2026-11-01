@@ -111,6 +111,16 @@ export const CONSTANTS = {
   },
 
   /**
+   * Where the full Preferences live: the account tab when signed in, a home-screen sheet for
+   * guests (opened by the query parameter).
+   */
+  ROUTES: {
+    ACCOUNT_PREFERENCES: '/account?tab=preferences',
+    GUEST_PREFERENCES: '/?preferences=open',
+    PREFERENCES_QUERY_PARAM: 'preferences',
+  },
+
+  /**
    * localStorage key names for persistent data.
    */
   STORAGE_KEYS: {

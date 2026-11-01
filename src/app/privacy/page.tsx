@@ -117,7 +117,7 @@ export default function PrivacyPage() {
                   className="text-amber-600/60 text-sm"
                   style={{ fontFamily: "Georgia, serif" }}
                 >
-                  Last updated: October 2026
+                  Last updated: November 2026
                 </p>
               </div>
             </div>

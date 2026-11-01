@@ -53,7 +53,8 @@ export {
 // UI sections
 export { SoundSection } from './SoundSection';
 export { NotificationsSection } from './NotificationsSection';
-export { AvatarSection } from './AvatarSection';
+export { SoundPicksSection } from './SoundPicksSection';
+export { PreferencesPanel } from './PreferencesPanel';
 export { CardThemeSection } from './CardThemeSection';
 export { CardNumberSizeSection } from './CardNumberSizeSection';
 export { TableThemeSection } from './TableThemeSection';
@@ -75,3 +76,6 @@ export {
 } from './card-back-presets';
 export type { CardBackDesign, CardBackPalette, CardBackStyle, SeasonalCardStyle } from './card-back-presets';
 export { useSeasonalPack } from './useSeasonalPack';
+export { useGameSettingsState } from './useGameSettingsState';
+export { useRecentTableSounds, useRememberTableSounds } from './useRecentTableSounds';
+export { SOUND_PACKS, findSoundPack, type SoundPack } from './sound-packs';

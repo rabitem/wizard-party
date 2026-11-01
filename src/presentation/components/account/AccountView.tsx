@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, type ReactNode } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Award, Database, LayoutDashboard, LogOut, Map as MapIcon, ScrollText, Shield, UserRound } from 'lucide-react';
+import { Award, Database, LayoutDashboard, LogOut, Map as MapIcon, ScrollText, Shield, SlidersHorizontal, UserRound } from 'lucide-react';
 
 import { useAccount } from '@/presentation/providers/AccountProvider';
+import { PreferencesPanel } from '@/presentation/components/settings';
 
 import { SectionDivider } from './AccountOrnaments';
 import { AccountShell } from './AccountShell';
@@ -27,6 +28,7 @@ const TABS = [
   { id: 'achievements', label: 'Achievements', icon: <Award className="w-4 h-4" /> },
   { id: 'rewards', label: 'Rewards', icon: <MapIcon className="w-4 h-4" /> },
   { id: 'profile', label: 'Profile', icon: <UserRound className="w-4 h-4" /> },
+  { id: 'preferences', label: 'Preferences', icon: <SlidersHorizontal className="w-4 h-4" /> },
   { id: 'security', label: 'Security', icon: <Shield className="w-4 h-4" /> },
   { id: 'data', label: 'Data', icon: <Database className="w-4 h-4" /> },
 ] as const satisfies readonly { id: string; label: string; icon: ReactNode }[];
@@ -45,6 +47,32 @@ function LoadingState() {
       <div className="h-72 rounded-2xl bg-amber-900/10 animate-pulse" />
     </div>
   );
+}
+
+interface AccountTabPanelProps {
+  tab: TabId;
+  userId: string;
+  overview: NonNullable<ReturnType<typeof useAccount>['overview']>;
+  onRefresh: () => void;
+  onShowHistory: () => void;
+}
+
+function AccountTabPanel({ tab, userId, overview, onRefresh, onShowHistory }: AccountTabPanelProps) {
+  switch (tab) {
+    case 'overview': return <OverviewSection overview={overview} onImported={onRefresh} onShowHistory={onShowHistory} />;
+    case 'history': return <HistorySection />;
+    case 'achievements': return (
+      <div className="space-y-4 sm:space-y-5">
+        <OwnTrophyCabinet userId={userId} />
+        <AchievementsSection overview={overview} />
+      </div>
+    );
+    case 'rewards': return <RewardsSection overview={overview} />;
+    case 'profile': return <ProfileSection overview={overview} onSaved={onRefresh} />;
+    case 'preferences': return <PreferencesPanel />;
+    case 'security': return <SecuritySection />;
+    case 'data': return <DataSection />;
+  }
 }
 
 export function AccountView() {
@@ -139,18 +167,7 @@ export function AccountView() {
           </nav>
 
           <div role="tabpanel">
-            {tab === 'overview' ? <OverviewSection overview={overview} onImported={refreshOverview} onShowHistory={() => selectTab('history')} /> : null}
-            {tab === 'history' ? <HistorySection /> : null}
-            {tab === 'achievements' ? (
-              <div className="space-y-4 sm:space-y-5">
-                <OwnTrophyCabinet userId={user.id} />
-                <AchievementsSection overview={overview} />
-              </div>
-            ) : null}
-            {tab === 'rewards' ? <RewardsSection overview={overview} /> : null}
-            {tab === 'profile' ? <ProfileSection overview={overview} onSaved={refreshOverview} /> : null}
-            {tab === 'security' ? <SecuritySection /> : null}
-            {tab === 'data' ? <DataSection /> : null}
+            <AccountTabPanel tab={tab} userId={user.id} overview={overview} onRefresh={refreshOverview} onShowHistory={() => selectTab('history')} />
           </div>
         </div>
       )}

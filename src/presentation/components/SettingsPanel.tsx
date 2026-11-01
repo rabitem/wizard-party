@@ -1,32 +1,21 @@
 'use client';
 
-import { useCallback, useMemo, useRef, useState, useEffect, type CSSProperties } from 'react';
-import type { SharedCustomSound } from '@shared/domain';
+import { useCallback, useMemo, useState, useEffect, type CSSProperties } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform, animate, PanInfo, useDragControls } from 'motion/react';
 import { useSound, type SoundName } from '@/lib/sounds';
-import { X, LogOut, Scroll } from 'lucide-react';
+import { X, LogOut, Scroll, SlidersHorizontal } from 'lucide-react';
 import { ScrollIndicator } from './ui';
 import {
-  loadGameSettings,
-  saveGameSettings,
-  importSharedSoundAsCustom,
   type GameSettings,
+  type SoundPack,
   SoundSection,
-  NotificationsSection,
-  AvatarSection,
   CardThemeSection,
   CardNumberSizeSection,
   TableThemeSection,
   KeyboardShortcutsSection,
-  ThemeSection,
-  SeasonalPackSection,
-  applySeasonalThemePack,
-  type SeasonalThemePack,
-  AudioUploadSection,
   LeaderboardSection,
   CollectionAnimationSection,
-  type CustomAudio,
-  type CustomSoundsChangeReason,
+  useGameSettingsState,
 } from './settings';
 import {
   createSettingsFeedbackParticles,
@@ -36,12 +25,9 @@ import {
   shouldTriggerSettingsFeedback,
   type SettingsFeedbackAction,
 } from './settings/settings-panel-feedback';
-import {
-  getBrowserNotificationPermission,
-  getNotificationToggleAction,
-  isNotificationPermissionGranted,
-} from './settings/settings-notifications';
 import { THEME_SURFACE } from '@/presentation/config/theme-surface.config';
+import { CONSTANTS } from '@/presentation/config/constants';
+import { useAccount } from '@/presentation/providers/AccountProvider';
 import { SeasonalCorner, SeasonalEmblem } from '@/presentation/components/seasonal';
 
 interface SettingsPanelProps {
@@ -49,7 +35,6 @@ interface SettingsPanelProps {
   onClose: () => void;
   onLeaveGame?: () => void;
   showLeaveGame?: boolean;
-  sharedCustomSounds?: SharedCustomSound[];
 }
 
 /** Settings panel header with title and close button */
@@ -86,6 +71,24 @@ function LeaveGameSection({ onClose, onLeaveGame }: { onClose: () => void; onLea
       </button>
       <p className="text-xs text-amber-600/40 text-center mt-2" style={{ fontFamily: 'Georgia, serif' }}>The battle will be paused for other warriors</p>
     </div>
+  );
+}
+
+/**
+ * Pointer to the settings that are set once, not mid-game. Opens in a new tab so the game keeps
+ * its connection: the account's Preferences tab, or the home screen's sheet for guests.
+ */
+function MorePreferencesLink() {
+  const { status } = useAccount();
+  const href = status === 'signed-in' ? CONSTANTS.ROUTES.ACCOUNT_PREFERENCES : CONSTANTS.ROUTES.GUEST_PREFERENCES;
+  return (
+    <a href={href} target="_blank" rel="noopener" className="flex items-center gap-3 p-3 rounded border border-amber-800/30 text-amber-200/80 hover:border-amber-700/50 hover:text-amber-100 transition-colors" style={{ background: THEME_SURFACE.CARD_BG, fontFamily: 'Georgia, serif' }}>
+      <SlidersHorizontal className="w-4 h-4 text-amber-500/60 flex-shrink-0" />
+      <span className="flex-1 min-w-0">
+        <span className="block text-sm">More preferences</span>
+        <span className="block text-xs text-amber-600/60">Single sounds, uploads, notifications and app theme</span>
+      </span>
+    </a>
   );
 }
 
@@ -139,65 +142,37 @@ function SettingsFeedbackBurst({ seed, onDone }: { seed: number; onDone: () => v
 
 interface SettingsContentProps {
   gameSettings: GameSettings; updateGameSettings: (updates: Partial<GameSettings>) => void;
-  onApplySeasonalPack: (pack: SeasonalThemePack) => void;
   soundSettings: ReturnType<ReturnType<typeof useSound>['getSettings']>; setSoundSettings: (s: ReturnType<ReturnType<typeof useSound>['getSettings']>) => void;
-  sound: ReturnType<typeof useSound>; onToggleNotifications: () => Promise<void>;
+  sound: ReturnType<typeof useSound>;
   showLeaveGame?: boolean; onLeaveGame?: () => void; onClose: () => void; isMobile: boolean;
-  sharedCustomSounds: SharedCustomSound[];
   onFeedbackAction: (action: SettingsFeedbackAction) => void;
 }
 
-/** Settings content sections */
-function SettingsContent({ gameSettings, updateGameSettings, onApplySeasonalPack, soundSettings, setSoundSettings, sound, onToggleNotifications, showLeaveGame, onLeaveGame, onClose, isMobile, sharedCustomSounds, onFeedbackAction }: SettingsContentProps) {
-  const importedSharedSoundIds = gameSettings.customSounds.map((customSound) => customSound.id);
-  const previewSelectedSound = useCallback((soundName: string) => {
-    if (soundName !== 'random') sound.play(soundName as SoundName, true);
-  }, [sound]);
-  const handleSoundSelection = useCallback((updates: Partial<GameSettings>, selectedSound: string) => {
-    updateGameSettings(updates);
-    previewSelectedSound(selectedSound);
+/** The quick, mid-game settings; the rest lives in Preferences (MorePreferencesLink). */
+function SettingsContent({ gameSettings, updateGameSettings, soundSettings, setSoundSettings, sound, showLeaveGame, onLeaveGame, onClose, isMobile, onFeedbackAction }: SettingsContentProps) {
+  const handleSelectPack = useCallback((pack: SoundPack) => {
+    updateGameSettings(pack.sounds);
+    if (pack.sounds.wizardSound !== 'random') sound.play(pack.sounds.wizardSound as SoundName, true);
     onFeedbackAction('sound-selection');
-  }, [onFeedbackAction, previewSelectedSound, updateGameSettings]);
-  const handleImportSharedSound = useCallback((sharedSound: SharedCustomSound) => {
-    updateGameSettings({
-      customSounds: importSharedSoundAsCustom(gameSettings.customSounds, sharedSound),
-    });
-    onFeedbackAction('shared-import');
-  }, [gameSettings.customSounds, onFeedbackAction, updateGameSettings]);
-  const handleCustomSoundsChange = useCallback((customSounds: CustomAudio[], reason: CustomSoundsChangeReason) => {
-    updateGameSettings({ customSounds });
-    if (reason === 'role') onFeedbackAction('custom-role');
-  }, [onFeedbackAction, updateGameSettings]);
+  }, [onFeedbackAction, sound, updateGameSettings]);
 
   return (
     <ScrollIndicator className="flex-1 p-4 sm:p-6 space-y-5 sm:space-y-6" maxHeight={isMobile ? 'calc(90vh - 120px)' : 'calc(100vh - 140px)'}>
-      <SoundSection settings={soundSettings} wizardSound={gameSettings.wizardSound} jesterSound={gameSettings.jesterSound} trickWinSound={gameSettings.trickWinSound}
-        sharedCustomSounds={sharedCustomSounds}
-        importedSharedSoundIds={importedSharedSoundIds.filter((id) => id.startsWith('imported-'))}
+      <SoundSection settings={soundSettings}
+        sounds={{ wizardSound: gameSettings.wizardSound, jesterSound: gameSettings.jesterSound, trickWinSound: gameSettings.trickWinSound }}
         onToggleSound={() => { sound.setSoundEnabled(!soundSettings.enabled); setSoundSettings(sound.getSettings()); }}
         onToggleChaosMode={() => { sound.setChaosMode(!soundSettings.chaosMode); setSoundSettings(sound.getSettings()); }}
         onVolumeChange={(volume) => { sound.setSoundVolume(volume); setSoundSettings(sound.getSettings()); }}
-        onWizardSoundChange={(wizardSound) => handleSoundSelection({ wizardSound }, wizardSound)}
-        onJesterSoundChange={(jesterSound) => handleSoundSelection({ jesterSound }, jesterSound)}
-        onTrickWinSoundChange={(trickWinSound) => handleSoundSelection({ trickWinSound }, trickWinSound)}
-        onPreviewSound={(soundName) => sound.play(soundName, true)}
-        onPreviewCustomSound={(dataUrl) => sound.playCustomAudio(dataUrl, true)}
-        onImportSharedSound={handleImportSharedSound} />
-      <AudioUploadSection customSounds={gameSettings.customSounds as CustomAudio[]}
-        previewVolume={soundSettings.volume}
-        onCustomSoundsChange={handleCustomSoundsChange} />
-      <NotificationsSection enabled={gameSettings.notificationsEnabled} onToggle={onToggleNotifications} />
-      <SeasonalPackSection settings={gameSettings} onApply={onApplySeasonalPack} />
-      <ThemeSection selectedTheme={gameSettings.theme} onSelect={(theme) => updateGameSettings({ theme })} />
-      <AvatarSection selectedAvatar={gameSettings.avatar} onSelect={(avatarId) => updateGameSettings({ avatar: avatarId })} />
+        onSelectPack={handleSelectPack} />
       <CardThemeSection selectedTheme={gameSettings.cardTheme} onSelect={(themeId) => updateGameSettings({ cardTheme: themeId })} />
       <CardNumberSizeSection selectedSize={gameSettings.cardNumberSize} onSelect={(size) => updateGameSettings({ cardNumberSize: size })} />
       <TableThemeSection selectedTheme={gameSettings.tableTheme} onSelect={(tableTheme) => updateGameSettings({ tableTheme })} />
       <CollectionAnimationSection selectedMode={gameSettings.collectionAnimation} onSelect={(collectionAnimation) => updateGameSettings({ collectionAnimation })} />
-      <KeyboardShortcutsSection />
       <LeaderboardSection position={gameSettings.leaderboardPosition} compact={gameSettings.leaderboardCompact}
         onPositionChange={(leaderboardPosition) => updateGameSettings({ leaderboardPosition })}
         onCompactChange={(leaderboardCompact) => updateGameSettings({ leaderboardCompact })} />
+      <KeyboardShortcutsSection />
+      <MorePreferencesLink />
       {showLeaveGame && onLeaveGame ? <LeaveGameSection onClose={onClose} onLeaveGame={onLeaveGame} /> : null}
       <BottomFlourish />
     </ScrollIndicator>
@@ -213,10 +188,10 @@ function PanelBackground() {
   </>);
 }
 
-export function SettingsPanel({ isOpen, onClose, onLeaveGame, showLeaveGame, sharedCustomSounds = [] }: SettingsPanelProps) {
+export function SettingsPanel({ isOpen, onClose, onLeaveGame, showLeaveGame }: SettingsPanelProps) {
   const sound = useSound();
   const [soundSettings, setSoundSettings] = useState(sound.getSettings());
-  const [gameSettings, setGameSettings] = useState<GameSettings>(loadGameSettings);
+  const { gameSettings, updateGameSettings } = useGameSettingsState();
   const [isMobile, setIsMobile] = useState(false);
   const [feedbackSeed, setFeedbackSeed] = useState<number | null>(null);
 
@@ -242,43 +217,10 @@ export function SettingsPanel({ isOpen, onClose, onLeaveGame, showLeaveGame, sha
     else animate(y, 0, { type: 'spring', damping: 30, stiffness: 300 });
   };
 
-  // Mirror of the latest settings so saves never merge onto a stale snapshot
-  // (e.g. after a seasonal pack or another component changed settings).
-  const latestSettingsRef = useRef(gameSettings);
-  const commitGameSettings = useCallback((next: GameSettings) => {
-    latestSettingsRef.current = next;
-    setGameSettings(next);
-  }, []);
-  useEffect(() => {
-    const handleSettingsChanged = (event: Event) => {
-      const next = (event as CustomEvent<GameSettings>).detail;
-      if (next && next !== latestSettingsRef.current) commitGameSettings(next);
-    };
-    window.addEventListener('settings-changed', handleSettingsChanged);
-    return () => window.removeEventListener('settings-changed', handleSettingsChanged);
-  }, [commitGameSettings]);
-  const updateGameSettings = useCallback((updates: Partial<GameSettings>) => {
-    commitGameSettings(saveGameSettings({ ...latestSettingsRef.current, ...updates }));
-  }, [commitGameSettings]);
-  // Same applySeasonalThemePack path as the home RealmSwitcher (useSeasonalPack); committing the
-  // returned settings keeps the panel in sync even when localStorage is unavailable.
-  const applySeasonalPack = useCallback((pack: SeasonalThemePack) => {
-    commitGameSettings(applySeasonalThemePack(pack));
-  }, [commitGameSettings]);
   const handleFeedbackAction = useCallback((action: SettingsFeedbackAction) => {
     if (!shouldTriggerSettingsFeedback(action)) return;
     setFeedbackSeed((current) => (current ?? 0) + 1);
   }, []);
-  const toggleNotifications = async () => {
-    const action = getNotificationToggleAction(gameSettings.notificationsEnabled, getBrowserNotificationPermission());
-    if (action.shouldRequestPermission && 'Notification' in window) {
-      const permission = await Notification.requestPermission();
-      updateGameSettings({ notificationsEnabled: isNotificationPermissionGranted(permission) });
-      return;
-    }
-    updateGameSettings({ notificationsEnabled: action.enabled });
-  };
-
   const panelClass = getSettingsPanelClass(isMobile);
 
   return (
@@ -301,10 +243,10 @@ export function SettingsPanel({ isOpen, onClose, onLeaveGame, showLeaveGame, sha
             {feedbackSeed !== null ? <SettingsFeedbackBurst seed={feedbackSeed} onDone={() => setFeedbackSeed(null)} /> : null}
             <MobileDragHandle isMobile={isMobile} dragControls={dragControls} />
             <SettingsHeader onClose={onClose} />
-            <SettingsContent gameSettings={gameSettings} updateGameSettings={updateGameSettings} onApplySeasonalPack={applySeasonalPack} soundSettings={soundSettings}
-              setSoundSettings={setSoundSettings} sound={sound} onToggleNotifications={toggleNotifications}
+            <SettingsContent gameSettings={gameSettings} updateGameSettings={updateGameSettings} soundSettings={soundSettings}
+              setSoundSettings={setSoundSettings} sound={sound}
               showLeaveGame={showLeaveGame} onLeaveGame={onLeaveGame} onClose={onClose} isMobile={isMobile}
-              sharedCustomSounds={sharedCustomSounds} onFeedbackAction={handleFeedbackAction} />
+              onFeedbackAction={handleFeedbackAction} />
           </div>
         </motion.div>
       </motion.div> : null}

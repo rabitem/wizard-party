@@ -36,7 +36,7 @@ are touching. The repository root holds [README.md](../README.md),
 | [client/hud-layout.md](client/hud-layout.md) | The responsive policy and the HUD regions |
 | [client/render-scene.md](client/render-scene.md) | Frame scheduling, quality tiers, the draw-call budget |
 | [client/cards-camera.md](client/cards-camera.md) | Card meshes and faces, the hand, the camera |
-| [client/platform.md](client/platform.md) | Web Storage, custom sound audio, Web Audio, multi-touch drag |
+| [client/platform.md](client/platform.md) | Web Storage, settings surfaces, custom sound audio, Web Audio, multi-touch drag |
 
 ## Testing
 
