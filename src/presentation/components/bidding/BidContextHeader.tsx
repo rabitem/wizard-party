@@ -17,7 +17,7 @@ interface BidContextHeaderProps {
   /** Tricks this round (= cards in hand), the reference for the bid total */
   maxBid: number;
   layout: BidContextLayout;
-  /** Hide labels and the trump name (short viewports) */
+  /** Hide labels and the trump name, and use slim player chips (short viewports) */
   compact?: boolean;
 }
 
@@ -55,9 +55,9 @@ function TotalSummary({ totalBids, maxBid, compact }: { totalBids: number; maxBi
   );
 }
 
-function PlayerChips({ players, localPlayerId, currentPlayerIndex, wrap }: Pick<BidContextHeaderProps, 'players' | 'localPlayerId' | 'currentPlayerIndex'> & { wrap: boolean }) {
+function PlayerChips({ players, localPlayerId, currentPlayerIndex, wrap, compact }: Pick<BidContextHeaderProps, 'players' | 'localPlayerId' | 'currentPlayerIndex'> & { wrap: boolean; compact: boolean }) {
   const chips = players.map((player, index) => (
-    <PlayerBidChip key={player.id} player={player} isLocal={player.id === localPlayerId} isCurrent={index === currentPlayerIndex} />
+    <PlayerBidChip key={player.id} player={player} isLocal={player.id === localPlayerId} isCurrent={index === currentPlayerIndex} compact={compact} />
   ));
   if (wrap) return <div className="flex flex-wrap justify-center gap-1.5">{chips}</div>;
   return (
@@ -87,7 +87,7 @@ export function BidContextHeader({ players, localPlayerId, currentPlayerIndex, t
     return (
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-center gap-3">{summary}</div>
-        <PlayerChips players={players} localPlayerId={localPlayerId} currentPlayerIndex={currentPlayerIndex} wrap />
+        <PlayerChips players={players} localPlayerId={localPlayerId} currentPlayerIndex={currentPlayerIndex} wrap compact={compact} />
       </div>
     );
   }
@@ -96,7 +96,7 @@ export function BidContextHeader({ players, localPlayerId, currentPlayerIndex, t
     <div className="flex min-w-0 items-center gap-3">
       {summary}
       <Divider />
-      <PlayerChips players={players} localPlayerId={localPlayerId} currentPlayerIndex={currentPlayerIndex} wrap={false} />
+      <PlayerChips players={players} localPlayerId={localPlayerId} currentPlayerIndex={currentPlayerIndex} wrap={false} compact={compact} />
     </div>
   );
 }

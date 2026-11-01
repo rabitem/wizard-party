@@ -6,6 +6,8 @@ interface PlayerBidChipProps {
   player: IPlayer;
   isLocal: boolean;
   isCurrent: boolean;
+  /** Slim padding for the compact bidding panel on landscape phones */
+  compact?: boolean;
 }
 
 function getChipContainerClass(isLocalAndCurrent: boolean, isCurrent: boolean, hasBid: boolean): string {
@@ -47,13 +49,14 @@ export function PlayerBidChip({
   player,
   isLocal,
   isCurrent,
+  compact = false,
 }: PlayerBidChipProps) {
   const hasBid = player.bid !== null;
   const displayName = player.name.split(' ')[0].slice(0, 6);
   const isLocalAndCurrent = isLocal && isCurrent;
 
   return (
-    <div className={`flex items-center gap-1.5 px-2 py-1.5 flex-shrink-0 transition-all ${getChipContainerClass(isLocalAndCurrent, isCurrent, hasBid)}`}>
+    <div className={`flex items-center gap-1.5 ${compact ? 'h-5 px-1.5' : 'px-2 py-1.5'} flex-shrink-0 transition-all ${getChipContainerClass(isLocalAndCurrent, isCurrent, hasBid)}`}>
       <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${getStatusClass(hasBid, isCurrent)}`} />
       <span
         className={`font-serif text-xs ${getNameClass(isLocalAndCurrent, isLocal, isCurrent)}`}

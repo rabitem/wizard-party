@@ -194,15 +194,19 @@ Both surfaces show the same information and controls, so they cannot drift (`com
   chips) in the sheet.
 - `BidSelector`: a -/+ stepper that skips the forbidden bid (`stepBid` in `bid-rules.ts`), one-tap
   chips for every bid of the round in one horizontally scrolling row (the selected chip is
-  scrolled into view), the forbidden-bid notice and an optional inline Place Bid.
+  scrolled into view), the forbidden-bid notice and an optional inline Place Bid. The `row`
+  layout (compact panel) keeps only the chips and Place Bid on one line: no stepper, and the
+  forbidden chip shows the forbidden bid instead of the notice.
 - `PlaceBidButton`: the submit guard (`canSubmitBid`) and a double-submit lock
   (`PLACE_BID_LOCK_MS`); the compact panel uses the short label "Bid 3".
 - `BiddingUI` keeps the player's pick and derives the shown selection every render with
   `resolveSelectableBid`: the forbidden bid only applies once the last bidder is up, so a pick
   made earlier moves to the next lower bid instead of leaving Place Bid disabled.
 
-`BiddingPanel` renders into the prompt region, with compact padding on landscape phones so Place
-Bid stays visible on a short screen. `BiddingSheet` (portrait phones) puts Place Bid in the sheet's
+`BiddingPanel` renders into the prompt region. At `compact` density (landscape phones) it is one
+slim header line over the `row` selector, about 80 px tall instead of 110 to 140, so it stays
+clear of the far seats' name labels on a 340 px tall screen and Place Bid stays visible; the
+chips and Place Bid keep the 44 px touch size. `BiddingSheet` (portrait phones) puts Place Bid in the sheet's
 sticky footer, so it is visible without scrolling, and its reopen button lives in the controls
 region, clear of the hand.
 
