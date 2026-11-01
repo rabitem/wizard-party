@@ -29,6 +29,12 @@ printed games is included.
 
 All other table, card, environment and particle visuals are drawn procedurally in code.
 
+## 3D models
+
+| Asset | Location | Author | Licence |
+| --- | --- | --- | --- |
+| KayKit Character Pack: Adventurers 1.0 (Mage, Knight, Barbarian, Rogue, Hooded Rogue and their props), stripped, merged and compressed | `public/characters/`, built by `scripts/characters/build-character-assets.mjs` from the commit pinned in `scripts/characters/kaykit-source.json` | Kay Lousberg (https://www.kaylousberg.com), https://github.com/KayKit-Game-Assets/KayKit-Character-Pack-Adventures-1.0 | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) |
+
 ## Fonts fetched at runtime
 
 | Asset | Location | Author | Licence |

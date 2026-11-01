@@ -107,6 +107,7 @@ Directories are kebab-case. A new feature folder gets an `index.ts` barrel on da
 | `npm run audit:animations` | Scenario, theme and viewport matrices in the sandbox |
 | `npm run db:migrate` | Applies `db/migrations/` (needs `DATABASE_URL`) |
 | `npm run sounds:generate` | Regenerates `public/sounds/` (needs FFmpeg 7 or newer) |
+| `npm run characters:build` | Rebuilds `public/characters/` from the pinned KayKit models ([characters](docs/client/characters.md)) |
 
 CI (`.github/workflows/ci.yml`) runs typecheck, lint, test, build, `check:worker`, the realtime
 smoke (`scripts/realtime-smoke.mjs`) and the golden path. The full browser matrix
