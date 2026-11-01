@@ -32,7 +32,7 @@ function FriendRow({ friend, busy, onInvite, onRevoke }: { friend: LobbyFriendVi
   return (
     <li className="flex items-center gap-3 py-2">
       <span className="relative">
-        <PlayerAvatar avatarId={friend.avatarId} level={friend.level} />
+        <PlayerAvatar appearance={friend.appearance} label={friend.name} level={friend.level} />
         <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full ring-2 ring-black/60 ${DOT[friend.presence]}`} />
       </span>
       <div className="flex-1 min-w-0">

@@ -91,7 +91,7 @@ export function InvitedStrip({ invites, canInvite, onRevoke, onInvite }: Invited
             className={`inline-flex items-center gap-1.5 pl-0.5 pr-1 py-0.5 rounded-full border text-xs ${live ? 'border-amber-700/50 text-amber-100' : 'border-amber-900/50 text-amber-600/80'}`}
             style={SERIF}
           >
-            <PlayerAvatar avatarId={invite.avatarId} size="xs" />
+            <PlayerAvatar appearance={invite.appearance} label={invite.name} size="xs" />
             {invite.name}
             <span className={`flex items-center gap-0.5 ${invite.state === 'declined' ? 'text-red-300/80' : 'text-amber-500/90'}`}>
               {invite.state === 'seen' ? <Eye className="w-3 h-3" /> : invite.state === 'pending' ? <Hourglass className="w-3 h-3" /> : null}

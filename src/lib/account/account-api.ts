@@ -1,6 +1,7 @@
 import type {
   AccountOverview,
   AccountDocumentKey,
+  CharacterView,
   GameHistoryPage,
   PinGameOutput,
   RecordGameResultsOutput,
@@ -56,6 +57,8 @@ const json = (method: string, body: unknown): RequestInit => ({
 export const accountApi = {
   capabilities: () => request<DeploymentCapabilities>('/api/account/capabilities'),
   overview: () => request<AccountOverviewDto>('/api/account'),
+  /** The signed-in player's look, whether it was saved, and the parts they may wear. */
+  character: () => request<CharacterView>('/api/account/character'),
   updateProfile: (changes: ProfileChanges) =>
     request<{ profile: PlayerProfile }>('/api/account', json('PATCH', changes)),
   recordGames: (results: GameResult[]) => request<RecordGameResultsOutput>('/api/account/games', json('POST', { results })),

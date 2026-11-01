@@ -1,11 +1,13 @@
 import { DEFAULT_RULESET_CONFIG, type IPlayer, type IRulesetConfig } from '@shared/domain';
+import type { CharacterAppearance } from '@shared/domain/character';
+import { seatAppearance } from '../../character/seat-appearance';
 import { CONSTANTS } from '@/presentation/config/constants';
 import type { LobbySeatView, RuleChip, StartReadiness } from './lobby-view.types';
 
 const BOT_LABELS: Record<number, string> = { 1: 'Easy', 2: 'Medium', 3: 'Hard', 4: 'Expert', 5: 'Master' };
 
 export interface SeatAccount {
-  avatar: string | null;
+  appearance: CharacterAppearance;
   level: number;
 }
 
@@ -13,24 +15,24 @@ interface BuildSeatsInput {
   players: IPlayer[];
   hostId: string;
   localPlayerId: string;
-  localAvatarId: string;
+  /** The local player's character; null for a guest (a silhouette). */
+  localAppearance: CharacterAppearance | null;
   /** The local player plays without an account. Only known for the local seat (see LobbySeatView.isGuest). */
   localIsGuest: boolean;
-  fallbackAvatarIds: readonly string[];
   accounts: ReadonlyMap<string, SeatAccount>;
   /** playerId -> epoch ms when their reconnect window closes */
   graceEndsAt: ReadonlyMap<string, number>;
 }
 
 /** Turns server players into the seats the round table draws, in seating order. */
-export function buildSeatViews({ players, hostId, localPlayerId, localAvatarId, localIsGuest, fallbackAvatarIds, accounts, graceEndsAt }: BuildSeatsInput): LobbySeatView[] {
-  return players.map((player, index) => {
+export function buildSeatViews({ players, hostId, localPlayerId, localAppearance, localIsGuest, accounts, graceEndsAt }: BuildSeatsInput): LobbySeatView[] {
+  return players.map((player) => {
     const isLocal = player.id === localPlayerId;
     const account = accounts.get(player.id);
     return {
       id: player.id,
       name: player.name,
-      avatarId: isLocal ? localAvatarId : account?.avatar ?? fallbackAvatarIds[index % fallbackAvatarIds.length],
+      appearance: seatAppearance({ isLocal, isBot: player.isBot, botDifficulty: player.botDifficulty }, localAppearance, account?.appearance),
       level: account?.level,
       isHost: player.id === hostId,
       isLocal,

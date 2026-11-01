@@ -6,7 +6,9 @@ import {
   CHARACTER_SLOTS,
   DEFAULT_APPEARANCE,
   LEGACY_AVATAR_LOOKS,
+  BOT_DIFFICULTIES_WITH_LOOKS,
   appearanceForLegacyAvatar,
+  botAppearance,
   displayedAppearance,
   parseAppearance,
   repairAppearance,
@@ -111,5 +113,15 @@ describe('displayedAppearance', () => {
     expect(displayedAppearance(null, 'skull')).toEqual(appearanceForLegacyAvatar('skull'));
     expect(displayedAppearance(look({ head: 'head:retired' }), 'beer')).toEqual(appearanceForLegacyAvatar('beer'));
     expect(displayedAppearance({ v: 9 }, null)).toEqual(DEFAULT_APPEARANCE);
+  });
+});
+
+describe('botAppearance', () => {
+  it('should give every bot difficulty its own valid look, and a middle one when unknown', () => {
+    const looks = BOT_DIFFICULTIES_WITH_LOOKS.map((difficulty) => botAppearance(difficulty));
+    expect(looks.every((botLook) => validateAppearance(botLook) === null)).toBe(true);
+    expect(new Set(looks.map((botLook) => JSON.stringify(botLook))).size).toBe(looks.length);
+    expect(botAppearance(undefined)).toEqual(botAppearance(3));
+    expect(botAppearance(42)).toEqual(botAppearance(3));
   });
 });

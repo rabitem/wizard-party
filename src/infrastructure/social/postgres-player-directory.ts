@@ -81,8 +81,8 @@ export class PostgresPlayerDirectory implements IPlayerDirectory, IPublicProfile
       LIMIT ${limit}
     `) as SocialPlayerRow[];
     return rows.map((row) => {
-      const { username, displayName, avatar, level } = toSocialPlayer(row);
-      return { username, displayName, avatar, level };
+      const { username, displayName, avatar, appearance, level } = toSocialPlayer(row);
+      return { username, displayName, avatar, appearance, level };
     });
   }
 
