@@ -37,11 +37,29 @@ describe('updateCardMotion', () => {
     const physics = createCardMotionState([0, 0, 0], SCALE, 'idle', 0);
 
     stepCard(group, physics, [1, 0, 0]);
-    expect(group.position.x).toBeGreaterThan(0.05);
+    expect(group.position.x).toBeGreaterThan(0);
     expect(group.position.x).toBeLessThan(0.5);
 
     stepCard(group, physics, [1, 0, 0], { frames: 60 });
     expect(group.position.x).toBeCloseTo(1, 3);
+  });
+
+  it('eases into a slot change from rest, so a card that moves across the hand never jumps in one frame', () => {
+    // A 20-card two-row hand losing a back-row card: the front row's first card moves to the
+    // back row's last slot, about a whole hand width away.
+    const group = new THREE.Group();
+    const physics = createCardMotionState([-0.53, 0, 0], SCALE, 'idle', 0);
+    const steps: number[] = [];
+    let previous = -0.53;
+    for (let frame = 0; frame < 40; frame++) {
+      stepCard(group, physics, [0.53, 0.17, 0]);
+      steps.push(group.position.x - previous);
+      previous = group.position.x;
+    }
+
+    const fastest = Math.max(...steps);
+    expect(steps[0]).toBeLessThan(fastest / 2);
+    expect(fastest).toBeLessThan(1.06 * 0.12);
   });
 
   it('applies the animation offset on top of the slot without smoothing', () => {

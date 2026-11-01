@@ -36,12 +36,6 @@ export const KNOWN_ISSUES: readonly KnownIssue[] = [
   },
   // The device projects (viewports.spec.ts).
   {
-    title: /^3 players: the largest hand is playable$/,
-    projects: /^android-tablet$/,
-    mode: 'fails',
-    reason: 'Galaxy Tab S9 portrait: when your card leaves the 20-card hand, the hand fits 19 cards and a hand card jumps 0.25 NDC in one frame (teleport).',
-  },
-  {
     title: /^[3-6] players: the largest hand is playable$/,
     projects: /^(android-landscape|iphone-landscape)$/,
     mode: 'fails',
