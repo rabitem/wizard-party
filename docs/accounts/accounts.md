@@ -259,8 +259,9 @@ Env vars, secrets and their defaults for accounts are in
 - **Achievement.** Append to `GAME_ACHIEVEMENTS` or `TOURNAMENT_ACHIEVEMENTS` in
   `shared/domain/account/achievements.ts`, then map its icon in `AchievementIcon.tsx`
   (`AchievementIcon.test.ts` fails for an unmapped icon). Ids are stored in `player_achievements`,
-  so never rename one. A new fact about a player belongs in `AchievementContext`, fed by a port,
-  not read inside the rule.
+  so never rename one. Helpers that read a game, a day or a tournament (runs, running scores, UTC
+  days) and the `ACHIEVEMENT_RULES` thresholds live in `achievement-facts.ts`. A new fact about a
+  player belongs in `AchievementContext`, fed by a port, not read inside the rule.
 - **Level reward.** Append to `LEVEL_TITLES` (`progression.ts`), `AVATAR_FRAMES` or
   `PROFILE_BANNERS` (`level-rewards.ts`), and add the CSS of a frame or banner to
   `src/presentation/components/account/cosmetic-styles.ts`, which is typed by cosmetic id.
