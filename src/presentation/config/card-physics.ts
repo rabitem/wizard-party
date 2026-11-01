@@ -49,9 +49,16 @@ export const SPRING_CONFIG = {
   DRAG_STIFFNESS: 500,
   DRAG_DAMPING: 24,
 
+  /**
+   * Hand card glide to a new slot (re-fit, row change, reorder, return from a drag): a critically
+   * damped spring with this angular frequency (1/s). It starts from rest, so a card crossing the
+   * whole hand eases in instead of covering a fifth of the way in the first frame; ~95% there
+   * after 0.32 s.
+   */
+  SLOT_GLIDE_FREQUENCY: 15,
+
   // Position interpolation speeds - FASTER for more responsive drag
   LERP_SPEED: {
-    SLOW: 0.18,          // Return to hand
     MEDIUM: 0.3,         // General movement
     FAST: 0.75,          // Drag follow
     INSTANT: 0.9,        // Near-immediate feedback

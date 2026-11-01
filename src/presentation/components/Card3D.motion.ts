@@ -89,8 +89,9 @@ export function getCardVisualLift(state: HandCardVisualState): number {
 }
 
 export interface CardMotionState {
-  /** Smoothed slot position; the group is drawn at slot + animation offset + lift. */
+  /** Smoothed slot position and its velocity; the group is drawn at slot + animation offset + lift. */
   slotX: number; slotY: number; slotZ: number;
+  slotVX: number; slotVY: number; slotVZ: number;
   y: number; yVelocity: number; scale: number; scaleVelocity: number;
   wobbleX: number; wobbleZ: number; tiltX: number; wobblePhase: number;
   /** Smoothed face brightness and the value last written to the material */
@@ -100,6 +101,7 @@ export interface CardMotionState {
 export function createCardMotionState(position: Vec3Tuple, scale: number, visualState: HandCardVisualState, wobblePhase: number): CardMotionState {
   return {
     slotX: position[0], slotY: position[1], slotZ: position[2],
+    slotVX: 0, slotVY: 0, slotVZ: 0,
     y: getCardVisualLift(visualState), yVelocity: 0, scale, scaleVelocity: 0,
     wobbleX: 0, wobbleZ: 0, tiltX: 0, wobblePhase,
     tint: getCardVisualTint(visualState),
@@ -126,6 +128,18 @@ export function applyCard3DRotation({
     rotation[1],
     rotation[2] + wobbleZ
   );
+}
+
+/**
+ * One step of the slot glide: a critically damped spring solved exactly over dt, so it settles in
+ * the same time at any frame rate and never overshoots. Returns the new value and velocity.
+ */
+export function glideToSlot(value: number, velocity: number, target: number, dt: number): [number, number] {
+  const omega = SPRING_CONFIG.SLOT_GLIDE_FREQUENCY;
+  const offset = value - target;
+  const drive = velocity + omega * offset;
+  const decay = Math.exp(-omega * dt);
+  return [target + (offset + drive * dt) * decay, (velocity - omega * drive * dt) * decay];
 }
 
 export interface CardFrameParams {
@@ -158,10 +172,9 @@ export function updateCardMotion(params: CardFrameParams): void {
   p.wobbleX = Math.sin(p.wobblePhase) * targets.wobbleIntensity;
   p.wobbleZ = Math.cos(p.wobblePhase * (FEEDBACK_CONFIG.WOBBLE_SPEED.Z / FEEDBACK_CONFIG.WOBBLE_SPEED.X)) * targets.wobbleIntensity * 0.8;
 
-  const slotLerp = frameLerp(SPRING_CONFIG.LERP_SPEED.SLOW, dt);
-  p.slotX += (position[0] - p.slotX) * slotLerp;
-  p.slotY += (position[1] - p.slotY) * slotLerp;
-  p.slotZ += (position[2] - p.slotZ) * slotLerp;
+  [p.slotX, p.slotVX] = glideToSlot(p.slotX, p.slotVX, position[0], dt);
+  [p.slotY, p.slotVY] = glideToSlot(p.slotY, p.slotVY, position[1], dt);
+  [p.slotZ, p.slotVZ] = glideToSlot(p.slotZ, p.slotVZ, position[2], dt);
   const bob = isSelected && !isDragging ? Math.sin(time * 2.5) * 0.01 : 0;
   group.position.set(
     p.slotX + positionOffset[0],
@@ -190,6 +203,7 @@ export function applyReturnPose(group: THREE.Group, p: CardMotionState, pose: Ca
   p.slotX = local.x - positionOffset[0];
   p.slotY = local.y - positionOffset[1] - p.y;
   p.slotZ = local.z - positionOffset[2];
+  p.slotVX = 0; p.slotVY = 0; p.slotVZ = 0;
   p.scale = pose.scale;
   p.scaleVelocity = 0;
 }
