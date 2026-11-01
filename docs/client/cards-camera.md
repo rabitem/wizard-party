@@ -58,6 +58,12 @@ config/card-render.config.ts                tiers, cache capacity, anisotropy, s
   replace `fillText` and `strokeText` wherever a symbol may be drawn, and fall back to text for
   anything unregistered. Glyph builders draw in a unit em box with a `GlyphPen`, which never
   touches the context transform, so gradients and shadows set up for text keep working.
+- The trump emblem in the middle of the table is the same outline extruded in 3D
+  (`table/trump-emblem.ts`, through `traceSuitGlyph`), so it always shows the symbol of the
+  player's deck, in the suit's accent colour.
+- The four suits of a deck must read as different colours: their accents, and for the art styles
+  that paint the card body per suit (classic, hyperreal, pixel) their primaries, stay at least
+  0.12 apart in OKLab (`card-theme-presets.test.ts`).
 - The classic number card prints the value large in the centre emblem with the suit glyph below
   it. The font sizes of the centre value and the corner index come from the player's
   `CARD_NUMBER_SIZE_PRESETS` choice (`components/settings/visual-presets.ts`), and two-digit values
@@ -135,7 +141,8 @@ spark FX texture on a `PointsMaterial`, with size scaled by `PARTICLE_SPRITE.SIZ
 
 - **A card theme with a new suit symbol**: add its outline to the glyph builders in
   `suit-glyphs/` (`glyph-shapes-basic.ts` or `glyph-shapes-emblems.ts`); `suit-glyphs.test.ts`
-  fails until every `canvasSymbol` has one.
+  fails until every `canvasSymbol` has one. The outline also becomes the deck's trump emblem on
+  the table; `card-theme-presets.test.ts` fails if two of its suits are too close in colour.
 - **A themed room with beams or rafters over the table**: add its id and overhead underside to
   `OVERHEAD_Y` in `themed-environment.config.ts`, or list it as open sky.
 - **A card render resource tunable**: add it to `card-render.config.ts`, not to the painter.
