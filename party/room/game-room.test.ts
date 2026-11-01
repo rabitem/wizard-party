@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ClientCommandType, GameEventType, GamePhase } from '../../shared/domain';
+import { ClientCommandType, GameEventType, GamePhase, getTrickPresentationMs } from '../../shared/domain';
 import { createUseCaseRegistry } from '../../shared/application';
 import { ROOM_TIMING, TURN_TIMEOUT_POLICY } from '../config/room-timing.config';
 import { HARNESS_START_TIME, RoomHarness, type TestConnection } from '../test-support/room-harness';
@@ -193,6 +193,22 @@ describe('GameRoom', () => {
       const gaps = botMoveGaps(t.sockets.Hana, bots);
       expect(gaps.length).toBeGreaterThan(0);
       expect(Math.min(...gaps)).toBeGreaterThanOrEqual(BOT_ACTION_DELAY_MS);
+    });
+
+    it('lets a bot lead only a full delay after the tables have landed and collected the last trick', async () => {
+      const t = await table(['Hana'], 3, ruleset({ rounds: 3 }));
+      const bots = new Set(t.h.game.players.filter((p) => p.isBot).map((p) => p.id));
+
+      await playUntil(t, () => t.h.game.phase === GamePhase.GAME_END);
+
+      const { sent } = t.sockets.Hana;
+      const leadWaits = sent.flatMap(({ at, message }, index) => {
+        if (message.type !== GameEventType.TRICK_COMPLETE) return [];
+        const lead = sent.slice(index + 1).find((later) => later.message.type === GameEventType.CARD_PLAYED);
+        return lead && bots.has(String(lead.message.playerId)) ? [lead.at - at] : [];
+      });
+      expect(leadWaits.length).toBeGreaterThan(0);
+      expect(Math.min(...leadWaits)).toBeGreaterThanOrEqual(getTrickPresentationMs(4) + BOT_ACTION_DELAY_MS);
     });
 
     it('retries a bot that could not move with backoff instead of stalling the table', async () => {

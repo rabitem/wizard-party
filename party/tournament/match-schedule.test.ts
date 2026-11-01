@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { Game, GamePhase, Player } from '../../shared/domain';
+import { Game, GamePhase, Player, getTrickPresentationMs } from '../../shared/domain';
 import { TOURNAMENT_TIMING } from '../../shared/domain/tournament';
 import { bindSeat, lockMatchRecord, type TournamentMatchRecord } from './match-record';
 import { TOURNAMENT_ROOM_TIMING } from './match-room.constants';
@@ -53,7 +53,10 @@ describe('match schedule', () => {
 
       expect(matchDeadlines(ended, game).roundAdvance).toBe(TEST_NOW + TOURNAMENT_ROOM_TIMING.ROUND_END_AUTO_ADVANCE_MS);
       game.getPlayer('p-a')!.isBot = true;
-      expect(nextMatchDeadline(matchDeadlines(ended, game))).toBe(TEST_NOW + TOURNAMENT_ROOM_TIMING.HOSTLESS_ROUND_END_ADVANCE_MS);
+      // Counted from when the tables have collected the round's last trick.
+      expect(nextMatchDeadline(matchDeadlines(ended, game))).toBe(
+        TEST_NOW + getTrickPresentationMs(game.players.length) + TOURNAMENT_ROOM_TIMING.HOSTLESS_ROUND_END_ADVANCE_MS
+      );
     });
   });
 });

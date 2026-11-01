@@ -5,7 +5,10 @@
 import { DEFAULT_GRACE_DURATION_MS, SERVER_DISCONNECT_DEBOUNCE_MS } from '../../shared/domain';
 
 export const ROOM_TIMING = {
-  /** Pause before a bot moves (after any change of the table, so bots never outpace it). */
+  /**
+   * Pause before a bot moves (after any change of the table, so bots never outpace it). After a
+   * trick completed it counts from when the tables have presented it (getTrickPresentationMs).
+   */
   BOT_ACTION_DELAY_MS: 800,
   /** First retry after a bot turn that could not be applied at all; doubles per failure. */
   BOT_RETRY_BASE_MS: 2_000,
@@ -19,7 +22,10 @@ export const ROOM_TIMING = {
   RECONNECT_WINDOW_MS: DEFAULT_GRACE_DURATION_MS,
   /** ROUND_END moves on by itself after this, so an idle host cannot hold the table. */
   ROUND_END_AUTO_ADVANCE_MS: 30_000,
-  /** The same when no connected human holds the host seat (nobody could press "next round"). */
+  /**
+   * The same when no connected human holds the host seat (nobody could press "next round"),
+   * counted from when the tables have collected the round's last trick.
+   */
   HOSTLESS_ROUND_END_ADVANCE_MS: 5_000,
 } as const;
 

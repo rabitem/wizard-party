@@ -233,6 +233,10 @@ pure lifecycle modules (`played-card-registry.ts`, `played-card-animation-sequen
   stall or a burst of bot moves. When the local player is to act, the whole backlog lands first,
   and the local player's own throw lands every waiting card before it flies. `backlog > 0` blocks
   playable cards, so the player never acts on a lead that is not visible.
+- The server waits for the presentation: `TRICK_PRESENTATION_TIMING` (`@shared/domain`) is how
+  long the slowest landing and collection of a trick takes, and bots and hostless round advances
+  wait that long after a trick completed. A test in `collecting-card-animation.test.ts` fails when
+  the animation config outgrows it; raise the shared timing with it.
 
 The 3D side (`useCardLandingTracking`, `useCollectingAnimation`, the held drag play, the pending
 drop pose) reports landings and collections to the presentation through callbacks

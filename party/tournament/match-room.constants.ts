@@ -11,7 +11,10 @@ export const TOURNAMENT_MATCH_RECORD_VERSION = 1;
 export const TOURNAMENT_ROOM_TIMING = {
   /** A finished round moves on by itself after this long, so an idle host can't stall a match. */
   ROUND_END_AUTO_ADVANCE_MS: 30_000,
-  /** Sooner when the host seat is played by a bot or its player is disconnected. */
+  /**
+   * Sooner when the host seat is played by a bot or its player is disconnected, counted from when
+   * the tables have collected the round's last trick.
+   */
   HOSTLESS_ROUND_END_ADVANCE_MS: 5_000,
   /** A start or advance that failed is tried again after this long (never in a tight alarm loop). */
   FAILED_ALARM_RETRY_MS: 15_000,

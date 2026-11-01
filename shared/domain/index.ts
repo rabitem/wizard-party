@@ -330,4 +330,6 @@ export {
   type SharedCustomSound,
   RECONNECT_TIMING,
   SERVER_DISCONNECT_DEBOUNCE_MS,
+  TRICK_PRESENTATION_TIMING,
+  getTrickPresentationMs,
 } from './constants';

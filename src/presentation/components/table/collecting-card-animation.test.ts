@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { COLLECT_ANIMATION, TABLE_SURFACE, getCardRestY } from '../../config/physics.config';
+import { TRICK_PRESENTATION_TIMING, getTrickPresentationMs } from '@shared/domain';
+import { COLLECT_ANIMATION, PLAY_ANIMATION, TABLE_SURFACE, getCardRestY } from '../../config/physics.config';
 import { getCollectingCardTargetLayout } from './stacked-deck-layout';
 import {
   COLLECTION_ANIMATION_VARIANTS,
@@ -10,6 +11,7 @@ import {
   getCollectingAnimationProfile,
   getCollectingFlightPathOffset,
   getCollectingFlyDelay,
+  getCollectingFlyDuration,
   getCollectingModeTiming,
   getCollectingCardStackedY,
   getCollectingWaitDuration,
@@ -192,6 +194,20 @@ describe('collecting card trick timing', () => {
       expect(getCollectingFlyDelay(4, timing)).toBeCloseTo(slot * 4);
     }
   );
+
+  // The server holds bots and hostless round advances back this long after a trick completed.
+  it.each([3, 4, 5, 6])('lands and collects a %s-card trick within the presentation time the server waits for', (cardCount) => {
+    const timing = getCollectingModeTiming('random');
+    const profiles = COLLECTION_ANIMATION_VARIANTS.map((variant) => getCollectingAnimationProfile(variant));
+    const slowestJitter = 1 + COLLECT_ANIMATION.DURATION_JITTER;
+    const gather = COLLECT_ANIMATION.GATHER_DURATION_MAX * slowestJitter * timing.flyDurationMultiplier;
+    const flight = Math.max(...profiles.map((profile) => getCollectingFlyDuration(Infinity, slowestJitter, profile)));
+    const settle = Math.max(...profiles.map((profile) => profile.settleDuration));
+    const lastCardStacked = gather + getCollectingWaitDuration(timing) + getCollectingFlyDelay(cardCount - 1, timing) + flight + settle;
+
+    expect(PLAY_ANIMATION.MAX_DURATION * 1000).toBeLessThanOrEqual(TRICK_PRESENTATION_TIMING.CARD_FLIGHT_MS);
+    expect((PLAY_ANIMATION.MAX_DURATION + lastCardStacked) * 1000).toBeLessThanOrEqual(getTrickPresentationMs(cardCount));
+  });
 });
 
 describe('shortestAngleDelta', () => {
