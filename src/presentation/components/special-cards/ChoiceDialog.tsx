@@ -120,6 +120,7 @@ export function ChoiceDialog({ sheetId, title, icon, isMobile, children, dismiss
       />
       <div
         role="dialog"
+        aria-modal="true"
         aria-label={title}
         className="relative w-full max-w-lg mx-4 border-2 border-amber-700/50 shadow-2xl"
         style={{ background: PANEL_BACKGROUND, boxShadow: PANEL_SHADOW }}
