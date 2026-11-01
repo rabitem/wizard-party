@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Vector3 } from 'three';
-import { REALM_HALL } from '@/presentation/config/realm-hall.config';
+import { REALM_HALL, hallStopsFor } from '@/presentation/config/realm-hall.config';
 import { TableSurface } from '../table';
 import { useSelectedTableTheme } from '../table/table-theme';
 import { useRenderQuality } from '../three/render-quality';
@@ -14,6 +14,7 @@ import { AMBIENT_USER_DATA } from '../three/frame-scheduling/ambient';
 import { selectHtmlOverlayTargetReady } from '../three/html-overlay-target';
 import { cameraPoseAt } from './hall-path';
 import { hallProgressStore } from './hall-progress-store';
+import { HallLoadingReporter } from './HallLoadingReporter';
 
 const NO_PLAYERS: never[] = [];
 
@@ -24,10 +25,13 @@ const NO_PLAYERS: never[] = [];
  */
 function CameraRig({ still }: { still: boolean }) {
   const invalidate = useThree((state) => state.invalidate);
+  const aspect = useThree((state) => state.size.width / Math.max(state.size.height, 1));
+  const stops = useMemo(() => hallStopsFor(aspect), [aspect]);
   const eased = useRef(hallProgressStore.get());
   const lookAt = useMemo(() => new Vector3(), []);
 
   useEffect(() => (still ? undefined : hallProgressStore.subscribe(() => invalidate())), [still, invalidate]);
+  useEffect(() => invalidate(), [stops, invalidate]);
 
   useFrame(({ camera }, delta) => {
     const target = still ? 0 : hallProgressStore.get();
@@ -35,7 +39,7 @@ function CameraRig({ still }: { still: boolean }) {
     eased.current += (target - eased.current) * step;
     if (Math.abs(target - eased.current) < 0.0005) eased.current = target;
     else invalidate();
-    const pose = cameraPoseAt(REALM_HALL.STOPS, eased.current);
+    const pose = cameraPoseAt(stops, eased.current);
     camera.position.set(...pose.position);
     camera.lookAt(lookAt.set(...pose.target));
   });
@@ -72,6 +76,7 @@ export function RealmHallScene({ still }: { still: boolean }) {
   return (
     <>
       <CameraRig still={still} />
+      <HallLoadingReporter settled={settled} />
       {/* Compiles the room's shaders before the walk reaches them and draws the first shadow map */}
       <ShaderWarmup warmupKey={`${tableTheme.id}:${structuralTier}`} />
       {/* Room decor animates at the scheduler's ambient rate, as in the game */}
@@ -79,6 +84,8 @@ export function RealmHallScene({ still }: { still: boolean }) {
         {settled ? <ThemedEnvironment /> : null}
       </group>
       <SceneLighting />
+      {/* The game lights the table for play; seen from across the room the walls need a little fill */}
+      <hemisphereLight args={[REALM_HALL.FILL.SKY, REALM_HALL.FILL.GROUND, REALM_HALL.FILL.INTENSITY]} />
       <TableSurface players={NO_PLAYERS} localPlayerId="" currentPlayerIndex={-1} />
     </>
   );

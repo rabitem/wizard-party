@@ -13,7 +13,6 @@ import { ROOM_CODE_MAX, ROOM_CODE_MIN } from './utils';
 const SERIF = { fontFamily: 'Georgia, serif' } as const;
 const NAME_MAX_LENGTH = 20;
 const FIELD_BG = 'color-mix(in srgb, color-mix(in srgb, var(--surface), black 60%) 60%, transparent)';
-const GOLD = 'linear-gradient(180deg, var(--accent-cta-top) 0%, var(--accent-cta-mid) 55%, var(--accent-cta-bottom) 100%)';
 
 type PlayAction = 'quick' | 'code' | 'create';
 
@@ -203,10 +202,10 @@ function JoinByCodeForm({
           type="submit"
           disabled={disabled}
           aria-label="Join room"
-          className={`absolute right-1.5 top-1.5 bottom-1.5 w-12 rounded-lg flex items-center justify-center text-[#1a1510] transition-all cursor-pointer active:scale-95 disabled:cursor-not-allowed ${
+          className={`absolute right-1.5 top-1.5 bottom-1.5 w-12 rounded-lg flex items-center justify-center transition-all cursor-pointer active:scale-95 disabled:cursor-not-allowed ${
             valid ? 'hover:brightness-110' : 'opacity-50'
           }`}
-          style={{ background: GOLD }}
+          style={GOLD_BUTTON_STYLE}
         >
           {busy ? <Loader2 className="w-5 h-5 animate-spin" /> : <ArrowRight className="w-5 h-5" />}
         </button>

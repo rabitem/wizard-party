@@ -48,7 +48,7 @@ export function RealmSwitcher() {
         <Sparkles className="w-3.5 h-3.5 text-amber-500/70" aria-hidden="true" />
         <h2
           id="realm-switcher-heading"
-          className="text-xs text-amber-400/80 uppercase tracking-widest"
+          className="text-sm text-amber-100/85"
           style={{ fontFamily: 'Georgia, serif' }}
         >
           Choose your realm

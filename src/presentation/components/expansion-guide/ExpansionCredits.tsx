@@ -6,16 +6,18 @@ import { THEME_SURFACE } from '@/presentation/config/theme-surface.config';
 
 interface ExpansionCreditsProps {
   sources: readonly ExpansionSource[];
+  /** Without its own box, for a surface that already is one (the start page's rulebook panel). */
+  plain?: boolean;
   className?: string;
 }
 
 /** Credit banner for the Wizard publisher and designer, with links to the publisher's sources. */
-export function ExpansionCredits({ sources, className = '' }: ExpansionCreditsProps) {
+export function ExpansionCredits({ sources, plain = false, className = '' }: ExpansionCreditsProps) {
   return (
     <aside
-      className={`p-3 rounded-lg border border-amber-800/30 text-[11px] leading-relaxed text-amber-500/70 ${className}`}
+      className={`text-xs leading-relaxed text-amber-200/75 ${plain ? 'pt-3 border-t border-amber-800/30' : 'p-3 rounded-lg border border-amber-800/30'} ${className}`}
       style={{
-        background: THEME_SURFACE.CARD_BG,
+        background: plain ? undefined : THEME_SURFACE.CARD_BG,
         fontFamily: 'Georgia, serif',
       }}
     >
@@ -25,7 +27,7 @@ export function ExpansionCredits({ sources, className = '' }: ExpansionCreditsPr
       </p>
       {sources.length > 0 ? (
         <div className="mt-2 pl-5">
-          <span className="text-amber-500/60 uppercase tracking-wider text-[10px]">{EXPANSION_CREDITS.SOURCES_HEADING}</span>
+          <span className="text-amber-100/85">{EXPANSION_CREDITS.SOURCES_HEADING}</span>
           <ul className="mt-1 space-y-1">
             {sources.map((source) => (
               <li key={source.url}>
@@ -33,7 +35,7 @@ export function ExpansionCredits({ sources, className = '' }: ExpansionCreditsPr
                   href={source.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-amber-400/80 hover:text-amber-300 underline underline-offset-2 decoration-amber-700/50"
+                  className="inline-flex items-center gap-1 text-amber-300 hover:text-amber-200 underline underline-offset-2 decoration-amber-600/60"
                 >
                   {source.label}
                   <ExternalLink className="w-3 h-3 flex-shrink-0" />

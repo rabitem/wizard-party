@@ -2,7 +2,7 @@
 
 import type { ComponentProps } from 'react';
 import dynamic from 'next/dynamic';
-import { Settings2, Sparkles } from 'lucide-react';
+import { ChevronDown, Settings2, Sparkles } from 'lucide-react';
 import {
   ExpansionShowcaseSection,
   FooterSection,
@@ -18,10 +18,11 @@ import { GlobalStatsPanel } from '../GlobalStatsPanel';
 import { GOLD_BUTTON_STYLE } from '../lobby/table';
 import { HallOfChampions } from '../hall-of-champions';
 import { RealmPulse } from '../realm-pulse';
-import { AccountButton, GuestHint, PreferencesButton } from '../account';
-import { SocialButton } from '../friends';
+import { GuestHint } from '../account';
+import { HallDock } from './HallDock';
 import { HallStation } from './HallStation';
 import { HallSign } from './HallSign';
+import { HallLoader } from './HallLoader';
 import { RealmHallBackdrop } from './RealmHallBackdrop';
 import { RealmLenses } from './RealmLenses';
 import { useHallScrollProgress } from './useHallScrollProgress';
@@ -37,10 +38,20 @@ interface StartHallProps {
   handleJoinRoom: (roomId: string, roomSettings?: RoomSettings) => void;
 }
 
+/** Under the play form: scrolling walks you through the room to the table. */
+function WalkCue() {
+  return (
+    <p className="mt-4 flex items-center justify-center gap-2 text-sm text-amber-200/80" style={SERIF}>
+      Scroll to walk to the table
+      <ChevronDown className="w-4 h-4 motion-safe:animate-bounce" aria-hidden />
+    </p>
+  );
+}
+
 /** The last stop: the table itself, the live count of the tables in play and a seat to take. */
 function TableStation({ onQuickJoin, onCreateRoom }: { onQuickJoin: () => void; onCreateRoom: () => void }) {
   return (
-    <HallStation side="center" label="Your seat" className="md:items-end md:pb-[14svh]">
+    <HallStation side="center" label="Your seat" panel={false} className="md:items-end md:pb-[14svh]">
       <div className="text-center">
         <h2 className="text-4xl sm:text-5xl leading-tight text-amber-50 [text-wrap:balance]" style={SERIF}>Your seat is waiting</h2>
         <p className="mt-3 text-base sm:text-lg text-amber-200/85" style={SERIF}>Three to six players, any mix of friends and bots.</p>
@@ -69,9 +80,9 @@ function TableStation({ onQuickJoin, onCreateRoom }: { onQuickJoin: () => void; 
 }
 
 /**
- * The start page as a walk through the active realm's hall: the host stand at the door (play),
- * then the notices, the champions, the chronicles and the rulebook, and finally the table. The
- * live hall renders behind the page; each HallStation brings the camera to its stop.
+ * The start page as a walk through the active realm's own game room: the play form at the edge of
+ * the room, then the notices, the champions, the chronicles and the rulebook, and finally the
+ * table. The live room renders behind the page; each HallStation brings the camera to its stop.
  */
 export function StartHall({ playCard, openTutorial, recentRooms, handleJoinRoom }: StartHallProps) {
   useHallScrollProgress();
@@ -79,17 +90,15 @@ export function StartHall({ playCard, openTutorial, recentRooms, handleJoinRoom 
     <>
       <RealmHallBackdrop />
       <RealmHallCanvas />
-      <div className="fixed top-4 right-4 sm:top-6 sm:right-6 z-30 flex gap-2">
-        <SocialButton />
-        <PreferencesButton />
-        <AccountButton />
-      </div>
+      <HallLoader />
+      <HallDock />
 
-      <HallStation side="center" label="The door" className="md:bg-none pt-20 sm:pt-12 md:pb-6" columnClassName="md:min-h-[calc(100svh-4.5rem)] flex flex-col gap-8 md:justify-between">
+      <HallStation side="center" label="The door" panel={false} topFade className="pt-20 sm:pt-12 md:pb-6" columnClassName="md:min-h-[calc(100svh-4.5rem)] flex flex-col gap-8 md:justify-between">
         <HallSign />
         <div>
           <RealmLenses className="mb-5 lg:mb-0 lg:absolute lg:left-10 lg:top-1/2 lg:-translate-y-1/2" />
           <PlayCard {...playCard} className="" />
+          <WalkCue />
         </div>
       </HallStation>
 

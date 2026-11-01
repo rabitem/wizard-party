@@ -1,15 +1,21 @@
 {
   "name": "Wizard Party - Free Online Card Game",
   "short_name": "Wizard Party",
-  "description": "Play Wizard Party free online! A magical multiplayer trick-taking card game for 2-6 players. Predict your tricks, compete with friends, and become the ultimate wizard. No download required - play instantly in your browser!",
+  "description": "Play the Wizard card game free online at a 3D table. Bid your tricks, then hit them exactly. Three to six players, friends or bots. No download, no account needed.",
   "start_url": "/",
   "id": "/",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui"],
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
   "background_color": "#0d0b08",
   "theme_color": "#1a1510",
   "orientation": "any",
-  "categories": ["games", "entertainment"],
+  "categories": [
+    "games",
+    "entertainment"
+  ],
   "icons": [
     {
       "src": "/favicon.svg",
@@ -20,13 +26,14 @@
     {
       "src": "/favicon.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/favicon.png",
-      "sizes": "192x192",
+      "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable"
     }
   ],
   "shortcuts": [
@@ -35,7 +42,12 @@
       "short_name": "Play",
       "description": "Jump into a game of Wizard Party",
       "url": "/",
-      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+      "icons": [
+        {
+          "src": "/favicon.svg",
+          "sizes": "any"
+        }
+      ]
     }
   ],
   "prefer_related_applications": false

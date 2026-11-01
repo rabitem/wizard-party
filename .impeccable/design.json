@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-01T00:00:00Z",
+  "title": "Design System: Wizard Party",
+  "extensions": {
+    "colorMeta": {
+      "page-base": { "role": "neutral", "displayName": "Page Base", "canonical": "var(--page-base)", "tonalRamp": ["#080706", "#0f0d0a", "#1a1610", "#2a2118", "#3d3428", "#6b5a42", "#8b7355", "#c9b896"] },
+      "surface": { "role": "neutral", "displayName": "Surface", "canonical": "var(--surface)" },
+      "surface-border": { "role": "neutral", "displayName": "Surface Border", "canonical": "var(--surface-border)" },
+      "glow": { "role": "tertiary", "displayName": "Realm Glow", "canonical": "var(--glow)" },
+      "text-muted": { "role": "neutral", "displayName": "Muted Caption", "canonical": "var(--text-muted)" },
+      "cream": { "role": "neutral", "displayName": "Cream", "canonical": "var(--color-amber-50)", "tonalRamp": ["#451a03", "#78350f", "#92400e", "#b45309", "#d97706", "#fde68a", "#fef3c7", "#fffbeb"] },
+      "candle-100": { "role": "neutral", "displayName": "Candle", "canonical": "var(--color-amber-100)" },
+      "parchment-200": { "role": "neutral", "displayName": "Parchment", "canonical": "var(--color-amber-200)" },
+      "lamp-300": { "role": "secondary", "displayName": "Lamp", "canonical": "var(--color-amber-300)" },
+      "amber-500": { "role": "secondary", "displayName": "Amber", "canonical": "var(--color-amber-500)" },
+      "brass-600": { "role": "primary", "displayName": "Brass Hairline", "canonical": "var(--color-amber-600)", "tonalRamp": ["#451a03", "#78350f", "#92400e", "#b45309", "#d97706", "#f59e0b", "#fbbf24", "#fcd34d"] },
+      "outline-700": { "role": "secondary", "displayName": "Outline Amber", "canonical": "var(--color-amber-700)" },
+      "ember-900": { "role": "neutral", "displayName": "Ember", "canonical": "var(--color-amber-900)" },
+      "ink-950": { "role": "neutral", "displayName": "Ink", "canonical": "var(--color-amber-950)" },
+      "aged-brass-top": { "role": "primary", "displayName": "Aged Brass (top)", "canonical": "color-mix(in srgb, var(--color-amber-600) 62%, #1a1108)" },
+      "aged-brass-bottom": { "role": "primary", "displayName": "Aged Brass (bottom)", "canonical": "color-mix(in srgb, var(--color-amber-800) 78%, #100a04)" },
+      "focus-ring": { "role": "secondary", "displayName": "Focus Ring", "canonical": "var(--primary)" },
+      "error-text": { "role": "neutral", "displayName": "Error Text", "canonical": "rgb(252 165 165 / 0.9)" }
+    },
+    "realmRemap": {
+      "mechanism": "Non-Classic realms set --text-hue and --text-chroma; theme-palettes.css rebuilds --color-amber-50..950 and --accent-* in OKLCH with amber's lightness, so one class set restyles every realm. Dark (Classic) and Light keep Tailwind's amber.",
+      "realms": ["classic", "halloween", "autumn", "winter", "spring", "summer", "manga", "neon", "pixel", "celestial", "solarpunk"],
+      "source": ["src/app/theme-palettes.css", "src/presentation/components/room-browser/realm-switcher.config.ts"]
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "The Wizard Party wordmark only, with a deep black text shadow over the room." },
+      "tagline": { "displayName": "Tagline", "purpose": "Predict. Play. Prevail. under the wordmark." },
+      "headline": { "displayName": "Headline", "purpose": "The closing station heading at the table." },
+      "title": { "displayName": "Title", "purpose": "Section headings inside reading panels." },
+      "body": { "displayName": "Body", "purpose": "Running text and primary button lettering." },
+      "body-small": { "displayName": "Body small", "purpose": "Ledger labels, secondary buttons, search results." },
+      "label": { "displayName": "Label", "purpose": "Sentence-case field labels, ledger descriptions, the loader's italic line." },
+      "room-code": { "displayName": "Room code", "purpose": "Room codes in fields and the lobby pill; data, not a heading." },
+      "previews": { "displayName": "Link preview serif", "purpose": "Gelasio (OFL, Georgia metrics) in generated Open Graph images only, from assets/og." }
+    },
+    "shadows": [
+      { "name": "panel-lift", "value": "0 18px 50px rgba(0,0,0,0.5)", "purpose": "Reading panels; 0.45 on the lobby panel, 0.6 on the search sheet." },
+      { "name": "float", "value": "0 8px 28px rgba(0,0,0,0.45)", "purpose": "The dock; the loader uses 0 10px 40px rgba(0,0,0,0.55)." },
+      { "name": "brass-button", "value": "inset 0 0 0 1px color-mix(in srgb, var(--color-amber-400) 55%, transparent), inset 0 1px 0 color-mix(in srgb, var(--color-amber-200) 30%, transparent), 0 4px 14px rgba(0,0,0,0.35)", "purpose": "The primary action only." },
+      { "name": "realm-glow", "value": "0 0 18px var(--glow)", "purpose": "Behind the mark and around the active realm lens." }
+    ],
+    "motion": [
+      { "name": "camera-ease", "value": "exponential, rate 6 per second", "purpose": "The hall camera easing toward the scroll position (REALM_HALL.CAMERA_EASE)." },
+      { "name": "hall-shuffle", "value": "1.6s ease-in-out infinite", "purpose": "Loader cards; CSS on transform so it runs while the next room builds. Off with reduced motion." },
+      { "name": "dock-spring", "value": "spring damping 30 stiffness 340", "purpose": "The dock hiding on scroll down and resizing as segments arrive." },
+      { "name": "press", "value": "scale 0.98", "purpose": "Active state of full-width buttons." },
+      { "name": "loader-delay", "value": "180ms", "purpose": "The loader appears only after this, so fast loads never flash." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "40rem" },
+      { "name": "md", "value": "48rem" },
+      { "name": "lg", "value": "64rem" },
+      { "name": "split", "value": "(min-width: 64rem), (min-width: 40rem) and (max-height: 32rem)" },
+      { "name": "landscape-phone", "value": "(min-width: 40rem) and (max-height: 32rem)" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The aged-brass main action (Quick play, Start game); one per view.",
+      "html": "<button class=\"ds-btn-primary\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 3l1.9 5.8L20 10l-6.1 1.2L12 17l-1.9-5.8L4 10l6.1-1.2z\"/></svg>Quick play</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 48px; padding: 0 20px; border: none; border-radius: 12px; font-family: Georgia, serif; font-size: 1rem; color: var(--color-amber-50, #fffbeb); background: linear-gradient(180deg, color-mix(in srgb, var(--color-amber-600, #d97706) 62%, #1a1108) 0%, color-mix(in srgb, var(--color-amber-800, #92400e) 78%, #100a04) 100%); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-amber-400, #fbbf24) 55%, transparent), inset 0 1px 0 color-mix(in srgb, var(--color-amber-200, #fde68a) 30%, transparent), 0 4px 14px rgba(0,0,0,0.35); cursor: pointer; transition: filter 0.15s, transform 0.15s; } .ds-btn-primary:hover { filter: brightness(1.05); } .ds-btn-primary:active { transform: scale(0.98); } .ds-btn-primary:focus-visible { outline: 2px solid #d4a853; outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Outline action beside the primary (Create room).",
+      "html": "<button class=\"ds-btn-secondary\">Create room</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 44px; padding: 0 20px; background: transparent; border: 1px solid color-mix(in srgb, var(--color-amber-700, #b45309) 50%, transparent); border-radius: 12px; font-family: Georgia, serif; font-size: 0.875rem; color: var(--color-amber-100, #fef3c7); cursor: pointer; transition: background 0.15s, border-color 0.15s, transform 0.15s; } .ds-btn-secondary:hover { background: color-mix(in srgb, var(--color-amber-900, #78350f) 25%, transparent); border-color: color-mix(in srgb, var(--color-amber-500, #f59e0b) 60%, transparent); } .ds-btn-secondary:active { transform: scale(0.98); } .ds-btn-secondary:focus-visible { outline: 2px solid #d4a853; outline-offset: 2px; }"
+    },
+    {
+      "name": "Name Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Dark serif text field with a sentence-case label.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">What should we call you?</span><input class=\"ds-input\" placeholder=\"Your wizard name\" /></label>",
+      "css": ".ds-field { display: block; } .ds-field-label { display: block; margin-bottom: 6px; font-family: Georgia, serif; font-size: 0.75rem; color: color-mix(in srgb, var(--color-amber-500, #f59e0b) 70%, transparent); } .ds-input { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid color-mix(in srgb, var(--color-amber-700, #b45309) 30%, transparent); background: color-mix(in srgb, color-mix(in srgb, var(--surface, rgba(26,21,16,0.92)), black 60%) 60%, transparent); font-family: Georgia, serif; font-size: 1rem; color: var(--color-amber-50, #fffbeb); transition: border-color 0.15s, box-shadow 0.15s; } .ds-input::placeholder { color: color-mix(in srgb, var(--color-amber-600, #d97706) 40%, transparent); } .ds-input:focus-visible { outline: none; border-color: color-mix(in srgb, var(--color-amber-500, #f59e0b) 50%, transparent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-amber-500, #f59e0b) 10%, transparent); }"
+    },
+    {
+      "name": "Reading Panel",
+      "kind": "card",
+      "refersTo": "reading-panel",
+      "description": "Opaque page-base panel with a brass hairline; one per start-page stop.",
+      "html": "<section class=\"ds-panel\"><h2 class=\"ds-panel-title\">Chronicles of the realm</h2><dl class=\"ds-ledger\"><div class=\"ds-ledger-row\"><dt><span class=\"ds-ledger-label\">Battles fought</span><span class=\"ds-ledger-desc\">games completed</span></dt><dd class=\"ds-ledger-value\">42</dd></div><div class=\"ds-ledger-row\"><dt><span class=\"ds-ledger-label\">Tricks claimed</span><span class=\"ds-ledger-desc\">tricks won</span></dt><dd class=\"ds-ledger-value\">2,100</dd></div></dl></section>",
+      "css": ".ds-panel { max-width: 36rem; padding: 28px; border-radius: 24px; border: 1px solid color-mix(in srgb, var(--color-amber-600, #d97706) 35%, transparent); background: var(--page-base, #080706); box-shadow: 0 18px 50px rgba(0,0,0,0.5); font-family: Georgia, serif; } .ds-panel-title { margin: 0; font-size: 1.875rem; font-weight: 400; color: var(--color-amber-50, #fffbeb); } .ds-ledger { margin: 16px 0 0; } .ds-ledger-row { display: flex; align-items: baseline; gap: 12px; padding: 10px 0; border-bottom: 1px solid color-mix(in srgb, var(--color-amber-800, #92400e) 25%, transparent); } .ds-ledger-row dt { flex: 1; min-width: 0; } .ds-ledger-label { display: block; font-size: 0.875rem; color: color-mix(in srgb, var(--color-amber-100, #fef3c7) 90%, transparent); } .ds-ledger-desc { display: block; font-size: 0.75rem; color: color-mix(in srgb, var(--color-amber-200, #fde68a) 65%, transparent); } .ds-ledger-value { margin: 0; font-size: 1.25rem; font-variant-numeric: tabular-nums; color: var(--color-amber-200, #fde68a); }"
+    },
+    {
+      "name": "Dock",
+      "kind": "nav",
+      "refersTo": "dock",
+      "description": "Fixed top-right capsule: player search, friends, preferences, account.",
+      "html": "<nav class=\"ds-dock\" aria-label=\"Account\"><label class=\"ds-dock-search\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"M20 20l-3.5-3.5\"/></svg><input placeholder=\"Find a player\" /></label><button class=\"ds-dock-btn\" aria-label=\"Preferences\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0\"/><circle cx=\"16\" cy=\"6\" r=\"2\"/><circle cx=\"10\" cy=\"12\" r=\"2\"/><circle cx=\"18\" cy=\"18\" r=\"2\"/></svg></button></nav>",
+      "css": ".ds-dock { display: inline-flex; align-items: center; gap: 2px; padding: 4px; border-radius: 9999px; border: 1px solid var(--surface-border, rgba(180,83,9,0.3)); background: color-mix(in srgb, var(--surface, rgba(26,21,16,0.92)) 88%, transparent); backdrop-filter: blur(12px); box-shadow: 0 8px 28px rgba(0,0,0,0.45); } .ds-dock-search { display: flex; align-items: center; gap: 8px; height: 44px; width: 14rem; padding: 0 14px; border-radius: 9999px; border: 1px solid color-mix(in srgb, var(--color-amber-700, #b45309) 30%, transparent); background: color-mix(in srgb, var(--page-base, #080706) 70%, transparent); color: color-mix(in srgb, var(--color-amber-300, #fcd34d) 80%, transparent); } .ds-dock-search:focus-within { border-color: color-mix(in srgb, var(--color-amber-400, #fbbf24) 70%, transparent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-amber-400, #fbbf24) 30%, transparent); } .ds-dock-search input { flex: 1; min-width: 0; background: transparent; border: none; outline: none; font-family: Georgia, serif; font-size: 0.875rem; color: var(--color-amber-50, #fffbeb); } .ds-dock-btn { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: none; border-radius: 9999px; background: transparent; color: color-mix(in srgb, var(--color-amber-200, #fde68a) 90%, transparent); cursor: pointer; } .ds-dock-btn:hover { color: var(--color-amber-50, #fffbeb); background: color-mix(in srgb, var(--color-amber-900, #78350f) 35%, transparent); } .ds-dock-btn:focus-visible { outline: 2px solid #d4a853; outline-offset: 2px; }"
+    },
+    {
+      "name": "Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Lobby rule and visibility chips.",
+      "html": "<span class=\"ds-chip\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><rect x=\"5\" y=\"11\" width=\"14\" height=\"10\" rx=\"2\"/><path d=\"M8 11V7a4 4 0 0 1 8 0v4\"/></svg>Private</span>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 9999px; border: 1px solid color-mix(in srgb, var(--color-amber-800, #92400e) 50%, transparent); font-family: Georgia, serif; font-size: 0.75rem; color: color-mix(in srgb, var(--color-amber-400, #fbbf24) 90%, transparent); }"
+    },
+    {
+      "name": "Realm Lens",
+      "kind": "custom",
+      "refersTo": "realm-lens",
+      "description": "A 44px disc painted with a realm's felt and wood; the active one rings and glows.",
+      "html": "<div class=\"ds-lenses\"><button class=\"ds-lens\" aria-pressed=\"true\" aria-label=\"Classic realm\"></button><button class=\"ds-lens ds-lens-alt\" aria-pressed=\"false\" aria-label=\"Halloween realm\"></button></div>",
+      "css": ".ds-lenses { display: flex; gap: 8px; } .ds-lens { width: 44px; height: 44px; border: none; border-radius: 9999px; cursor: pointer; background: radial-gradient(circle at 50% 45%, #1f7a4a 0%, #14583a 48%, #0d3b27 62%, #5a2a14 64%, #2e140a 100%); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.5), 0 3px 10px rgba(0,0,0,0.5); transition: transform 0.2s; } .ds-lens-alt { background: radial-gradient(circle at 50% 45%, #4a2a6a 0%, #321a4a 48%, #22102e 62%, #3a2010 64%, #1a0c06 100%); } .ds-lens[aria-pressed=\"true\"] { box-shadow: 0 0 0 2px #d4a853, 0 0 18px #d4a853; } .ds-lens:hover { transform: scale(1.1); } .ds-lens:focus-visible { outline: 2px solid #fcd34d; outline-offset: 2px; } @media (prefers-reduced-motion: reduce) { .ds-lens:hover { transform: none; } }"
+    },
+    {
+      "name": "Hall Loader",
+      "kind": "custom",
+      "description": "Shuffling brass cards with the realm being set up and a rotating line.",
+      "html": "<div class=\"ds-loader\"><span class=\"ds-loader-cards\" aria-hidden=\"true\"><span class=\"ds-card ds-c1\"></span><span class=\"ds-card ds-c2\"></span><span class=\"ds-card ds-c3\"></span></span><span><span class=\"ds-loader-title\">Setting up the Classic room</span><span class=\"ds-loader-line\">Polishing the Wizards. They insist.</span></span></div>",
+      "css": ".ds-loader { display: inline-flex; align-items: center; gap: 12px; padding: 10px 20px 10px 12px; border-radius: 16px; border: 1px solid var(--surface-border, rgba(180,83,9,0.3)); background: var(--surface, rgba(26,21,16,0.92)); backdrop-filter: blur(12px); box-shadow: 0 10px 40px rgba(0,0,0,0.55); font-family: Georgia, serif; } .ds-loader-cards { position: relative; width: 44px; height: 48px; flex-shrink: 0; } .ds-card { position: absolute; left: 10px; top: 4px; width: 24px; height: 36px; border-radius: 5px; border: 1px solid rgba(252,211,77,0.7); background: linear-gradient(160deg, #b45309, #451a03); box-shadow: 0 2px 6px rgba(0,0,0,0.5); animation: ds-shuffle 1.6s ease-in-out infinite; } .ds-c1 { --x: -6px; --r: -12deg; transform: translateX(-6px) rotate(-12deg); } .ds-c2 { --x: 0px; --r: 0deg; z-index: 2; animation-delay: 0.12s; } .ds-c3 { --x: 6px; --r: 12deg; transform: translateX(6px) rotate(12deg); animation-delay: 0.24s; } @keyframes ds-shuffle { 0%, 100% { transform: translateX(var(--x)) rotate(var(--r)); } 50% { transform: translateX(calc(var(--x) * -1)) rotate(calc(var(--r) * -1)); } } @media (prefers-reduced-motion: reduce) { .ds-card { animation: none; } } .ds-loader-title { display: block; font-size: 0.875rem; color: var(--color-amber-100, #fef3c7); } .ds-loader-line { display: block; font-size: 0.75rem; font-style: italic; color: color-mix(in srgb, var(--color-amber-200, #fde68a) 75%, transparent); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Lamplit Card Room",
+    "overview": "Wizard Party is a card room you walk into, not a dashboard you read. The backdrop of the start page is the active realm's own 3D game room and table (the same ThemedEnvironment, SceneLighting and TableSurface the game draws, under a warm fill light), and the camera moves through it as the page scrolls until it rests at the player's seat. Everything readable sits on top of that room in a single voice: Georgia serif, sentence case, warm amber lettering on near-black.\n\nThe system is one class set over eleven realms. The UI never names a realm colour; it paints with the amber scale, `--page-base`, `--surface`, `--surface-border` and `--glow`, and each realm (Classic, Halloween, Autumn, Winter, Spring, Summer, Manga, Neon, Pixel, Celestial, Solarpunk) remaps those tokens. Classic is the reference rendering and the values in the frontmatter are Classic's.\n\nDensity is low and deliberate: one reading panel per stop, sequences told in running type, figures shown as label-and-value ledgers. Depth comes from the real room behind the page and from soft, deep black shadows under the panels, never from stacked tinted cards.",
+    "keyCharacteristics": [
+      "The realm's real game room is the backdrop; the page is a walk through it.",
+      "Georgia serif for every word of UI, at regular weight; hierarchy by size, colour and space.",
+      "One remappable amber scale restyles every realm with no per-realm component code.",
+      "Opaque reading panels with a brass hairline; translucent blurred surfaces only for floating chrome.",
+      "Muted aged-brass primary action with cream lettering, shared by the start page and the lobby.",
+      "44px minimum hit area on every control."
+    ],
+    "rules": [
+      { "name": "The Remap Rule", "body": "UI colour comes only from the amber scale and the page tokens (`--page-base`, `--surface`, `--surface-border`, `--glow`, `--text-muted`, `--accent-*`). A raw realm hex in a component breaks ten of the eleven realms.", "section": "colors" },
+      { "name": "The Cream On Brass Rule", "body": "The primary button is dark brass with cream text. Do not brighten it into a saturated gold fill; the lit table is the brightest thing on screen.", "section": "colors" },
+      { "name": "The One Voice Rule", "body": "Every user-facing word is Georgia serif at regular weight. The global stylesheet still defaults to Inter, so a new component opts in to the serif explicitly (the shared `SERIF` style); forgetting it is a visible defect.", "section": "typography" },
+      { "name": "The Sentence Case Rule", "body": "Headings are sentence case at heading scale and stand alone: no small uppercase labels above them, no tracked caps as section markers.", "section": "typography" },
+      { "name": "The No Card Grid Rule", "body": "Sequences are written as numbered running type (How to win), figures as label-and-value ledgers with hairline dividers (Chronicles). Do not lay content out as a grid of equal tinted cards.", "section": "layout" },
+      { "name": "The Opaque Reading Rule", "body": "Text that is read, not glanced at, sits on solid page-base. Blur and translucency are for chrome.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do paint with the amber scale and the page tokens so all eleven realms restyle the component for free.",
+      "Do set every word in Georgia serif at regular weight, headings in sentence case at heading scale.",
+      "Do put reading content on an opaque page-base panel with a brass-600 35% hairline and 24px corners.",
+      "Do use the shared aged-brass primary style (`GOLD_BUTTON_STYLE`) for the single main action, with cream text.",
+      "Do use amber-700 50% outline buttons for secondary actions.",
+      "Do give every control a hit area of at least 44px.",
+      "Do respect reduced motion: no camera ease, bounce or shuffle when it is set."
+    ],
+    "donts": [
+      "Don't hard-code a realm colour in a component; it breaks every other realm.",
+      "Don't add small uppercase labels or tracked caps above headings.",
+      "Don't lay out sequences or statistics as a grid of equal cards; use running type and ledgers.",
+      "Don't brighten the primary button into a saturated gold fill or add a second primary on the same view.",
+      "Don't put reading text on translucent or blurred surfaces over the 3D room.",
+      "Don't use Gelasio in the live UI; it exists only for the generated link previews."
+    ]
+  }
+}

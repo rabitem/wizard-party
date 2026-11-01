@@ -30,8 +30,8 @@ export function SocialButton({ className = '', label = 'Social', tab }: { classN
       whileHover={{ y: -1 }}
       whileTap={{ scale: 0.96 }}
       aria-label={`${label}: ${online.length} online${badge ? `, ${badge} new` : ''}`}
-      className={`relative inline-flex items-center gap-2 h-11 pl-3 pr-3.5 rounded-full border border-amber-700/40 hover:border-amber-500/60 hover:bg-amber-900/25 transition-colors cursor-pointer ${className}`}
-      style={{ ...SERIF, background: 'color-mix(in srgb, color-mix(in srgb, var(--surface), black 10%) 75%, transparent)', backdropFilter: 'blur(6px)' }}
+      className={`relative inline-flex items-center gap-2 h-11 pl-2.5 pr-3 rounded-full hover:bg-amber-900/35 transition-colors cursor-pointer ${className}`}
+      style={SERIF}
     >
       {online.length > 0 ? (
         <span className="flex -space-x-2.5">
@@ -46,7 +46,7 @@ export function SocialButton({ className = '', label = 'Social', tab }: { classN
       ) : (
         <Users className="w-4 h-4 text-amber-300/90" />
       )}
-      <span className="flex flex-col leading-tight text-left">
+      <span className="hidden sm:flex flex-col leading-tight text-left">
         <span className="text-sm text-amber-100">{label}</span>
         <span className="text-[10px] uppercase tracking-wider text-emerald-400/80">{online.length} online</span>
       </span>

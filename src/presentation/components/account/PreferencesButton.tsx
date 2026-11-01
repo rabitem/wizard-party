@@ -10,11 +10,9 @@ import { useAccount } from '@/presentation/providers/AccountProvider';
 import { PreferencesPanel } from '@/presentation/components/settings';
 import { SettingsDrawer } from '@/presentation/components/settings/SettingsDrawer';
 
-import { BAR_BG } from './account-surfaces';
-
 const { ACCOUNT_PREFERENCES, PREFERENCES_QUERY_PARAM } = CONSTANTS.ROUTES;
-const BUTTON_CLASS = 'inline-flex items-center justify-center h-11 w-11 rounded-full border border-amber-700/40 text-amber-200/90 hover:text-amber-50 hover:border-amber-500/60 hover:bg-amber-900/25 transition-all';
-const BUTTON_STYLE = { background: BAR_BG, backdropFilter: 'blur(6px)' };
+/** A segment of the start page's top-right dock (HallDock): borderless, its hover a soft pill. */
+const BUTTON_CLASS = 'inline-flex items-center justify-center h-11 w-11 rounded-full text-amber-200/90 hover:text-amber-50 hover:bg-amber-900/35 transition-colors';
 
 /**
  * Home-screen entry to Preferences: the account tab when signed in, the settings drawer for guests,
@@ -40,7 +38,7 @@ export function PreferencesButton() {
 
   if (status === 'signed-in') {
     return (
-      <Link href={ACCOUNT_PREFERENCES} aria-label="Preferences" title="Preferences" className={BUTTON_CLASS} style={BUTTON_STYLE}>
+      <Link href={ACCOUNT_PREFERENCES} aria-label="Preferences" title="Preferences" className={BUTTON_CLASS}>
         <SlidersHorizontal className="w-4 h-4" />
       </Link>
     );
@@ -48,7 +46,7 @@ export function PreferencesButton() {
 
   return (
     <>
-      <button type="button" onClick={() => setOpened(true)} aria-label="Preferences" title="Preferences" disabled={status === 'loading'} className={`${BUTTON_CLASS} cursor-pointer disabled:opacity-50 disabled:cursor-default`} style={BUTTON_STYLE}>
+      <button type="button" onClick={() => setOpened(true)} aria-label="Preferences" title="Preferences" disabled={status === 'loading'} className={`${BUTTON_CLASS} cursor-pointer disabled:opacity-60 disabled:cursor-default`}>
         <SlidersHorizontal className="w-4 h-4" />
       </button>
       <SettingsDrawer isOpen={isOpen} onClose={close} closeOnEscape title="Preferences" subtitle="Saved on this device. Sign in to keep them on every device." icon={<SlidersHorizontal className="w-5 h-5" />}>
