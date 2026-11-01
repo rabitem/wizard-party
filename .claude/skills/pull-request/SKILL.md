@@ -96,8 +96,9 @@ So every change must work with the previous release on the other side:
 
 ## Merge
 
-- Squash merge only. Before you merge, CI, GitGuardian and the Vercel preview are green, no
-  review requests changes, and every conversation is resolved. `@rabitem` owns everything
+- Squash merge only. Before you merge, CI, GitGuardian and the Vercel preview are green (or the
+  preview was skipped because the PR only changes tests, docs or CI: `scripts/vercel-ignore-build.mjs`),
+  no review requests changes, and every conversation is resolved. `@rabitem` owns everything
   (`.github/CODEOWNERS`).
 - Write the squash body as a short prose summary of what changed and why, wrapped at about 72
   columns. Leave out the checkboxes and headings of the PR description.
