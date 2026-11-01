@@ -24,7 +24,6 @@ export type LobbyIconComponent = ComponentType<{ className?: string }>;
  * - players: the seat sheets (seat actions, fill an open seat)
  * - rules:   the table settings / rules sheet
  * - actions: the sticky bottom bar with Leave + Start / I'm ready
- * - avatar:  the avatar picker modal
  *
  * Where the round table uses the other slots: Scene sits behind the top bar and the far side of the
  * table; AvatarFrameDecor frames each seat's 56px avatar; icons.host / icons.emptySeat replace the
@@ -34,7 +33,7 @@ export type LobbyIconComponent = ComponentType<{ className?: string }>;
  * EmptySlotDecor, HeaderDecor and the remaining copy lines were made for the old row lobby and are
  * not rendered by the round table.
  */
-export type LobbyPanelVariant = 'count' | 'players' | 'rules' | 'actions' | 'avatar';
+export type LobbyPanelVariant = 'count' | 'players' | 'rules' | 'actions';
 
 export interface LobbyPanelDecorProps {
   variant: LobbyPanelVariant;

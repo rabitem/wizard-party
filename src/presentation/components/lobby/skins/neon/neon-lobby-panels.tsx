@@ -9,7 +9,6 @@ const TUBES: Record<LobbyPanelVariant, readonly [string, string]> = {
   players: [C.cyan, C.pink],
   rules: [C.purple, C.cyan],
   actions: [C.pink, C.cyan],
-  avatar: [C.cyan, C.yellow],
 };
 
 function tubeVars(variant: LobbyPanelVariant): CSSProperties {

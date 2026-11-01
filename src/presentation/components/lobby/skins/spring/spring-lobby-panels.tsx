@@ -65,7 +65,7 @@ export function SpringPanelDecor({ variant }: LobbyPanelDecorProps) {
   return (
     <>
       <BlossomBranch />
-      {variant === 'rules' || variant === 'avatar' ? <Vine /> : null}
+      {variant === 'rules' ? <Vine /> : null}
       {variant === 'players' ? <Ladybug /> : null}
     </>
   );

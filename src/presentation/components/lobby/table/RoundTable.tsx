@@ -58,6 +58,15 @@ function SeatBadge({ seat }: { seat: LobbySeatView }) {
   return null;
 }
 
+/** Guests get a random avatar; choosing one (and this badge going away) comes with an account. */
+function GuestBadge() {
+  return (
+    <span className="absolute -bottom-1 -left-2 px-1.5 rounded-full border border-amber-700/60 bg-black/70 text-[9px] leading-4 uppercase tracking-wider text-amber-200/90" style={SERIF} aria-hidden>
+      Guest
+    </span>
+  );
+}
+
 function seatStatusLabel(seat: LobbySeatView, secondsLeft: number | null): string {
   if (!seat.isConnected) return secondsLeft !== null ? `Reconnecting ${formatCountdown(secondsLeft)}` : 'Reconnecting';
   if (seat.isHost) return 'Host';
@@ -76,7 +85,7 @@ function TakenSeat({ seat, index, onClick }: { seat: LobbySeatView; index: numbe
       animate={{ scale: 1, opacity: 1 }}
       exit={{ scale: 0.6, opacity: 0 }}
       onClick={onClick}
-      aria-label={`${seat.name}${seat.isLocal ? ' (you)' : ''}, ${status}`}
+      aria-label={`${seat.name}${seat.isLocal ? ' (you)' : ''}${seat.isGuest ? ', guest' : ''}, ${status}`}
       className="group flex flex-col items-center w-[88px] cursor-pointer focus-visible:outline-none"
     >
       <span className={`relative rounded-full transition-transform group-hover:scale-105 group-focus-visible:ring-2 group-focus-visible:ring-amber-400 ${seat.isConnected ? '' : 'opacity-55'}`}>
@@ -94,6 +103,7 @@ function TakenSeat({ seat, index, onClick }: { seat: LobbySeatView; index: numbe
           </span>
         ) : null}
         <SeatBadge seat={seat} />
+        {seat.isGuest ? <GuestBadge /> : null}
       </span>
       <span className="mt-1 max-w-full truncate text-xs text-amber-50 drop-shadow" style={SERIF}>
         {seat.name}{seat.isLocal ? <span className="text-amber-400/80"> (you)</span> : null}

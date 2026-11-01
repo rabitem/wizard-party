@@ -2,6 +2,7 @@
 
 import { LeaderboardEntry } from './types';
 import { getPlayerAvatarIcon } from './utils';
+import { useAvatarId } from '../../account/PlayerAvatar';
 import { NAME_SCORE_TEXT_CLASS, NAME_SCORE_VALUE_CLASS } from '../../name-score-layout';
 import { THEME_SURFACE } from '@/presentation/config/theme-surface.config';
 
@@ -102,7 +103,8 @@ export function PodiumPlace({
   isCurrentTurn: boolean;
   height: 'tall' | 'medium' | 'short';
 }) {
-  const avatarIcon = getPlayerAvatarIcon(isLocal, entry.originalIndex);
+  const localAvatarId = useAvatarId();
+  const avatarIcon = getPlayerAvatarIcon(isLocal, entry.originalIndex, localAvatarId);
   const heightClass = getPodiumHeightClass(height);
   const color = PODIUM_COLORS[entry.position] || DEFAULT_PODIUM_COLOR;
 
@@ -133,7 +135,8 @@ export function RunnerUpChip({
   isLocal: boolean;
   isCurrentTurn: boolean;
 }) {
-  const avatarIcon = getPlayerAvatarIcon(isLocal, entry.originalIndex);
+  const localAvatarId = useAvatarId();
+  const avatarIcon = getPlayerAvatarIcon(isLocal, entry.originalIndex, localAvatarId);
 
   return (
     <div

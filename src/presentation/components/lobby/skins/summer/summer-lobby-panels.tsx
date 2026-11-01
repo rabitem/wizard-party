@@ -58,7 +58,7 @@ export function SummerPanelDecor({ variant }: LobbyPanelDecorProps) {
   return (
     <>
       <span className={styles.waveEdge} />
-      {variant === 'players' || variant === 'avatar' ? <Duck /> : null}
+      {variant === 'players' ? <Duck /> : null}
       {variant === 'count' ? <Starfish /> : null}
     </>
   );
