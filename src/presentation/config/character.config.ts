@@ -46,3 +46,12 @@ export const CHARACTER_PORTRAIT = {
   /** Rendered portraits kept per page; the oldest are dropped first. */
   CACHE_LIMIT: 200,
 } as const;
+
+/** The account's Character tab (CharacterPreview). */
+export const CHARACTER_EDITOR = {
+  CAMERA_POSITION: [0, 1.6, 7] as const,
+  CAMERA_TARGET: [0, 1.35, 0] as const,
+  FOV_DEGREES: 35,
+  /** How long the character cheers after a save. */
+  CHEER_MS: 2400,
+} as const;

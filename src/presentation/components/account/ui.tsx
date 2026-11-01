@@ -15,7 +15,7 @@ import { FIELD_BG, PANEL_BG, PANEL_SHADOW } from './account-surfaces';
 export function Panel({ children, className = '', accent = true }: { children: ReactNode; className?: string; accent?: boolean }) {
   return (
     <section
-      className={`relative rounded-2xl border border-[var(--surface-border)] overflow-hidden ${className}`}
+      className={`relative rounded-2xl border border-[var(--surface-border)] overflow-clip ${className}`}
       style={{
         background: PANEL_BG,
         boxShadow: PANEL_SHADOW,

@@ -12,8 +12,10 @@ import {
   type LevelReward,
   type RewardMilestone,
 } from '@shared/domain/account';
+import { DEFAULT_APPEARANCE, withPart } from '@shared/domain/character';
 
 import type { AccountOverviewDto } from '@/lib/account/account-api';
+import { CharacterFace } from '@/presentation/components/character/CharacterFace';
 
 import { BANNER_STYLES } from '../cosmetic-styles';
 import { PlayerAvatar } from '../PlayerAvatar';
@@ -21,8 +23,15 @@ import { Panel, ProgressBar, SectionHeading } from '../ui';
 
 type MilestoneState = 'unlocked' | 'next' | 'locked';
 
+const PART_REWARD_PREFIX = 'part:';
+
 function RewardPreview({ reward }: { reward: LevelReward }) {
   const [, cosmeticId] = reward.id.split(':');
+  if (reward.kind === 'part') {
+    // The starter look wearing the part, so each reward shows what it changes.
+    const look = withPart(DEFAULT_APPEARANCE, reward.id.slice(PART_REWARD_PREFIX.length));
+    return <CharacterFace appearance={look} label={reward.name} className="w-8 h-8 shrink-0 rounded-lg border border-amber-700/40" />;
+  }
   if (reward.kind === 'frame' && isAvatarFrameId(cosmeticId)) return <PlayerAvatar size="sm" frameId={cosmeticId} />;
   if (reward.kind === 'banner' && isProfileBannerId(cosmeticId)) {
     return <span aria-hidden className="w-8 h-8 shrink-0 rounded-lg border border-amber-800/40" style={{ background: `${BANNER_STYLES[cosmeticId]}, var(--page-base)` }} />;
@@ -34,7 +43,7 @@ function RewardPreview({ reward }: { reward: LevelReward }) {
   );
 }
 
-const KIND_LABEL: Record<LevelReward['kind'], string> = { title: 'Title', frame: 'Avatar frame', banner: 'Profile banner' };
+const KIND_LABEL: Record<LevelReward['kind'], string> = { title: 'Title', frame: 'Avatar frame', banner: 'Profile banner', part: 'Character part' };
 
 const STATE_STYLES: Record<MilestoneState, { node: string; card: string }> = {
   unlocked: { node: 'border-amber-500/70 bg-amber-700/40 text-amber-100', card: 'border-amber-700/40' },

@@ -55,6 +55,12 @@ function load(userId: string): void {
   });
 }
 
+/** After a save: every avatar of the local player on the page shows the new look at once. */
+export function rememberSavedAppearance(userId: string, appearance: CharacterAppearance): void {
+  loaded = { userId, appearance, saved: true };
+  listeners.forEach((listener) => listener());
+}
+
 function subscribeSettings(listener: () => void) {
   window.addEventListener('settings-changed', listener);
   return () => window.removeEventListener('settings-changed', listener);

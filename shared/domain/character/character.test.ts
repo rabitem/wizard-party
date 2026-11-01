@@ -14,6 +14,7 @@ import {
   repairAppearance,
   unlockedCharacterParts,
   validateAppearance,
+  withPart,
   type CharacterAppearance,
   type CharacterUnlockContext,
 } from './index';
@@ -123,5 +124,25 @@ describe('botAppearance', () => {
     expect(new Set(looks.map((botLook) => JSON.stringify(botLook))).size).toBe(looks.length);
     expect(botAppearance(undefined)).toEqual(botAppearance(3));
     expect(botAppearance(42)).toEqual(botAppearance(3));
+  });
+});
+
+describe('withPart', () => {
+  it('should let the new choice win: staff and off hand, hood and headwear', () => {
+    const withStaff = withPart(DEFAULT_APPEARANCE, 'main:staff');
+    expect(withStaff).toMatchObject({ mainHand: 'main:staff', offHand: 'off:none' });
+    expect(withPart(withStaff, 'off:round-shield')).toMatchObject({ mainHand: 'main:none', offHand: 'off:round-shield' });
+    const hooded = withPart(DEFAULT_APPEARANCE, 'head:rogue-hooded');
+    expect(hooded).toMatchObject({ head: 'head:rogue-hooded', headwear: 'headwear:none' });
+    expect(withPart(hooded, 'headwear:knight-helmet')).toMatchObject({ head: 'head:rogue', headwear: 'headwear:knight-helmet' });
+  });
+
+  it('should always leave a valid combination and ignore unknown parts', () => {
+    let current = DEFAULT_APPEARANCE;
+    for (const part of CHARACTER_PARTS) {
+      current = withPart(current, part.id);
+      expect(validateAppearance(current)).toBeNull();
+    }
+    expect(withPart(DEFAULT_APPEARANCE, 'head:dragon')).toBe(DEFAULT_APPEARANCE);
   });
 });

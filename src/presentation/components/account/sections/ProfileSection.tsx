@@ -1,15 +1,15 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
-import { Quote } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { Quote, Sparkles } from 'lucide-react';
 
 import { ACCOUNT_LIMITS } from '@shared/domain/account';
 
 import { accountApi, type AccountOverviewDto } from '@/lib/account/account-api';
-import { AVATAR_PRESETS, loadGameSettings, saveGameSettings } from '@/presentation/components/settings';
 import { useAccount, type AccountUser } from '@/presentation/providers/AccountProvider';
 
-import { PlayerAvatar, useAvatarId } from '../PlayerAvatar';
+import { PlayerAvatar } from '../PlayerAvatar';
 import { ProfileVisibilityPanel } from '../public/ProfileVisibilityPanel';
 import { UsernamePanel } from '../public/UsernamePanel';
 import { BlockedPlayersPanel, SocialSettingsPanel } from '../../friends';
@@ -64,33 +64,18 @@ function TaglinePanel({ overview, onSaved }: { overview: AccountOverviewDto; onS
   );
 }
 
-function AvatarPanel() {
-  const avatarId = useAvatarId();
+/** The look is edited on the Character tab; the profile shows it and points there. */
+function CharacterPanel() {
+  const router = useRouter();
+  const pathname = usePathname();
   return (
     <Panel accent={false}>
-      <div className="p-4 sm:p-5">
-        <div className="flex items-start justify-between gap-4">
-          <SectionHeading title="Avatar" description="Sets the look of your character. Saved instantly and synced to all your devices." />
-          <PlayerAvatar size="lg" label="Your character" />
+      <div className="p-4 sm:p-5 flex items-center gap-4">
+        <PlayerAvatar size="lg" label="Your character" />
+        <div className="min-w-0 flex-1">
+          <SectionHeading title="Character" description="Your look at the table, in the lobby and on your profile." />
         </div>
-        <div className="grid grid-cols-5 sm:grid-cols-8 gap-2 mt-3">
-          {AVATAR_PRESETS.map((avatar) => {
-            const selected = avatar.id === avatarId;
-            return (
-              <button
-                key={avatar.id}
-                type="button"
-                title={avatar.label}
-                aria-label={avatar.label}
-                aria-pressed={selected}
-                onClick={() => saveGameSettings({ ...loadGameSettings(), avatar: avatar.id })}
-                className={`aspect-square rounded-xl border-2 inline-flex items-center justify-center text-xl sm:text-2xl transition-all cursor-pointer ${selected ? 'border-amber-500/80 text-amber-300 bg-amber-900/40 shadow-[0_0_16px_color-mix(in_srgb,var(--glow)_70%,transparent)]' : 'border-amber-900/40 text-amber-200/50 hover:border-amber-700/60 hover:text-amber-200'}`}
-              >
-                <i className={`ra ${avatar.icon}`} aria-hidden />
-              </button>
-            );
-          })}
-        </div>
+        <Button icon={<Sparkles className="w-4 h-4" />} onClick={() => router.replace(`${pathname}?tab=character`, { scroll: false })}>Edit</Button>
       </div>
     </Panel>
   );
@@ -127,7 +112,7 @@ export function ProfileSection({ overview, onSaved }: { overview: AccountOvervie
       <TaglinePanel overview={overview} onSaved={onSaved} />
       {user ? <ProfileVisibilityPanel initial={{ isPublic, showHistory }} onSaved={onSaved} /> : null}
       {user ? <SocialSettingsPanel /> : null}
-      <AvatarPanel />
+      <CharacterPanel />
       {user ? <EmailPanel user={user} onVerified={refreshSession} /> : null}
       {user ? <BlockedPlayersPanel /> : null}
     </div>

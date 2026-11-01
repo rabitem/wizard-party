@@ -9,6 +9,8 @@ import type {
 import type { AccountDocument, ScoredGameResult, StoredCustomSound } from '@shared/application/ports/account';
 import type { AchievementCategory, GameResult, PlayerProfile, PlayerStatsSummary, ProfileChanges } from '@shared/domain/account';
 
+import type { CharacterAppearance } from '@shared/domain/character';
+
 import type { DeploymentCapabilities } from '@/infrastructure/auth/auth-capabilities';
 
 /** JSON shape of the overview: Maps and functions do not survive serialization. */
@@ -59,6 +61,8 @@ export const accountApi = {
   overview: () => request<AccountOverviewDto>('/api/account'),
   /** The signed-in player's look, whether it was saved, and the parts they may wear. */
   character: () => request<CharacterView>('/api/account/character'),
+  /** Saves a look; a refused one answers 422 with the reason (AppearanceError) as the message. */
+  saveCharacter: (appearance: CharacterAppearance) => request<CharacterView>('/api/account/character', json('PUT', { appearance })),
   updateProfile: (changes: ProfileChanges) =>
     request<{ profile: PlayerProfile }>('/api/account', json('PATCH', changes)),
   recordGames: (results: GameResult[]) => request<RecordGameResultsOutput>('/api/account/games', json('POST', { results })),
