@@ -1,4 +1,5 @@
 // Realm switcher: the home screen's one-click look picker (Classic + seasonal and trend packs).
+import { Crown, Flower2, MessageCircle, Moon, Snowflake, Sparkles, Sprout, Sun, Zap, type LucideIcon } from 'lucide-react';
 import { CARD_THEMES, type CardTheme } from '@/presentation/components/settings/card-theme-presets';
 import { THEME_PACKS, type SeasonalThemePack } from '@/presentation/components/settings/seasonal-theme-packs';
 import { THEME_PRESETS, type ThemePreset } from '@/presentation/components/settings/visual-presets';
@@ -18,28 +19,28 @@ export const CLASSIC_REALM_PACK: SeasonalThemePack = {
 
 /**
  * Tiny per-realm glyph; pumpkin and leaf are the animated mascots, 'pixel-heart' is an
- * inline 8-bit SVG, the rest are emoji.
+ * inline 8-bit SVG, the rest are line icons from the app's icon set.
  */
 export type RealmGlyph =
   | { kind: 'mascot'; mascot: 'pumpkin' | 'leaf' }
-  | { kind: 'emoji'; emoji: string }
+  | { kind: 'icon'; icon: LucideIcon }
   | { kind: 'pixel-heart' };
 
 const REALM_GLYPHS: Record<string, RealmGlyph> = {
-  classic: { kind: 'emoji', emoji: '\u{1F451}' }, // crown
+  classic: { kind: 'icon', icon: Crown },
   halloween: { kind: 'mascot', mascot: 'pumpkin' },
   autumn: { kind: 'mascot', mascot: 'leaf' },
-  winter: { kind: 'emoji', emoji: '❄️' }, // snowflake
-  spring: { kind: 'emoji', emoji: '\u{1F338}' }, // blossom
-  summer: { kind: 'emoji', emoji: '☀️' }, // sun
-  manga: { kind: 'emoji', emoji: '\u{1F4AC}' }, // speech bubble
-  neon: { kind: 'emoji', emoji: '\u26A1' }, // lightning
+  winter: { kind: 'icon', icon: Snowflake },
+  spring: { kind: 'icon', icon: Flower2 },
+  summer: { kind: 'icon', icon: Sun },
+  manga: { kind: 'icon', icon: MessageCircle },
+  neon: { kind: 'icon', icon: Zap },
   pixel: { kind: 'pixel-heart' },
-  celestial: { kind: 'emoji', emoji: '\u{1F319}' }, // crescent moon
-  solarpunk: { kind: 'emoji', emoji: '\u{1F331}' }, // sprout
+  celestial: { kind: 'icon', icon: Moon },
+  solarpunk: { kind: 'icon', icon: Sprout },
 };
 
-const FALLBACK_GLYPH: RealmGlyph = { kind: 'emoji', emoji: '✨' };
+const FALLBACK_GLYPH: RealmGlyph = { kind: 'icon', icon: Sparkles };
 
 export interface RealmOption {
   pack: SeasonalThemePack;

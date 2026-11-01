@@ -21,6 +21,9 @@ export interface SocialPlayer {
   hasPublicProfile: boolean;
 }
 
+/** What anyone may see of a public profile in a search: no ids, no relationships, no presence. */
+export type PublicPlayerCard = Pick<SocialPlayer, 'username' | 'displayName' | 'avatar' | 'level'>;
+
 export interface Friend extends SocialPlayer {
   since: number;
   pinnedAt: number | null;

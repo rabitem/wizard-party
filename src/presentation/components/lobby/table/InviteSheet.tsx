@@ -54,7 +54,7 @@ function FriendRow({ friend, busy, onInvite, onRevoke }: { friend: LobbyFriendVi
           Revoke
         </button>
       ) : (
-        <button type="button" onClick={onInvite} disabled={busy} className="h-9 px-4 rounded-lg text-xs cursor-pointer active:scale-95 disabled:opacity-50" style={GOLD_BUTTON_STYLE}>
+        <button type="button" onClick={onInvite} disabled={busy} className="h-11 px-4 rounded-lg text-sm cursor-pointer active:scale-95 disabled:opacity-50" style={GOLD_BUTTON_STYLE}>
           {busy ? 'Sending…' : friend.inviteState === 'declined' || friend.inviteState === 'expired' ? 'Invite again' : 'Invite'}
         </button>
       )}
@@ -114,7 +114,7 @@ export function InviteSheet({ friends, isLoading, shareUrl, busyUserId, message,
           if (!members.length) return null;
           return (
             <section key={group.id} className="mb-3">
-              <h3 className="text-[11px] uppercase tracking-wider text-amber-500/90 mb-0.5" style={SERIF}>{group.label}</h3>
+              <h3 className="text-sm text-amber-100 mb-0.5" style={SERIF}>{group.label}</h3>
               <ul>
                 {members.map((friend) => (
                   <FriendRow

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Flame, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import type { ExpansionSetId } from '@shared/domain';
 import {
   ExpansionCredits,
@@ -44,15 +44,12 @@ export function ExpansionShowcaseSection() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.3 }}
     >
-      <div className="flex items-center gap-2 mb-3 px-1">
-        <Flame className="w-3.5 h-3.5 text-amber-500/50" />
-        <h2 className="text-amber-400/60 text-xs uppercase tracking-wider" style={{ fontFamily: 'Georgia, serif' }}>
-          {EXPANSIONS_UI_CONFIG.GUIDE_HEADING}
-        </h2>
-      </div>
+      <h2 className="text-2xl sm:text-3xl text-amber-50 mb-4" style={{ fontFamily: 'Georgia, serif' }}>
+        {EXPANSIONS_UI_CONFIG.GUIDE_HEADING}
+      </h2>
 
       <ExpansionSetCarousel onOpen={setOpenSetId} />
-      <ExpansionCredits sources={getAllExpansionSources()} className="mt-3" />
+      <ExpansionCredits sources={getAllExpansionSources()} plain className="mt-3" />
 
       <AnimatePresence>
         {openSetId ? <ExpansionExplainerDialog setId={openSetId} onClose={() => setOpenSetId(null)} /> : null}

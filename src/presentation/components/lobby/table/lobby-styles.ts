@@ -4,10 +4,14 @@
  */
 export const SERIF = { fontFamily: 'Georgia, serif' } as const;
 
+/**
+ * The primary action (Start game, Quick play, Add bot): aged brass, matte and dark, with cream
+ * lettering and a thin brass edge. The realm remaps the amber scale, so the brass follows the theme.
+ */
 export const GOLD_BUTTON_STYLE = {
-  background: 'linear-gradient(180deg, var(--color-amber-300) 0%, var(--color-amber-500) 55%, var(--color-amber-700) 100%)',
-  boxShadow: '0 4px 20px var(--glow), inset 0 1px 0 rgba(255,255,255,0.25)',
-  color: 'var(--color-amber-950)',
+  background: 'linear-gradient(180deg, color-mix(in srgb, var(--color-amber-600) 62%, #1a1108) 0%, color-mix(in srgb, var(--color-amber-800) 78%, #100a04) 100%)',
+  boxShadow: 'inset 0 0 0 1px color-mix(in srgb, var(--color-amber-400) 55%, transparent), inset 0 1px 0 color-mix(in srgb, var(--color-amber-200) 30%, transparent), 0 4px 14px rgba(0,0,0,0.35)',
+  color: 'var(--color-amber-50)',
   ...SERIF,
 } as const;
 

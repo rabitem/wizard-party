@@ -38,7 +38,7 @@ export function LearnToPlaySection({ onOpenTutorial }: LearnToPlaySectionProps) 
             <div className="text-amber-100/90 text-sm sm:text-base" style={{ fontFamily: 'Georgia, serif' }}>
               New to Wizard?
             </div>
-            <div className="text-amber-500/50 text-xs" style={{ fontFamily: 'Georgia, serif' }}>
+            <div className="text-amber-200/75 text-xs" style={{ fontFamily: 'Georgia, serif' }}>
               Learn the rules in 2 minutes
             </div>
           </div>

@@ -19,6 +19,8 @@ export const CONSTANTS = {
     USERNAME_CHECK: '/api/username/check',
     /** Global stats endpoint */
     STATS: '/api/stats',
+    /** Public profile search (the start page's player lookup) */
+    PROFILE_SEARCH: '/api/profiles/search',
   },
 
   /**

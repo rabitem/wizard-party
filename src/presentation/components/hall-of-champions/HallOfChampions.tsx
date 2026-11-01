@@ -25,14 +25,7 @@ const ICONS: Record<LeaderboardCategory, LucideIcon> = {
 
 function SectionHeader() {
   return (
-    <div className="flex items-center justify-center gap-4 mb-6">
-      <div className="h-px flex-1 max-w-24 bg-gradient-to-r from-transparent to-amber-700/30" />
-      <div className="flex items-center gap-2">
-        <Crown className="w-5 h-5 text-amber-500/70" />
-        <h2 className="text-amber-300/80 text-lg tracking-wider uppercase" style={SERIF}>Hall of Champions</h2>
-      </div>
-      <div className="h-px flex-1 max-w-24 bg-gradient-to-l from-transparent to-amber-700/30" />
-    </div>
+    <h2 className="text-2xl sm:text-3xl text-amber-50 mb-4" style={SERIF}>Hall of Champions</h2>
   );
 }
 
@@ -71,7 +64,26 @@ function EmptyState() {
     <div className="py-10 text-center">
       <Crown className="mx-auto mb-3 w-10 h-10 text-amber-700/40" strokeWidth={1.25} />
       <p className="text-amber-100/90" style={SERIF}>The hall awaits its first champion.</p>
-      <p className="mt-1 text-xs text-amber-200/45">Finish a game with an account to claim the throne.</p>
+      <p className="mt-1 text-xs text-amber-200/75" style={SERIF}>Finish a game with an account to claim the throne.</p>
+    </div>
+  );
+}
+
+/** The boards could not be loaded (a server without accounts, or the request failed). */
+function UnavailableState({ onRetry }: { onRetry: () => void }) {
+  return (
+    <div className="py-10 text-center" role="status">
+      <Crown className="mx-auto mb-3 w-10 h-10 text-amber-700/40" strokeWidth={1.25} />
+      <p className="text-amber-100/90" style={SERIF}>The hall&apos;s records are out of reach right now.</p>
+      <p className="mt-1 text-xs text-amber-200/75" style={SERIF}>The champions are still there. Try again in a moment.</p>
+      <button
+        type="button"
+        onClick={onRetry}
+        className="mt-4 h-10 px-4 rounded-full border border-amber-700/50 text-sm text-amber-200 cursor-pointer hover:border-amber-500/60 hover:text-amber-100"
+        style={SERIF}
+      >
+        Try again
+      </button>
     </div>
   );
 }
@@ -82,7 +94,7 @@ function JoinHint({ listed }: { listed: boolean }) {
   if (listed || status === 'loading') return null;
   const [text, href, cta] = joinHintCopy(status === 'guest');
   return (
-    <p className="mt-4 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-xs text-amber-200/50" style={SERIF}>
+    <p className="mt-4 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-xs text-amber-200/75" style={SERIF}>
       {text}
       <Link href={href} className="text-amber-400 underline decoration-amber-700/60 underline-offset-2 hover:text-amber-300">{cta}</Link>
     </p>
@@ -106,8 +118,6 @@ export function HallOfChampions() {
   const [category, setCategory] = useState<LeaderboardCategory>('level');
   const selfUsername = user?.username ?? null;
 
-  if (leaderboards.status === 'error') return null;
-
   const entries = leaderboards.status === 'ready' ? leaderboards.boards[category] : [];
   const listed = entries.some((entry) => entry.username === selfUsername);
 
@@ -120,15 +130,12 @@ export function HallOfChampions() {
       aria-labelledby="hall-of-champions"
     >
       <SectionHeader />
-      <div
-        className="relative rounded-2xl border border-amber-700/30 overflow-hidden"
-        style={{ background: 'linear-gradient(180deg, color-mix(in srgb, var(--surface) 92%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 30%) 96%, transparent) 100%)', boxShadow: '0 4px 40px rgba(0,0,0,0.45), inset 0 1px 0 color-mix(in srgb, var(--accent-deep) 8%, transparent)' }}
-      >
-        <div className="h-0.5 bg-gradient-to-r from-transparent via-amber-600/50 to-transparent" />
-        <div className="p-4 sm:p-6">
+      {/* The start page sets this on its own realm panel (HallStation), so it carries no card of its own */}
+      <div>
+        <div>
           <span id="hall-of-champions" className="sr-only">Top players</span>
-          <CategoryTabs value={category} onChange={setCategory} />
-          {category === 'win-rate' ? (
+          {leaderboards.status === 'error' ? <UnavailableState onRetry={leaderboards.retry} /> : <CategoryTabs value={category} onChange={setCategory} />}
+          {category === 'win-rate' && leaderboards.status !== 'error' ? (
             <p className="mt-2 text-[11px] text-amber-600/55" style={SERIF}>Players with at least {LEADERBOARD_RULES.MIN_GAMES_FOR_WIN_RATE} games.</p>
           ) : null}
 
@@ -140,7 +147,7 @@ export function HallOfChampions() {
               <ChampionList entries={entries.slice(3)} category={category} selfUsername={selfUsername} />
             </>
           ) : null}
-          <JoinHint listed={listed} />
+          {leaderboards.status === 'error' ? null : <JoinHint listed={listed} />}
         </div>
       </div>
     </motion.section>

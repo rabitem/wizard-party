@@ -16,8 +16,8 @@ export function HallSign() {
       <h1 className="mt-2 text-5xl sm:text-7xl leading-none tracking-[-0.015em] text-amber-50 [text-wrap:balance] [text-shadow:0_2px_24px_rgba(0,0,0,0.75)]" style={SERIF}>
         Wizard Party
       </h1>
-      <p className="mt-3 text-base sm:text-xl leading-snug text-amber-100/90 [text-wrap:balance] [text-shadow:0_1px_12px_rgba(0,0,0,0.9)]" style={SERIF}>
-        Bid your tricks, then hit them exactly. Free in your browser, with friends or bots.
+      <p className="mt-3 text-lg sm:text-2xl tracking-[0.04em] text-amber-200 [text-shadow:0_1px_12px_rgba(0,0,0,0.9)]" style={SERIF}>
+        Predict. Play. Prevail.
       </p>
     </div>
   );
