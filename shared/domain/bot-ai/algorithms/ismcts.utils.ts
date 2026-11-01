@@ -7,7 +7,7 @@ import { Suit } from '../../value-objects/card-types';
 import { PlayedCard } from '../../entities/trick';
 import type { ICardRules } from '../../value-objects/ruleset-config';
 import { PENDING_LEAD } from '../../expansions/trick-lead';
-import { leadAfterCard, legalCards, wouldTakePlays } from '../bot-rules';
+import { leadAfterCard, legalCards, trickWinnerId, wouldTakePlays } from '../bot-rules';
 import { Determinization } from './ismcts.types';
 
 export function getCardValue(card: Card): number {
@@ -47,6 +47,7 @@ export function copyDeterminization(det: Determinization): Determinization {
   return {
     hands: handsCopy,
     trickCards: [...det.trickCards],
+    tricksWon: new Map(det.tricksWon),
     lead: det.lead,
     trumpSuit: det.trumpSuit,
     numPlayers: det.numPlayers,
@@ -68,8 +69,8 @@ export function getLegalActionsForPlayer(
 }
 
 /**
- * Play a card in the determinization. A complete trick is cleared so the next
- * one starts with a pending lead.
+ * Play a card in the determinization. A complete trick is credited to its winner
+ * and cleared so the next one starts with a pending lead.
  */
 export function applyAction(det: Determinization, card: Card, playerId: string): void {
   const hand = det.hands.get(playerId);
@@ -82,6 +83,8 @@ export function applyAction(det: Determinization, card: Card, playerId: string):
   det.lead = leadAfterCard(det.lead, card);
 
   if (det.trickCards.length >= det.numPlayers) {
+    const winnerId = trickWinnerId(det.trickCards, det.trumpSuit, det.cardRules);
+    det.tricksWon.set(winnerId, (det.tricksWon.get(winnerId) ?? 0) + 1);
     det.trickCards = [];
     det.lead = PENDING_LEAD;
   }

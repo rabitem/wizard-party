@@ -3,8 +3,9 @@
  */
 
 import { Card } from '../../entities/card';
-import { Suit, ALL_SUITS } from '../../value-objects/card-types';
+import { Suit } from '../../value-objects/card-types';
 import type { PlayedCard } from '../../entities/trick';
+import { buildClassicDeckCards } from '../../expansions/deck-composition';
 import { GameContext } from '../types';
 import { revealsVoid, withSuitToFollow } from '../bot-rules';
 import { OPPONENT_MODEL } from '../../constants/bot-ai.constants';
@@ -257,21 +258,11 @@ export class CardInferenceEngine {
     if (this.context.trumpCard) this.seenCards.add(this.context.trumpCard.id);
   }
 
+  /** The classic deck (the bot's view) minus every card this seat has seen. */
   private getUnseenCards(): Card[] {
-    const unseen: Card[] = [];
-    for (const suit of ALL_SUITS) {
-      for (let value = 1; value <= 13; value++) {
-        const card = Card.createNumberCard(suit, value);
-        if (!this.seenCards.has(card.id)) unseen.push(card);
-      }
-    }
-    for (let i = 1; i <= 4; i++) {
-      const wizard = Card.createWizard(i);
-      const jester = Card.createJester(i);
-      if (!this.seenCards.has(wizard.id)) unseen.push(wizard);
-      if (!this.seenCards.has(jester.id)) unseen.push(jester);
-    }
-    return unseen;
+    return buildClassicDeckCards()
+      .filter((card) => !this.seenCards.has(card.id))
+      .map((card) => Card.fromJSON(card));
   }
 
   private computeAllPlayerFeatures(): void {

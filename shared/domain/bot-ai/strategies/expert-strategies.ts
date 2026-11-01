@@ -89,7 +89,7 @@ export class ExpertBiddingStrategy implements IBiddingStrategy {
       context.playerPosition
     );
 
-    let bid: number;
+    let bid = analysis.expectedTricks;
 
     if (this.config.useCFR) {
       const infoSet = this.cfrTrainer.createInfoSet({
@@ -101,10 +101,10 @@ export class ExpertBiddingStrategy implements IBiddingStrategy {
         forbiddenBid: context.forbiddenBid,
       });
 
-      bid = this.cfrTrainer.getBestBid(infoSet);
-      bid = (bid + analysis.expectedTricks) / 2;
-    } else {
-      bid = analysis.expectedTricks;
+      // An untrained policy is uniform and its best bid is just the lowest legal one.
+      if (this.cfrTrainer.hasLearnedStrategy(infoSet)) {
+        bid = (this.cfrTrainer.getBestBid(infoSet) + analysis.expectedTricks) / 2;
+      }
     }
 
     bid = this.applyStrategicAdjustments(bid, context, analysis);

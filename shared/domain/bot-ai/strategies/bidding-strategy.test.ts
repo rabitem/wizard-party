@@ -1,10 +1,13 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { Card } from '../../entities/card';
 import { Game, GamePhase } from '../../entities/game';
 import { Player } from '../../entities/player';
 import { Suit } from '../../value-objects/card-types';
+import { BOT_ID, botContext } from '../bot-ai.fixtures';
 import { createBotBrain } from '../bot-brain';
-import { BotDifficulty } from '../types';
+import { BotDifficulty, BotPersonality } from '../types';
+import { createExpertBiddingStrategy } from './expert-strategies';
 
 /** Round 1 with three players where the first two bids leave 0 as the forbidden bid for the last bidder. */
 function lastBidderFacingForbiddenZero(): { game: Game; lastBidderId: string } {
@@ -43,6 +46,20 @@ describe('bot bidding', () => {
     expect(bid).not.toBe(game.getForbiddenBid());
     vi.restoreAllMocks();
     expect(() => game.placeBid(lastBidderId, bid)).not.toThrow();
+  });
+
+  it('Expert bids every trick when four Wizards guarantee them', () => {
+    const context = botContext({
+      hand: [0, 1, 2, 3].map((index) => Card.createWizard(index)),
+      playerIds: [BOT_ID, 'p1', 'p2'],
+    });
+
+    const bid = createExpertBiddingStrategy().calculateBid(context, {
+      difficulty: BotDifficulty.EXPERT,
+      personality: BotPersonality.BALANCED,
+    });
+
+    expect(bid).toBe(4);
   });
 
   it.each(DIFFICULTIES.slice(0, 3))('only produces legal bids across many random decisions (difficulty %i)', (difficulty) => {
