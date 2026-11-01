@@ -6,19 +6,19 @@ import { BarChart3, Crown, Flame, Swords, Target, Trophy } from 'lucide-react';
 import type { PublicHeadlineStats } from '@shared/domain/account/public-profile';
 
 import { INSET_RAISED_BG } from '../account-surfaces';
-import { Panel, SERIF, SectionHeading } from '../ui';
+import { Panel, SectionHeading } from '../ui';
 import { formatNumber, formatPercent } from './public-profile-format';
 
 function Stat({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
   return (
     <div className="rounded-xl border border-amber-800/30 px-3 py-3 sm:px-4 sm:py-4 min-w-0" style={{ background: INSET_RAISED_BG }}>
-      <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] uppercase tracking-wider text-amber-500/70" style={SERIF}>
+      <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] uppercase tracking-wider text-amber-500/70 font-serif">
         <span className="shrink-0" aria-hidden>
           {icon}
         </span>
         <span className="truncate">{label}</span>
       </div>
-      <div className="mt-1.5 text-xl sm:text-2xl text-amber-50 tabular-nums truncate" style={SERIF}>
+      <div className="mt-1.5 text-xl sm:text-2xl text-amber-50 tabular-nums truncate font-serif">
         {value}
       </div>
     </div>

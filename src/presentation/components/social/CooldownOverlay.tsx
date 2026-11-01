@@ -17,7 +17,7 @@ export function CooldownOverlay({ secondsLeft }: CooldownOverlayProps) {
         background: THEME_SURFACE.MODAL_BG,
       }}
     >
-      <span className="text-amber-400 font-bold text-sm" style={{ fontFamily: 'Georgia, serif' }}>
+      <span className="text-amber-400 font-bold text-sm font-serif">
         {secondsLeft}
       </span>
     </div>

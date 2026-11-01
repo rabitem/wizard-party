@@ -6,17 +6,16 @@ import type { GlobalStats } from '@shared/domain/stats';
 import type { GlobalStatsResponse } from '@/app/api/types/global-stats.types';
 import { CONSTANTS } from '@/presentation/config/constants';
 
-const SERIF = { fontFamily: 'Georgia, serif' } as const;
 
 /** One line of the realm's ledger: what was counted and how many. */
 function LedgerRow({ label, value, description }: { label: string; value: string; description: string }) {
   return (
     <div className="flex items-baseline gap-3 py-2.5 border-b border-amber-800/25">
-      <dt className="min-w-0 flex-1" style={SERIF}>
+      <dt className="min-w-0 flex-1 font-serif">
         <span className="block text-sm text-amber-100/90">{label}</span>
         <span className="block text-xs text-amber-200/65">{description}</span>
       </dt>
-      <dd className="text-xl text-amber-200 tabular-nums" style={SERIF}>{value}</dd>
+      <dd className="text-xl text-amber-200 tabular-nums font-serif">{value}</dd>
     </div>
   );
 }
@@ -75,14 +74,14 @@ export function GlobalStatsPanel() {
 
   return (
     <motion.section aria-labelledby="chronicles-heading" className="mb-8" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.32 }}>
-      <h2 id="chronicles-heading" className="text-2xl sm:text-3xl text-amber-50" style={SERIF}>Chronicles of the realm</h2>
-      <p className="mt-2 text-sm text-amber-100/80" style={SERIF}>
+      <h2 id="chronicles-heading" className="text-2xl sm:text-3xl text-amber-50 font-serif">Chronicles of the realm</h2>
+      <p className="mt-2 text-sm text-amber-100/80 font-serif">
         <span className="text-amber-200 tabular-nums">{stats.cardsPlayed.toLocaleString()}</span> cards have been played at these tables.
       </p>
       <dl className="mt-4 grid sm:grid-cols-2 gap-x-8">
         {statItems.map((item) => <LedgerRow key={item.label} {...item} />)}
       </dl>
-      {stats.isMock ? <p className="mt-3 text-xs text-amber-200/70 italic" style={SERIF}>Sample figures: live statistics are not configured on this server.</p> : null}
+      {stats.isMock ? <p className="mt-3 text-xs text-amber-200/70 italic font-serif">Sample figures: live statistics are not configured on this server.</p> : null}
     </motion.section>
   );
 }

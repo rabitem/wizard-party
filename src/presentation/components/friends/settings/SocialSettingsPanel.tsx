@@ -8,7 +8,7 @@ import { PRESENCE_MODES, type InvitePolicy, type SocialSettings, type SocialSett
 import { socialApi } from '@/lib/social/social-api';
 import { useSocial } from '@/presentation/providers/SocialProvider';
 
-import { Notice, Panel, SERIF, SectionHeading, Toggle, errorMessage } from '../../account/ui';
+import { Notice, Panel, SectionHeading, Toggle, errorMessage } from '../../account/ui';
 import { MODE_COLORS, MODE_LABELS } from '../social-format';
 import { CommunicationSettings } from './CommunicationSettings';
 
@@ -22,7 +22,7 @@ function Segmented<T extends string>({ value, options, onChange, disabled }: { v
   return (
     <div role="radiogroup" className="grid gap-1.5" style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}>
       {options.map((option) => (
-        <button key={option.value} type="button" role="radio" aria-checked={option.value === value} disabled={disabled} onClick={() => onChange(option.value)} className={`min-h-11 px-2 rounded-xl border text-xs sm:text-sm transition-colors cursor-pointer disabled:opacity-50 ${option.value === value ? 'border-amber-500/70 bg-amber-900/40 text-amber-50' : 'border-amber-900/40 text-amber-200/60 hover:text-amber-100'}`} style={SERIF}>
+        <button key={option.value} type="button" role="radio" aria-checked={option.value === value} disabled={disabled} onClick={() => onChange(option.value)} className={`font-serif min-h-11 px-2 rounded-xl border text-xs sm:text-sm transition-colors cursor-pointer disabled:opacity-50 ${option.value === value ? 'border-amber-500/70 bg-amber-900/40 text-amber-50' : 'border-amber-900/40 text-amber-200/60 hover:text-amber-100'}`}>
           {option.color ? <span className="inline-block w-2 h-2 rounded-full mr-1.5" style={{ background: option.color }} /> : null}
           {option.label}
         </button>
@@ -68,12 +68,12 @@ export function SocialSettingsPanel() {
         {!settings ? <div className="h-40 rounded-xl bg-amber-900/10 animate-pulse" /> : (
           <>
             <div className="space-y-2">
-              <p className="text-sm text-amber-100" style={SERIF}>Online status</p>
+              <p className="text-sm text-amber-100 font-serif">Online status</p>
               <Segmented value={settings.presenceMode} disabled={saving} onChange={(presenceMode) => void change({ presenceMode })} options={PRESENCE_MODES.map((mode) => ({ value: mode, label: MODE_LABELS[mode].label, color: MODE_COLORS[mode] }))} />
               <p className="text-xs text-amber-200/45">{MODE_LABELS[settings.presenceMode].description}</p>
             </div>
             <div className="space-y-2">
-              <p className="text-sm text-amber-100" style={SERIF}>Game invites from</p>
+              <p className="text-sm text-amber-100 font-serif">Game invites from</p>
               <Segmented value={settings.invitePolicy} disabled={saving} onChange={(invitePolicy) => void change({ invitePolicy })} options={INVITE_OPTIONS} />
               <p className="text-xs text-amber-200/45">Choose &ldquo;Friends only&rdquo; to stop invites from players you don&apos;t know.</p>
             </div>

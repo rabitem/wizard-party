@@ -2,7 +2,6 @@
  * Shared look of the round-table lobby. Colors come from theme tokens (--surface, --glow and the
  * remapped amber scale) so every UI theme restyles the lobby without per-theme code.
  */
-export const SERIF = { fontFamily: 'Georgia, serif' } as const;
 
 /**
  * The primary action (Start game, Quick play, Add bot): aged brass, matte and dark, with cream
@@ -12,7 +11,7 @@ export const GOLD_BUTTON_STYLE = {
   background: 'linear-gradient(180deg, color-mix(in srgb, var(--color-amber-600) 62%, #1a1108) 0%, color-mix(in srgb, var(--color-amber-800) 78%, #100a04) 100%)',
   boxShadow: 'inset 0 0 0 1px color-mix(in srgb, var(--color-amber-400) 55%, transparent), inset 0 1px 0 color-mix(in srgb, var(--color-amber-200) 30%, transparent), 0 4px 14px rgba(0,0,0,0.35)',
   color: 'var(--color-amber-50)',
-  ...SERIF,
+  fontFamily: 'var(--font-serif)',
 } as const;
 
 export const SURFACE_STYLE = {

@@ -19,14 +19,12 @@ export function BottomSheetHeader({
     >
       <h2
         id={titleId}
-        className="text-lg text-amber-100/95 text-center"
-        style={{ fontFamily: 'Georgia, serif' }}
+        className="text-lg text-amber-100/95 text-center font-serif"
       >
         {title}
       </h2>
       {subtitle ? <p
-          className="text-amber-500/50 text-xs text-center mt-0.5"
-          style={{ fontFamily: 'Georgia, serif' }}
+          className="text-amber-500/50 text-xs text-center mt-0.5 font-serif"
         >
           {subtitle}
         </p> : null}

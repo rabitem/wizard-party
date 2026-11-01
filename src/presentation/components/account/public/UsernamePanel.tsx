@@ -10,7 +10,7 @@ import { changeUsername } from '@/lib/account/profile-visibility-api';
 import { INSET_BG } from '../account-surfaces';
 import { UsernameField } from '../auth/UsernameField';
 import { useUsernameAvailability, type UsernameAvailability } from '../auth/useUsernameAvailability';
-import { Button, Notice, Panel, SERIF, SectionHeading, errorMessage } from '../ui';
+import { Button, Notice, Panel, SectionHeading, errorMessage } from '../ui';
 import { CopyProfileLinkButton } from './CopyProfileLinkButton';
 import { publicProfilePath, publicProfileUrl } from './public-profile-links';
 
@@ -111,7 +111,7 @@ export function UsernamePanel({ username, displayUsername, changedAt, isPublic, 
         ) : null}
         <UsernameField id="account-username" value={value} onChange={edit} availability={availability} />
         {renaming && renameAllowed && !confirming ? (
-          <p className="text-xs text-amber-300/70" style={SERIF}>
+          <p className="text-xs text-amber-300/70 font-serif">
             Links to <span className="text-amber-200">{publicProfilePath(username)}</span> will stop working.
           </p>
         ) : null}
@@ -133,10 +133,10 @@ export function UsernamePanel({ username, displayUsername, changedAt, isPublic, 
         </div>
 
         <div className="rounded-xl border border-amber-800/30 p-3 sm:p-4 space-y-3" style={{ background: INSET_BG }}>
-          <div className="text-[11px] uppercase tracking-wider text-amber-400/70" style={SERIF}>
+          <div className="text-[11px] uppercase tracking-wider text-amber-400/70 font-serif">
             Your public profile
           </div>
-          <div className="text-sm text-amber-100 break-all" style={SERIF}>
+          <div className="text-sm text-amber-100 break-all font-serif">
             {publicProfileUrl(username)}
           </div>
           {!isPublic ? <p className="text-xs text-amber-300/60">Your profile is private, so this link shows nothing until you make it public below.</p> : null}
@@ -146,8 +146,7 @@ export function UsernamePanel({ username, displayUsername, changedAt, isPublic, 
               href={publicProfilePath(username)}
               target="_blank"
               rel="noopener"
-              className="inline-flex items-center justify-center gap-2 rounded-xl px-4 min-h-11 text-sm transition-all w-full sm:w-auto border border-transparent text-amber-300/80 hover:text-amber-100 hover:bg-amber-900/20"
-              style={SERIF}
+              className="inline-flex items-center justify-center gap-2 rounded-xl px-4 min-h-11 text-sm transition-all w-full sm:w-auto border border-transparent text-amber-300/80 hover:text-amber-100 hover:bg-amber-900/20 font-serif"
             >
               <ExternalLink className="w-4 h-4" aria-hidden />
               Open profile

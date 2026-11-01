@@ -17,8 +17,8 @@ function DialogHeader({ onClose }: { onClose: () => void }) {
             <Share2 className="w-5 h-5 text-amber-500/80" />
           </div>
           <div>
-            <h2 className="text-lg text-amber-100/95" style={{ fontFamily: 'Georgia, serif' }}>Share Room</h2>
-            <p className="text-amber-500/50 text-xs" style={{ fontFamily: 'Georgia, serif' }}>Invite others to join</p>
+            <h2 className="text-lg text-amber-100/95 font-serif">Share Room</h2>
+            <p className="text-amber-500/50 text-xs font-serif">Invite others to join</p>
           </div>
         </div>
         <button onClick={onClose} className="p-2 hover:bg-amber-900/30 rounded-lg transition-colors"><X className="w-5 h-5 text-amber-500/60" /></button>
@@ -44,7 +44,7 @@ function RoomCodeSection({ roomId }: { roomId: string }) {
     <div className="mb-4">
       <div className="flex items-center gap-2 mb-2 px-1">
         <div className="w-1.5 h-1.5 rounded-full bg-amber-500/60" />
-        <span className="text-amber-100/85 text-sm" style={{ fontFamily: 'Georgia, serif' }}>Room code</span>
+        <span className="text-amber-100/85 text-sm font-serif">Room code</span>
       </div>
       <div className="text-xl sm:text-2xl font-mono text-amber-200 text-center py-2.5 sm:py-3 rounded-xl border border-amber-700/30 tracking-widest" style={{ background: 'color-mix(in srgb, color-mix(in srgb, var(--surface), black 60%) 60%, transparent)' }}>{roomId}</div>
     </div>
@@ -59,13 +59,13 @@ function ShareLinkSection({ shareUrl, copied, onCopy }: { shareUrl: string; copi
     <div className="mb-4">
       <div className="flex items-center gap-2 mb-2 px-1">
         <div className="w-1.5 h-1.5 rounded-full bg-amber-500/60" />
-        <span className="text-amber-100/85 text-sm" style={{ fontFamily: 'Georgia, serif' }}>Share link</span>
+        <span className="text-amber-100/85 text-sm font-serif">Share link</span>
       </div>
       <div className="flex gap-2">
         <div className="flex-1 px-3 py-2.5 rounded-xl border border-amber-700/30 text-amber-400/80 text-xs sm:text-sm font-mono overflow-hidden" style={{ background: 'color-mix(in srgb, color-mix(in srgb, var(--surface), black 60%) 60%, transparent)' }}>
           <span className="block truncate">{shareUrl}</span>
         </div>
-        <button onClick={onCopy} className={`px-3 sm:px-4 py-2 rounded-xl border transition-all flex items-center gap-1.5 sm:gap-2 flex-shrink-0 text-sm active:scale-95 ${btnClass}`} style={{ background: btnBg, fontFamily: 'Georgia, serif' }}>
+        <button onClick={onCopy} className={`px-3 sm:px-4 py-2 rounded-xl border transition-all flex items-center gap-1.5 sm:gap-2 flex-shrink-0 text-sm active:scale-95 ${btnClass}`} style={{ background: btnBg, fontFamily: 'var(--font-serif)' }}>
           {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
           <span className="hidden sm:inline">{copied ? 'Copied' : 'Copy'}</span>
         </button>
@@ -78,7 +78,7 @@ function ShareLinkSection({ shareUrl, copied, onCopy }: { shareUrl: string; copi
 function DialogFooter() {
   return (
     <div className="px-4 sm:px-6 py-3 border-t border-amber-700/20">
-      <div className="flex items-center justify-center gap-3 text-[10px] sm:text-xs" style={{ fontFamily: 'Georgia, serif' }}>
+      <div className="flex items-center justify-center gap-3 text-[10px] sm:text-xs font-serif">
         <Link href="/privacy" className="text-amber-600/30 hover:text-amber-400 transition-colors">Privacy</Link>
         <span className="text-amber-700/20">·</span>
         <Link href="/imprint" className="text-amber-600/30 hover:text-amber-400 transition-colors">Imprint</Link>
@@ -110,7 +110,7 @@ export function ShareDialog({ roomId, onClose }: ShareDialogProps) {
         <QRCodeSection shareUrl={shareUrl} />
         <RoomCodeSection roomId={roomId} />
         <ShareLinkSection shareUrl={shareUrl} copied={copied} onCopy={handleCopy} />
-        {canShare ? <button onClick={handleNativeShare} className="w-full py-3 rounded-xl font-medium transition-all active:scale-[0.98] flex items-center justify-center gap-2" style={{ background: 'linear-gradient(180deg, var(--accent-cta-top) 0%, var(--accent-cta-mid) 50%, var(--accent-cta-bottom) 100%)', boxShadow: '0 4px 20px color-mix(in srgb, var(--accent-deep) 30%, transparent), inset 0 1px 0 rgba(255,255,255,0.2)', fontFamily: 'Georgia, serif', color: '#1a1510' }}><ExternalLink className="w-4 h-4" />Share via...</button> : null}
+        {canShare ? <button onClick={handleNativeShare} className="w-full py-3 rounded-xl font-medium transition-all active:scale-[0.98] flex items-center justify-center gap-2" style={{ background: 'linear-gradient(180deg, var(--accent-cta-top) 0%, var(--accent-cta-mid) 50%, var(--accent-cta-bottom) 100%)', boxShadow: '0 4px 20px color-mix(in srgb, var(--accent-deep) 30%, transparent), inset 0 1px 0 rgba(255,255,255,0.2)', fontFamily: 'var(--font-serif)', color: '#1a1510' }}><ExternalLink className="w-4 h-4" />Share via...</button> : null}
       </div>
       <DialogFooter />
     </Modal>

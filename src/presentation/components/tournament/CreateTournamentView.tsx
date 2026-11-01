@@ -8,7 +8,6 @@ import { TOURNAMENT_ROUTES } from '@/presentation/config/tournament.config';
 
 import { TITLE_GLOW } from '../account/account-surfaces';
 import { AccountShell } from '../account/AccountShell';
-import { SERIF } from '../account/ui';
 import { TournamentAccessGate } from './TournamentAccessGate';
 import { TournamentForm } from './TournamentForm';
 import { initialFormState, toCreateInput, type TournamentFormState } from './tournament-form';
@@ -55,7 +54,7 @@ export function CreateTournamentView() {
     <AccountShell width="wide">
       <div className="mx-auto max-w-2xl space-y-5">
         <header className="text-center">
-          <h1 className="text-2xl sm:text-3xl text-amber-50" style={{ ...SERIF, textShadow: TITLE_GLOW }}>
+          <h1 className="text-2xl sm:text-3xl text-amber-50" style={{ fontFamily: 'var(--font-serif)', textShadow: TITLE_GLOW }}>
             Host a tournament
           </h1>
           <p className="mt-1.5 text-sm text-amber-200/50">Pick a format, invite your rivals and let the cards decide.</p>

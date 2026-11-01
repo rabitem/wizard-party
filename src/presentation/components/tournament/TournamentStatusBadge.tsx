@@ -2,7 +2,6 @@
 
 import type { TournamentStatus } from '@shared/domain/tournament';
 
-import { SERIF } from '../account/ui';
 import { statusPresentation, type StatusTone } from './tournament-view-model';
 
 const TONES: Record<StatusTone, string> = {
@@ -15,7 +14,7 @@ const TONES: Record<StatusTone, string> = {
 export function TournamentStatusBadge({ status, className = '' }: { status: TournamentStatus; className?: string }) {
   const { label, tone } = statusPresentation(status);
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] uppercase tracking-wider ${TONES[tone]} ${className}`} style={SERIF}>
+    <span className={`font-serif inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] uppercase tracking-wider ${TONES[tone]} ${className}`}>
       {tone === 'live' ? (
         <span className="relative flex h-2 w-2" aria-hidden>
           <span className="absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75 motion-safe:animate-ping" />

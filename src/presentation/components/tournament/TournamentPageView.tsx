@@ -16,7 +16,7 @@ import { useTournamentClock } from '@/presentation/hooks/useTournamentClock';
 import { TOURNAMENT_QUERY, TOURNAMENT_ROUTES } from '@/presentation/config/tournament.config';
 
 import { AccountShell } from '../account/AccountShell';
-import { Button, Notice, SERIF } from '../account/ui';
+import { Button, Notice } from '../account/ui';
 import { EntrantsList } from './EntrantsList';
 import { FinalPodium } from './FinalPodium';
 import { HostControls } from './HostControls';
@@ -37,7 +37,7 @@ const ROUNDS_VIEWS: Record<TournamentFormatId, ComponentType<RoundsViewProps>> =
 
 function BackToList() {
   return (
-    <Link href={TOURNAMENT_ROUTES.LIST} className="inline-flex min-h-11 items-center gap-1.5 text-sm text-amber-300/75 hover:text-amber-100" style={SERIF}>
+    <Link href={TOURNAMENT_ROUTES.LIST} className="inline-flex min-h-11 items-center gap-1.5 text-sm text-amber-300/75 hover:text-amber-100 font-serif">
       <ArrowLeft className="h-4 w-4" aria-hidden /> All tournaments
     </Link>
   );

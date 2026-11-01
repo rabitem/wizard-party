@@ -34,15 +34,13 @@ function Section({ icon, title, children }: SectionProps) {
         }}
       >
         <h2
-          className="text-lg text-amber-200/90 mb-4 flex items-center gap-2"
-          style={{ fontFamily: "Georgia, serif" }}
+          className="text-lg text-amber-200/90 mb-4 flex items-center gap-2 font-serif"
         >
           {icon}
           {title}
         </h2>
         <div
-          className="space-y-4 text-amber-300/70 text-sm leading-relaxed"
-          style={{ fontFamily: "Georgia, serif" }}
+          className="space-y-4 text-amber-300/70 text-sm leading-relaxed font-serif"
         >
           {children}
         </div>
@@ -76,8 +74,7 @@ export default function PrivacyPage() {
         {/* Back Button */}
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-amber-400/70 hover:text-amber-300 transition-colors mb-8 group"
-          style={{ fontFamily: "Georgia, serif" }}
+          className="inline-flex items-center gap-2 text-amber-400/70 hover:text-amber-300 transition-colors mb-8 group font-serif"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           Return to the Tavern
@@ -108,14 +105,12 @@ export default function PrivacyPage() {
               </div>
               <div>
                 <h1
-                  className="text-2xl text-amber-200/90"
-                  style={{ fontFamily: "Georgia, serif" }}
+                  className="text-2xl text-amber-200/90 font-serif"
                 >
                   Privacy Policy
                 </h1>
                 <p
-                  className="text-amber-600/60 text-sm"
-                  style={{ fontFamily: "Georgia, serif" }}
+                  className="text-amber-600/60 text-sm font-serif"
                 >
                   Last updated: November 2026
                 </p>
@@ -139,8 +134,7 @@ export default function PrivacyPage() {
         {/* Footer Links */}
         <div className="mt-12 pt-8 border-t border-amber-700/30">
           <div
-            className="flex items-center justify-center gap-4 text-sm"
-            style={{ fontFamily: "Georgia, serif" }}
+            className="flex items-center justify-center gap-4 text-sm font-serif"
           >
             <Link href="/imprint" className="text-amber-500/60 hover:text-amber-400 transition-colors">
               Imprint

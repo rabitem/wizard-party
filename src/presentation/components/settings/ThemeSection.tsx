@@ -18,8 +18,7 @@ export function ThemeSection({ selectedTheme, onSelect }: ThemeSectionProps) {
         <div className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-700/30" />
         <Palette className="w-4 h-4 text-amber-500/60" />
         <span
-          className="text-xs text-amber-400/70 uppercase tracking-widest"
-          style={{ fontFamily: 'Georgia, serif' }}
+          className="text-xs text-amber-400/70 uppercase tracking-widest font-serif"
         >
           Visual Theme
         </span>
@@ -49,16 +48,14 @@ export function ThemeSection({ selectedTheme, onSelect }: ThemeSectionProps) {
                   style={{ color: theme.colors.primary }}
                 />
                 <span
-                  className="text-sm text-amber-200/90"
-                  style={{ fontFamily: 'Georgia, serif' }}
+                  className="text-sm text-amber-200/90 font-serif"
                 >
                   {theme.name}
                 </span>
                 {theme.isNew ? <NewBadge /> : null}
               </div>
               <p
-                className="text-xs text-amber-500/50 text-left"
-                style={{ fontFamily: 'Georgia, serif' }}
+                className="text-xs text-amber-500/50 text-left font-serif"
               >
                 {theme.description}
               </p>

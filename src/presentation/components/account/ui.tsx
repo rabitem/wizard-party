@@ -11,7 +11,6 @@ import { FIELD_BG, PANEL_BG, PANEL_SHADOW } from './account-surfaces';
  * Backgrounds come from the active UI theme (see account-surfaces.ts).
  */
 
-export const SERIF = { fontFamily: 'Georgia, serif' } as const;
 
 export function Panel({ children, className = '', accent = true }: { children: ReactNode; className?: string; accent?: boolean }) {
   return (
@@ -32,7 +31,7 @@ export function SectionHeading({ icon, title, description, action }: { icon?: Re
   return (
     <div className="flex items-start justify-between gap-3 mb-4">
       <div className="min-w-0">
-        <h2 className="flex items-center gap-2 text-amber-100 text-base sm:text-lg" style={SERIF}>
+        <h2 className="flex items-center gap-2 text-amber-100 text-base sm:text-lg font-serif">
           {icon ? <span className="text-amber-500/80 shrink-0">{icon}</span> : null}
           {title}
         </h2>
@@ -65,8 +64,7 @@ export function Button({ variant = 'secondary', loading, icon, block, children, 
     <button
       {...rest}
       disabled={disabled || loading}
-      className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 min-h-11 text-sm transition-all cursor-pointer active:scale-[0.98] disabled:opacity-45 disabled:cursor-not-allowed disabled:active:scale-100 ${VARIANTS[variant]} ${block ? 'w-full' : ''} ${className}`}
-      style={SERIF}
+      className={`font-serif inline-flex items-center justify-center gap-2 rounded-xl px-4 min-h-11 text-sm transition-all cursor-pointer active:scale-[0.98] disabled:opacity-45 disabled:cursor-not-allowed disabled:active:scale-100 ${VARIANTS[variant]} ${block ? 'w-full' : ''} ${className}`}
     >
       {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : icon}
       {children}
@@ -94,7 +92,7 @@ export const Field = forwardRef<HTMLInputElement, FieldProps>(({ label, hint, er
   const describedBy = [rest['aria-describedby'], hasMessageArea ? messageId : null].filter(Boolean).join(' ') || undefined;
   return (
     <label htmlFor={inputId} className={`block ${className}`}>
-      <span className="block mb-1.5 text-[11px] uppercase tracking-wider text-amber-400/70" style={SERIF}>
+      <span className="block mb-1.5 text-[11px] uppercase tracking-wider text-amber-400/70 font-serif">
         {label}
       </span>
       <input
@@ -143,7 +141,7 @@ export function Divider({ label }: { label?: string }) {
   return (
     <div className="flex items-center gap-3 my-5">
       <div className="flex-1 h-px bg-amber-700/20" />
-      {label ? <span className="text-amber-600/50 text-[11px] uppercase tracking-wider" style={SERIF}>{label}</span> : null}
+      {label ? <span className="text-amber-600/50 text-[11px] uppercase tracking-wider font-serif">{label}</span> : null}
       <div className="flex-1 h-px bg-amber-700/20" />
     </div>
   );
@@ -171,7 +169,7 @@ export function Toggle({ label, description, checked, disabled, onChange }: { la
       style={{ background: 'color-mix(in srgb, color-mix(in srgb, var(--surface), black 55%) 45%, transparent)' }}
     >
       <span className="min-w-0">
-        <span className="block text-sm text-amber-100" style={SERIF}>
+        <span className="block text-sm text-amber-100 font-serif">
           {label}
         </span>
         <span className="block mt-0.5 text-xs text-amber-200/45 leading-relaxed">{description}</span>

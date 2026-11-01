@@ -10,7 +10,7 @@ import { AccountApiError } from '@/lib/account/account-api';
 import { socialApi } from '@/lib/social/social-api';
 import { useSocial } from '@/presentation/providers/SocialProvider';
 
-import { SERIF, errorMessage } from '../account/ui';
+import { errorMessage } from '../account/ui';
 
 /** regular: icon + label; compact: icon + @name; icon: a bare icon (tight HUD rows). */
 type Size = 'icon' | 'compact' | 'regular';
@@ -87,8 +87,7 @@ export function RelationshipButton({ player, relationship, size = 'regular' }: R
         whileTap={look.actionable ? { scale: 0.92 } : undefined}
         title={look.actionable ? `${look.label}: ${who}` : `${look.label} · ${who}`}
         aria-label={`${look.label} ${who}`}
-        className={`inline-flex items-center gap-1.5 rounded-lg border transition-colors cursor-pointer disabled:cursor-default ${SIZE_CLASS[size]} ${toneClass(state)}`}
-        style={SERIF}
+        className={`font-serif inline-flex items-center gap-1.5 rounded-lg border transition-colors cursor-pointer disabled:cursor-default ${SIZE_CLASS[size]} ${toneClass(state)}`}
       >
         <AnimatePresence mode="wait" initial={false}>
           <motion.span key={`${state}-${pending}`} initial={{ scale: 0.4, opacity: 0, rotate: -30 }} animate={{ scale: 1, opacity: 1, rotate: 0 }} exit={{ scale: 0.4, opacity: 0 }} className="inline-flex">

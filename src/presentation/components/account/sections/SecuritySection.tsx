@@ -18,7 +18,7 @@ const PROVIDER_LABELS = {
   discord: PROVIDER_META.discord.label,
   github: PROVIDER_META.github.label,
 };
-import { Button, Field, Notice, Panel, SERIF, SectionHeading, errorMessage } from '../ui';
+import { Button, Field, Notice, Panel, SectionHeading, errorMessage } from '../ui';
 import { TwoFactorCard } from './TwoFactorCard';
 
 interface LinkedAccount {
@@ -153,7 +153,7 @@ function PasskeysCard({ passkeys, onChange }: { passkeys: PasskeyInfo[]; onChang
               <li key={key.id} className="flex items-center gap-3 px-3.5 py-2.5">
                 <Fingerprint className="w-4 h-4 text-amber-500/70 shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm text-amber-100 truncate" style={SERIF}>{key.name || 'Passkey'}</div>
+                  <div className="text-sm text-amber-100 truncate font-serif">{key.name || 'Passkey'}</div>
                   <div className="text-[11px] text-amber-200/40">
                     {key.deviceType === 'multiDevice' ? 'Synced' : 'This device'}
                     {key.createdAt ? ` · added ${new Date(key.createdAt).toLocaleDateString()}` : ''}
@@ -224,7 +224,7 @@ function LinkedAccountsCard({ accounts, onChange }: { accounts: LinkedAccount[];
             <li key={provider} className="flex items-center gap-3 rounded-xl border border-amber-800/30 px-3.5 py-2.5">
               <span className="shrink-0">{PROVIDER_META[provider].icon}</span>
               <span className="flex-1 min-w-0">
-                <span className="block text-sm text-amber-100" style={SERIF}>{PROVIDER_META[provider].label}</span>
+                <span className="block text-sm text-amber-100 font-serif">{PROVIDER_META[provider].label}</span>
                 <span className={`block text-[11px] ${linked.has(provider) ? 'text-emerald-400/80' : 'text-amber-200/40'}`}>
                   {linked.has(provider) ? 'Connected' : 'Not connected'}
                 </span>
@@ -273,7 +273,7 @@ function SessionsCard({ sessions, onChange }: { sessions: SessionInfo[]; onChang
           {sessions.map((session) => (
             <li key={session.id} className="flex items-center gap-3 py-2">
               <Laptop className="w-4 h-4 text-amber-600/70 shrink-0" />
-              <span className="flex-1 min-w-0 text-sm text-amber-100 truncate" style={SERIF}>{describeAgent(session.userAgent)}</span>
+              <span className="flex-1 min-w-0 text-sm text-amber-100 truncate font-serif">{describeAgent(session.userAgent)}</span>
               <span className="text-[11px] text-amber-200/40 shrink-0">
                 {session.token === currentToken ? <span className="text-emerald-400/80">This device</span> : new Date(session.createdAt).toLocaleDateString()}
               </span>

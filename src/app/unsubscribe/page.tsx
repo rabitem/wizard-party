@@ -5,7 +5,7 @@ import { MailX } from 'lucide-react';
 import { EMAIL_CATEGORY_DEFINITIONS, isEmailCategory } from '@shared/domain/social';
 
 import { AccountShell, Panel } from '@/presentation/components/account';
-import { Notice, SERIF } from '@/presentation/components/account/ui';
+import { Notice } from '@/presentation/components/account/ui';
 
 export const metadata: Metadata = {
   title: 'Unsubscribe',
@@ -34,8 +34,7 @@ function UnsubscribeBody({ token, status, label }: { token?: string; status?: st
       </p>
       <button
         type="submit"
-        className="w-full min-h-11 rounded-xl border-2 border-amber-600/60 text-amber-100 hover:border-amber-500/80 bg-[linear-gradient(180deg,color-mix(in_srgb,_var(--color-amber-700)_55%,_transparent)_0%,color-mix(in_srgb,_var(--color-amber-900)_70%,_transparent)_100%)] cursor-pointer"
-        style={SERIF}
+        className="w-full min-h-11 rounded-xl border-2 border-amber-600/60 text-amber-100 hover:border-amber-500/80 bg-[linear-gradient(180deg,color-mix(in_srgb,_var(--color-amber-700)_55%,_transparent)_0%,color-mix(in_srgb,_var(--color-amber-900)_70%,_transparent)_100%)] cursor-pointer font-serif"
       >
         Unsubscribe
       </button>
@@ -51,12 +50,12 @@ export default async function UnsubscribePage({ searchParams }: Props) {
     <AccountShell width="narrow">
       <Panel>
         <div className="p-5 sm:p-8 space-y-5">
-          <h1 className="flex items-center gap-2 text-xl text-amber-100" style={SERIF}>
+          <h1 className="flex items-center gap-2 text-xl text-amber-100 font-serif">
             <MailX className="w-5 h-5 text-amber-500/80" />
             Email notifications
           </h1>
           <UnsubscribeBody token={token} status={status} label={label} />
-          <Link href="/account?tab=profile" className="block text-center text-sm text-amber-400/80 hover:text-amber-200 underline" style={SERIF}>
+          <Link href="/account?tab=profile" className="block text-center text-sm text-amber-400/80 hover:text-amber-200 underline font-serif">
             Communication settings
           </Link>
         </div>

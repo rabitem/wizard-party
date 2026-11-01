@@ -8,7 +8,7 @@ import { getAveragePlacement, getAverageScore, getBidAccuracy, getWinRate } from
 import type { AccountOverviewDto } from '@/lib/account/account-api';
 
 import { INSET_RAISED_BG } from '../account-surfaces';
-import { Button, Notice, Panel, SERIF, SectionHeading } from '../ui';
+import { Button, Notice, Panel, SectionHeading } from '../ui';
 import { GameRow } from './GameHistoryRow';
 import { ImportGuestCard } from './ImportGuestCard';
 import { useGamePins } from './useGamePins';
@@ -21,11 +21,11 @@ const percent = (value: number) => `${Math.round(value * 100)}%`;
 function StatTile({ icon, label, value, sub }: { icon: ReactNode; label: string; value: string; sub?: string }) {
   return (
     <div className="rounded-xl border border-amber-800/30 p-3 sm:p-4" style={{ background: INSET_RAISED_BG }}>
-      <div className="flex items-center gap-1.5 text-amber-500/70 text-[10px] sm:text-[11px] uppercase tracking-wider" style={SERIF}>
+      <div className="flex items-center gap-1.5 text-amber-500/70 text-[10px] sm:text-[11px] uppercase tracking-wider font-serif">
         {icon}
         <span className="truncate">{label}</span>
       </div>
-      <div className="mt-1.5 text-xl sm:text-2xl text-amber-50 tabular-nums" style={SERIF}>{value}</div>
+      <div className="mt-1.5 text-xl sm:text-2xl text-amber-50 tabular-nums font-serif">{value}</div>
       {sub ? <div className="text-[11px] text-amber-200/40 mt-0.5 truncate">{sub}</div> : null}
     </div>
   );

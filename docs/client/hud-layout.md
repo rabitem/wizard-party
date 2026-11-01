@@ -85,7 +85,8 @@ The home page (`components/realm-hall/`) renders the active realm's game room an
 the page: `ThemedEnvironment`, `SceneLighting` and `TableSurface`, the same parts as the game, in
 a canvas set up like `Game3DCanvas`. Each `HallStation` section is one stop of a camera walk
 (`REALM_HALL.STOPS` in `config/realm-hall.config.ts`, same order; portrait screens swap in
-`PORTRAIT_STOPS` through `hallStopsFor`, because there the panels span the width); `useHallScrollProgress` turns
+`PORTRAIT_STOPS` through `hallStopsFor`, because there the panels span the width; a stop may set
+its own `fov`, which the camera eases toward); `useHallScrollProgress` turns
 the scroll position into walk progress, and the camera eases toward it inside `useFrame`. With
 reduced motion the camera stays at the first stop; without WebGL the page keeps a painted
 backdrop.
@@ -100,8 +101,12 @@ away while scrolling down (`useHideOnScrollDown`).
 
 The link previews (`src/app/_og/`, `opengraph-image.tsx`, `twitter-image.tsx`, `join/og`,
 `share/og`) render on the Node.js runtime from `assets/og`: Gelasio (an OFL serif with Georgia's
-metrics) and two captures of the Classic room taken from the start page with its UI hidden.
-`next.config.ts` traces that folder into those routes. Satori, the renderer, needs
+metrics) and two captures of every realm's room (`realm-hall-<realm>-side.jpg` at the walk's last
+turn, `-table.jpg` at the seat) taken from the start page with its UI hidden. Invite and results
+links carry the sharer's realm as `&realm=<id>` (`useRealmLinkParam`, from their table theme); the
+`/join` and `/share` pages pass it to their image routes (`src/app/_og/og-realm.ts`), and a missing
+or unknown realm shows Classic, as does the site's own preview. The lobby's invite link is
+`/join?room=`, so it previews the room code. `next.config.ts` traces that folder into those routes. Satori, the renderer, needs
 `display: flex` on any div with more than one child, does not read variable fonts, and ignores
 the `inset` shorthand. The favicon (`public/favicon.svg`, `favicon.png`) and `icon.tsx` /
 `apple-icon.tsx` draw the mark from `config/wizard-party-mark.config.ts`.

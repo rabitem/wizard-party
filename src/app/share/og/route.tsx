@@ -5,6 +5,7 @@ import { SITE_HOST } from "@/config/deployment.config";
 
 import { renderHomePreview } from "../../_og/home-preview";
 import { OG_COLORS, OG_FONTS, OG_SIZE, OgBackdrop, OgHost, OgLockup } from "../../_og/og-kit";
+import { ogRealm } from "../../_og/og-realm";
 
 interface SharedPlayer {
   name: string;
@@ -75,8 +76,9 @@ function StandingRow({ place, name, score, perfect }: { place: number; name: str
  * link without readable results gets the site's own preview rather than invented players.
  */
 export async function GET(request: NextRequest) {
+  const realm = ogRealm(request.nextUrl.searchParams.get("realm"));
   const data = decodeShareData(request.nextUrl.searchParams.get("d"));
-  if (!data) return renderHomePreview();
+  if (!data) return renderHomePreview(realm);
   const standings = [...data.players]
     .sort((a, b) => b.score - a.score)
     .slice(0, STANDINGS_SHOWN)
@@ -86,7 +88,7 @@ export async function GET(request: NextRequest) {
   return new ImageResponse(
     (
       <div style={{ width: "100%", height: "100%", display: "flex", position: "relative", background: OG_COLORS.INK, fontFamily: "Gelasio" }}>
-        <OgBackdrop kind="table" shade="linear-gradient(to right, rgb(11,8,5) 0%, rgba(11,8,5,0.9) 42%, rgba(11,8,5,0.55) 100%)" />
+        <OgBackdrop realm={realm} kind="table" shade="linear-gradient(to right, rgb(11,8,5) 0%, rgba(11,8,5,0.9) 42%, rgba(11,8,5,0.55) 100%)" />
         <div style={{ position: "relative", display: "flex", width: "100%", padding: "56px 64px", gap: 56 }}>
           <div style={{ display: "flex", flexDirection: "column", width: 440 }}>
             <OgLockup />

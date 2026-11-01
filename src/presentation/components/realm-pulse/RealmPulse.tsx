@@ -6,7 +6,6 @@ import { CalendarDays, Swords, Users, type LucideIcon } from 'lucide-react';
 
 import type { CommunityStats } from '@shared/domain/account/community-stats';
 
-const SERIF = { fontFamily: 'Georgia, serif' } as const;
 const REFRESH_MS = 60_000;
 
 /** Polls the cached aggregate counts while the page is visible. */
@@ -45,8 +44,8 @@ function Pulse({ value, label, icon: Icon, live }: { value: number; label: strin
         <Icon className="w-4 h-4 shrink-0 text-amber-500/70" />
       ) : null}
       <span className="min-w-0">
-        <span className="block text-base sm:text-lg leading-tight text-amber-100 tabular-nums" style={SERIF}>{value.toLocaleString('en-US')}</span>
-        <span className="block truncate text-xs text-amber-200/75" style={SERIF}>{label}</span>
+        <span className="block text-base sm:text-lg leading-tight text-amber-100 tabular-nums font-serif">{value.toLocaleString('en-US')}</span>
+        <span className="block truncate text-xs text-amber-200/75 font-serif">{label}</span>
       </span>
     </div>
   );

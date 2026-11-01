@@ -55,12 +55,12 @@ function RealmTileView({ realm, isActive, showNewBadge, animateMascot, onSelect 
         ) : null}
       </div>
       <div className="px-1 pt-1.5 pb-0.5">
-        <span className="block text-sm leading-tight truncate" style={{ fontFamily: 'Georgia, serif', color: pack.color }}>
+        <span className="block text-sm leading-tight truncate" style={{ fontFamily: 'var(--font-serif)', color: pack.color }}>
           {pack.name}
         </span>
         <span
           className="block text-[10px] leading-tight truncate opacity-70"
-          style={{ fontFamily: 'Georgia, serif', color: ui.primary }}
+          style={{ fontFamily: 'var(--font-serif)', color: ui.primary }}
         >
           {isActive ? 'Active realm' : pack.tagline}
         </span>

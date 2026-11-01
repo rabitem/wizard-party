@@ -28,7 +28,7 @@ export function SpecialCardToggleRow({ card, onToggle, disabled }: SpecialCardTo
         background: card.enabled
           ? THEME_SURFACE.SELECTED_BG
           : THEME_SURFACE.CARD_BG,
-        fontFamily: 'Georgia, serif',
+        fontFamily: 'var(--font-serif)',
       }}
     >
       <div className="flex items-center justify-between gap-3">

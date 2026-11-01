@@ -10,7 +10,7 @@ import { SOCIAL_LIMITS, type PlayerSearchResult } from '@shared/domain/social';
 import { socialApi } from '@/lib/social/social-api';
 
 import { PlayerAvatar } from '../account/PlayerAvatar';
-import { Notice, SERIF, errorMessage } from '../account/ui';
+import { Notice, errorMessage } from '../account/ui';
 import { RelationshipButton } from './RelationshipButton';
 
 const DEBOUNCE_MS = 300;
@@ -67,7 +67,7 @@ export function FindTab() {
         {searchable && loading ? <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-amber-500/60" /> : null}
       </label>
       {error ? <Notice tone="error" className="mt-3">{error}</Notice> : null}
-      {shown && shown.length === 0 && !(searchable && loading) ? <p className="mt-6 text-center text-sm text-amber-200/45" style={SERIF}>No players found</p> : null}
+      {shown && shown.length === 0 && !(searchable && loading) ? <p className="mt-6 text-center text-sm text-amber-200/45 font-serif">No players found</p> : null}
       {!searchable ? <p className="mt-6 text-center text-xs text-amber-200/40">Type at least {SOCIAL_LIMITS.SEARCH_MIN_LENGTH} characters. Private profiles are only found by their exact name.</p> : null}
       <ul className="mt-3 space-y-2">
         {(shown ?? []).map((player, index) => (
@@ -75,9 +75,9 @@ export function FindTab() {
             <PlayerAvatar appearance={player.appearance} label={player.displayName} level={player.level} size="md" />
             <div className="min-w-0 flex-1">
               {player.hasPublicProfile ? (
-                <Link href={`/u/${player.username}`} className="block truncate text-sm text-amber-100 hover:underline" style={SERIF}>{player.displayName}</Link>
+                <Link href={`/u/${player.username}`} className="block truncate text-sm text-amber-100 hover:underline font-serif">{player.displayName}</Link>
               ) : (
-                <span className="block truncate text-sm text-amber-100" style={SERIF}>{player.displayName}</span>
+                <span className="block truncate text-sm text-amber-100 font-serif">{player.displayName}</span>
               )}
               <span className="block truncate text-xs text-amber-200/40">Level {player.level}</span>
             </div>

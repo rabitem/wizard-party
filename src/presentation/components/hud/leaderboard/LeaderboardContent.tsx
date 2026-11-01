@@ -106,7 +106,7 @@ export function CompactLeaderboardContent({
               </span>
               <span
                 className={`${COMPACT_LEADERBOARD_NAME_TEXT_CLASS} ${getCompactTextClass(isCurrentTurn, isLocal)}`}
-                style={{ fontFamily: 'Georgia, serif', fontSize: `${10 * scale}px`, maxWidth: `${50 * scale}px` }}
+                style={{ fontFamily: 'var(--font-serif)', fontSize: `${10 * scale}px`, maxWidth: `${50 * scale}px` }}
               >
                 {entry.player.name.split(' ')[0]}
               </span>
@@ -115,7 +115,7 @@ export function CompactLeaderboardContent({
                 style={{
                   ...getCompactLeaderboardScoreStyle(scale, [entry.player.score]),
                   color: isLocal ? 'var(--accent-bright)' : 'var(--accent)',
-                  fontFamily: 'Georgia, serif',
+                  fontFamily: 'var(--font-serif)',
                   fontSize: `${12 * scale}px`,
                 }}
               >
@@ -147,7 +147,7 @@ export function CompactLeaderboardContent({
               </span>
               <span
                 className={`${COMPACT_LEADERBOARD_NAME_TEXT_CLASS} ${getCompactTextClass(isCurrentTurn, isLocal)}`}
-                style={{ fontFamily: 'Georgia, serif', fontSize: `${10 * scale}px` }}
+                style={{ fontFamily: 'var(--font-serif)', fontSize: `${10 * scale}px` }}
               >
                 {entry.player.name}
               </span>
@@ -157,7 +157,7 @@ export function CompactLeaderboardContent({
               style={{
                 ...getCompactLeaderboardScoreStyle(scale, [entry.player.score]),
                 color: isLocal ? 'var(--accent-bright)' : 'var(--accent)',
-                fontFamily: 'Georgia, serif',
+                fontFamily: 'var(--font-serif)',
                 fontSize: `${12 * scale}px`,
               }}
             >

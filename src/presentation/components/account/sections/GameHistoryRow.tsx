@@ -7,7 +7,6 @@ import { countCorrectBids, type RoundResult } from '@shared/domain/account';
 
 import type { AccountGameDto } from '@/lib/account/account-api';
 
-import { SERIF } from '../ui';
 
 const DATE_FORMAT: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
 
@@ -15,8 +14,7 @@ function PlacementBadge({ placement }: { placement: number }) {
   const won = placement === 1;
   return (
     <span
-      className={`w-9 h-9 shrink-0 rounded-lg border inline-flex items-center justify-center text-sm tabular-nums ${won ? 'border-amber-500/60 text-amber-300 bg-amber-900/30' : 'border-amber-800/40 text-amber-200/60'}`}
-      style={SERIF}
+      className={`font-serif w-9 h-9 shrink-0 rounded-lg border inline-flex items-center justify-center text-sm tabular-nums ${won ? 'border-amber-500/60 text-amber-300 bg-amber-900/30' : 'border-amber-800/40 text-amber-200/60'}`}
       aria-hidden
     >
       {won ? <Crown className="w-4 h-4" /> : `#${placement}`}
@@ -62,7 +60,7 @@ export function RoundTable({ id, rounds }: { id?: string; rounds: readonly Round
   const total = rounds.reduce((sum, round) => sum + round.roundScore, 0);
   return (
     <div id={id} className="mt-1 mb-2 rounded-xl border border-amber-800/25 bg-black/20 overflow-hidden">
-      <table className="w-full text-xs sm:text-sm tabular-nums" style={SERIF}>
+      <table className="w-full text-xs sm:text-sm tabular-nums font-serif">
         <caption className="sr-only">Rounds of this game</caption>
         <thead className="text-[10px] sm:text-[11px] uppercase tracking-wider text-amber-500/70 bg-amber-950/20">
           <tr>
@@ -129,7 +127,7 @@ export function GameRow({ game, expanded, onToggleExpanded, pin }: GameRowProps)
         >
           <PlacementBadge placement={game.placement} />
           <div className="flex-1 min-w-0">
-            <div className="text-sm text-amber-100 truncate" style={SERIF}>
+            <div className="text-sm text-amber-100 truncate font-serif">
               {game.placement === 1 ? 'Victory' : `Placed ${game.placement} of ${game.playerCount}`}
             </div>
             <div className="text-[11px] text-amber-200/40 truncate">
@@ -137,7 +135,7 @@ export function GameRow({ game, expanded, onToggleExpanded, pin }: GameRowProps)
             </div>
           </div>
           <div className="text-right shrink-0">
-            <div className={`text-base tabular-nums ${game.score >= 0 ? 'text-amber-100' : 'text-red-300'}`} style={SERIF}>{game.score}</div>
+            <div className={`font-serif text-base tabular-nums ${game.score >= 0 ? 'text-amber-100' : 'text-red-300'}`}>{game.score}</div>
             <div className="text-[11px] text-emerald-400/70 tabular-nums">+{game.xp} XP</div>
           </div>
           <ChevronDown className={`w-4 h-4 shrink-0 text-amber-500/60 transition-transform ${expanded ? 'rotate-180' : ''}`} aria-hidden />

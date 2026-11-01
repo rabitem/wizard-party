@@ -72,7 +72,7 @@ export function ConnectionTooltip({
                 className="w-2.5 h-2.5 rounded-full"
                 style={{ backgroundColor: color, boxShadow: `0 0 8px ${color}40` }}
               />
-              <span className="text-sm font-medium" style={{ color, fontFamily: 'Georgia, serif' }}>
+              <span className="text-sm font-medium" style={{ color, fontFamily: 'var(--font-serif)' }}>
                 {label}
               </span>
             </div>

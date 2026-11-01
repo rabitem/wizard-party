@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { GameAlreadyStartedError, MaxPlayersReachedError, PlayerKickedError, ROOM_PLAYER_LIMITS, RoomFullError } from '@shared/domain';
 import { AlertTriangle, ArrowLeft, Check, Clock, Crown, DoorClosed, Loader2, LogOut, Sparkles, UserMinus, UserPlus, Users, WifiOff } from 'lucide-react';
 import { PlayerAvatar } from '../../account/PlayerAvatar';
-import { GOLD_BUTTON_STYLE, LOBBY_GRID_CLASS, LOBBY_PAGE_CLASS, LOBBY_SLOT, SERIF, SURFACE_STYLE, TABLE_BOX_CLASS } from './lobby-styles';
+import { GOLD_BUTTON_STYLE, LOBBY_GRID_CLASS, LOBBY_PAGE_CLASS, LOBBY_SLOT, SURFACE_STYLE, TABLE_BOX_CLASS } from './lobby-styles';
 import type { LobbyActivityView } from './lobby-view.types';
 
 /* ─────────── loading skeleton ─────────── */
@@ -56,13 +56,13 @@ export function JoiningScreen({ roomId, step, onCancel }: { roomId: string; step
       <div className="mx-auto w-16 h-16 rounded-2xl border-2 border-amber-600/60 flex items-center justify-center mb-5" style={{ ...SURFACE_STYLE, boxShadow: '0 8px 32px var(--glow)' }}>
         <Sparkles className="w-7 h-7 text-amber-300 animate-pulse" />
       </div>
-      <h1 className="text-amber-100 text-xl mb-6" style={SERIF}>Joining the table</h1>
+      <h1 className="text-amber-100 text-xl mb-6 font-serif">Joining the table</h1>
       <ul className="inline-flex flex-col gap-3 text-left">
         {JOIN_STEPS.map((s, index) => {
           const done = index < activeIndex;
           const active = index === activeIndex;
           return (
-            <li key={s.id} className={`flex items-center gap-2.5 text-sm ${done ? 'text-amber-200' : active ? 'text-amber-50' : 'text-amber-700'}`} style={SERIF}>
+            <li key={s.id} className={`font-serif flex items-center gap-2.5 text-sm ${done ? 'text-amber-200' : active ? 'text-amber-50' : 'text-amber-700'}`}>
               {done ? <Check className="w-4 h-4 text-emerald-400" /> : active ? <Loader2 className="w-4 h-4 animate-spin text-amber-400" /> : <span className="w-4 h-4 rounded-full border border-amber-800" />}
               {s.label(roomId)}
             </li>
@@ -70,7 +70,7 @@ export function JoiningScreen({ roomId, step, onCancel }: { roomId: string; step
         })}
       </ul>
       <div className="mt-10">
-        <button type="button" onClick={onCancel} className="text-sm text-amber-500 underline underline-offset-2 decoration-amber-800 cursor-pointer" style={SERIF}>Cancel</button>
+        <button type="button" onClick={onCancel} className="text-sm text-amber-500 underline underline-offset-2 decoration-amber-800 cursor-pointer font-serif">Cancel</button>
       </div>
     </div>
   );
@@ -87,8 +87,7 @@ export function ConnectionBanner({ isConnected, attempt }: { isConnected: boolea
           initial={{ y: -40, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -40, opacity: 0 }}
-          className="fixed top-0 inset-x-0 z-40 flex items-center justify-center gap-2 px-4 py-2.5 text-sm border-b border-amber-500/50 bg-amber-900/90 text-amber-50 backdrop-blur"
-          style={SERIF}
+          className="fixed top-0 inset-x-0 z-40 flex items-center justify-center gap-2 px-4 py-2.5 text-sm border-b border-amber-500/50 bg-amber-900/90 text-amber-50 backdrop-blur font-serif"
         >
           <WifiOff className="w-4 h-4" />
           Connection lost · reconnecting{attempt ? ` (${attempt})` : ''}
@@ -128,7 +127,7 @@ export function LobbyToasts({ items }: { items: LobbyActivityView[] }) {
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.96 }}
             className="flex items-center gap-2.5 pl-1.5 pr-4 py-1.5 rounded-full border shadow-lg max-w-full"
-            style={{ ...SURFACE_STYLE, backdropFilter: 'blur(10px)', ...SERIF }}
+            style={{ ...SURFACE_STYLE, backdropFilter: 'blur(10px)', fontFamily: 'var(--font-serif)' }}
           >
             {item.appearance ? <PlayerAvatar appearance={item.appearance} size="sm" /> : <span className="w-8 h-8 rounded-full flex items-center justify-center">{ACTIVITY_ICON[item.kind]}</span>}
             <span className="text-amber-50 text-sm truncate">{item.text}</span>
@@ -177,13 +176,13 @@ export function LobbyErrorScreen({ kind, roomId, detail, onRetry }: { kind: Lobb
     <div className="relative z-10 max-w-sm mx-auto px-4 pt-20 pb-10" role="alert">
       <div className="rounded-2xl border p-6 text-center" style={{ ...SURFACE_STYLE, boxShadow: '0 8px 40px rgba(0,0,0,0.45)' }}>
         <div className="mx-auto w-12 h-12 rounded-full border border-amber-600/50 flex items-center justify-center mb-3 text-amber-300">{error.icon}</div>
-        <h1 className="text-amber-50 text-lg" style={SERIF}>{error.title}</h1>
-        <p className="text-amber-400/90 text-sm mt-1.5" style={SERIF}>{error.body(roomId)}</p>
+        <h1 className="text-amber-50 text-lg font-serif">{error.title}</h1>
+        <p className="text-amber-400/90 text-sm mt-1.5 font-serif">{error.body(roomId)}</p>
         {kind === 'generic' && detail ? <p className="text-amber-600 text-xs mt-2 font-mono break-words">{detail}</p> : null}
         <div className="mt-5 flex gap-2">
           {canRetry ? (
             <>
-              <Link href="/" className="flex-1 h-11 rounded-xl border border-amber-700/50 text-amber-200 text-sm flex items-center justify-center gap-1.5" style={SERIF}>
+              <Link href="/" className="flex-1 h-11 rounded-xl border border-amber-700/50 text-amber-200 text-sm flex items-center justify-center gap-1.5 font-serif">
                 <ArrowLeft className="w-4 h-4" />Home
               </Link>
               <button type="button" onClick={onRetry} className="flex-1 h-11 rounded-xl text-sm flex items-center justify-center gap-1.5 cursor-pointer" style={GOLD_BUTTON_STYLE}>Try again</button>

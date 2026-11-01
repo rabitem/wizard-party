@@ -44,7 +44,7 @@ export function ExpansionShowcaseSection() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.3 }}
     >
-      <h2 className="text-2xl sm:text-3xl text-amber-50 mb-4" style={{ fontFamily: 'Georgia, serif' }}>
+      <h2 className="text-2xl sm:text-3xl text-amber-50 mb-4 font-serif">
         {EXPANSIONS_UI_CONFIG.GUIDE_HEADING}
       </h2>
 

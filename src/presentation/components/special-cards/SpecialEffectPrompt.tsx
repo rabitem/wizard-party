@@ -7,7 +7,6 @@ import { ChoiceDialog, ChoiceDialogBody, WaitingNotice } from './ChoiceDialog';
 import { ChoiceButton } from './SuitChoiceGrid';
 import type { EffectPromptModel } from './special-card-view-model';
 
-const SERIF = { fontFamily: 'Georgia, serif' } as const;
 const RAISE_COLOR = '#f59e0b';
 const LOWER_COLOR = '#38bdf8';
 
@@ -31,7 +30,7 @@ function CardPicker({
 }) {
   return (
     <div className="mb-3">
-      <div className="text-[10px] uppercase tracking-widest text-amber-500/70 mb-1.5 text-center" style={SERIF}>{label}</div>
+      <div className="text-[10px] uppercase tracking-widest text-amber-500/70 mb-1.5 text-center font-serif">{label}</div>
       <div className="flex flex-wrap justify-center gap-1.5">
         {cards.map((card) => (
           <button
@@ -56,7 +55,7 @@ function ConfirmButton({ disabled, onClick, children }: { disabled: boolean; onC
         disabled={disabled}
         onClick={onClick}
         className="px-5 py-2 border-2 border-amber-600/60 text-amber-200 text-sm disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer hover:border-amber-500"
-        style={{ ...SERIF, background: 'linear-gradient(180deg, var(--surface) 0%, color-mix(in srgb, var(--surface), black 12%) 100%)' }}
+        style={{ fontFamily: 'var(--font-serif)', background: 'linear-gradient(180deg, var(--surface) 0%, color-mix(in srgb, var(--surface), black 12%) 100%)' }}
       >
         {children}
       </button>

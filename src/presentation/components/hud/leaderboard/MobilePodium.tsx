@@ -57,7 +57,7 @@ function PodiumAvatar({ entry, isCurrentTurn, isLocal, color }: { entry: Leaderb
       {isLocal ? (
         <div
           className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-1.5 py-0.5 text-[7px] font-bold uppercase"
-          style={{ background: 'linear-gradient(180deg, var(--accent-pale) 0%, var(--accent) 100%)', color: '#1a1510', fontFamily: 'Georgia, serif' }}
+          style={{ background: 'linear-gradient(180deg, var(--accent-pale) 0%, var(--accent) 100%)', color: '#1a1510', fontFamily: 'var(--font-serif)' }}
         >
           You
         </div>
@@ -72,7 +72,7 @@ function PodiumBlock({ entry, heightClass, color }: { entry: LeaderboardEntry; h
     <div className={`w-18 ${heightClass} flex flex-col items-center justify-start pt-2 relative`} style={{ background: color.bg }}>
       <div className="absolute inset-0 border-2" style={{ borderColor: color.border }} />
       <div className="absolute top-0 left-2 right-2 h-0.5" style={{ background: `linear-gradient(90deg, transparent, ${color.accent}, transparent)` }} />
-      <span className="text-xl font-bold relative" style={{ color: color.text, fontFamily: 'Georgia, serif' }}>{entry.position}</span>
+      <span className="text-xl font-bold relative" style={{ color: color.text, fontFamily: 'var(--font-serif)' }}>{entry.position}</span>
       <span className="text-sm font-bold relative" style={{ color: color.text }}>{entry.player.score}</span>
       {entry.player.bid !== null && (
         <span className="text-[10px] relative mt-0.5" style={{ color: getPodiumRoundScoreColor(entry.madeCurrentBid, entry.roundScore, color.text) }}>
@@ -112,7 +112,7 @@ export function PodiumPlace({
       <PodiumAvatar entry={entry} isCurrentTurn={isCurrentTurn} isLocal={isLocal} color={color} />
       <span
         className={`text-[11px] font-medium text-center mb-1 max-w-[70px] block ${NAME_SCORE_TEXT_CLASS}`}
-        style={{ color: getPodiumNameColor(isCurrentTurn, isLocal), fontFamily: 'Georgia, serif' }}
+        style={{ color: getPodiumNameColor(isCurrentTurn, isLocal), fontFamily: 'var(--font-serif)' }}
         title={entry.player.name}
       >
         {entry.player.name.split(' ')[0]}
@@ -165,7 +165,7 @@ export function RunnerUpChip({
         className={`text-[10px] relative max-w-[50px] ${NAME_SCORE_TEXT_CLASS}`}
         style={{
           color: isLocal ? 'var(--accent-pale)' : 'var(--accent-parchment)',
-          fontFamily: 'Georgia, serif',
+          fontFamily: 'var(--font-serif)',
         }}
         title={entry.player.name}
       >
@@ -206,8 +206,7 @@ export function MobilePodiumContent({
         <div className="flex items-center gap-2">
           <span className="text-amber-700/50 text-xs">&#x2726;</span>
           <span
-            className="text-xs text-amber-400 uppercase tracking-wider"
-            style={{ fontFamily: 'Georgia, serif' }}
+            className="text-xs text-amber-400 uppercase tracking-wider font-serif"
           >
             Round {currentRound}
           </span>

@@ -149,8 +149,7 @@ export function ExpansionSetCarousel({ onOpen }: ExpansionSetCarouselProps) {
       aria-label={EXPANSIONS_UI_CONFIG.GUIDE_HEADING}
       tabIndex={0}
       onKeyDown={handleKeyDown}
-      className="rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-600/50"
-      style={{ fontFamily: 'Georgia, serif' }}
+      className="rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-600/50 font-serif"
     >
       <div className="flex items-center gap-2">
         <button

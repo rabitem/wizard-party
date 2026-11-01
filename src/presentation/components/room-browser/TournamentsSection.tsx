@@ -7,7 +7,6 @@ import { ArrowRight, Trophy } from 'lucide-react';
 import { TOURNAMENT_ROUTES } from '@/presentation/config/tournament.config';
 import { useTournamentAvailability } from '@/presentation/hooks/useTournamentAvailability';
 
-const SERIF = { fontFamily: 'Georgia, serif' } as const;
 
 /**
  * Home page entry to /tournaments, styled like the other home sections. Hidden only when the
@@ -42,10 +41,10 @@ export function TournamentsSection() {
             <Trophy className="w-4 h-4 sm:w-5 sm:h-5 text-amber-300" aria-hidden />
           </div>
           <div className="text-left min-w-0">
-            <div className="text-amber-100/90 text-sm sm:text-base" style={SERIF}>
+            <div className="text-amber-100/90 text-sm sm:text-base font-serif">
               Tournaments
             </div>
-            <div className="text-amber-500/60 text-xs" style={SERIF}>
+            <div className="text-amber-500/60 text-xs font-serif">
               Series and knockouts at real tables. Win trophies and XP.
             </div>
           </div>

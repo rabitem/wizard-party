@@ -18,7 +18,7 @@ export function ExpansionCredits({ sources, plain = false, className = '' }: Exp
       className={`text-xs leading-relaxed text-amber-200/75 ${plain ? 'pt-3 border-t border-amber-800/30' : 'p-3 rounded-lg border border-amber-800/30'} ${className}`}
       style={{
         background: plain ? undefined : THEME_SURFACE.CARD_BG,
-        fontFamily: 'Georgia, serif',
+        fontFamily: 'var(--font-serif)',
       }}
     >
       <p className="flex items-start gap-2">

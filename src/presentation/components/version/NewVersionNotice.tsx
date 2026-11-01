@@ -16,7 +16,7 @@ export function NewVersionNotice({ onReload, onDismiss }: NewVersionNoticeProps)
       role="status"
       aria-live="polite"
       className="flex items-center gap-2 pl-3 pr-1.5 py-1.5 border-2 border-amber-700/50 text-amber-200/90 text-sm shadow-lg"
-      style={{ background: THEME_SURFACE.MODAL_BG, fontFamily: 'Georgia, serif' }}
+      style={{ background: THEME_SURFACE.MODAL_BG, fontFamily: 'var(--font-serif)' }}
     >
       <Sparkles className="w-4 h-4 text-amber-400 flex-shrink-0" aria-hidden />
       <span className="whitespace-nowrap">New version available</span>

@@ -20,7 +20,7 @@ import { ProfileSection } from './sections/ProfileSection';
 import { RewardsSection } from './sections/RewardsSection';
 import { SecuritySection } from './sections/SecuritySection';
 import { OwnTrophyCabinet } from './trophies';
-import { Button, Notice, SERIF } from './ui';
+import { Button, Notice } from './ui';
 
 const TABS = [
   { id: 'overview', label: 'Overview', icon: <LayoutDashboard className="w-4 h-4" /> },
@@ -137,7 +137,7 @@ export function AccountView() {
         <div className="space-y-5 sm:space-y-6">
           {welcome ? (
             <Notice tone="success">
-              <span style={SERIF}>Welcome, {user.displayUsername}!</span> Your stats, rewards and settings are now saved to your account and follow you to every device.
+              <span className="font-serif">Welcome, {user.displayUsername}!</span> Your stats, rewards and settings are now saved to your account and follow you to every device.
             </Notice>
           ) : null}
 
@@ -155,8 +155,7 @@ export function AccountView() {
                     role="tab"
                     aria-selected={active}
                     onClick={() => selectTab(item.id)}
-                    className={`inline-flex items-center gap-2 h-11 px-4 rounded-full border text-sm transition-all cursor-pointer ${active ? 'border-amber-500/60 bg-amber-900/40 text-amber-100' : 'border-amber-900/40 text-amber-200/60 hover:text-amber-100 hover:border-amber-700/50'}`}
-                    style={SERIF}
+                    className={`font-serif inline-flex items-center gap-2 h-11 px-4 rounded-full border text-sm transition-all cursor-pointer ${active ? 'border-amber-500/60 bg-amber-900/40 text-amber-100' : 'border-amber-900/40 text-amber-200/60 hover:text-amber-100 hover:border-amber-700/50'}`}
                   >
                     {item.icon}
                     {item.label}

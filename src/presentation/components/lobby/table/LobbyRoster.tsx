@@ -3,7 +3,6 @@
 import { Check, Crown, Plus, WifiOff } from 'lucide-react';
 import { PlayerAvatar } from '../../account/PlayerAvatar';
 import type { LobbySeatView } from './lobby-view.types';
-import { SERIF } from './lobby-styles';
 import { seatStatusLabel } from './RoundTable';
 
 interface LobbyRosterProps {
@@ -35,7 +34,7 @@ export function LobbyRoster({ seats, maxPlayers, className = '', onSeatClick, on
   const openSeats = Math.max(0, maxPlayers - seats.length);
   return (
     <section aria-labelledby="lobby-roster-heading" className={`flex flex-col gap-2 ${className}`}>
-      <h2 id="lobby-roster-heading" className="flex items-baseline justify-between text-amber-100 text-sm" style={SERIF}>
+      <h2 id="lobby-roster-heading" className="flex items-baseline justify-between text-amber-100 text-sm font-serif">
         Players
         <span className="text-xs text-amber-500/80 tabular-nums">{seats.length} of {Math.max(maxPlayers, seats.length)}</span>
       </h2>
@@ -48,11 +47,11 @@ export function LobbyRoster({ seats, maxPlayers, className = '', onSeatClick, on
               className="w-full flex items-center gap-3 px-2 py-1.5 rounded-xl text-left cursor-pointer hover:bg-amber-900/25 focus-visible:bg-amber-900/25"
             >
               <PlayerAvatar appearance={seat.appearance} label={seat.name} level={seat.level} size="sm" />
-              <span className={`min-w-0 flex-1 truncate text-sm text-amber-50 ${seat.isConnected ? '' : 'opacity-60'}`} style={SERIF}>
+              <span className={`font-serif min-w-0 flex-1 truncate text-sm text-amber-50 ${seat.isConnected ? '' : 'opacity-60'}`}>
                 {seat.name}{seat.isLocal ? <span className="text-amber-400/80"> (you)</span> : null}
                 {seat.isGuest ? <span className="text-amber-500/70 text-xs"> · guest</span> : null}
               </span>
-              <span className={`shrink-0 inline-flex items-center gap-1 text-xs ${statusTone(seat)}`} style={SERIF}>
+              <span className={`font-serif shrink-0 inline-flex items-center gap-1 text-xs ${statusTone(seat)}`}>
                 <StatusIcon seat={seat} />
                 {seatStatusLabel(seat, null)}
               </span>
@@ -67,8 +66,8 @@ export function LobbyRoster({ seats, maxPlayers, className = '', onSeatClick, on
               className="w-full flex items-center gap-3 px-2 py-1.5 rounded-xl text-left cursor-pointer text-amber-500/90 hover:bg-amber-900/25 hover:text-amber-200 focus-visible:bg-amber-900/25"
             >
               <span className="w-8 h-8 shrink-0 rounded-full border-2 border-dashed border-amber-600/60 flex items-center justify-center"><Plus className="w-4 h-4" aria-hidden /></span>
-              <span className="text-sm" style={SERIF}>{openSeats === 1 ? '1 open seat' : `${openSeats} open seats`}</span>
-              <span className="ml-auto text-xs" style={SERIF}>Fill a seat</span>
+              <span className="text-sm font-serif">{openSeats === 1 ? '1 open seat' : `${openSeats} open seats`}</span>
+              <span className="ml-auto text-xs font-serif">Fill a seat</span>
             </button>
           </li>
         ) : null}

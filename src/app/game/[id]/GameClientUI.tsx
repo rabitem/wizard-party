@@ -45,11 +45,11 @@ function LeaveConfirmationModal({ onCancel, onConfirm }: { onCancel: () => void;
       <div className="relative border border-amber-700/40 rounded-xl p-6 max-w-sm mx-4 shadow-2xl" style={{ background: THEME_SURFACE.MODAL_BG }}>
         <SeasonalCorner position="top-right" size={32} />
         <SeasonalCorner position="bottom-left" size={32} />
-        <h3 className="text-amber-100 text-lg font-semibold mb-3" style={{ fontFamily: 'Georgia, serif' }}>Leave Game?</h3>
-        <p className="text-amber-200/70 text-sm mb-6" style={{ fontFamily: 'Georgia, serif' }}>Are you sure you want to leave? The game will be paused for other players.</p>
+        <h3 className="text-amber-100 text-lg font-semibold mb-3 font-serif">Leave Game?</h3>
+        <p className="text-amber-200/70 text-sm mb-6 font-serif">Are you sure you want to leave? The game will be paused for other players.</p>
         <div className="flex gap-3">
-          <button onClick={onCancel} className="flex-1 px-4 py-2.5 rounded-lg border border-amber-600/30 text-amber-200/80 hover:bg-amber-900/20 transition-colors" style={{ fontFamily: 'Georgia, serif' }}>Cancel</button>
-          <button onClick={onConfirm} className="flex-1 px-4 py-2.5 rounded-lg bg-red-900/60 border border-red-700/50 text-red-100 hover:bg-red-800/70 transition-colors" style={{ fontFamily: 'Georgia, serif' }}>Leave</button>
+          <button onClick={onCancel} className="flex-1 px-4 py-2.5 rounded-lg border border-amber-600/30 text-amber-200/80 hover:bg-amber-900/20 transition-colors font-serif">Cancel</button>
+          <button onClick={onConfirm} className="flex-1 px-4 py-2.5 rounded-lg bg-red-900/60 border border-red-700/50 text-red-100 hover:bg-red-800/70 transition-colors font-serif">Leave</button>
         </div>
       </div>
     </div>

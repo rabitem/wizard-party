@@ -12,7 +12,7 @@ import { useJoinRoom } from '@/presentation/hooks/social/useJoinRoom';
 import { useSocial, useSocialPanel } from '@/presentation/providers/SocialProvider';
 
 import { PlayerAvatar } from '../account/PlayerAvatar';
-import { SERIF, errorMessage } from '../account/ui';
+import { errorMessage } from '../account/ui';
 import { rendererFor } from './inbox-renderers';
 import { timeAgo } from './social-format';
 
@@ -75,8 +75,8 @@ export function InboxActions({ item, action, renderer }: { item: InboxItem; acti
     return (
       <div className="mt-2 flex flex-wrap items-center gap-2">
         <span className="text-xs text-amber-200/70">Leave your running game?</span>
-        <button type="button" onClick={() => void act(item, 'accept', true)} className={primary} style={SERIF}>Leave &amp; join</button>
-        <button type="button" onClick={cancelConfirm} className={secondary} style={SERIF}>Stay</button>
+        <button type="button" onClick={() => void act(item, 'accept', true)} className={`${primary} font-serif`}>Leave &amp; join</button>
+        <button type="button" onClick={cancelConfirm} className={`${secondary} font-serif`}>Stay</button>
       </div>
     );
   }
@@ -85,13 +85,13 @@ export function InboxActions({ item, action, renderer }: { item: InboxItem; acti
   return (
     <div className="mt-2 flex gap-2">
       {actions.includes('accept') ? (
-        <button type="button" disabled={pending !== null} onClick={() => void act(item, 'accept')} className={primary} style={SERIF}>
+        <button type="button" disabled={pending !== null} onClick={() => void act(item, 'accept')} className={`${primary} font-serif`}>
           {pending === 'accept' ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
           {renderer.acceptLabel ?? 'Accept'}
         </button>
       ) : null}
       {actions.includes('decline') ? (
-        <button type="button" disabled={pending !== null} onClick={() => void act(item, 'decline')} className={secondary} style={SERIF}>
+        <button type="button" disabled={pending !== null} onClick={() => void act(item, 'decline')} className={`${secondary} font-serif`}>
           {renderer.declineLabel ?? 'Decline'}
         </button>
       ) : null}
@@ -119,7 +119,7 @@ export function InboxEntry({ item, now }: { item: InboxItem; now: number }) {
       <div className="flex items-start gap-3 pl-1.5">
         {item.actor ? <PlayerAvatar appearance={item.actor.appearance} label={item.actor.displayName} level={item.actor.level} size="sm" /> : <span className="w-8 h-8 rounded-full inline-flex items-center justify-center bg-amber-900/30 text-amber-400">{renderer.icon}</span>}
         <div className="min-w-0 flex-1">
-          <p className="text-sm text-amber-100 leading-snug" style={SERIF}>
+          <p className="text-sm text-amber-100 leading-snug font-serif">
             <span className="inline-flex align-[-2px] mr-1.5 text-amber-500/80">{renderer.icon}</span>
             {renderer.title(item)}
           </p>

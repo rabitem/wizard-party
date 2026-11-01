@@ -22,7 +22,7 @@ export function RecentRoomsSection({ recentRooms, canPlay, onJoinRoom }: RecentR
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
     >
-      <h2 className="text-xl text-amber-50 mb-3" style={{ fontFamily: 'Georgia, serif' }}>
+      <h2 className="text-xl text-amber-50 mb-3 font-serif">
         Your recent tables
       </h2>
 
@@ -47,7 +47,7 @@ export function RecentRoomsSection({ recentRooms, canPlay, onJoinRoom }: RecentR
               <Users className="w-4 h-4 text-amber-500/60" />
             </div>
             <div className="flex-1 min-w-0 relative">
-              <div className="text-amber-200/80 text-sm truncate" style={{ fontFamily: 'Georgia, serif' }}>
+              <div className="text-amber-200/80 text-sm truncate font-serif">
                 {room.name}
               </div>
               <div className="text-amber-600/40 text-[10px] font-mono">

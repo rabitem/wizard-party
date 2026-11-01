@@ -18,7 +18,6 @@ import {
   type SeatStatus,
 } from './tournament-match-state';
 
-const SERIF = { fontFamily: 'Georgia, serif' } as const;
 
 const STATUS_VIEW: Record<SeatStatus, { label: string; icon: typeof CheckCircle2; className: string }> = {
   seated: { label: 'At the table', icon: CheckCircle2, className: 'text-emerald-300/90' },
@@ -62,17 +61,17 @@ function MatchCountdown({ match }: { match: TournamentMatchRoomState }) {
   return (
     <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-amber-900/30">
       <div className="min-w-0">
-        <p className="text-sm text-amber-100" style={SERIF}>
+        <p className="text-sm text-amber-100 font-serif">
           {phase.kind === 'waiting' ? `Waiting for players · ${summary.seated}/${summary.expected}` : PHASE_TITLE[phase.kind]}
         </p>
         <p className="text-xs text-amber-200/50 mt-0.5">{lobbyPhaseHint(phase, summary)}</p>
       </div>
       {target !== null && phase.kind !== 'expired' ? (
         <div className="shrink-0 text-right" role="timer" aria-live="off" aria-label={COUNTDOWN_VIEW[phase.kind].label}>
-          <span className="block text-[10px] uppercase tracking-wider text-amber-500/60" style={SERIF}>
+          <span className="block text-[10px] uppercase tracking-wider text-amber-500/60 font-serif">
             {COUNTDOWN_VIEW[phase.kind].caption}
           </span>
-          <span className="block text-xl tabular-nums text-amber-200" style={SERIF}>
+          <span className="block text-xl tabular-nums text-amber-200 font-serif">
             {formatClock(secondsUntil(target, now))}
           </span>
         </div>
@@ -104,7 +103,7 @@ export function MatchWaitingRoster({ match }: { match: TournamentMatchRoomState 
           const Icon = view.icon;
           return (
             <li key={seat.seat} className="flex items-center justify-between gap-3 px-4 py-2.5">
-              <span className={`text-sm truncate ${status === 'no-show' ? 'text-amber-200/40 line-through' : 'text-amber-50'}`} style={SERIF}>
+              <span className={`font-serif text-sm truncate ${status === 'no-show' ? 'text-amber-200/40 line-through' : 'text-amber-50'}`}>
                 {seat.name}
               </span>
               <span className={`shrink-0 inline-flex items-center gap-1.5 text-xs ${view.className}`}>
@@ -116,7 +115,7 @@ export function MatchWaitingRoster({ match }: { match: TournamentMatchRoomState 
         })}
         {match.bots > 0 ? (
           <li className="flex items-center justify-between gap-3 px-4 py-2.5">
-            <span className="text-sm text-amber-200/60" style={SERIF}>
+            <span className="text-sm text-amber-200/60 font-serif">
               {match.bots === 1 ? 'One bot' : `${match.bots} bots`} to fill the table
             </span>
             <Bot className="w-4 h-4 text-amber-400/60" aria-hidden />

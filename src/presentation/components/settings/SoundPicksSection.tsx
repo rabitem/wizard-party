@@ -75,8 +75,7 @@ function SoundPicker<T extends string>({
       <div className="flex items-center gap-2 mb-3">
         <Icon className="w-4 h-4 text-amber-500/60 flex-shrink-0" />
         <span
-          className="text-amber-200/80 text-sm flex-1 min-w-0"
-          style={{ fontFamily: "Georgia, serif" }}
+          className="text-amber-200/80 text-sm flex-1 min-w-0 font-serif"
         >
           {title}
         </span>
@@ -85,8 +84,7 @@ function SoundPicker<T extends string>({
             value={categoryFilter}
             onChange={(event) => setCategoryFilter(event.target.value as SoundCategory | "all")}
             aria-label={`${title} category`}
-            className="rounded border border-amber-800/30 bg-black/30 px-2 py-1 text-xs text-amber-200/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/60"
-            style={{ fontFamily: "Georgia, serif" }}
+            className="rounded border border-amber-800/30 bg-black/30 px-2 py-1 text-xs text-amber-200/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/60 font-serif"
           >
             <option value="all">All</option>
             {categoryOptions.map((category) => (
@@ -115,17 +113,15 @@ function SoundPicker<T extends string>({
             <div className="relative pointer-events-none">
               <div className="text-lg mb-1">{preset.icon}</div>
               <div
-                className={`text-xs ${
+                className={`font-serif text-xs ${
                   selected === preset.id ? "text-amber-300" : "text-amber-400/70"
                 }`}
-                style={{ fontFamily: "Georgia, serif" }}
               >
                   {preset.label}
               </div>
               {preset.id !== "random" ? (
                 <div
-                  className="mt-1 text-[10px] text-amber-600/50"
-                  style={{ fontFamily: "Georgia, serif" }}
+                  className="mt-1 text-[10px] text-amber-600/50 font-serif"
                 >
                   {SOUND_CATEGORY_LABELS[getSoundPresetCategory(preset)]}
                 </div>
@@ -198,8 +194,7 @@ function SharedSoundPicker({
       <div className="flex items-center gap-2 mb-3">
         <Users className="w-4 h-4 text-amber-500/60" />
         <span
-          className="text-amber-200/80 text-sm"
-          style={{ fontFamily: "Georgia, serif" }}
+          className="text-amber-200/80 text-sm font-serif"
         >
           Sounds From Recent Tables
         </span>
@@ -211,8 +206,7 @@ function SharedSoundPicker({
               <div className="flex items-center gap-2 min-w-0">
                 <div className="h-px flex-1 bg-amber-800/20" />
                 <span
-                  className="text-xs text-amber-500/70 truncate"
-                  style={{ fontFamily: "Georgia, serif" }}
+                  className="text-xs text-amber-500/70 truncate font-serif"
                 >
                   {group.ownerName}
                 </span>
@@ -226,10 +220,10 @@ function SharedSoundPicker({
                       key={`${group.ownerId}-${sound.id}`}
                       className="flex items-center gap-2 min-w-0 p-2 rounded border border-amber-800/30 text-amber-400/80"
                     >
-                      <span className="flex-1 min-w-0 text-xs truncate" style={{ fontFamily: "Georgia, serif" }}>
+                      <span className="flex-1 min-w-0 text-xs truncate font-serif">
                         {sound.name}
                       </span>
-                      <span className="hidden sm:inline text-[10px] text-amber-600/50" style={{ fontFamily: "Georgia, serif" }}>
+                      <span className="hidden sm:inline text-[10px] text-amber-600/50 font-serif">
                         {SOUND_CATEGORY_LABELS[sound.category ?? "custom"]}
                       </span>
                       <button
@@ -259,7 +253,7 @@ function SharedSoundPicker({
           ))}
         </div>
       ) : (
-        <p className="text-xs text-amber-500/50" style={{ fontFamily: "Georgia, serif" }}>
+        <p className="text-xs text-amber-500/50 font-serif">
           Sounds other players share at your table show up here
         </p>
       )}
@@ -274,7 +268,7 @@ export function SoundPicksSection({ wizardSound, jesterSound, trickWinSound, sha
       <div className="flex items-center gap-2 mb-4">
         <div className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-700/30" />
         <ListMusic className="w-4 h-4 text-amber-500/60" />
-        <span className="text-xs text-amber-400/70 uppercase tracking-widest" style={{ fontFamily: "Georgia, serif" }}>Sound Picks</span>
+        <span className="text-xs text-amber-400/70 uppercase tracking-widest font-serif">Sound Picks</span>
         <div className="h-px flex-1 bg-gradient-to-l from-transparent to-amber-700/30" />
       </div>
       <div className="space-y-3">

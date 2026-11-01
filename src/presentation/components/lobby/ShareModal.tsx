@@ -7,6 +7,7 @@ import { motion, AnimatePresence, useMotionValue, useTransform, animate, PanInfo
 import { SITE_URL } from '@/config/deployment.config';
 import { THEME_SURFACE } from '@/presentation/config/theme-surface.config';
 import { SeasonalCorner, SeasonalEmblem } from '@/presentation/components/seasonal';
+import { useRealmLinkParam } from '@/presentation/components/room-browser';
 
 interface ShareModalProps {
   roomId: string;
@@ -28,8 +29,8 @@ function ModalHeader({ onClose }: { onClose: () => void }) {
           <Share2 className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500/80" />
         </div>
         <div className="min-w-0">
-          <h2 className="text-base sm:text-lg text-amber-100/95 tracking-wide truncate" style={{ fontFamily: 'Georgia, serif' }}>Invite Players</h2>
-          <p className="text-amber-500/60 text-xs sm:text-sm truncate" style={{ fontFamily: 'Georgia, serif' }}>Share this room with friends</p>
+          <h2 className="text-base sm:text-lg text-amber-100/95 tracking-wide truncate font-serif">Invite Players</h2>
+          <p className="text-amber-500/60 text-xs sm:text-sm truncate font-serif">Share this room with friends</p>
         </div>
       </div>
       <button onClick={onClose} className="p-2 hover:bg-amber-900/30 rounded-lg border border-transparent hover:border-amber-700/30 transition-colors cursor-pointer flex-shrink-0">
@@ -54,7 +55,7 @@ function QRCodeSection({ shareUrl }: { shareUrl: string }) {
 function RoomCodeDisplay({ roomId }: { roomId: string }) {
   return (
     <div className="mb-3 sm:mb-4">
-      <label className="block text-sm text-amber-100/85 mb-1.5 sm:mb-2" style={{ fontFamily: 'Georgia, serif' }}>Room code</label>
+      <label className="block text-sm text-amber-100/85 mb-1.5 sm:mb-2 font-serif">Room code</label>
       <div className="text-xl sm:text-2xl font-mono text-amber-200 text-center py-2.5 sm:py-3 rounded-lg border border-amber-700/40 tracking-widest" style={{ background: 'linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--surface), black 55%) 90%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 65%) 90%, transparent) 100%)' }}>
         {roomId}
       </div>
@@ -66,7 +67,7 @@ function RoomCodeDisplay({ roomId }: { roomId: string }) {
 function ShareLinkSection({ shareUrl, copied, onCopy }: { shareUrl: string; copied: boolean; onCopy: () => void }) {
   return (
     <div className="mb-4 sm:mb-6">
-      <label className="block text-sm text-amber-100/85 mb-1.5 sm:mb-2" style={{ fontFamily: 'Georgia, serif' }}>Share link</label>
+      <label className="block text-sm text-amber-100/85 mb-1.5 sm:mb-2 font-serif">Share link</label>
       <div className="flex gap-2">
         <div className="flex-1 px-3 py-2.5 rounded-lg border border-amber-700/40 text-amber-400/80 text-xs sm:text-sm font-mono overflow-hidden" style={{ background: 'linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--surface), black 55%) 90%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 65%) 90%, transparent) 100%)' }}>
           <span className="block truncate">{shareUrl}</span>
@@ -74,7 +75,7 @@ function ShareLinkSection({ shareUrl, copied, onCopy }: { shareUrl: string; copi
         <button
           onClick={onCopy}
           className={`px-3 sm:px-4 py-2 rounded-lg border transition-all cursor-pointer flex items-center gap-1.5 sm:gap-2 flex-shrink-0 text-sm ${copied ? 'border-emerald-600/60 text-emerald-300' : 'border-amber-700/40 hover:border-amber-600/50 text-amber-300/80 hover:bg-amber-900/30'}`}
-          style={{ background: copied ? 'linear-gradient(180deg, rgba(80,140,80,0.3) 0%, rgba(60,100,60,0.2) 100%)' : 'linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--surface), black 10%) 90%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 35%) 90%, transparent) 100%)', fontFamily: 'Georgia, serif' }}
+          style={{ background: copied ? 'linear-gradient(180deg, rgba(80,140,80,0.3) 0%, rgba(60,100,60,0.2) 100%)' : 'linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--surface), black 10%) 90%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 35%) 90%, transparent) 100%)', fontFamily: 'var(--font-serif)' }}
         >
           {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
           <span className="hidden sm:inline">{copied ? 'Copied' : 'Copy'}</span>
@@ -90,12 +91,12 @@ function ActionButtons({ canShare, onShare, onClose }: { canShare: boolean; onSh
     <div className="flex gap-2 sm:gap-3">
       {canShare ? (
         <button onClick={onShare} className="flex-1 py-3 rounded-lg border-2 border-amber-600/60 hover:border-amber-500/70 text-amber-100 text-sm sm:text-base transition-all cursor-pointer flex items-center justify-center gap-2"
-          style={{ background: 'linear-gradient(180deg, color-mix(in srgb, var(--color-amber-600) 40%, transparent) 0%, color-mix(in srgb, var(--color-amber-700) 30%, transparent) 100%)', fontFamily: 'Georgia, serif', boxShadow: '0 0 20px color-mix(in srgb, var(--color-amber-700) 20%, transparent)' }}>
+          style={{ background: 'linear-gradient(180deg, color-mix(in srgb, var(--color-amber-600) 40%, transparent) 0%, color-mix(in srgb, var(--color-amber-700) 30%, transparent) 100%)', fontFamily: 'var(--font-serif)', boxShadow: '0 0 20px color-mix(in srgb, var(--color-amber-700) 20%, transparent)' }}>
           <Share2 className="w-4 h-4" />Share
         </button>
       ) : null}
       <button onClick={onClose} className="flex-1 py-3 rounded-lg border border-amber-700/40 hover:border-amber-600/50 hover:bg-amber-900/20 text-amber-300/80 text-sm sm:text-base transition-colors cursor-pointer"
-        style={{ background: 'linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--surface), black 10%) 90%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 35%) 90%, transparent) 100%)', fontFamily: 'Georgia, serif' }}>Close</button>
+        style={{ background: 'linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--surface), black 10%) 90%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 35%) 90%, transparent) 100%)', fontFamily: 'var(--font-serif)' }}>Close</button>
     </div>
   );
 }
@@ -132,7 +133,8 @@ function useModalSetup(): { isMobile: boolean } {
 export function ShareModal({ roomId, onClose }: ShareModalProps) {
   const [copied, setCopied] = useState(false);
   const { isMobile } = useModalSetup();
-  const shareUrl = `${SITE_URL}/join?room=${roomId}`;
+  const realmParam = useRealmLinkParam();
+  const shareUrl = `${SITE_URL}/join?room=${roomId}${realmParam}`;
   const canShare = typeof navigator !== 'undefined' && 'share' in navigator;
 
   const y = useMotionValue(0);

@@ -50,7 +50,7 @@ function NoResultsFound() {
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="text-center p-8 rounded-xl max-w-md" style={{ background: 'var(--surface)', border: '2px solid var(--surface-border)' }}>
         <i className="ra ra-scroll-unfurled text-5xl mb-4" style={{ color: 'var(--accent)' }} />
-        <h1 className="text-2xl font-bold mb-2" style={{ color: 'var(--color-amber-100)', fontFamily: 'Georgia, serif' }}>No Results Found</h1>
+        <h1 className="text-2xl font-bold mb-2" style={{ color: 'var(--color-amber-100)', fontFamily: 'var(--font-serif)' }}>No Results Found</h1>
         <p className="mb-6" style={{ color: 'var(--text-muted)' }}>This share link appears to be invalid or expired.</p>
         <Link href="/" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all" style={{ background: 'linear-gradient(180deg, var(--accent) 0%, var(--accent-deep) 100%)', color: '#1a1510' }}>
           <i className="ra ra-sword" />Play Wizard Party
@@ -76,11 +76,11 @@ function PlayerEntry({ player, index }: { player: { name: string; score: number;
           <i className={`ra ${getMedalIcon(index)} text-lg`} style={{ color: getMedalColor(index) }} />
         </div>
         <div className="min-w-0 flex-1">
-          <div className={`font-semibold ${NAME_SCORE_TEXT_CLASS}`} style={{ color: isWinner ? 'var(--accent-bright)' : 'var(--color-amber-100)', fontFamily: 'Georgia, serif' }}>{player.name}</div>
+          <div className={`font-semibold ${NAME_SCORE_TEXT_CLASS}`} style={{ color: isWinner ? 'var(--accent-bright)' : 'var(--color-amber-100)', fontFamily: 'var(--font-serif)' }}>{player.name}</div>
           <div className="text-xs" style={{ color: 'var(--accent-dim)' }}>{player.perfect} perfect bids</div>
         </div>
       </div>
-      <div className={`px-3 py-1.5 rounded-lg font-bold text-xl ${NAME_SCORE_VALUE_CLASS}`} style={{ ...getNameScoreValueStyle(1, [player.score], 44), background: 'color-mix(in srgb, var(--accent) 15%, transparent)', border: '1px solid color-mix(in srgb, var(--accent-dim), black 30%)', color: isWinner ? 'var(--accent-bright)' : 'var(--accent)', fontFamily: 'Georgia, serif' }}>
+      <div className={`px-3 py-1.5 rounded-lg font-bold text-xl ${NAME_SCORE_VALUE_CLASS}`} style={{ ...getNameScoreValueStyle(1, [player.score], 44), background: 'color-mix(in srgb, var(--accent) 15%, transparent)', border: '1px solid color-mix(in srgb, var(--accent-dim), black 30%)', color: isWinner ? 'var(--accent-bright)' : 'var(--accent)', fontFamily: 'var(--font-serif)' }}>
         {player.score}
       </div>
     </div>
@@ -92,7 +92,7 @@ function RoomCodeDisplay({ code }: { code: string }) {
   return (
     <div className="px-4 pb-4">
       <div className="flex items-center justify-center gap-3 p-3 rounded-lg" style={{ background: 'color-mix(in srgb, var(--accent) 10%, transparent)', border: '1px solid var(--surface-border)' }}>
-        <span style={{ color: 'var(--text-muted)', fontFamily: 'Georgia, serif' }}>Room Code:</span>
+        <span style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-serif)' }}>Room Code:</span>
         <span className="font-mono font-bold text-xl tracking-widest" style={{ color: 'var(--accent-bright)' }}>{code}</span>
       </div>
     </div>
@@ -134,12 +134,12 @@ function ShareContent() {
         <div className="text-center px-6 pt-8 pb-4">
           <div className="flex justify-center items-center gap-3 mb-2 min-w-0">
             <i className="ra ra-trophy text-4xl flex-shrink-0" style={{ color: 'var(--accent-bright)' }} />
-            <h1 className="text-3xl font-bold min-w-0" style={{ color: 'var(--color-amber-100)', fontFamily: 'Georgia, serif' }}>
+            <h1 className="text-3xl font-bold min-w-0" style={{ color: 'var(--color-amber-100)', fontFamily: 'var(--font-serif)' }}>
               <span className={WINNER_NAME_LINE_CLASS} title={winner.name}>{winner.name}</span>
               <span className="block text-2xl">Wins!</span>
             </h1>
           </div>
-          <p style={{ color: 'var(--text-muted)', fontFamily: 'Georgia, serif' }}>{data.rounds} Rounds of Wizard Party</p>
+          <p style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-serif)' }}>{data.rounds} Rounds of Wizard Party</p>
         </div>
 
         <SeasonalDivider className="px-6 pb-4" />

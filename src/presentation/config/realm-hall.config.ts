@@ -8,10 +8,12 @@ import { CAMERA_CONFIG } from './layout.config';
 
 export type Vec3 = readonly [number, number, number];
 
-/** One camera stop: where the camera stands and what it looks at. */
+/** One camera stop: where the camera stands, what it looks at and, optionally, how wide it sees. */
 export interface HallCameraStop {
   position: Vec3;
   target: Vec3;
+  /** Vertical field of view in degrees; REALM_HALL.CAMERA_FOV when left out */
+  fov?: number;
 }
 
 export const REALM_HALL = {
@@ -48,8 +50,10 @@ export const REALM_HALL = {
    * full width, so a stop's feature has to sit above its panel rather than beside it.
    */
   PORTRAIT_STOPS: {
-    // The back wall's sign centred over the notices panel.
-    1: { position: [0, 2.4, 8], target: [0, 0.4, -11] },
+    // The back wall's sign centred over the notices panel. A phone sees about 20 degrees across at
+    // the default field of view, too little for the 12-unit casino sign, so this stop stands at the
+    // front of the room and widens to roughly a phone camera's own view.
+    1: { position: [0, 2.6, 10.5], target: [0, -3.4, -11], fov: 72 },
   } satisfies Record<number, HallCameraStop>,
 } as const;
 

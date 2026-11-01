@@ -4,13 +4,15 @@ import { join } from "node:path";
 import { REALM_OPTIONS } from "@/presentation/components/room-browser/realm-switcher.config";
 
 import { BrandMarkSvg } from "./brand-mark-svg";
+import { ogRealm } from "./og-realm";
 
 /**
  * Shared parts of the link previews (Open Graph and Twitter images, the join and results
- * previews): a capture of the real Classic game room as the ground, the Wizard Party mark, the
- * realms and Gelasio, an OFL serif drawn to Georgia's metrics (the site's serif). Rendered by
- * next/og on the Node.js runtime; the files live in assets/og and are traced into the build by
- * next.config.ts. The captures come from the start page with the page UI hidden.
+ * previews): a capture of the realm's real game room as the ground (the one the link names, Classic
+ * otherwise), the Wizard Party mark, the realms and Gelasio, an OFL serif drawn to Georgia's metrics
+ * (the site's serif). Rendered by next/og on the Node.js runtime; the files live in assets/og and are
+ * traced into the build by next.config.ts. The captures come from the start page with the page UI
+ * hidden, two per realm.
  */
 export const OG_SIZE = { width: 1200, height: 630 } as const;
 
@@ -30,24 +32,34 @@ export const OG_COLORS = {
   HAIRLINE: "rgba(233, 196, 106, 0.35)",
 } as const;
 
+/**
+ * Which capture: "side" is the room's lit back corner past the table (the walk's last turn),
+ * "table" the table from the player's seat.
+ */
 export type OgRoomCapture = "side" | "table";
 
-/** The room from beside the table (table on the right), and from above it. */
-const CAPTURES: Record<OgRoomCapture, string> = {
-  side: `data:image/jpeg;base64,${readFileSync(join(ASSET_DIR, "realm-hall-classic-side.jpg")).toString("base64")}`,
-  table: `data:image/jpeg;base64,${readFileSync(join(ASSET_DIR, "realm-hall-classic-table.jpg")).toString("base64")}`,
-};
+const captures = new Map<string, string>();
 
-function roomCapture(kind: OgRoomCapture): string {
-  return CAPTURES[kind];
+/** One realm's capture as a data URL, read from disk on first use; only known realm ids reach the file name. */
+function roomCapture(realm: string, kind: OgRoomCapture): string {
+  const file = `realm-hall-${ogRealm(realm)}-${kind}.jpg`;
+  let capture = captures.get(file);
+  if (!capture) {
+    capture = `data:image/jpeg;base64,${readFileSync(join(ASSET_DIR, file)).toString("base64")}`;
+    captures.set(file, capture);
+  }
+  return capture;
 }
 
-/** The capture full-bleed, under a shade that keeps text readable (`shade` is a CSS background). */
-export function OgBackdrop({ kind, shade }: { kind: OgRoomCapture; shade: string }) {
+/**
+ * The capture full-bleed, under a shade that keeps text readable (`shade` is a CSS background).
+ * `shiftX` moves the room right, for a layout whose text covers the left of the frame.
+ */
+export function OgBackdrop({ realm, kind, shade, shiftX = 0 }: { realm: string; kind: OgRoomCapture; shade: string; shiftX?: number }) {
   return (
     <div style={{ position: "absolute", top: 0, left: 0, width: OG_SIZE.width, height: OG_SIZE.height, display: "flex" }}>
       {/* eslint-disable-next-line @next/next/no-img-element -- next/og renders plain img only */}
-      <img src={roomCapture(kind)} width={OG_SIZE.width} height={OG_SIZE.height} alt="" style={{ position: "absolute", top: 0, left: 0, objectFit: "cover" }} />
+      <img src={roomCapture(realm, kind)} width={OG_SIZE.width} height={OG_SIZE.height} alt="" style={{ position: "absolute", top: 0, left: shiftX, objectFit: "cover" }} />
       <div style={{ position: "absolute", top: 0, left: 0, width: OG_SIZE.width, height: OG_SIZE.height, background: shade }} />
     </div>
   );

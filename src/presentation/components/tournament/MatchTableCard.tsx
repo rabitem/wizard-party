@@ -6,7 +6,6 @@ import type { TournamentMatchView } from '@shared/application/use-cases/tourname
 
 import { INSET_BG } from '../account/account-surfaces';
 import { ordinal } from '../account/public/public-profile-format';
-import { SERIF } from '../account/ui';
 import { ConfirmAction } from './ConfirmAction';
 import { PlayerMonogram, PlayerName } from './TournamentPlayer';
 import { matchStatusPresentation, resolveBlockedReason, type MatchTone } from './tournament-detail-model';
@@ -22,13 +21,13 @@ const TONES: Record<MatchTone, string> = {
 function SeatRow({ row, played }: { row: TableRow; played: boolean }) {
   return (
     <li className={`flex items-center gap-2.5 rounded-lg px-2 py-1.5 ${row.isViewer ? 'bg-amber-800/25 ring-1 ring-amber-500/40' : ''}`}>
-      <span className="w-7 shrink-0 text-center text-[11px] tabular-nums text-amber-400/70" style={SERIF}>
+      <span className="w-7 shrink-0 text-center text-[11px] tabular-nums text-amber-400/70 font-serif">
         {played && row.placement !== null ? ordinal(row.placement) : ''}
       </span>
       <PlayerMonogram name={row.displayName} isBot={row.isBot} highlight={row.isViewer} size="sm" />
       <span className="min-w-0 flex-1 text-sm">
         {row.isBot ? (
-          <span className="text-amber-200/45" style={SERIF}>
+          <span className="text-amber-200/45 font-serif">
             Bot
           </span>
         ) : (
@@ -52,7 +51,7 @@ function SeatRow({ row, played }: { row: TableRow; played: boolean }) {
       ) : null}
       {played && row.points !== null ? (
         <span className="shrink-0 text-right tabular-nums">
-          <span className="block text-sm text-amber-100" style={SERIF}>
+          <span className="block text-sm text-amber-100 font-serif">
             {row.points} pts
           </span>
           <span className="block text-[10px] text-amber-200/45">{row.score ?? 0} game</span>
@@ -90,11 +89,11 @@ export function MatchTableCard({ match, rows, now, caption, managesTables = fals
       aria-label={`Table ${match.table}, ${status.label}`}
     >
       <header className="mb-2 flex items-center justify-between gap-2 px-1">
-        <h4 className="text-sm text-amber-100" style={SERIF}>
+        <h4 className="text-sm text-amber-100 font-serif">
           Table {match.table}
           {isViewerTable ? <span className="ml-2 text-[10px] uppercase tracking-wider text-amber-400/80">your table</span> : null}
         </h4>
-        <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-wider ${TONES[status.tone]}`} style={SERIF}>
+        <span className={`font-serif inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-wider ${TONES[status.tone]}`}>
           {status.tone === 'overdue' ? <Hourglass className="h-3 w-3" aria-hidden /> : null}
           {status.label}
         </span>

@@ -31,8 +31,8 @@ function DrawerHeader({ title, subtitle, icon, titleId, onClose }: { title: stri
         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <span className="text-amber-500/70 flex-shrink-0" aria-hidden>{icon}</span>
           <div className="min-w-0">
-            <h2 id={titleId} className="text-lg sm:text-xl text-amber-200/90 tracking-wide" style={{ fontFamily: 'Georgia, serif' }}>{title}</h2>
-            {subtitle ? <p className="text-xs text-amber-600/70" style={{ fontFamily: 'Georgia, serif' }}>{subtitle}</p> : null}
+            <h2 id={titleId} className="text-lg sm:text-xl text-amber-200/90 tracking-wide font-serif">{title}</h2>
+            {subtitle ? <p className="text-xs text-amber-600/70 font-serif">{subtitle}</p> : null}
           </div>
         </div>
         <button type="button" onClick={onClose} aria-label={`Close ${title.toLowerCase()}`} className="relative p-2 transition-all cursor-pointer group flex-shrink-0" style={{ background: THEME_SURFACE.CONTROL_BG }}>

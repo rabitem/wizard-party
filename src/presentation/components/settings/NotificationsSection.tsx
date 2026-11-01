@@ -41,8 +41,7 @@ export function NotificationsSection({ enabled, onToggle }: NotificationsSection
         <div className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-700/30" />
         <Bell className="w-4 h-4 text-amber-500/60" />
         <span
-          className="text-xs text-amber-400/70 uppercase tracking-widest"
-          style={{ fontFamily: 'Georgia, serif' }}
+          className="text-xs text-amber-400/70 uppercase tracking-widest font-serif"
         >
           Heralds
         </span>
@@ -55,10 +54,10 @@ export function NotificationsSection({ enabled, onToggle }: NotificationsSection
         }}
       >
         <div>
-          <span className="text-amber-200/80 block" style={{ fontFamily: 'Georgia, serif' }}>
+          <span className="text-amber-200/80 block font-serif">
             Turn Summons
           </span>
-          <span className="text-xs text-amber-500/50" style={{ fontFamily: 'Georgia, serif' }}>
+          <span className="text-xs text-amber-500/50 font-serif">
             Be summoned when thy turn arrives
           </span>
         </div>

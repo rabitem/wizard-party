@@ -6,7 +6,7 @@ import { Crown, Medal } from 'lucide-react';
 import type { PublicGameSummary } from '@shared/domain/account/public-profile';
 
 import { INSET_BG } from '../account-surfaces';
-import { Panel, SERIF, SectionHeading } from '../ui';
+import { Panel, SectionHeading } from '../ui';
 import { formatDate, formatNumber, ordinal } from './public-profile-format';
 
 const PLACEMENT_STYLES: Record<number, string> = {
@@ -21,7 +21,7 @@ function PlacementGlyph({ game }: { game: PublicGameSummary }) {
   if (game.won) return <Crown className="w-5 h-5" />;
   if (game.placement <= PODIUM) return <Medal className="w-5 h-5" />;
   return (
-    <span className="text-sm" style={SERIF}>
+    <span className="text-sm font-serif">
       {game.placement}
     </span>
   );
@@ -34,7 +34,7 @@ function GameRow({ game }: { game: PublicGameSummary }) {
         <PlacementGlyph game={game} />
       </span>
       <div className="min-w-0 flex-1">
-        <div className="text-sm text-amber-100 truncate" style={SERIF}>
+        <div className="text-sm text-amber-100 truncate font-serif">
           {game.won ? 'Victory' : `${ordinal(game.placement)} place`} <span className="text-amber-300/50">of {game.playerCount}</span>
         </div>
         <div className="text-[11px] text-amber-300/45 truncate">
@@ -42,7 +42,7 @@ function GameRow({ game }: { game: PublicGameSummary }) {
         </div>
       </div>
       <div className="text-right shrink-0">
-        <div className="text-base text-amber-50 tabular-nums" style={SERIF}>
+        <div className="text-base text-amber-50 tabular-nums font-serif">
           {formatNumber(game.score)}
         </div>
         <div className="text-[11px] text-amber-500/60 tabular-nums">+{formatNumber(game.xp)} XP</div>
@@ -67,7 +67,7 @@ export function PublicGameList({ icon, title, description, games, empty }: Publi
       <div className="p-4 sm:p-5">
         <SectionHeading icon={icon} title={title} description={description} />
         {games.length === 0 ? (
-          <p className="text-sm text-amber-200/45" style={SERIF}>
+          <p className="text-sm text-amber-200/45 font-serif">
             {empty}
           </p>
         ) : (

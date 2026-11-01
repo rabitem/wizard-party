@@ -20,14 +20,14 @@ export function FooterSection() {
         <div className="h-px w-8 bg-gradient-to-l from-transparent to-amber-700/20" />
       </div>
 
-      <p className="text-amber-200/70 text-xs mb-2" style={{ fontFamily: 'Georgia, serif' }}>
+      <p className="text-amber-200/70 text-xs mb-2 font-serif">
         Crafted by{' '}
         <a href="https://rabitem.de" target="_blank" rel="noopener noreferrer" className="text-amber-200/85 underline underline-offset-2 decoration-amber-600/50 hover:text-amber-100 transition-colors">
           rabitem.de
         </a>
       </p>
 
-      <div className="flex items-center justify-center gap-3 text-[10px] sm:text-xs" style={{ fontFamily: 'Georgia, serif' }}>
+      <div className="flex items-center justify-center gap-3 text-[10px] sm:text-xs font-serif">
         <Link href="/privacy" className="text-amber-200/75 hover:text-amber-100 transition-colors">
           Privacy
         </Link>
@@ -40,8 +40,7 @@ export function FooterSection() {
       </div>
 
       <p
-        className="mt-3 mx-auto max-w-md px-4 text-amber-200/60 text-[11px] leading-relaxed"
-        style={{ fontFamily: 'Georgia, serif' }}
+        className="mt-3 mx-auto max-w-md px-4 text-amber-200/60 text-[11px] leading-relaxed font-serif"
       >
         {LEGAL_COPY.TRADEMARK_DISCLAIMER}
       </p>

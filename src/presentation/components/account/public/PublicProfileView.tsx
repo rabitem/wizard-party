@@ -7,7 +7,7 @@ import type { PublicProfile } from '@shared/domain/account/public-profile';
 
 import { HeaderCorners, SectionDivider } from '../AccountOrnaments';
 import { AccountShell } from '../AccountShell';
-import { Panel, SERIF } from '../ui';
+import { Panel } from '../ui';
 import { TrophyCabinet, cabinetTierCounts, fromPublicTrophies } from '../trophies';
 import { PublicAchievementShowcase } from './PublicAchievementShowcase';
 import { PublicGameList } from './PublicGameList';
@@ -47,15 +47,14 @@ export function PublicProfileView({ profile }: { profile: PublicProfile }) {
           <HeaderCorners />
           <div className="relative p-5 sm:p-6 flex flex-col sm:flex-row items-center gap-4 justify-between text-center sm:text-left">
             <div className="min-w-0">
-              <h2 className="text-lg text-amber-100 break-words" style={SERIF}>
+              <h2 className="text-lg text-amber-100 break-words font-serif">
                 Think you can out-bid {profile.displayName}?
               </h2>
               <p className="mt-1 text-sm text-amber-200/50">Wizard Party is a free multiplayer trick-taking card game. No download needed.</p>
             </div>
             <Link
               href="/"
-              className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl px-5 min-h-11 w-full sm:w-auto text-sm border-2 border-amber-600/60 text-amber-100 hover:border-amber-500/80 hover:text-white bg-[linear-gradient(180deg,color-mix(in_srgb,var(--surface-border)_100%,transparent)_0%,color-mix(in_srgb,var(--page-base)_70%,transparent)_100%)] shadow-[0_4px_20px_color-mix(in_srgb,var(--glow)_40%,transparent)] transition-all"
-              style={SERIF}
+              className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl px-5 min-h-11 w-full sm:w-auto text-sm border-2 border-amber-600/60 text-amber-100 hover:border-amber-500/80 hover:text-white bg-[linear-gradient(180deg,color-mix(in_srgb,var(--surface-border)_100%,transparent)_0%,color-mix(in_srgb,var(--page-base)_70%,transparent)_100%)] shadow-[0_4px_20px_color-mix(in_srgb,var(--glow)_40%,transparent)] transition-all font-serif"
             >
               <Play className="w-4 h-4" aria-hidden />
               Play Wizard Party

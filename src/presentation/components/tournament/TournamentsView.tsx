@@ -15,7 +15,7 @@ import { TOURNAMENT_LIST_TABS, TOURNAMENT_ROUTES, TOURNAMENT_UI } from '@/presen
 
 import { HEADER_HIGHLIGHT, TITLE_GLOW } from '../account/account-surfaces';
 import { AccountShell } from '../account/AccountShell';
-import { Button, Notice, Panel, SERIF } from '../account/ui';
+import { Button, Notice, Panel } from '../account/ui';
 import { RecentChampionsStrip } from './RecentChampionsStrip';
 import { TournamentCard } from './TournamentCard';
 import { TournamentMessage, TournamentSkeleton, TournamentsUnavailable } from './TournamentStates';
@@ -43,8 +43,7 @@ function HostButton() {
     <div className="flex flex-col items-center gap-1.5">
       <Link
         href={href}
-        className="inline-flex items-center justify-center gap-2 rounded-xl px-5 min-h-11 text-sm border-2 border-amber-600/60 text-amber-100 hover:border-amber-500/80 hover:text-white transition-all active:scale-[0.98] bg-[linear-gradient(180deg,color-mix(in_srgb,var(--surface-border)_100%,transparent)_0%,color-mix(in_srgb,var(--page-base)_70%,transparent)_100%)] shadow-[0_4px_20px_color-mix(in_srgb,var(--glow)_40%,transparent)]"
-        style={SERIF}
+        className="inline-flex items-center justify-center gap-2 rounded-xl px-5 min-h-11 text-sm border-2 border-amber-600/60 text-amber-100 hover:border-amber-500/80 hover:text-white transition-all active:scale-[0.98] bg-[linear-gradient(180deg,color-mix(in_srgb,var(--surface-border)_100%,transparent)_0%,color-mix(in_srgb,var(--page-base)_70%,transparent)_100%)] shadow-[0_4px_20px_color-mix(in_srgb,var(--glow)_40%,transparent)] font-serif"
       >
         <Plus className="w-4 h-4" aria-hidden />
         Host a tournament
@@ -59,7 +58,7 @@ function Hero() {
     <Panel>
       <div className="relative px-5 py-7 sm:py-9 text-center" style={{ background: HEADER_HIGHLIGHT }}>
         <Trophy className="mx-auto mb-2 w-9 h-9 text-amber-400/80" strokeWidth={1.5} aria-hidden />
-        <h1 className="text-2xl sm:text-3xl text-amber-50" style={{ ...SERIF, textShadow: TITLE_GLOW }}>
+        <h1 className="text-2xl sm:text-3xl text-amber-50" style={{ fontFamily: 'var(--font-serif)', textShadow: TITLE_GLOW }}>
           Tournaments
         </h1>
         <p className="mx-auto mt-2 max-w-md text-sm text-amber-200/55 leading-relaxed">
@@ -81,7 +80,7 @@ function MyTournaments() {
   return (
     <section aria-labelledby="my-tournaments" className="space-y-2.5">
       <div className="flex items-center justify-between gap-3">
-        <h2 id="my-tournaments" className="flex items-center gap-2 text-xs uppercase tracking-widest text-amber-400/70" style={SERIF}>
+        <h2 id="my-tournaments" className="flex items-center gap-2 text-xs uppercase tracking-widest text-amber-400/70 font-serif">
           <Swords className="w-4 h-4 text-amber-500/70" aria-hidden />
           Your tournaments
         </h2>
@@ -116,8 +115,7 @@ function ListTabs({ value, onChange }: { value: TournamentListStatus; onChange: 
             aria-selected={active}
             aria-controls="tournament-list"
             onClick={() => onChange(tab.id)}
-            className={`inline-flex items-center h-10 px-4 rounded-full border text-sm transition-all cursor-pointer ${active ? 'border-amber-500/60 bg-amber-900/40 text-amber-100' : 'border-amber-900/40 text-amber-200/60 hover:text-amber-100 hover:border-amber-700/50'}`}
-            style={SERIF}
+            className={`font-serif inline-flex items-center h-10 px-4 rounded-full border text-sm transition-all cursor-pointer ${active ? 'border-amber-500/60 bg-amber-900/40 text-amber-100' : 'border-amber-900/40 text-amber-200/60 hover:text-amber-100 hover:border-amber-700/50'}`}
           >
             {tab.label}
           </button>

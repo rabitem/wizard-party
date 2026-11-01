@@ -6,7 +6,7 @@ import type { AccountOverviewDto } from '@/lib/account/account-api';
 
 import { INSET_BG, INSET_RAISED_BG } from '../account-surfaces';
 import { AchievementIcon, TIER_STYLES } from '../AchievementIcon';
-import { Panel, ProgressBar, SERIF, SectionHeading } from '../ui';
+import { Panel, ProgressBar, SectionHeading } from '../ui';
 
 export function AchievementsSection({ overview }: { overview: AccountOverviewDto }) {
   const unlocked = overview.achievements.filter((a) => a.unlockedAt !== null).length;
@@ -39,7 +39,7 @@ export function AchievementsSection({ overview }: { overview: AccountOverviewDto
                 <AchievementIcon icon={definition.icon} tier={definition.tier} locked={locked} />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className={`text-sm truncate ${locked ? 'text-amber-200/60' : 'text-amber-50'}`} style={SERIF}>
+                    <span className={`font-serif text-sm truncate ${locked ? 'text-amber-200/60' : 'text-amber-50'}`}>
                       {hidden ? 'Secret achievement' : definition.name}
                     </span>
                     <span className={`text-[9px] uppercase tracking-wider shrink-0 ${TIER_STYLES[definition.tier]?.text ?? ''} ${locked ? 'opacity-50' : ''}`}>

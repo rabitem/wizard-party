@@ -19,7 +19,7 @@ export function ReconnectingNotice() {
         className="flex items-center gap-2 px-3 py-1.5 border-2 border-amber-800/40 text-amber-200/80 text-sm"
         style={{
           background: THEME_SURFACE.MODAL_BG,
-          fontFamily: 'Georgia, serif',
+          fontFamily: 'var(--font-serif)',
         }}
       >
         <Loader2 className="w-4 h-4 text-amber-400 animate-spin flex-shrink-0" />

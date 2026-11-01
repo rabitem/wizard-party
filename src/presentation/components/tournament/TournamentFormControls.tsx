@@ -4,7 +4,6 @@ import { useId, type ReactNode } from 'react';
 import { Minus, Plus } from 'lucide-react';
 
 import { FIELD_BG, INSET_BG } from '../account/account-surfaces';
-import { SERIF } from '../account/ui';
 
 /*
  * Form controls of the tournament form in the account area's look (amber hairlines, serif labels,
@@ -13,7 +12,7 @@ import { SERIF } from '../account/ui';
 
 export function FieldLabel({ children, htmlFor, id }: { children: ReactNode; htmlFor?: string; id?: string }) {
   return (
-    <label htmlFor={htmlFor} id={id} className="block mb-1.5 text-[11px] uppercase tracking-wider text-amber-400/70" style={SERIF}>
+    <label htmlFor={htmlFor} id={id} className="block mb-1.5 text-[11px] uppercase tracking-wider text-amber-400/70 font-serif">
       {children}
     </label>
   );
@@ -144,7 +143,7 @@ export function Segmented<T extends string | number | null>({ label, value, opti
               >
                 {option.icon ? <span className={`mt-0.5 shrink-0 ${checked ? 'text-amber-300' : 'text-amber-600/70'}`}>{option.icon}</span> : null}
                 <span className="min-w-0">
-                  <span className={`block text-sm ${checked ? 'text-amber-50' : 'text-amber-100/80'}`} style={SERIF}>
+                  <span className={`font-serif block text-sm ${checked ? 'text-amber-50' : 'text-amber-100/80'}`}>
                     {option.label}
                   </span>
                   {option.description ? <span className="mt-0.5 block text-xs leading-relaxed text-amber-200/45">{option.description}</span> : null}
@@ -159,8 +158,7 @@ export function Segmented<T extends string | number | null>({ label, value, opti
               role="radio"
               aria-checked={checked}
               onClick={() => onChange(option.value)}
-              className={`inline-flex h-11 min-w-11 items-center justify-center gap-1.5 rounded-full border px-4 text-sm transition-all cursor-pointer ${checked ? 'border-amber-500/60 bg-amber-900/40 text-amber-100' : 'border-amber-900/40 text-amber-200/60 hover:text-amber-100 hover:border-amber-700/50'}`}
-              style={SERIF}
+              className={`font-serif inline-flex h-11 min-w-11 items-center justify-center gap-1.5 rounded-full border px-4 text-sm transition-all cursor-pointer ${checked ? 'border-amber-500/60 bg-amber-900/40 text-amber-100' : 'border-amber-900/40 text-amber-200/60 hover:text-amber-100 hover:border-amber-700/50'}`}
             >
               {option.icon}
               {option.label}

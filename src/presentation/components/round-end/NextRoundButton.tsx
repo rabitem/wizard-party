@@ -18,7 +18,7 @@ export function NextRoundButton({ isHost, currentRound, onNextRound, isMobile = 
         className={`relative w-full ${isMobile ? 'py-2 text-sm' : 'py-3'} rounded border-2 border-amber-600/50 font-semibold transition-all cursor-pointer active:scale-[0.98] flex items-center justify-center gap-2`}
         style={{
           background: THEME_SURFACE.BUTTON_BG,
-          fontFamily: 'Georgia, serif',
+          fontFamily: 'var(--font-serif)',
           color: 'var(--color-amber-100)',
           textShadow: '0 1px 2px rgba(0,0,0,0.5)',
         }}
@@ -38,8 +38,7 @@ export function NextRoundButton({ isHost, currentRound, onNextRound, isMobile = 
 
   return (
     <div
-      className={`flex items-center justify-center gap-2 ${isMobile ? 'py-2 px-3' : 'py-3 px-4'} rounded border border-amber-800/30 bg-black/30`}
-      style={{ fontFamily: 'Georgia, serif' }}
+      className={`font-serif flex items-center justify-center gap-2 ${isMobile ? 'py-2 px-3' : 'py-3 px-4'} rounded border border-amber-800/30 bg-black/30`}
     >
       <Loader2 className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-amber-400 animate-spin`} />
       <span className={`text-amber-200/60 ${isMobile ? 'text-xs' : 'text-sm'} italic`}>Awaiting the host...</span>

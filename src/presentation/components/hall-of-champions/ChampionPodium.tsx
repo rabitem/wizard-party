@@ -10,7 +10,6 @@ import { publicProfilePath } from '@/presentation/components/account/public/publ
 
 import { CATEGORY_COPY, MEDAL_STYLES } from './leaderboard-format';
 
-const SERIF = { fontFamily: 'Georgia, serif' } as const;
 /** Visual order: second, first, third, so the champion stands in the middle. */
 const PODIUM_ORDER = [1, 0, 2];
 /** Visual slot of the first entry (the middle column). */
@@ -33,15 +32,15 @@ function PodiumSpot({ entry, category, place, isSelf }: { entry: LeaderboardEntr
         </div>
         <span
           className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 min-w-6 h-6 px-1 rounded-full border-2 text-[11px] font-bold inline-flex items-center justify-center tabular-nums"
-          style={{ background: 'color-mix(in srgb, var(--surface), black 5%)', borderColor: medal.ring, color: medal.text, ...SERIF }}
+          style={{ background: 'color-mix(in srgb, var(--surface), black 5%)', borderColor: medal.ring, color: medal.text, fontFamily: 'var(--font-serif)' }}
         >
           {entry.rank}
         </span>
       </div>
-      <span className={`mt-1 max-w-full truncate text-xs sm:text-sm ${isSelf ? 'text-amber-200' : 'text-amber-50'} group-hover:text-white`} style={SERIF}>
+      <span className={`font-serif mt-1 max-w-full truncate text-xs sm:text-sm ${isSelf ? 'text-amber-200' : 'text-amber-50'} group-hover:text-white`}>
         {entry.displayName}
       </span>
-      <span className="mt-1 text-base sm:text-lg tabular-nums leading-tight" style={{ ...SERIF, color: medal.text }}>{copy.value(entry)}</span>
+      <span className="mt-1 text-base sm:text-lg tabular-nums leading-tight" style={{ fontFamily: 'var(--font-serif)', color: medal.text }}>{copy.value(entry)}</span>
       <span className="max-w-full truncate text-[10px] text-amber-600/60">{copy.detail(entry)}</span>
       <div
         className={`mt-2 w-full ${STEP_HEIGHT[place]} rounded-t-lg border-x border-t`}

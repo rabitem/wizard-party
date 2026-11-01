@@ -18,7 +18,7 @@ export function UiThemeGallery() {
             style={{ background: 'radial-gradient(ellipse at top, #1a1610 0%, #0f0d0a 60%, #080706 100%)' }}>
             <div className="flex items-center gap-2">
               <i className={`ra ${theme.icon} text-xl text-amber-400`} />
-              <span className="text-sm text-amber-100" style={{ fontFamily: 'Georgia, serif' }}>{theme.name}</span>
+              <span className="text-sm text-amber-100 font-serif">{theme.name}</span>
               {theme.isNew ? (
                 <span className="px-1.5 py-0.5 text-[9px] uppercase tracking-wider rounded border border-amber-500/40 bg-amber-600/25 text-amber-200">New</span>
               ) : null}

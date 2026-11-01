@@ -1,7 +1,10 @@
-import type { HallCameraStop, Vec3 } from '@/presentation/config/realm-hall.config';
+import { REALM_HALL, type HallCameraStop, type Vec3 } from '@/presentation/config/realm-hall.config';
 
 /** Position along the walk: 0 at the first stop, n - 1 at the last; fractions sit between stops. */
 export type HallProgress = number;
+
+/** Where the camera is at a point of the walk; every field set. */
+export type HallCameraPose = Required<HallCameraStop>;
 
 function smoothstep(t: number): number {
   return t * t * (3 - 2 * t);
@@ -11,14 +14,21 @@ function mix(a: Vec3, b: Vec3, t: number): Vec3 {
   return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
 }
 
+const fovOf = (stop: HallCameraStop): number => stop.fov ?? REALM_HALL.CAMERA_FOV;
+
 /** The camera pose at a point of the walk, eased between stops so the camera settles at each one. */
-export function cameraPoseAt(stops: readonly HallCameraStop[], progress: HallProgress): HallCameraStop {
+export function cameraPoseAt(stops: readonly HallCameraStop[], progress: HallProgress): HallCameraPose {
   const last = stops.length - 1;
   const clamped = Math.min(Math.max(progress, 0), last);
   const index = Math.min(Math.floor(clamped), last - 1);
-  if (index < 0) return stops[0];
+  if (index < 0) return { ...stops[0], fov: fovOf(stops[0]) };
   const t = smoothstep(clamped - index);
-  return { position: mix(stops[index].position, stops[index + 1].position, t), target: mix(stops[index].target, stops[index + 1].target, t) };
+  const [from, to] = [stops[index], stops[index + 1]];
+  return {
+    position: mix(from.position, to.position, t),
+    target: mix(from.target, to.target, t),
+    fov: fovOf(from) + (fovOf(to) - fovOf(from)) * t,
+  };
 }
 
 /** Where a station section sits in the document: its top and height in CSS px. */

@@ -56,8 +56,7 @@ export function PlayerBidChip({
     <div className={`flex items-center gap-1.5 px-2 py-1.5 flex-shrink-0 transition-all ${getChipContainerClass(isLocalAndCurrent, isCurrent, hasBid)}`}>
       <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${getStatusClass(hasBid, isCurrent)}`} />
       <span
-        className={`text-xs ${getNameClass(isLocalAndCurrent, isLocal, isCurrent)}`}
-        style={{ fontFamily: 'Georgia, serif' }}
+        className={`font-serif text-xs ${getNameClass(isLocalAndCurrent, isLocal, isCurrent)}`}
       >
         {displayName}
       </span>

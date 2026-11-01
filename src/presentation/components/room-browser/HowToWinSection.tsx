@@ -2,7 +2,6 @@
 
 import { DEFAULT_RULESET_CONFIG } from '@shared/domain';
 
-const SERIF = { fontFamily: 'Georgia, serif' } as const;
 const { baseBidPoints, pointsPerTrick, penaltyPerMiss } = DEFAULT_RULESET_CONFIG.scoring;
 
 /** A round in three steps, in running type; the point values are the default room rules. */
@@ -15,14 +14,14 @@ const STEPS = [
 export function HowToWinSection() {
   return (
     <section aria-labelledby="how-to-win-heading" className="mb-8 sm:mb-10">
-      <h2 id="how-to-win-heading" className="text-2xl sm:text-3xl text-amber-50 mb-5" style={SERIF}>How to win</h2>
+      <h2 id="how-to-win-heading" className="text-2xl sm:text-3xl text-amber-50 mb-5 font-serif">How to win</h2>
       <ol className="space-y-4">
         {STEPS.map((step, index) => (
           <li key={step.title} className="flex gap-4">
-            <span className="shrink-0 w-8 h-8 rounded-full border border-amber-500/50 flex items-center justify-center text-sm text-amber-300 tabular-nums" style={SERIF} aria-hidden>
+            <span className="shrink-0 w-8 h-8 rounded-full border border-amber-500/50 flex items-center justify-center text-sm text-amber-300 tabular-nums font-serif" aria-hidden>
               {index + 1}
             </span>
-            <p className="text-sm sm:text-base leading-relaxed text-amber-100/85" style={SERIF}>
+            <p className="text-sm sm:text-base leading-relaxed text-amber-100/85 font-serif">
               <span className="text-amber-200">{step.title}.</span> {step.text}
             </p>
           </li>

@@ -36,10 +36,10 @@ function EmptyStatsState() {
       >
         <Crown className="w-10 h-10 text-amber-600/30" />
       </div>
-      <h3 className="text-lg text-amber-200/90 mb-2" style={{ fontFamily: 'Georgia, serif' }}>
+      <h3 className="text-lg text-amber-200/90 mb-2 font-serif">
         No Battles Fought
       </h3>
-      <p className="text-sm text-amber-600/50" style={{ fontFamily: 'Georgia, serif' }}>
+      <p className="text-sm text-amber-600/50 font-serif">
         Venture forth and prove thy worth in battle!
       </p>
     </div>
@@ -58,7 +58,7 @@ function DesktopStatsPanelHeader({ onClose }: { onClose: () => void }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Trophy className="w-5 h-5 text-amber-500/70" />
-          <h2 className="text-lg text-amber-200/90" style={{ fontFamily: 'Georgia, serif' }}>Thy Achievements</h2>
+          <h2 className="text-lg text-amber-200/90 font-serif">Thy Achievements</h2>
         </div>
         <button
           onClick={onClose}
@@ -166,8 +166,7 @@ function StatsContent({
         {isAccount ? (
           <Link
             href="/account?tab=achievements"
-            className="block text-center rounded-lg border border-amber-700/30 py-2.5 text-sm text-amber-300/80 hover:text-amber-100 hover:border-amber-600/50 transition-colors"
-            style={{ fontFamily: 'Georgia, serif' }}
+            className="block text-center rounded-lg border border-amber-700/30 py-2.5 text-sm text-amber-300/80 hover:text-amber-100 hover:border-amber-600/50 transition-colors font-serif"
           >
             Level, achievements & full history →
           </Link>

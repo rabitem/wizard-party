@@ -5,7 +5,7 @@ import { LayoutGrid } from 'lucide-react';
 
 import type { TournamentDetailView } from '@shared/application/use-cases/tournament';
 
-import { Panel, SERIF, SectionHeading } from '../account/ui';
+import { Panel, SectionHeading } from '../account/ui';
 import { MatchTableCard } from './MatchTableCard';
 import { managesTables } from './tournament-detail-model';
 import { defaultRoundTab, roundProgress, tableRows } from './tournament-view-model';
@@ -52,8 +52,7 @@ export function SeriesRoundsView({ detail, now, resolving, onResolve }: RoundsVi
                 aria-controls="round-panel"
                 disabled={!round}
                 onClick={() => setPicked(number)}
-                className={`inline-flex h-10 shrink-0 items-center rounded-full border px-4 text-sm transition-all cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 ${active ? 'border-amber-500/60 bg-amber-900/40 text-amber-100' : 'border-amber-900/40 text-amber-200/60 hover:text-amber-100 hover:border-amber-700/50'}`}
-                style={SERIF}
+                className={`font-serif inline-flex h-10 shrink-0 items-center rounded-full border px-4 text-sm transition-all cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 ${active ? 'border-amber-500/60 bg-amber-900/40 text-amber-100' : 'border-amber-900/40 text-amber-200/60 hover:text-amber-100 hover:border-amber-700/50'}`}
               >
                 {round?.label ?? `Round ${number}`}
               </button>

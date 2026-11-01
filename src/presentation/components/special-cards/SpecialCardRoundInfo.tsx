@@ -18,7 +18,7 @@ export function SpecialCardRoundInfo({ lines, isMobile }: { lines: RoundInfoLine
           <div
             key={line.cardType}
             className={`flex items-center gap-1.5 px-2 py-1 border ${style.borderClass} text-[10px] sm:text-xs`}
-            style={{ background: 'color-mix(in srgb, color-mix(in srgb, var(--surface), black 50%) 85%, transparent)', fontFamily: 'Georgia, serif' }}
+            style={{ background: 'color-mix(in srgb, color-mix(in srgb, var(--surface), black 50%) 85%, transparent)', fontFamily: 'var(--font-serif)' }}
           >
             <span className={`font-bold ${style.textClass}`}>{getCardCatalogEntry(line.cardType).name}</span>
             <span className="text-amber-100/80">{line.text}</span>

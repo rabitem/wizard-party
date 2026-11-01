@@ -7,7 +7,6 @@ import { Inbox, Search, Users, X } from 'lucide-react';
 import { socialApi } from '@/lib/social/social-api';
 import { useSocial, useSocialPanel, type SocialPanelTab } from '@/presentation/providers/SocialProvider';
 
-import { SERIF } from '../account/ui';
 import { FindTab } from './FindTab';
 import { FriendsTab } from './FriendsTab';
 import { InboxTab } from './InboxTab';
@@ -82,13 +81,13 @@ export function SocialPanel() {
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <p className="px-5 pt-2 text-[11px] uppercase tracking-wider text-amber-500/50" style={SERIF}>{online} of {friends.length} friends online</p>
+            <p className="px-5 pt-2 text-[11px] uppercase tracking-wider text-amber-500/50 font-serif">{online} of {friends.length} friends online</p>
             <div role="tablist" className="flex gap-1 px-3 pt-2">
               {TABS.map((item) => {
                 const active = item.id === tab;
                 const count = badges[item.id];
                 return (
-                  <button key={item.id} role="tab" aria-selected={active} onClick={() => open(item.id)} className={`relative flex-1 inline-flex items-center justify-center gap-1.5 h-10 rounded-lg text-sm cursor-pointer transition-colors ${active ? 'text-amber-50' : 'text-amber-200/55 hover:text-amber-100'}`} style={SERIF}>
+                  <button key={item.id} role="tab" aria-selected={active} onClick={() => open(item.id)} className={`font-serif relative flex-1 inline-flex items-center justify-center gap-1.5 h-10 rounded-lg text-sm cursor-pointer transition-colors ${active ? 'text-amber-50' : 'text-amber-200/55 hover:text-amber-100'}`}>
                     {item.icon}
                     {item.label}
                     {count > 0 ? (

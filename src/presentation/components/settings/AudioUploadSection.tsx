@@ -97,7 +97,7 @@ function SectionHeader() {
     <div className="flex items-center gap-2 mb-4">
       <div className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-700/30" />
       <Music className="w-4 h-4 text-amber-500/60" />
-      <span className="text-xs text-amber-400/70 uppercase tracking-widest" style={{ fontFamily: 'Georgia, serif' }}>Custom Sound Manager</span>
+      <span className="text-xs text-amber-400/70 uppercase tracking-widest font-serif">Custom Sound Manager</span>
       <div className="h-px flex-1 bg-gradient-to-l from-transparent to-amber-700/30" />
     </div>
   );
@@ -129,8 +129,8 @@ function UploadDropZone({ isDragging, isValidating, onDragOver, onDragLeave, onD
           <Upload className={`w-6 h-6 ${isDragging ? 'text-amber-400' : 'text-amber-500/60'}`} />
         </div>
         <div>
-          <p className="text-sm text-amber-200/80" style={{ fontFamily: 'Georgia, serif' }}>{isDragging ? 'Drop audio file here' : 'Add custom audio'}</p>
-          <p className="text-xs text-amber-500/50 mt-1" style={{ fontFamily: 'Georgia, serif' }}>{ALLOWED_FORMATS_DISPLAY} - Max {MAX_FILE_SIZE_MB}MB - Max {MAX_DURATION_SECONDS}s</p>
+          <p className="text-sm text-amber-200/80 font-serif">{isDragging ? 'Drop audio file here' : 'Add custom audio'}</p>
+          <p className="text-xs text-amber-500/50 mt-1 font-serif">{ALLOWED_FORMATS_DISPLAY} - Max {MAX_FILE_SIZE_MB}MB - Max {MAX_DURATION_SECONDS}s</p>
         </div>
       </div>
       {isValidating ? <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded"><div className="animate-spin w-6 h-6 border-2 border-amber-500 border-t-transparent rounded-full" /></div> : null}
@@ -147,7 +147,7 @@ function RoleCheckbox({ audio, role, label, Icon, onRoleChange }: {
 }) {
   const checked = audio.roles[role];
   return (
-    <label className={`flex items-center gap-1.5 px-2 py-1.5 rounded border transition-colors cursor-pointer ${checked ? 'border-amber-500/60 bg-amber-900/30 text-amber-300' : 'border-amber-800/30 text-amber-500/60 hover:border-amber-700/50'}`} style={{ fontFamily: 'Georgia, serif' }}>
+    <label className={`font-serif flex items-center gap-1.5 px-2 py-1.5 rounded border transition-colors cursor-pointer ${checked ? 'border-amber-500/60 bg-amber-900/30 text-amber-300' : 'border-amber-800/30 text-amber-500/60 hover:border-amber-700/50'}`}>
       <input
         type="checkbox"
         className="sr-only"
@@ -181,11 +181,10 @@ function CustomAudioRow({ audio, isPlaying, onPreview, onRemove, onRename, onCat
             value={audio.name}
             onChange={(event) => onRename(audio.id, event.target.value)}
             aria-label="Custom sound name"
-            className="w-full rounded border border-amber-800/30 bg-black/20 px-2 py-1 text-sm text-amber-100/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/60"
-            style={{ fontFamily: 'Georgia, serif' }}
+            className="w-full rounded border border-amber-800/30 bg-black/20 px-2 py-1 text-sm text-amber-100/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/60 font-serif"
           />
-          <p className="text-xs text-amber-500/50" style={{ fontFamily: 'Georgia, serif' }}>{formatFileSize(audio.size)} - {audio.duration.toFixed(1)}s</p>
-          <label className="flex items-center gap-2 text-xs text-amber-500/70" style={{ fontFamily: 'Georgia, serif' }}>
+          <p className="text-xs text-amber-500/50 font-serif">{formatFileSize(audio.size)} - {audio.duration.toFixed(1)}s</p>
+          <label className="flex items-center gap-2 text-xs text-amber-500/70 font-serif">
             <span>Category</span>
             <select
               value={audio.category}
@@ -221,7 +220,7 @@ function ValidationError({ error }: { error: string }) {
   return (
     <div className="flex items-start gap-2 p-3 rounded border border-red-800/40" style={{ background: 'linear-gradient(180deg, color-mix(in srgb, var(--color-amber-900) 40%, transparent) 0%, color-mix(in srgb, var(--surface) 40%, transparent) 100%)' }}>
       <AlertTriangle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
-      <p className="text-sm text-red-300/80" style={{ fontFamily: 'Georgia, serif' }}>{error}</p>
+      <p className="text-sm text-red-300/80 font-serif">{error}</p>
     </div>
   );
 }

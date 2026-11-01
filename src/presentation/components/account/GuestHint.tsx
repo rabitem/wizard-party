@@ -8,7 +8,6 @@ import { CloudOff, X } from 'lucide-react';
 import { safeSessionStorage } from '@/lib/storage';
 import { useAccount } from '@/presentation/providers/AccountProvider';
 
-import { SERIF } from './ui';
 
 const DISMISS_KEY = 'wizard-party-guest-hint-dismissed';
 
@@ -40,7 +39,7 @@ export function GuestHint({ variant = 'banner', className = '' }: { variant?: 'b
       aria-label="Playing as guest"
     >
       <CloudOff className="w-4 h-4 mt-0.5 shrink-0 text-amber-400/70" />
-      <p className="text-xs sm:text-[13px] text-amber-200/70 leading-relaxed pr-6" style={SERIF}>
+      <p className="text-xs sm:text-[13px] text-amber-200/70 leading-relaxed pr-6 font-serif">
         <span className="text-amber-200/95">Playing as a guest.</span> Your stats, rewards and settings are only kept in this browser
         and may be lost when you clear it or switch devices.{' '}
         <Link href="/sign-in?mode=sign-up" className="text-amber-400 underline decoration-amber-600/50 underline-offset-2 hover:text-amber-300">

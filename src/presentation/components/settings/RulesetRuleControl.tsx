@@ -96,8 +96,7 @@ function NumberInput({
       disabled={disabled}
       min={min}
       max={max}
-      className="w-16 px-2 py-1 text-sm text-amber-200 bg-black/30 border border-amber-800/40 rounded focus:outline-none focus:border-amber-600/50 disabled:opacity-50 disabled:cursor-not-allowed"
-      style={{ fontFamily: 'Georgia, serif' }}
+      className="w-16 px-2 py-1 text-sm text-amber-200 bg-black/30 border border-amber-800/40 rounded focus:outline-none focus:border-amber-600/50 disabled:opacity-50 disabled:cursor-not-allowed font-serif"
     />
   );
 }
@@ -133,10 +132,10 @@ function RuleToggle({
       <div className="flex items-start gap-3 flex-1 min-w-0">
         <Icon className={`w-5 h-5 mt-0.5 flex-shrink-0 ${enabled ? 'text-amber-400' : 'text-amber-500/60'}`} />
         <div className="min-w-0">
-          <span className={`block ${enabled ? 'text-amber-200' : 'text-amber-200/80'}`} style={{ fontFamily: 'Georgia, serif' }}>
+          <span className={`font-serif block ${enabled ? 'text-amber-200' : 'text-amber-200/80'}`}>
             {title}
           </span>
-          <p className="text-xs text-amber-600/60 mt-0.5" style={{ fontFamily: 'Georgia, serif' }}>
+          <p className="text-xs text-amber-600/60 mt-0.5 font-serif">
             {description}
           </p>
         </div>
@@ -185,10 +184,10 @@ function RuleNumberInputRow({
       <div className="flex items-start gap-3 flex-1 min-w-0">
         <Icon className={`w-5 h-5 mt-0.5 flex-shrink-0 ${isModified ? 'text-amber-400' : 'text-amber-500/60'}`} />
         <div className="min-w-0">
-          <span className="block text-amber-200/80" style={{ fontFamily: 'Georgia, serif' }}>
+          <span className="block text-amber-200/80 font-serif">
             {title}
           </span>
-          <p className="text-xs text-amber-600/60 mt-0.5" style={{ fontFamily: 'Georgia, serif' }}>
+          <p className="text-xs text-amber-600/60 mt-0.5 font-serif">
             {description}
           </p>
         </div>

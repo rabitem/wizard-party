@@ -9,7 +9,7 @@ import { TOURNAMENT_LIMITS } from '@shared/domain/tournament';
 import { useSocial, useSocialPanel } from '@/presentation/providers/SocialProvider';
 
 import { PlayerAvatar } from '../account/PlayerAvatar';
-import { Button, Notice, SERIF } from '../account/ui';
+import { Button, Notice } from '../account/ui';
 import { Modal } from '../room-browser/Modal';
 import { inviteButtonLabel, inviteCandidates, inviteSummary, toggleInvite, type InviteSummary } from './tournament-detail-model';
 
@@ -64,10 +64,10 @@ export function InviteFriendsDialog({ entrantIds, sending, onInvite, onClose }: 
             <UserPlus className="h-5 w-5 text-amber-500/80" aria-hidden />
           </span>
           <div>
-            <h2 className="text-lg text-amber-100/95" style={SERIF}>
+            <h2 className="text-lg text-amber-100/95 font-serif">
               Invite friends
             </h2>
-            <p className="text-xs text-amber-500/60" style={SERIF}>
+            <p className="text-xs text-amber-500/60 font-serif">
               They get an invite in their inbox with a link to register.
             </p>
           </div>
@@ -113,7 +113,7 @@ export function InviteFriendsDialog({ entrantIds, sending, onInvite, onClose }: 
                     >
                       <PlayerAvatar appearance={friend.appearance} label={friend.displayName} level={friend.level} size="sm" />
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-sm text-amber-100" style={SERIF}>
+                        <span className="block truncate text-sm text-amber-100 font-serif">
                           {friend.displayName}
                         </span>
                         <span className={`block text-[11px] ${online ? 'text-emerald-300/70' : 'text-amber-200/35'}`}>{online ? 'Online' : 'Offline'}</span>

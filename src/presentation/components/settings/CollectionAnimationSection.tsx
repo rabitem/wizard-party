@@ -20,8 +20,7 @@ export function CollectionAnimationSection({
         <div className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-700/30" />
         <Sparkles className="w-4 h-4 text-amber-500/60" />
         <span
-          className="text-xs text-amber-400/70 uppercase tracking-widest"
-          style={{ fontFamily: 'Georgia, serif' }}
+          className="text-xs text-amber-400/70 uppercase tracking-widest font-serif"
         >
           Trick Collection
         </span>
@@ -50,14 +49,12 @@ export function CollectionAnimationSection({
               title={preset.description}
             >
               <span
-                className="block text-sm text-amber-200/90"
-                style={{ fontFamily: 'Georgia, serif' }}
+                className="block text-sm text-amber-200/90 font-serif"
               >
                 {preset.name}
               </span>
               <span
-                className="block text-xs text-amber-500/50 mt-1"
-                style={{ fontFamily: 'Georgia, serif' }}
+                className="block text-xs text-amber-500/50 mt-1 font-serif"
               >
                 {preset.description}
               </span>

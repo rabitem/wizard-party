@@ -17,7 +17,7 @@ export function RecentBattles({ gameHistory }: RecentBattlesProps) {
       style={{ background: THEME_SURFACE.CARD_BG_SOFT }}
     >
       <div className="px-4 py-2.5 border-b border-amber-800/20 bg-amber-900/20">
-        <span className="text-xs text-amber-500/70 uppercase tracking-wider" style={{ fontFamily: 'Georgia, serif' }}>
+        <span className="text-xs text-amber-500/70 uppercase tracking-wider font-serif">
           Recent Battles
         </span>
       </div>
@@ -33,7 +33,7 @@ export function RecentBattles({ gameHistory }: RecentBattlesProps) {
               <div className="flex items-center gap-3">
                 <PlacementBadge placement={game.placement} />
                 <div>
-                  <div className="text-sm text-amber-200/90" style={{ fontFamily: 'Georgia, serif' }}>
+                  <div className="text-sm text-amber-200/90 font-serif">
                     {game.score} glory
                   </div>
                   <div className="text-[10px] text-amber-600/50">{game.playerCount} wizards</div>

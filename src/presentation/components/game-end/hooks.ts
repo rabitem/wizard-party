@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { IPlayer } from '@shared/domain';
 import { SITE_URL } from '@/config/deployment.config';
+import { useRealmLinkParam } from '../room-browser';
 import { PlayerStats, ScoreProgressionData, MedalDisplay } from './types';
 
 export function usePlayerStats(players: IPlayer[]): Record<string, PlayerStats> {
@@ -73,6 +74,7 @@ export function useShareData(
   maxRounds: number,
   stats: Record<string, PlayerStats>
 ): { shareUrl: string; shareText: string } {
+  const realmParam = useRealmLinkParam();
   return useMemo(() => {
     const shareData = {
       players: sortedPlayers.map((p) => ({
@@ -83,7 +85,7 @@ export function useShareData(
       rounds: maxRounds,
     };
     const encoded = btoa(JSON.stringify(shareData));
-    const shareUrl = `${SITE_URL}/share?d=${encoded}`;
+    const shareUrl = `${SITE_URL}/share?d=${encoded}${realmParam}`;
 
     const lines = [
       '🧙 Wizard Party Results 🧙',
@@ -101,7 +103,7 @@ export function useShareData(
     const shareText = lines.join('\n');
 
     return { shareUrl, shareText };
-  }, [sortedPlayers, maxRounds, stats]);
+  }, [sortedPlayers, maxRounds, stats, realmParam]);
 }
 
 export function getMedalDisplay(index: number): MedalDisplay {

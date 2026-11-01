@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import { Vector3 } from 'three';
+import { PerspectiveCamera, Vector3 } from 'three';
 import { REALM_HALL, hallStopsFor } from '@/presentation/config/realm-hall.config';
 import { TableSurface } from '../table';
 import { useSelectedTableTheme } from '../table/table-theme';
@@ -42,6 +42,10 @@ function CameraRig({ still }: { still: boolean }) {
     const pose = cameraPoseAt(stops, eased.current);
     camera.position.set(...pose.position);
     camera.lookAt(lookAt.set(...pose.target));
+    if (camera instanceof PerspectiveCamera && camera.fov !== pose.fov) {
+      camera.fov = pose.fov;
+      camera.updateProjectionMatrix();
+    }
   });
   return null;
 }

@@ -21,9 +21,9 @@ function WaitingFor({ name }: { name: string }) {
     <div className="text-center">
       <div className="flex items-center justify-center gap-2 mb-1">
         <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-        <span className="text-amber-300 text-sm" style={{ fontFamily: 'Georgia, serif' }}>Waiting for</span>
+        <span className="text-amber-300 text-sm font-serif">Waiting for</span>
       </div>
-      <span className="text-lg font-bold text-amber-100" style={{ fontFamily: 'Georgia, serif' }}>{name}</span>
+      <span className="text-lg font-bold text-amber-100 font-serif">{name}</span>
     </div>
   );
 }

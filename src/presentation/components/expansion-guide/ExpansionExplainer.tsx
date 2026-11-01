@@ -18,7 +18,7 @@ export function ExpansionExplainer({ setId, onBack }: ExpansionExplainerProps) {
   const explanation = buildExpansionExplanation(setId);
 
   return (
-    <div className="space-y-4" style={{ fontFamily: 'Georgia, serif' }}>
+    <div className="space-y-4 font-serif">
       {onBack ? (
         <button
           type="button"

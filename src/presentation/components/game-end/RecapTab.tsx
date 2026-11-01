@@ -18,7 +18,7 @@ function ScoreProgressionChart({ scoreProgression, localPlayerId, maxRounds, max
     <div className="rounded-lg p-4" style={{ background: 'rgba(0, 0, 0, 0.3)', border: '1px solid var(--surface-border)' }}>
       <div className="flex items-center gap-2 mb-3">
         <i className="ra ra-scroll-unfurled text-base" style={{ color: 'var(--accent)' }} />
-        <span className="text-sm font-semibold" style={{ color: 'var(--color-amber-100)', fontFamily: 'Georgia, serif' }}>Score Journey</span>
+        <span className="text-sm font-semibold" style={{ color: 'var(--color-amber-100)', fontFamily: 'var(--font-serif)' }}>Score Journey</span>
       </div>
       <div className="h-32 relative">
         <div className="absolute inset-0 flex flex-col justify-between">
@@ -49,7 +49,7 @@ function RoundSummaries({ players, maxRounds }: { players: IPlayer[]; maxRounds:
     <div className="rounded-lg p-4" style={{ background: 'rgba(0, 0, 0, 0.3)', border: '1px solid var(--surface-border)' }}>
       <div className="flex items-center gap-2 mb-3">
         <i className="ra ra-cycle text-base" style={{ color: 'var(--accent)' }} />
-        <span className="text-sm font-semibold" style={{ color: 'var(--color-amber-100)', fontFamily: 'Georgia, serif' }}>Battle Summary</span>
+        <span className="text-sm font-semibold" style={{ color: 'var(--color-amber-100)', fontFamily: 'var(--font-serif)' }}>Battle Summary</span>
       </div>
       <div className="space-y-1.5 max-h-36 overflow-y-auto">
         {Array.from({ length: maxRounds }, (_, roundIdx) => {

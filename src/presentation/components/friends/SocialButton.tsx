@@ -6,7 +6,6 @@ import { Users } from 'lucide-react';
 import { useSocial, useSocialPanel, type SocialPanelTab } from '@/presentation/providers/SocialProvider';
 
 import { PlayerAvatar } from '../account/PlayerAvatar';
-import { SERIF } from '../account/ui';
 
 const STACK = 3;
 
@@ -30,8 +29,7 @@ export function SocialButton({ className = '', label = 'Social', tab }: { classN
       whileHover={{ y: -1 }}
       whileTap={{ scale: 0.96 }}
       aria-label={`${label}: ${online.length} online${badge ? `, ${badge} new` : ''}`}
-      className={`relative inline-flex items-center gap-2 h-11 pl-2.5 pr-3 rounded-full hover:bg-amber-900/35 transition-colors cursor-pointer ${className}`}
-      style={SERIF}
+      className={`font-serif relative inline-flex items-center gap-2 h-11 pl-2.5 pr-3 rounded-full hover:bg-amber-900/35 transition-colors cursor-pointer ${className}`}
     >
       {online.length > 0 ? (
         <span className="flex -space-x-2.5">

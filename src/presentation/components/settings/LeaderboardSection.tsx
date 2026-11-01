@@ -30,8 +30,7 @@ export function LeaderboardSection({
         <div className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-700/30" />
         <LayoutList className="w-4 h-4 text-amber-500/60" />
         <span
-          className="text-xs text-amber-400/70 uppercase tracking-widest"
-          style={{ fontFamily: 'Georgia, serif' }}
+          className="text-xs text-amber-400/70 uppercase tracking-widest font-serif"
         >
           Standings
         </span>
@@ -63,8 +62,7 @@ export function LeaderboardSection({
                 className={`w-5 h-5 ${isSelected ? 'text-amber-400' : 'text-amber-500/60'}`}
               />
               <span
-                className={`text-[10px] ${isSelected ? 'text-amber-200' : 'text-amber-400/60'}`}
-                style={{ fontFamily: 'Georgia, serif' }}
+                className={`font-serif text-[10px] ${isSelected ? 'text-amber-200' : 'text-amber-400/60'}`}
               >
                 {option.label}
               </span>
@@ -82,14 +80,12 @@ export function LeaderboardSection({
       >
         <div>
           <span
-            className="text-amber-200/80 text-sm"
-            style={{ fontFamily: 'Georgia, serif' }}
+            className="text-amber-200/80 text-sm font-serif"
           >
             Compact Mode
           </span>
           <p
-            className="text-xs text-amber-500/50"
-            style={{ fontFamily: 'Georgia, serif' }}
+            className="text-xs text-amber-500/50 font-serif"
           >
             Show only names and scores
           </p>

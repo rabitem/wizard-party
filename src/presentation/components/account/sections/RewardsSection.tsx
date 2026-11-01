@@ -17,7 +17,7 @@ import type { AccountOverviewDto } from '@/lib/account/account-api';
 
 import { BANNER_STYLES } from '../cosmetic-styles';
 import { PlayerAvatar } from '../PlayerAvatar';
-import { Panel, ProgressBar, SERIF, SectionHeading } from '../ui';
+import { Panel, ProgressBar, SectionHeading } from '../ui';
 
 type MilestoneState = 'unlocked' | 'next' | 'locked';
 
@@ -63,14 +63,14 @@ function Milestone({ milestone, state, xpNeeded, isLast }: { milestone: RewardMi
   return (
     <li className="relative flex gap-3 sm:gap-4" aria-current={state === 'next' ? 'step' : undefined}>
       <div className="relative flex flex-col items-center">
-        <span className={`relative z-10 w-11 h-11 shrink-0 rounded-full border-2 inline-flex items-center justify-center text-sm tabular-nums ${styles.node}`} style={SERIF}>
+        <span className={`font-serif relative z-10 w-11 h-11 shrink-0 rounded-full border-2 inline-flex items-center justify-center text-sm tabular-nums ${styles.node}`}>
           {milestone.level}
         </span>
         {!isLast ? <span aria-hidden className={`flex-1 w-0.5 my-1 ${state === 'unlocked' ? 'bg-amber-600/60' : 'bg-amber-900/40'}`} /> : null}
       </div>
       <div className={`flex-1 min-w-0 mb-3 rounded-xl border p-3 ${styles.card}`}>
         <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 mb-2">
-          <span className="text-[11px] uppercase tracking-wider text-amber-500/80" style={SERIF}>Level {milestone.level}</span>
+          <span className="text-[11px] uppercase tracking-wider text-amber-500/80 font-serif">Level {milestone.level}</span>
           <StateBadge state={state} xpNeeded={xpNeeded} />
         </div>
         <ul className="grid gap-2 sm:grid-cols-2">
@@ -78,7 +78,7 @@ function Milestone({ milestone, state, xpNeeded, isLast }: { milestone: RewardMi
             <li key={reward.id} className="flex items-center gap-2.5 min-w-0">
               <RewardPreview reward={reward} />
               <span className="min-w-0">
-                <span className="block text-sm text-amber-50 truncate" style={SERIF}>{reward.name}</span>
+                <span className="block text-sm text-amber-50 truncate font-serif">{reward.name}</span>
                 <span className="block text-[11px] text-amber-200/40">{KIND_LABEL[reward.kind]}</span>
               </span>
             </li>
@@ -95,7 +95,7 @@ function CurrentPosition({ level, complete = false }: { level: number; complete?
       <span className="w-11 shrink-0 inline-flex justify-center">
         <PlayerAvatar size="md" level={level} />
       </span>
-      <span className="flex-1 min-w-0 rounded-full border border-dashed border-amber-500/50 bg-amber-900/25 px-3 py-2 text-xs sm:text-sm text-amber-100" style={SERIF}>
+      <span className="flex-1 min-w-0 rounded-full border border-dashed border-amber-500/50 bg-amber-900/25 px-3 py-2 text-xs sm:text-sm text-amber-100 font-serif">
         {complete ? `You walked the whole road · Level ${level}` : `You are here · Level ${level}`}
       </span>
     </li>
@@ -105,11 +105,11 @@ function CurrentPosition({ level, complete = false }: { level: number; complete?
 function SummaryTile({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
   return (
     <div className="rounded-xl border border-amber-800/30 bg-black/20 p-3">
-      <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] uppercase tracking-wider text-amber-500/70" style={SERIF}>
+      <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] uppercase tracking-wider text-amber-500/70 font-serif">
         {icon}
         <span className="truncate">{label}</span>
       </div>
-      <div className="mt-1 text-lg sm:text-xl text-amber-50 tabular-nums" style={SERIF}>{value}</div>
+      <div className="mt-1 text-lg sm:text-xl text-amber-50 tabular-nums font-serif">{value}</div>
     </div>
   );
 }

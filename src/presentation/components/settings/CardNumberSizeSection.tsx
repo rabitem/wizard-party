@@ -17,8 +17,7 @@ export function CardNumberSizeSection({ selectedSize, onSelect }: CardNumberSize
         <div className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-700/30" />
         <Type className="w-4 h-4 text-amber-500/60" />
         <span
-          className="text-xs text-amber-400/70 uppercase tracking-widest"
-          style={{ fontFamily: 'Georgia, serif' }}
+          className="text-xs text-amber-400/70 uppercase tracking-widest font-serif"
         >
           Numeral Size
         </span>
@@ -43,15 +42,14 @@ export function CardNumberSizeSection({ selectedSize, onSelect }: CardNumberSize
             <span
               className="text-amber-200/90"
               style={{
-                fontFamily: 'Georgia, serif',
+                fontFamily: 'var(--font-serif)',
                 fontSize: `${12 + CARD_NUMBER_SIZE_PRESETS.indexOf(preset) * 4}px`,
               }}
             >
               XIII
             </span>
             <span
-              className="text-xs text-amber-500/60"
-              style={{ fontFamily: 'Georgia, serif' }}
+              className="text-xs text-amber-500/60 font-serif"
             >
               {preset.name}
             </span>

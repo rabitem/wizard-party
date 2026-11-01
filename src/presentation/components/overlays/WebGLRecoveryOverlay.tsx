@@ -21,7 +21,7 @@ function MysticalIcon() {
 function RecoveryMessage() {
   return (
     <>
-      <h2 className="text-xl mb-2" style={{ fontFamily: 'Georgia, serif', color: 'var(--accent-pale)', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+      <h2 className="text-xl mb-2" style={{ fontFamily: 'var(--font-serif)', color: 'var(--accent-pale)', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
         Restoring the Realm
       </h2>
       <div className="flex items-center justify-center gap-3 mb-4">
@@ -29,7 +29,7 @@ function RecoveryMessage() {
         <i className="ra ra-fairy-wand text-xs" style={{ color: 'var(--accent-dim)' }} />
         <div className="w-12 h-px" style={{ background: 'linear-gradient(90deg, var(--text-muted), transparent)' }} />
       </div>
-      <p className="text-sm mb-6 leading-relaxed" style={{ fontFamily: 'Georgia, serif', color: 'var(--accent-parchment)' }}>
+      <p className="text-sm mb-6 leading-relaxed" style={{ fontFamily: 'var(--font-serif)', color: 'var(--accent-parchment)' }}>
         The magical energies have been disrupted.<br />
         <span style={{ color: 'var(--text-muted)' }}>Weaving the spell anew...</span>
       </p>
@@ -53,7 +53,7 @@ function RecoverButton({ onForceRecover }: { onForceRecover: () => void }) {
   return (
     <button onClick={onForceRecover} className="group relative px-6 py-2.5 transition-all cursor-pointer" style={{ background: 'linear-gradient(180deg, color-mix(in srgb, var(--surface-border) 60%, transparent) 0%, color-mix(in srgb, var(--surface) 80%, transparent) 100%)', border: '1px solid color-mix(in srgb, var(--accent-dim), black 15%)', borderRadius: '4px' }}>
       <div className="absolute inset-0 rounded opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: 'radial-gradient(circle, color-mix(in srgb, var(--accent) 15%, transparent) 0%, transparent 70%)' }} />
-      <span className="relative text-sm group-hover:text-amber-300 transition-colors" style={{ fontFamily: 'Georgia, serif', color: 'var(--text-muted)' }}>
+      <span className="relative text-sm group-hover:text-amber-300 transition-colors" style={{ fontFamily: 'var(--font-serif)', color: 'var(--text-muted)' }}>
         <i className="ra ra-hand text-xs mr-2" />Cast spell manually
       </span>
     </button>

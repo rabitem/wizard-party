@@ -20,7 +20,7 @@ const CHOICE_BUTTON_CLASS =
   "px-4 py-1.5 rounded border-2 border-amber-600/50 text-amber-100 text-sm transition-all cursor-pointer hover:border-amber-500/60";
 const CHOICE_BUTTON_STYLE = {
   background: THEME_SURFACE.BUTTON_BG,
-  fontFamily: "Georgia, serif",
+  fontFamily: 'var(--font-serif)',
 } as const;
 
 function ConsentButtons({ onAccept, onDecline }: { onAccept: () => void; onDecline: () => void }) {
@@ -119,7 +119,7 @@ export function CookieConsent() {
                   <Cookie className="w-4 h-4 text-amber-500/80" />
                 </div>
 
-                <div className="text-amber-300/70 text-sm" style={{ fontFamily: "Georgia, serif" }}>
+                <div className="text-amber-300/70 text-sm font-serif">
                   <p>
                     <span className="text-amber-200/90">Wizard Party</span> stores only what the game needs.
                     With your consent we also collect analytics on performance, devices and errors to improve the

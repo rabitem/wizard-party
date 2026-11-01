@@ -16,7 +16,7 @@ export function ChronicleOfDeeds({ gamesPlayed, totalTricksWon, totalScore, high
       style={{ background: THEME_SURFACE.CARD_BG_SOFT }}
     >
       <div className="px-4 py-2.5 border-b border-amber-800/20 bg-amber-900/20">
-        <span className="text-xs text-amber-500/70 uppercase tracking-wider" style={{ fontFamily: 'Georgia, serif' }}>
+        <span className="text-xs text-amber-500/70 uppercase tracking-wider font-serif">
           Chronicle of Deeds
         </span>
       </div>

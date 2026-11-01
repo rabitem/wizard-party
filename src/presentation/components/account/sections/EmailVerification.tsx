@@ -7,7 +7,7 @@ import { authClient, unwrap } from '@/lib/account/auth-client';
 import { useAuthCapabilities } from '@/presentation/hooks/account/useAuthCapabilities';
 
 import { EmailCodeStep } from '../auth/EmailCodeStep';
-import { Button, Notice, SERIF, errorMessage } from '../ui';
+import { Button, Notice, errorMessage } from '../ui';
 
 /** "Verified" / "Not verified yet" next to an address. */
 export function EmailVerificationBadge({ verified }: { verified: boolean }) {
@@ -57,7 +57,7 @@ export function EmailVerification({ email, verified, onVerified, actionLabel = '
       {error ? <Notice tone="error" className="mb-3">{error}</Notice> : null}
       <div className="flex flex-wrap items-center gap-3 justify-between">
         <div className="min-w-0">
-          <div className="text-sm text-amber-100 break-all" style={SERIF}>{email}</div>
+          <div className="text-sm text-amber-100 break-all font-serif">{email}</div>
           <div className="mt-1">
             <EmailVerificationBadge verified={verified} />
           </div>

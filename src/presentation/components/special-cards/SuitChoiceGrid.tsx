@@ -7,7 +7,6 @@ import { THEME_SURFACE } from '@/presentation/config/theme-surface.config';
 const CHOICE_BUTTON_CLASS =
   'group relative p-3 sm:p-4 border-2 border-amber-800/40 hover:border-amber-600/60 transition-all cursor-pointer active:scale-95';
 const CHOICE_BUTTON_BACKGROUND = THEME_SURFACE.MODAL_BG;
-const SERIF = { fontFamily: 'Georgia, serif' } as const;
 
 interface ChoiceButtonProps {
   color: string;
@@ -27,9 +26,9 @@ export function ChoiceButton({ color, icon, label, detail, onClick, ariaLabel }:
       <div className="text-2xl sm:text-3xl text-center mb-1.5 sm:mb-2 relative group-hover:scale-110 transition-transform" style={{ color }}>
         <i className={`ra ${icon}`} />
       </div>
-      <div className="text-center text-[10px] sm:text-xs relative font-medium" style={{ color, ...SERIF }}>{label}</div>
+      <div className="text-center text-[10px] sm:text-xs relative font-medium" style={{ color, fontFamily: 'var(--font-serif)' }}>{label}</div>
       {detail ? (
-        <div className="text-center text-[9px] sm:text-[10px] relative text-amber-200/50 mt-0.5" style={SERIF}>{detail}</div>
+        <div className="text-center text-[9px] sm:text-[10px] relative text-amber-200/50 mt-0.5 font-serif">{detail}</div>
       ) : null}
     </button>
   );

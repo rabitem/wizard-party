@@ -35,7 +35,7 @@ export function PlaceBidButton({ selectedBid, maxBid, forbiddenBid, onPlaceBid, 
       disabled={!canSubmit}
       aria-label={`Place bid ${selectedBid}`}
       className={`hud-tap-target flex flex-shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-amber-600/50 font-medium transition-all cursor-pointer active:scale-[0.98] hover:border-amber-500/70 disabled:cursor-not-allowed disabled:opacity-50 ${fullWidth ? 'w-full py-3 text-base' : 'px-4 py-2'}`}
-      style={{ background: 'linear-gradient(180deg, color-mix(in srgb, var(--color-amber-600) 50%, transparent) 0%, color-mix(in srgb, var(--color-amber-800) 40%, transparent) 100%)', fontFamily: 'Georgia, serif', color: 'var(--color-amber-100)' }}
+      style={{ background: 'linear-gradient(180deg, color-mix(in srgb, var(--color-amber-600) 50%, transparent) 0%, color-mix(in srgb, var(--color-amber-800) 40%, transparent) 100%)', fontFamily: 'var(--font-serif)', color: 'var(--color-amber-100)' }}
     >
       <Check className="h-4 w-4" />
       {compact ? `Bid ${selectedBid}` : `Place Bid: ${selectedBid}`}

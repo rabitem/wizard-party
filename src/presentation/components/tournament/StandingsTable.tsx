@@ -4,7 +4,7 @@ import { ListOrdered } from 'lucide-react';
 
 import type { TournamentDetailView } from '@shared/application/use-cases/tournament';
 
-import { Panel, SERIF, SectionHeading } from '../account/ui';
+import { Panel, SectionHeading } from '../account/ui';
 import { PlayerName } from './TournamentPlayer';
 import { reachedLabel } from './tournament-detail-model';
 import { formatAccuracy } from './tournament-view-model';
@@ -32,7 +32,7 @@ export function StandingsTable({ detail }: { detail: TournamentDetailView }) {
           }
         />
         <div className="-mx-2 overflow-x-auto">
-          <table className="w-full text-left text-sm" style={SERIF}>
+          <table className="w-full text-left text-sm font-serif">
             <caption className="sr-only">{settled ? 'Final standings' : 'Current standings'}</caption>
             <thead>
               <tr className="border-b border-amber-800/30">

@@ -10,7 +10,7 @@ import { TOURNAMENT_UI } from '@/presentation/config/tournament.config';
 
 import { HEADER_HIGHLIGHT, TITLE_GLOW } from '../account/account-surfaces';
 import { ordinal } from '../account/public/public-profile-format';
-import { Panel, SERIF } from '../account/ui';
+import { Panel } from '../account/ui';
 import { PlayerName } from './TournamentPlayer';
 import { TROPHY_TIER_STYLES, TournamentTrophyIcon } from './TournamentTrophyIcon';
 import { confettiPieces, honourAwards, podiumEntries, podiumOrder, podiumStep, viewerAwardXp, type PodiumEntry } from './tournament-detail-model';
@@ -63,7 +63,7 @@ function PodiumStep({ entry, viewerId, animate }: { entry: PodiumEntry; viewerId
         className={`mt-2 flex w-full items-start justify-center rounded-t-xl border border-b-0 pt-1.5 ${STEP_HEIGHT[step]} ${tier.ring}`}
         style={{ background: `linear-gradient(180deg, ${tier.glow} 0%, transparent 100%)` }}
       >
-        <span className={`text-lg ${tier.text}`} style={SERIF}>
+        <span className={`font-serif text-lg ${tier.text}`}>
           {entry.standing.rank}
         </span>
       </div>
@@ -84,7 +84,7 @@ export function FinalPodium({ detail }: { detail: TournamentDetailView }) {
     <Panel>
       <div className="relative px-4 pb-5 pt-6 sm:px-6" style={{ background: HEADER_HIGHLIGHT }}>
         {reduceMotion ? null : <Celebration seed={tournament.id} />}
-        <h2 className="flex items-center justify-center gap-2 text-center text-xl text-amber-50 sm:text-2xl" style={{ ...SERIF, textShadow: TITLE_GLOW }}>
+        <h2 className="flex items-center justify-center gap-2 text-center text-xl text-amber-50 sm:text-2xl" style={{ fontFamily: 'var(--font-serif)', textShadow: TITLE_GLOW }}>
           <Trophy className="h-5 w-5 text-amber-400" aria-hidden />
           The podium
         </h2>
@@ -94,13 +94,13 @@ export function FinalPodium({ detail }: { detail: TournamentDetailView }) {
           ))}
         </ol>
         {earnedXp > 0 ? (
-          <p className="mt-4 text-center text-sm text-amber-200" style={SERIF}>
+          <p className="mt-4 text-center text-sm text-amber-200 font-serif">
             You earned {earnedXp} XP in this tournament.
           </p>
         ) : null}
         {honours.length > 0 ? (
           <div className="mt-5">
-            <h3 className="mb-2 flex items-center gap-1.5 text-xs uppercase tracking-widest text-amber-400/70" style={SERIF}>
+            <h3 className="mb-2 flex items-center gap-1.5 text-xs uppercase tracking-widest text-amber-400/70 font-serif">
               <Sparkles className="h-3.5 w-3.5" aria-hidden /> Honours
             </h3>
             <ul className="grid gap-2 sm:grid-cols-2">
@@ -108,7 +108,7 @@ export function FinalPodium({ detail }: { detail: TournamentDetailView }) {
                 <li key={`${award.awardId}-${award.player.userId}`} className="flex items-center gap-3 rounded-xl border border-amber-900/30 bg-black/20 px-3 py-2">
                   <TournamentTrophyIcon icon={award.icon} tier={award.tier} size="sm" />
                   <span className="min-w-0 flex-1">
-                    <span className="block text-sm text-amber-100" style={SERIF}>
+                    <span className="block text-sm text-amber-100 font-serif">
                       {award.name} · <PlayerName displayName={award.player.displayName} username={award.player.username} isViewer={award.player.userId === viewer.userId} />
                     </span>
                     <span className="block text-[11px] text-amber-200/45">

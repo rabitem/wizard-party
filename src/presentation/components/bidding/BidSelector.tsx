@@ -77,7 +77,7 @@ export function BidSelector({ selectedBid, maxBid, forbiddenBid, onBidChange, la
           <StepButton direction={-1} disabled={lower === null} onClick={() => lower !== null && onBidChange(lower)} />
           <div
             className={`${classes.value} flex-shrink-0 rounded-xl flex items-center justify-center border border-amber-600/40 font-bold text-amber-200`}
-            style={{ background: 'linear-gradient(180deg, color-mix(in srgb, var(--color-amber-600) 30%, transparent) 0%, color-mix(in srgb, var(--color-amber-900) 20%, transparent) 100%)', fontFamily: 'Georgia, serif' }}
+            style={{ background: 'linear-gradient(180deg, color-mix(in srgb, var(--color-amber-600) 30%, transparent) 0%, color-mix(in srgb, var(--color-amber-900) 20%, transparent) 100%)', fontFamily: 'var(--font-serif)' }}
             aria-live="polite"
           >
             {selectedBid}

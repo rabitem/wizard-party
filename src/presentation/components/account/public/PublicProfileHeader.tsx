@@ -7,7 +7,7 @@ import type { PublicProfile } from '@shared/domain/account/public-profile';
 import { HeaderCorners } from '../AccountOrnaments';
 import { HEADER_HIGHLIGHT, SEAL_BG, TITLE_GLOW } from '../account-surfaces';
 import { PlayerAvatar } from '../PlayerAvatar';
-import { Panel, ProgressBar, SERIF } from '../ui';
+import { Panel, ProgressBar } from '../ui';
 import { ProfileFriendAction } from '../../friends/ProfileFriendAction';
 import { CopyProfileLinkButton } from './CopyProfileLinkButton';
 import { formatMonth, formatNumber } from './public-profile-format';
@@ -29,7 +29,7 @@ export function PublicProfileHeader({ profile }: { profile: PublicProfile }) {
           <PlayerAvatar appearance={profile.appearance} label={profile.displayName} size="xl" level={level} glow />
           <span
             className="absolute bottom-0 left-1/2 -translate-x-1/2 min-w-11 px-2 h-7 rounded-full border-2 border-amber-500/70 inline-flex items-center justify-center text-sm text-amber-100 tabular-nums"
-            style={{ ...SERIF, background: SEAL_BG, boxShadow: '0 2px 12px rgba(0,0,0,0.5)' }}
+            style={{ fontFamily: 'var(--font-serif)', background: SEAL_BG, boxShadow: '0 2px 12px rgba(0,0,0,0.5)' }}
             aria-label={`Level ${level}`}
           >
             {level}
@@ -37,21 +37,21 @@ export function PublicProfileHeader({ profile }: { profile: PublicProfile }) {
         </div>
 
         <div className="min-w-0 flex-1 w-full">
-          <div className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-amber-500/80" style={SERIF}>
+          <div className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-amber-500/80 font-serif">
             <Sparkles className="w-3.5 h-3.5" aria-hidden />
             {title}
           </div>
-          <h1 className="mt-1 text-2xl sm:text-3xl text-amber-50 break-words" style={{ ...SERIF, textShadow: TITLE_GLOW }}>
+          <h1 className="mt-1 text-2xl sm:text-3xl text-amber-50 break-words" style={{ fontFamily: 'var(--font-serif)', textShadow: TITLE_GLOW }}>
             {profile.displayName}
           </h1>
           {profile.tagline ? (
-            <p className="mt-3 text-sm sm:text-base italic text-amber-200/75 break-words" style={SERIF}>
+            <p className="mt-3 text-sm sm:text-base italic text-amber-200/75 break-words font-serif">
               &ldquo;{profile.tagline}&rdquo;
             </p>
           ) : null}
 
           <div className="mt-4 max-w-md mx-auto sm:mx-0">
-            <div className="flex items-baseline justify-between gap-3 text-xs text-amber-300/60 mb-1.5" style={SERIF}>
+            <div className="flex items-baseline justify-between gap-3 text-xs text-amber-300/60 mb-1.5 font-serif">
               <span>Level {level}</span>
               <span className="tabular-nums">
                 {formatNumber(levelXp)} / {formatNumber(levelSpan)} XP

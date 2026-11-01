@@ -6,7 +6,7 @@ import { Hourglass, Swords } from 'lucide-react';
 import type { MyMatchView } from '@shared/application/use-cases/tournament';
 
 import { GLOW_SHADOW, HEADER_HIGHLIGHT } from '../account/account-surfaces';
-import { Button, Panel, SERIF } from '../account/ui';
+import { Button, Panel } from '../account/ui';
 import { formatDuration } from './tournament-view-model';
 
 interface YourTableCardProps {
@@ -35,10 +35,10 @@ export function YourTableCard({ match, now, joining, confirmingLeave, onJoin, on
             <Swords className="h-6 w-6 text-amber-300" />
           </span>
           <div className="min-w-0 flex-1" aria-live="polite">
-            <p className="text-[11px] uppercase tracking-widest text-amber-400/80" style={SERIF}>
+            <p className="text-[11px] uppercase tracking-widest text-amber-400/80 font-serif">
               Your table is ready
             </p>
-            <p className="mt-0.5 truncate text-lg text-amber-50" style={SERIF}>
+            <p className="mt-0.5 truncate text-lg text-amber-50 font-serif">
               {match.label}
             </p>
             <p className="mt-1 inline-flex items-center gap-1.5 text-xs text-amber-200/55">
@@ -48,7 +48,7 @@ export function YourTableCard({ match, now, joining, confirmingLeave, onJoin, on
           </div>
           {confirmingLeave ? (
             <div className="flex flex-col gap-2 sm:items-end" role="alert">
-              <p className="text-xs text-amber-200/80" style={SERIF}>
+              <p className="text-xs text-amber-200/80 font-serif">
                 You are in a game right now. Leave it for your table?
               </p>
               <div className="flex gap-2">

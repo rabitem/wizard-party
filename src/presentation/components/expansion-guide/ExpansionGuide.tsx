@@ -16,7 +16,7 @@ export function ExpansionGuide() {
 
   return (
     <div className="space-y-2">
-      <p className="text-sm text-amber-300/70" style={{ fontFamily: 'Georgia, serif' }}>
+      <p className="text-sm text-amber-300/70 font-serif">
         {EXPANSIONS_UI_CONFIG.GUIDE_PICKER_INTRO}
       </p>
       <ExpansionSetPicker onSelect={setSelectedSetId} />

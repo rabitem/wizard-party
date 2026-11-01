@@ -9,7 +9,7 @@ import { resetPlayerStats } from '@/lib/player-stats';
 import { safeLocalStorage } from '@/lib/storage';
 import { useAccount } from '@/presentation/providers/AccountProvider';
 
-import { Button, Notice, Panel, SERIF, errorMessage } from '../ui';
+import { Button, Notice, Panel, errorMessage } from '../ui';
 
 const decisionKey = (userId: string) => `wizard-party-guest-import:${userId}`;
 
@@ -65,7 +65,7 @@ export function ImportGuestCard({ onImported }: { onImported: () => void }) {
           <Download className="w-5 h-5" />
         </span>
         <div className="flex-1 min-w-0">
-          <h3 className="text-amber-100" style={SERIF}>Bring your guest progress along</h3>
+          <h3 className="text-amber-100 font-serif">Bring your guest progress along</h3>
           <p className="text-sm text-amber-200/55 mt-0.5">
             This browser holds {games} {games === 1 ? 'game' : 'games'} you played as a guest. Add them to your account to keep the stats and earn the XP.
           </p>

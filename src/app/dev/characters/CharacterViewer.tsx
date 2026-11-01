@@ -41,7 +41,7 @@ export function CharacterViewer() {
   return (
     <main className="min-h-dvh grid md:grid-cols-[18rem_1fr] bg-[var(--page-base)] text-amber-100">
       <aside className="flex flex-col gap-3 p-4 border-b md:border-b-0 md:border-r border-amber-900/40">
-        <h1 className="text-lg" style={{ fontFamily: 'Georgia, serif' }}>Characters</h1>
+        <h1 className="text-lg font-serif">Characters</h1>
         {CHARACTER_SLOTS.map((slot) => (
           <SlotPicker key={slot} slot={slot} value={appearance[slot]} onChange={(id) => setAppearance((current) => ({ ...current, [slot]: id }))} />
         ))}

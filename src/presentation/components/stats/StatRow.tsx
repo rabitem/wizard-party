@@ -12,7 +12,7 @@ export function StatRow({ icon, label, value, highlight = false }: StatRowProps)
     <div className="flex items-center justify-between py-1.5">
       <div className="flex items-center gap-2">
         <span className="text-amber-600/40">{icon}</span>
-        <span className="text-sm text-amber-400/60" style={{ fontFamily: 'Georgia, serif' }}>
+        <span className="text-sm text-amber-400/60 font-serif">
           {label}
         </span>
       </div>

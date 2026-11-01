@@ -7,7 +7,7 @@ import type { TournamentDetailView } from '@shared/application/use-cases/tournam
 
 import { TOURNAMENT_ROUTES } from '@/presentation/config/tournament.config';
 
-import { Button, Notice, Panel, ProgressBar, SERIF } from '../account/ui';
+import { Button, Notice, Panel, ProgressBar } from '../account/ui';
 import { ConfirmAction } from './ConfirmAction';
 import { viewerProgressLine } from './tournament-detail-model';
 import { fieldLabel, registrationAction } from './tournament-view-model';
@@ -36,7 +36,7 @@ export function RegistrationPanel({ detail, account, returnTo, pending, onRegist
       <div className="space-y-4 p-4 sm:p-6">
         <div>
           <div className="mb-1.5 flex items-baseline justify-between gap-3 text-sm">
-            <span className="text-amber-100" style={SERIF}>
+            <span className="text-amber-100 font-serif">
               Registration
             </span>
             <span className="tabular-nums text-amber-200/60">{fieldLabel(tournament)}</span>
@@ -67,7 +67,7 @@ export function RegistrationPanel({ detail, account, returnTo, pending, onRegist
             />
           ) : null}
           {action.kind === 'sign_in' ? (
-            <Link href={TOURNAMENT_ROUTES.signIn(returnTo)} className={LINK_CLASS} style={SERIF}>
+            <Link href={TOURNAMENT_ROUTES.signIn(returnTo)} className={`${LINK_CLASS} font-serif`}>
               <LogIn className="h-4 w-4" aria-hidden /> Sign in to register
             </Link>
           ) : null}
