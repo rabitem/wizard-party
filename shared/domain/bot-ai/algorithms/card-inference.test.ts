@@ -1,9 +1,11 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import type { ICard } from '../../entities/card';
+import { Card, type ICard } from '../../entities/card';
+import { buildClassicDeckCards } from '../../expansions/deck-composition';
+import { createSeededRandom } from '../../ports/random.port';
 import { Suit } from '../../value-objects/card-types';
 import { createCardInferenceEngine, sampleInformedDeterminization } from './card-inference';
-import { n, play, positionContext, wizard, withSeededMath, type PositionSpec } from '../bot-ai.fixtures';
+import { BOT_ID, botContext, n, play, positionContext, wizard, withSeededMath, type PositionSpec } from '../bot-ai.fixtures';
 
 /**
  * Round 3, Giants trump. Trick 1: p1 led Elves 7, p2 showed out with Dwarves 2, we won
@@ -124,5 +126,41 @@ describe('informed determinizations', () => {
     expect(hands.get('p2')?.length).toBe(CARDS_LEFT_EACH);
     expect(hands.get('p1')?.some((card) => card.suit === Suit.GIANTS)).toBe(false);
     expect(hands.get('p2')?.some((card) => card.suit === Suit.ELVES)).toBe(false);
+  });
+});
+
+/** The bot holds all four Wizards, so no opponent can hold one. */
+function holdingEveryWizard() {
+  return botContext({
+    hand: [...[0, 1, 2, 3].map((index) => Card.createWizard(index)), Card.createNumberCard(Suit.ELVES, 2)],
+    playerIds: [BOT_ID, 'p1', 'p2'],
+    bids: { [BOT_ID]: 4, p1: 1, p2: 0 },
+  });
+}
+
+describe('the cards an opponent may hold', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('gives opponents only cards of the deck the bot has not seen, and no Wizard while it holds all four', () => {
+    const context = holdingEveryWizard();
+    const held = new Set(context.hand.map((card) => card.id));
+    const unseenDeck = new Set(buildClassicDeckCards().map((card) => card.id).filter((id) => !held.has(id)));
+    const engine = createCardInferenceEngine(context);
+
+    for (const distribution of engine.inferAllDistributions().values()) {
+      for (const [cardId, probability] of distribution.cardProbabilities) {
+        if (probability > 0) expect(unseenDeck, `${distribution.playerId} may hold ${cardId}`).toContain(cardId);
+      }
+    }
+
+    const random = createSeededRandom(1);
+    vi.spyOn(Math, 'random').mockImplementation(() => random.next());
+    for (let sample = 0; sample < 40; sample++) {
+      for (const [playerId, hand] of engine.sampleInformedDeterminization()) {
+        for (const card of hand) expect(unseenDeck, `${playerId} dealt ${card.id}`).toContain(card.id);
+      }
+    }
   });
 });

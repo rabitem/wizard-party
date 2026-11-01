@@ -21,6 +21,8 @@ export interface ISMCTSNode {
 export interface Determinization {
   hands: Map<string, Card[]>;
   trickCards: PlayedCard[];
+  /** Tricks each seat has taken since the search started. */
+  tricksWon: Map<string, number>;
   /** Lead of the trick being played (pending, free or a suit). */
   lead: TrickLead;
   trumpSuit: Suit | null;

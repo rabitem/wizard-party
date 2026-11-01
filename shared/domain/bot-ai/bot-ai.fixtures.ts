@@ -4,7 +4,8 @@ import { Card } from '../entities/card';
 import { Game, GamePhase } from '../entities/game';
 import { Player } from '../entities/player';
 import type { PlayedCard } from '../entities/trick';
-import type { Suit } from '../value-objects/card-types';
+import { Suit } from '../value-objects/card-types';
+import { leadSuitOf } from '../expansions/trick-lead';
 import { DEFAULT_CARD_RULES, ensureRulesetConfig, type ICardRules } from '../value-objects/ruleset-config';
 import { createManualClock } from '../ports/clock.port';
 import { createSeededRandom } from '../ports/random.port';
@@ -176,4 +177,52 @@ function playOneTurn(game: Game, brainOf: (playerId: string) => BotBrain): BotSt
   const card = brain.selectCard(game, player.id, legal, frozenBudget());
   game.playCard(player.id, card.id, brain.declareCard(game, player.id, card));
   return { kind: 'card', playerId: player.id, cardId: card.id, legal: legal.map((c) => c.id) };
+}
+
+/**
+ * A decision position for one seat, as BotBrain.buildGameContext builds it, with an unlimited
+ * budget so searches run their full iteration count (the regression tests of the Expert search).
+ */
+export const BOT_ID = 'bot';
+
+export interface BotPosition {
+  hand: Card[];
+  /** Seats in play order; the bot is one of them. */
+  playerIds: string[];
+  trumpSuit?: Suit | null;
+  /** Cards already in the current trick, in play order. */
+  trick?: Array<{ playerId: string; card: Card }>;
+  /** Bids this seat can see, the bot's own included. */
+  bids?: Record<string, number>;
+  forbiddenBid?: number | null;
+}
+
+export function botContext(position: BotPosition): GameContext {
+  const { hand, playerIds, trumpSuit = Suit.GIANTS, trick = [], bids = {}, forbiddenBid = null } = position;
+  const currentTrickCards: PlayedCard[] = trick.map(({ playerId, card }) => ({ playerId, card: card.toJSON() }));
+  const lead = leadOfCards(currentTrickCards.map((play) => play.card));
+  const playerBids = new Map(Object.entries(bids));
+
+  return {
+    hand,
+    trumpSuit,
+    trumpCard: null,
+    currentRound: hand.length,
+    numPlayers: playerIds.length,
+    playerIds,
+    playerPosition: playerIds.indexOf(BOT_ID),
+    dealerPosition: playerIds.length - 1,
+    currentTrickCards,
+    lead,
+    leadSuit: leadSuitOf(lead),
+    completedTricks: [],
+    playerBids,
+    playerTricksWon: new Map(playerIds.map((id) => [id, 0])),
+    myBid: playerBids.get(BOT_ID) ?? null,
+    myTricksWon: 0,
+    forbiddenBid,
+    playerId: BOT_ID,
+    cardRules: DEFAULT_CARD_RULES,
+    budget: { clock: { now: () => 0 }, deadline: Number.POSITIVE_INFINITY },
+  };
 }

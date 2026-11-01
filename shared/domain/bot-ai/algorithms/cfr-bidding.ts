@@ -65,6 +65,12 @@ export class CFRBiddingTrainer {
     return this.getAverageStrategy(node, infoSet.round + 1);
   }
 
+  /** Whether training or an imported strategy covers this situation (else the policy is uniform). */
+  hasLearnedStrategy(infoSet: BiddingInfoSet): boolean {
+    const node = this.nodes.get(this.infoSetToKey(infoSet));
+    return node !== undefined && node.strategySum.some((weight) => weight > 0);
+  }
+
   sampleBid(infoSet: BiddingInfoSet): number {
     const strategy = this.getStrategy(infoSet);
     const validStrategy = strategy.map((prob, bid) =>

@@ -16,7 +16,10 @@ interface BidSuccessParams {
 
 export function evaluateState(det: Determinization, context: GameContext, ourPlayerId: string): number {
   const ourHand = det.hands.get(ourPlayerId) || [];
-  const tricksNeeded = Math.max(0, (context.myBid ?? 0) - context.myTricksWon);
+  const tricksWon = context.myTricksWon + (det.tricksWon.get(ourPlayerId) ?? 0);
+  // Taking more tricks than the bid misses it as surely as taking fewer.
+  if (tricksWon > (context.myBid ?? 0)) return 0;
+  const tricksNeeded = (context.myBid ?? 0) - tricksWon;
   const tricksRemaining = ourHand.length;
 
   if (tricksRemaining === 0) {

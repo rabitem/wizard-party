@@ -68,6 +68,7 @@ export class ISMCTS {
     return {
       hands,
       trickCards: [...context.currentTrickCards],
+      tricksWon: new Map(),
       lead: context.lead,
       trumpSuit: context.trumpSuit,
       numPlayers: context.numPlayers,
@@ -142,13 +143,13 @@ export class ISMCTS {
 
     for (const action of legalActions) {
       const child = node.children.get(cardToKey(action));
-      if (!child || child.availabilityCount === 0) {
-        if (child) return child;
-        continue;
-      }
+      if (!child) continue;
+      // An unvisited move has infinite UCB priority (its mean reward would be 0/0).
+      if (child.visits === 0 || child.availabilityCount === 0) return child;
 
       const exploitation = child.totalReward / child.visits;
-      const exploration = explorationConstant * Math.sqrt(Math.log(node.availabilityCount) / child.availabilityCount);
+      // ISMCTS UCB: the parent count is how often this move was available.
+      const exploration = explorationConstant * Math.sqrt(Math.log(child.availabilityCount) / child.visits);
       const score = exploitation + exploration;
 
       if (score > bestScore) {
