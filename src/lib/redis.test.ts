@@ -96,22 +96,15 @@ describe('checkRateLimit', () => {
       expect(results[LIMIT]).toEqual({ allowed: false, remaining: 0 });
     });
 
-    it('should start the one-minute window on the first check only', async () => {
-      const { checkRateLimit } = await loadModule();
-      await checkRateLimit('203.0.113.7');
-      fake.expiries.clear();
-
-      await checkRateLimit('203.0.113.7');
-
-      expect(fake.expiries.size).toBe(0);
-    });
-
-    it('should open a window that expires after a minute', async () => {
+    it('should open a one-minute window on the first check only', async () => {
       const { checkRateLimit } = await loadModule();
 
       await checkRateLimit('203.0.113.7');
-
       expect([...fake.expiries.values()]).toEqual([WINDOW_SECONDS]);
+
+      fake.expiries.clear();
+      await checkRateLimit('203.0.113.7');
+      expect(fake.expiries.size).toBe(0);
     });
 
     it('should keep a separate budget per IP', async () => {

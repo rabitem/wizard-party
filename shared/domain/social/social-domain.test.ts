@@ -1,7 +1,5 @@
 import { describe, expect, it } from 'vitest';
 
-import { TOURNAMENT_TIMING } from '../tournament/tournament.constants';
-
 import {
   INBOX_KINDS,
   OFFLINE_PRESENCE,
@@ -10,7 +8,6 @@ import {
   canPerformInboxAction,
   compareFriends,
   inboxDedupeKey,
-  inboxExpiry,
   isInboxKind,
   decideFriendRequest,
   inboxItemState,
@@ -234,17 +231,6 @@ describe('inbox kinds', () => {
   it('should not dedupe a tournament item without a valid tournament id', () => {
     expect(inboxDedupeKey('tournament_invite', null)).toBeNull();
     expect(inboxDedupeKey('tournament_invite', null, { tournamentId: '../x' })).toBeNull();
-  });
-
-  it.each([
-    ['game_invite', NOW + SOCIAL_LIMITS.GAME_INVITE_TTL_MS],
-    ['tournament_table_ready', NOW + TOURNAMENT_TIMING.MATCH_HARD_TIMEOUT_MS],
-    ['tournament_invite', NOW + TOURNAMENT_TIMING.INVITE_TTL_MS],
-    ['friend_request', null],
-    ['friend_accepted', null],
-    ['tournament_finished', null],
-  ] as const)('should expire a new %s item at %s', (kind, expiresAt) => {
-    expect(inboxExpiry(kind, NOW)).toBe(expiresAt);
   });
 
   it('should only accept the registered kinds as kinds', () => {

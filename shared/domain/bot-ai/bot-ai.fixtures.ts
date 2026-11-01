@@ -34,13 +34,8 @@ export function withSeededMath<T>(seed: number, task: () => T): T {
 }
 
 /** A budget on a clock that never moves: searches run every iteration they are allowed. */
-export function frozenBudget(): DecisionBudget {
+function frozenBudget(): DecisionBudget {
   return createDecisionBudget(createManualClock(0), 100);
-}
-
-/** A budget that is already spent: anytime searches must answer without iterating. */
-export function spentBudget(): DecisionBudget {
-  return createDecisionBudget(createManualClock(0), 0);
 }
 
 export interface PositionSpec {
@@ -60,7 +55,7 @@ export interface PositionSpec {
   budget?: DecisionBudget;
 }
 
-export const SEATS = ['p1', 'p2', 'me'];
+const SEATS = ['p1', 'p2', 'me'];
 
 /**
  * The decision context of one seat. The lead is derived with the shared rules

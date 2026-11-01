@@ -1,31 +1,21 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { SOCIAL_LIMITS } from '@shared/domain/social';
 
-import { getSessionUser } from '@/infrastructure/auth/auth';
-
-import { T0, apiRequest, createApiHarness, errorOf, NO_PARAMS, routeParams, sessionUser, type ApiHarness } from '../api-test-support';
+import { T0, apiRequest, errorOf, harness, NO_PARAMS, routeParams, signInAs, setUpApiHarness } from '../api-test-support';
 import * as friendsRoute from '../social/friends/route';
 import * as itemActionsRoute from './[id]/actions/route';
 import * as itemRoute from './[id]/route';
 import * as readRoute from './read/route';
 import * as inboxRoute from './route';
 
-const app = vi.hoisted(() => ({ harness: null as ApiHarness | null }));
-const harness = (): ApiHarness => {
-  if (!app.harness) throw new Error('harness not set up');
-  return app.harness;
-};
-
 vi.mock('server-only', () => ({}));
-vi.mock('@/infrastructure/auth/auth', () => ({ getSessionUser: vi.fn() }));
+vi.mock('@/infrastructure/auth/auth', async () => (await import('../api-test-support')).authModule());
 vi.mock('@/infrastructure/db/neon', () => ({ isDatabaseConfigured: () => true }));
-vi.mock('@/infrastructure/account/account-container', () => ({ getAccountServices: () => harness().account.services }));
-vi.mock('@/infrastructure/social/social-container', () => ({ getSocialServices: () => harness().social.services }));
+vi.mock('@/infrastructure/account/account-container', async () => (await import('../api-test-support')).accountContainerModule());
+vi.mock('@/infrastructure/social/social-container', async () => (await import('../api-test-support')).socialContainerModule());
 
-function signInAs(username: string): void {
-  vi.mocked(getSessionUser).mockResolvedValue(sessionUser(username));
-}
+setUpApiHarness();
 
 const db = () => harness().socialDb;
 
@@ -47,12 +37,7 @@ async function readInbox(query = ''): Promise<Response> {
 }
 
 beforeEach(() => {
-  app.harness = createApiHarness();
   db().addPlayer('ada');
-});
-
-afterEach(() => {
-  app.harness = null;
 });
 
 describe('GET /api/inbox', () => {

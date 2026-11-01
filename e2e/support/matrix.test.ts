@@ -58,7 +58,8 @@ describe('allPairs', () => {
   });
 
   it('is the full product when there are only two axes', () => {
-    expect(allPairs({ a: [1, 2, 3], b: ['x', 'y'] })).toHaveLength(6);
+    const rows = allPairs({ a: [1, 2, 3], b: ['x', 'y'] }).map((row) => `${row.a}${row.b}`);
+    expect(rows.toSorted()).toEqual(['1x', '1y', '2x', '2y', '3x', '3y']);
   });
 
   it('rejects an axis without values instead of returning no rows', () => {

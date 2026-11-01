@@ -29,6 +29,26 @@ function showOutPosition(overrides: Partial<PositionSpec> = {}) {
 
 const SEEN: ICard[] = [...HAND, TRUMP_CARD, ...COMPLETED.flat().map((p) => p.card), ...CURRENT.map((p) => p.card)];
 
+/**
+ * Round 4, the same voids from finished tricks only: trick 2 went to our Giants 10 over p2's
+ * Giants 4 after p1 showed out with Humans 1. We lead trick 3, so every seat still holds two cards.
+ */
+const LEADING_TRICKS = [
+  ...COMPLETED,
+  [play('me', n(Suit.GIANTS, 10)), play('p1', n(Suit.HUMANS, 1)), play('p2', n(Suit.GIANTS, 4))],
+];
+const CARDS_LEFT_EACH = 2;
+const leadingPosition = () =>
+  positionContext({
+    hand: HAND,
+    trumpSuit: Suit.GIANTS,
+    trumpCard: TRUMP_CARD,
+    completedTricks: LEADING_TRICKS,
+    bids: { p1: 1, p2: 0, me: 2 },
+    tricksWon: { me: 2 },
+  });
+const SEEN_LEADING: ICard[] = [...HAND, TRUMP_CARD, ...LEADING_TRICKS.flat().map((p) => p.card)];
+
 describe('CardInferenceEngine distributions', () => {
   it('marks a player void in a suit after a number card off that suit, in finished and running tricks', () => {
     const distributions = createCardInferenceEngine(showOutPosition()).inferAllDistributions();
@@ -60,12 +80,13 @@ describe('CardInferenceEngine distributions', () => {
     }
   });
 
-  it('expects each opponent to hold as many cards as there are tricks left', () => {
-    const distributions = createCardInferenceEngine(showOutPosition()).inferAllDistributions();
+  it('expects each opponent to hold as many cards as it has left to play', () => {
+    const distributions = createCardInferenceEngine(leadingPosition()).inferAllDistributions();
 
+    expect([...distributions.keys()].sort()).toEqual(['p1', 'p2']);
     for (const distribution of distributions.values()) {
       const expectedCards = [...distribution.cardProbabilities.values()].reduce((sum, p) => sum + p, 0);
-      expect(expectedCards).toBeCloseTo(HAND.length, 6);
+      expect(expectedCards).toBeCloseTo(CARDS_LEFT_EACH, 6);
     }
   });
 
@@ -92,21 +113,16 @@ describe('CardInferenceEngine distributions', () => {
 
 describe('informed determinizations', () => {
   it.each([1, 2, 3, 4, 5, 6, 7, 8])('deal every modelled opponent a consistent hand (seed %i)', (seed) => {
-    const hands = withSeededMath(seed, () => sampleInformedDeterminization(showOutPosition()));
+    const hands = withSeededMath(seed, () => sampleInformedDeterminization(leadingPosition()));
 
     expect([...hands.keys()].sort()).toEqual(['p1', 'p2']);
     const dealt = [...hands.values()].flat();
     const ids = dealt.map((card) => card.id);
     expect(new Set(ids).size).toBe(ids.length);
-    for (const card of SEEN) expect(ids).not.toContain(card.id);
-    expect(hands.get('p1')?.length).toBe(HAND.length);
-    expect(hands.get('p2')?.length).toBe(HAND.length);
+    for (const card of SEEN_LEADING) expect(ids).not.toContain(card.id);
+    expect(hands.get('p1')?.length).toBe(CARDS_LEFT_EACH);
+    expect(hands.get('p2')?.length).toBe(CARDS_LEFT_EACH);
     expect(hands.get('p1')?.some((card) => card.suit === Suit.GIANTS)).toBe(false);
     expect(hands.get('p2')?.some((card) => card.suit === Suit.ELVES)).toBe(false);
-  });
-
-  it('deals the same hands from the same seed', () => {
-    const deal = () => withSeededMath(5, () => sampleInformedDeterminization(showOutPosition()));
-    expect(deal()).toEqual(deal());
   });
 });

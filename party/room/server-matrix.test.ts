@@ -13,11 +13,11 @@
  * bids and tricks the room showed at each round's end (party/test-support/score-sheet.ts). Moves
  * are the simplest legal ones (special cards included); bots play in their own time.
  *
- * Each matrix runs every combination of its axes (136 rows take a few seconds on the room harness).
+ * Each matrix runs the all-pairs subset of its axes (party/test-support/matrix.ts); FULL_MATRIX=1
+ * runs every combination.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  BIDDING_TIMER_DEFAULT_MULTIPLIER,
   CardType,
   ClientCommandType,
   DeclarationKind,
@@ -26,7 +26,6 @@ import {
   GamePhase,
   SPECIAL_CARD_TYPES,
   Suit,
-  TURN_TIMER_LIMITS,
   TrickEffectKind,
   getDeclarationOptions,
   getRequiredDeclaration,
@@ -42,7 +41,7 @@ import {
   type TrickEffectResponse,
 } from '../../shared/domain';
 import { ROOM_TIMING, TURN_TIMEOUT_POLICY } from '../config/room-timing.config';
-import { cartesian } from '../test-support/matrix';
+import { matrixRows } from '../test-support/matrix';
 import { HARNESS_START_TIME, RoomHarness, type TestConnection } from '../test-support/room-harness';
 import { ScoreSheet, expectedRoundPlan } from '../test-support/score-sheet';
 import { lobby, ruleset, type Table } from '../test-support/table-driver';
@@ -250,9 +249,11 @@ function reached(game: Game, moment: Moment): boolean {
  */
 const NO_JUGGLER = SPECIAL_CARD_TYPES.filter((type) => type !== CardType.JUGGLER);
 const PLAY_SECONDS = 6;
+/** What a 6 s play timer derives for bidding: 1.5 times as long, rounded up (ruleset-config.test.ts owns the rule). */
+const DERIVED_BIDDING_SECONDS = 9;
 const BIDDING_SECONDS = 10;
 
-const TIMER_ROWS = cartesian({
+const TIMER_ROWS = matrixRows({
   players: PLAYER_COUNTS,
   seats: ['idle humans only', 'two idle humans and bots'] as const,
   deck: ['Classic', 'every special card but the Juggler'] as const,
@@ -270,9 +271,7 @@ function timedRules(row: TimerRow): { rules: IRulesetConfig; biddingSeconds: num
   }
   // The bidding timer is left out on the wire, as a client that only set a play timer sends it.
   const turn = { playTimerSeconds: PLAY_SECONDS, timeoutSoundVolume: base.turn.timeoutSoundVolume };
-  const derived = Math.ceil(PLAY_SECONDS * BIDDING_TIMER_DEFAULT_MULTIPLIER);
-  const biddingSeconds = Math.min(TURN_TIMER_LIMITS.MAX_SECONDS, Math.max(TURN_TIMER_LIMITS.MIN_SECONDS, derived));
-  return { rules: { ...base, turn } as IRulesetConfig, biddingSeconds };
+  return { rules: { ...base, turn } as IRulesetConfig, biddingSeconds: DERIVED_BIDDING_SECONDS };
 }
 
 /** The lowest bid the hook rule allows the timed bidder (rules.md, "Bidding"). */
@@ -340,11 +339,16 @@ async function timerRow(row: TimerRow): Promise<void> {
 // Pause
 // ---------------------------------------------------------------------------------------------
 
-const PAUSE_ROWS = cartesian({
+/**
+ * Who drops and whether they return, as one axis, so that every phase meets all four: who drops
+ * decides the host handover, the outcome the seat handover, and the phase what both must keep.
+ */
+const DROPS = (['the host', 'a guest'] as const).flatMap((who) => (['returns', 'never returns'] as const).map((outcome) => ({ who, outcome })));
+
+const PAUSE_ROWS = matrixRows({
   players: PLAYER_COUNTS,
   moment: ['bidding', 'mid-trick', 'round end'] as const,
-  who: ['the host', 'a guest'] as const,
-  outcome: ['returns', 'never returns'] as const,
+  drop: DROPS,
 });
 
 async function pauseRow(row: (typeof PAUSE_ROWS)[number]): Promise<void> {
@@ -352,7 +356,7 @@ async function pauseRow(row: (typeof PAUSE_ROWS)[number]): Promise<void> {
   const h = await harness(row.players);
   const t = await seatTable(h, 2, Array(row.players - 2).fill(BOT_LEVEL), rules);
   const [hostName, guestName] = NAMES;
-  const [victimName, stayerName] = row.who === 'the host' ? [hostName, guestName] : [guestName, hostName];
+  const [victimName, stayerName] = row.drop.who === 'the host' ? [hostName, guestName] : [guestName, hostName];
   const victim = t.sockets[victimName];
   const stayer = t.sockets[stayerName];
   const victimSeat = h.seatOf(victim);
@@ -376,7 +380,7 @@ async function pauseRow(row: (typeof PAUSE_ROWS)[number]): Promise<void> {
   expect(h.game.isPaused(), 'still waiting at the last moment of the window').toBe(true);
   expect(tableFacts(h.game), 'nothing moved while the table waited').toEqual(before);
 
-  if (row.outcome === 'returns') {
+  if (row.drop.outcome === 'returns') {
     const back = h.join(victimName, victimName.toLowerCase(), { sessionToken: token });
     t.seats.set(victimSeat, back);
     sockets.push(back);
@@ -403,17 +407,25 @@ async function pauseRow(row: (typeof PAUSE_ROWS)[number]): Promise<void> {
 /** Deals many cards at once, so a Juggler, Cloud or Witch trick comes up early. */
 const EFFECT_ROUNDS = 6;
 
-const RESTART_ROWS = cartesian(
-  {
-    players: PLAYER_COUNTS,
-    moment: ['bidding', 'mid-trick', 'round end', 'effect pending'] as const,
-    deck: [CLASSIC, ALL_SPECIALS] as readonly IExpansionSet[],
-    seats: ['humans only', 'one human and bots'] as const,
-  },
-  (row) => row.moment !== 'effect pending' || row.deck === ALL_SPECIALS
-);
+const RESTART_SEATS = ['humans only', 'one human and bots'] as const;
 
-type RestartRow = (typeof RESTART_ROWS)[number];
+interface RestartRow {
+  players: number;
+  moment: Moment;
+  deck: IExpansionSet;
+  seats: (typeof RESTART_SEATS)[number];
+}
+
+const RESTART_ROWS: RestartRow[] = [
+  ...matrixRows({
+    players: PLAYER_COUNTS,
+    moment: ['bidding', 'mid-trick', 'round end'] as const,
+    deck: [CLASSIC, ALL_SPECIALS],
+    seats: RESTART_SEATS,
+  }),
+  // Only special cards leave an effect pending.
+  ...matrixRows({ players: PLAYER_COUNTS, moment: ['effect pending'] as const, deck: [ALL_SPECIALS], seats: RESTART_SEATS }),
+];
 
 function restartRules(row: RestartRow): IRulesetConfig {
   if (row.moment !== 'effect pending') return rulesWith(row.deck.cards);
@@ -487,7 +499,7 @@ describe('server matrix', () => {
   });
 
   describe('pause: a dropped player stops the table unchanged, which resumes when they return or plays on with a bot', () => {
-    for (const row of PAUSE_ROWS) it(`${row.players} players, ${row.who} drops at ${row.moment} and ${row.outcome}`, () => pauseRow(row));
+    for (const row of PAUSE_ROWS) it(`${row.players} players, ${row.drop.who} drops at ${row.moment} and ${row.drop.outcome}`, () => pauseRow(row));
   });
 
   describe('restart: a room evicted in any phase starts on the same table, waits for its humans and plays on', () => {

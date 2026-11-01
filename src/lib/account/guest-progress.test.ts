@@ -5,7 +5,7 @@ import { isValidClientGameId, validateGameResult } from '@shared/domain/account'
 import type { GameRecord, PlayerStats } from '@/lib/player-stats';
 
 import type { AccountOverviewDto } from './account-api';
-import { gameRecordToResult, guestStatsToSummary, loadGuestImportPayload, overviewToPlayerStats } from './guest-progress';
+import { loadGuestImportPayload, overviewToPlayerStats } from './guest-progress';
 
 const STATS_KEY = 'wizard-party-player-stats';
 const PLAYED_AT = 1_700_000_000_000;
@@ -39,9 +39,35 @@ const guestStats = (overrides: Partial<PlayerStats> = {}): PlayerStats => ({
   ...overrides,
 });
 
-describe('gameRecordToResult', () => {
+describe('loadGuestImportPayload', () => {
+  let stored: Map<string, string>;
+
+  /** What the import sends for a guest whose browser holds `stats`. */
+  function importOf(stats: PlayerStats) {
+    stored.set(STATS_KEY, JSON.stringify(stats));
+    return loadGuestImportPayload();
+  }
+
+  beforeEach(() => {
+    stored = new Map();
+    vi.stubGlobal('window', {});
+    vi.stubGlobal('localStorage', {
+      getItem: (key: string) => stored.get(key) ?? null,
+      setItem: (key: string, value: string) => void stored.set(key, value),
+      removeItem: (key: string) => void stored.delete(key),
+    });
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('should offer nothing to import for a guest who never finished a game', () => {
+    expect(loadGuestImportPayload()).toBeNull();
+  });
+
   it('should turn a legacy guest record into a result the server accepts', () => {
-    const result = gameRecordToResult(record());
+    const result = importOf(guestStats({ gamesPlayed: 1, gameHistory: [record()] }))?.history[0];
 
     expect(result).toEqual({
       clientGameId: `game-${PLAYED_AT}`,
@@ -63,71 +89,43 @@ describe('gameRecordToResult', () => {
     ['an id made only of foreign characters', '€€€'],
     ['an id longer than the 64-character limit', 'x'.repeat(80)],
   ])('should derive a valid idempotency key from %s', (_label, id) => {
-    expect(isValidClientGameId(gameRecordToResult(record({ id })).clientGameId)).toBe(true);
+    const clientGameId = importOf(guestStats({ gamesPlayed: 1, gameHistory: [record({ id })] }))?.history[0].clientGameId;
+
+    expect(isValidClientGameId(clientGameId)).toBe(true);
   });
 
-  it('should give two short legacy ids of different games different keys', () => {
-    const first = gameRecordToResult(record({ id: 'g1', date: PLAYED_AT }));
-    const second = gameRecordToResult(record({ id: 'g1', date: PLAYED_AT + 1 }));
+  it('should give two short legacy ids of different games different keys, the same again on a retried import', () => {
+    const stats = guestStats({ gamesPlayed: 2, gameHistory: [record({ id: 'g1', date: PLAYED_AT }), record({ id: 'g1', date: PLAYED_AT + 1 })] });
 
-    expect(first.clientGameId).not.toBe(second.clientGameId);
-  });
+    const keys = importOf(stats)?.history.map((result) => result.clientGameId) ?? [];
+    const retried = importOf(stats)?.history.map((result) => result.clientGameId);
 
-  it('should keep the same key when the same record is converted again, so a retried import is idempotent', () => {
-    expect(gameRecordToResult(record({ id: 'g1' })).clientGameId).toBe(gameRecordToResult(record({ id: 'g1' })).clientGameId);
-  });
-});
-
-describe('guestStatsToSummary', () => {
-  it('should report no lowest score before the first game', () => {
-    expect(guestStatsToSummary(guestStats()).lowestScore).toBeNull();
+    expect(new Set(keys).size).toBe(2);
+    expect(retried).toEqual(keys);
   });
 
   it('should carry the counters and rename the streak fields', () => {
-    const summary = guestStatsToSummary(
+    const payload = importOf(
       guestStats({ gamesPlayed: 2, gamesWon: 1, totalScore: 90, lowestScore: 20, highestScore: 70, winStreak: 1, currentStreak: 0, gameHistory: [record({ placement: 1 }), record({ placement: 3 })] })
     );
 
-    expect(summary).toMatchObject({ gamesPlayed: 2, gamesWon: 1, totalScore: 90, lowestScore: 20, highestScore: 70, bestWinStreak: 1, currentWinStreak: 0 });
+    expect(payload?.stats).toMatchObject({ gamesPlayed: 2, gamesWon: 1, totalScore: 90, lowestScore: 20, highestScore: 70, bestWinStreak: 1, currentWinStreak: 0 });
   });
 
   it('should approximate the placement total from the average of the kept history', () => {
     // 10 games played, the kept history averages 2.5 -> 25.
     const history = [record({ placement: 2 }), record({ placement: 3 })];
-    expect(guestStatsToSummary(guestStats({ gamesPlayed: 10, gameHistory: history })).totalPlacement).toBe(25);
+    expect(importOf(guestStats({ gamesPlayed: 10, gameHistory: history }))?.stats.totalPlacement).toBe(25);
   });
 
   it('should never report a placement total below one per game played (every placement is at least 1)', () => {
-    expect(guestStatsToSummary(guestStats({ gamesPlayed: 7, gameHistory: [] })).totalPlacement).toBe(7);
-  });
-});
-
-describe('loadGuestImportPayload', () => {
-  let stored: Map<string, string>;
-
-  beforeEach(() => {
-    stored = new Map();
-    vi.stubGlobal('window', {});
-    vi.stubGlobal('localStorage', {
-      getItem: (key: string) => stored.get(key) ?? null,
-      setItem: (key: string, value: string) => void stored.set(key, value),
-      removeItem: (key: string) => void stored.delete(key),
-    });
-  });
-
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
-  it('should offer nothing to import for a guest who never finished a game', () => {
-    expect(loadGuestImportPayload()).toBeNull();
+    expect(importOf(guestStats({ gamesPlayed: 7, gameHistory: [] }))?.stats.totalPlacement).toBe(7);
   });
 
   it('should send the summary and at most the last 50 kept games', () => {
     const history = Array.from({ length: 60 }, (_, index) => record({ id: `game-${PLAYED_AT + index}`, date: PLAYED_AT + index }));
-    stored.set(STATS_KEY, JSON.stringify(guestStats({ gamesPlayed: 60, gamesWon: 12, gameHistory: history })));
 
-    const payload = loadGuestImportPayload();
+    const payload = importOf(guestStats({ gamesPlayed: 60, gamesWon: 12, gameHistory: history }));
 
     expect(payload?.stats.gamesPlayed).toBe(60);
     expect(payload?.history).toHaveLength(50);

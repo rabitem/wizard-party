@@ -6,13 +6,18 @@ name: Browser suites
 # animation sequences, layouts per device and reconnect behaviour on every engine, Firefox included,
 # plus the deterministic render/React budgets, fault injection, touch input, visual baselines, the
 # viewport and settings matrices on every engine, and the golden path through the real app.
-# Software WebGL makes one sandbox run take minutes, so every project suite costs runner hours.
-# Pull requests labelled `e2e` run only Chromium and one touch phone; a manual dispatch covers
-# every engine, device and matrix in two shards each; the weekly run widens the suites
-# (E2E_FULL_MATRIX=1: every table size, every viewport, every pair of settings) in four shards.
+#
+# - Pull requests labelled `e2e`: Chromium and one touch phone.
+# - Manual dispatch: every project in two shards (inputs: grep, update_snapshots).
+# - Weekly: every project in four shards, with E2E_FULL_MATRIX=1 (every table size, every viewport,
+#   every pair of settings).
+#
+# The app is built once (job `build`) and every project job downloads that build, so a run costs one
+# `next build`, not one per job. Browsers are cached per engine.
 #
 # Visual baselines are generated here, never locally: dispatch the workflow with update_snapshots,
 # download the visual-baselines-<project> artifacts and commit their e2e/visual.spec.ts-snapshots.
+# Known product bugs are quarantined in e2e/support/known-issues.ts, not skipped silently.
 
 on:
   pull_request:
@@ -44,10 +49,11 @@ jobs:
     name: Plan the browser matrix
     if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'e2e')
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     outputs:
       include: ${{ steps.plan.outputs.include }}
     steps:
-      # The project names are the projects in playwright.config.ts.
+      # The project names are the projects in playwright.config.ts; `engine` is what to install.
       - id: plan
         shell: bash
         env:
@@ -68,13 +74,44 @@ jobs:
           else
             projects="[$desktop,$devices,$matrices,$golden]"; shards=2
           fi
-          include=$(jq -cn --argjson projects "$projects" --argjson shards "$shards" \
-            '[ $projects[] as $project | range(1; $shards + 1) as $shard | { project: $project, shard: $shard, shards: $shards } ]')
+          include=$(jq -cn --argjson projects "$projects" --argjson shards "$shards" '
+            def engine:
+              if . == "chrome" then "chrome"
+              elif . == "edge" then "msedge"
+              elif test("firefox") then "firefox"
+              elif test("^(webkit|iphone|ipad)|-(webkit|iphone)$") then "webkit"
+              else "chromium" end;
+            [ $projects[] as $project | range(1; $shards + 1) as $shard
+              | { project: $project, engine: ($project | engine), shard: $shard, shards: $shards } ]')
           echo "include=$include" >> "$GITHUB_OUTPUT"
+
+  build:
+    name: Build the app with the sandbox
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '26'
+          cache: npm
+      - run: npm ci
+      - run: npm run e2e:build
+      # One archive keeps the build's many small files fast to upload; the build cache stays behind.
+      - run: tar -cf e2e-build.tar --exclude=.next/cache .next
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: e2e-build
+          path: e2e-build.tar
+          if-no-files-found: error
+          retention-days: 1
 
   e2e:
     name: ${{ matrix.project }} ${{ matrix.shard }}/${{ matrix.shards }}
-    needs: plan
+    needs: [plan, build]
     runs-on: ubuntu-latest
     # The matrices play every viewport (up to 4K, device pixel ratios up to 3) or every pair of
     # settings in software WebGL; they get twice the time of a project suite.
@@ -92,18 +129,17 @@ jobs:
           node-version: '26'
           cache: npm
       - run: npm ci
-      - name: Install the browser for this project
-        shell: bash
-        run: |
-          case "${{ matrix.project }}" in
-            chrome) npx playwright install --with-deps chrome ;;
-            edge) npx playwright install --with-deps msedge ;;
-            firefox|firefox-hidpi|*-firefox) npx playwright install --with-deps firefox ;;
-            chromium|chromium-hidpi|touch-laptop|android-*|fold-*|viewport-matrix|settings-matrix|settings-matrix-phone|golden-path|golden-path-android)
-              npx playwright install --with-deps chromium ;;
-            *) npx playwright install --with-deps webkit ;;
-          esac
-      - run: npm run e2e:build
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: e2e-build
+      - run: tar -xf e2e-build.tar && rm e2e-build.tar
+      # Playwright's own builds are cached; the branded Chrome and Edge install from their vendors.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        if: ${{ matrix.engine != 'chrome' && matrix.engine != 'msedge' }}
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ matrix.engine }}-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - run: npx playwright install --with-deps ${{ matrix.engine }}
       # The golden path plays the real app against the local game worker (see ci.yml).
       - name: Start the game worker
         if: ${{ startsWith(matrix.project, 'golden-path') && !inputs.update_snapshots }}

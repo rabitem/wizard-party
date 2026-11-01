@@ -3,9 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   BotDifficulty,
   Game,
-  GameEventType,
   InvalidPhaseError,
-  NotHostError,
   Player,
   PlayerNotFoundError,
 } from '../../../domain';
@@ -22,17 +20,8 @@ function lobbyWithBot(): Game {
 describe('RemoveBotUseCase', () => {
   const removeBot = new RemoveBotUseCase();
 
-  it('lets the host take a bot off the table', () => {
-    const game = lobbyWithBot();
-
-    const result = removeBot.execute({ game, playerId: 'host', botId: 'bot-1' });
-
-    expect(game.players.map((player) => player.id)).toEqual(['host', 'guest']);
-    expect(result.playerLeftEvent).toMatchObject({ type: GameEventType.PLAYER_LEFT, playerId: 'bot-1' });
-  });
-
+  // Removing a bot and the host-only refusal are owned by party/room/lobby.test.ts.
   it.each([
-    ['a guest removes a bot', 'guest', 'bot-1', NotHostError],
     ['the host removes a human through it', 'host', 'guest', PlayerNotFoundError],
     ['the host names nobody at the table', 'host', 'bot-9', PlayerNotFoundError],
   ])('refuses when %s', (_label, playerId, botId, error) => {

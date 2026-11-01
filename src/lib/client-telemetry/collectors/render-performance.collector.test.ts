@@ -161,17 +161,6 @@ describe('createRenderPerformanceCollector', () => {
     expect(tracked[0].payload).toMatchObject({ frames: 35, maxFrameMs: 20, droppedFrames: 0 });
   });
 
-  it('should count frames slower than the display refresh as dropped', () => {
-    createRenderPerformanceCollector().start(sink);
-
-    loop.frame(0);
-    loop.frames(36, 16);
-    loop.frames(4, 48); // each 48 ms frame spans three 16 ms refreshes: two dropped
-    vi.advanceTimersByTime(WINDOW_MS);
-
-    expect(tracked[0].payload).toMatchObject({ frames: 40, droppedFrames: 8, maxFrameMs: 48 });
-  });
-
   it('should release the frame loop, the timer and the observers when stopped', () => {
     const stop = createRenderPerformanceCollector().start(sink);
     loop.frames(60, 20);

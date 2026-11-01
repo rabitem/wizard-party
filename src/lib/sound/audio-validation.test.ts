@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { MAX_DURATION_SECONDS, MAX_FILE_SIZE_BYTES, MIN_DURATION_SECONDS, formatFileSize, validateAudioFile } from './audio-validation';
+import { AUDIO_LOAD_TIMEOUT_MS, MAX_DURATION_SECONDS, MAX_FILE_SIZE_BYTES, MIN_DURATION_SECONDS, formatFileSize, validateAudioFile } from './audio-validation';
 
 describe('audio validation', () => {
   afterEach(() => {
@@ -130,13 +130,11 @@ describe('audio validation', () => {
     ['a file without extension or type', 'sound', ''],
     ['a name ending in a dot', 'sound.', ''],
   ])('rejects %s as an invalid format before decoding it', async (_label, name, type) => {
-    const createAudioElement = vi.fn();
-
-    const result = await validateAudioFile(new File(['audio'], name, { type }), { createAudioElement });
+    // No Audio stub: decoding in node would fail as a corrupted file, not as an invalid format.
+    const result = await validateAudioFile(new File(['audio'], name, { type }));
 
     expect(result.valid).toBe(false);
     expect(result.error).toBe('Invalid format. Accepted formats: MP3, WAV, or OGG');
-    expect(createAudioElement).not.toHaveBeenCalled();
   });
 
   it('rejects a file over the upload limit with both sizes in the message', async () => {
@@ -175,15 +173,6 @@ describe('audio validation', () => {
     expect(result.error).toBe(`Audio too short. Minimum duration: ${MIN_DURATION_SECONDS}s`);
   });
 
-  it('honours stricter duration limits from the caller', async () => {
-    stubAudioLoading({ duration: 3 });
-
-    const result = await validateAudioFile(new File(['audio'], 'clip.mp3', { type: 'audio/mpeg' }), { maxDurationSeconds: 2 });
-
-    expect(result.valid).toBe(false);
-    expect(result.error).toMatch(/Audio too long. Maximum duration: 2s/);
-  });
-
   it('rejects a file the browser cannot read metadata from as corrupted', async () => {
     stubAudioLoading({ metadata: 'error' });
 
@@ -197,8 +186,8 @@ describe('audio validation', () => {
     vi.useFakeTimers();
     stubAudioLoading({ metadata: 'never' });
 
-    const pending = validateAudioFile(new File(['audio'], 'stuck.mp3', { type: 'audio/mpeg' }), { audioLoadTimeoutMs: 500 });
-    await vi.advanceTimersByTimeAsync(499);
+    const pending = validateAudioFile(new File(['audio'], 'stuck.mp3', { type: 'audio/mpeg' }));
+    await vi.advanceTimersByTimeAsync(AUDIO_LOAD_TIMEOUT_MS - 1);
     let settled = false;
     void pending.then(() => {
       settled = true;

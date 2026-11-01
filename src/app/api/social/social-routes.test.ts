@@ -1,8 +1,6 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { getSessionUser } from '@/infrastructure/auth/auth';
-
-import { T0, apiRequest, createApiHarness, errorOf, NO_PARAMS, routeParams, sessionUser, type ApiHarness } from '../api-test-support';
+import { T0, apiRequest, errorOf, harness, NO_PARAMS, routeParams, signInAs, setUpApiHarness } from '../api-test-support';
 import * as blockRoute from './blocks/[userId]/route';
 import * as blocksRoute from './blocks/route';
 import * as friendPinRoute from './friends/[userId]/pin/route';
@@ -17,23 +15,15 @@ import * as roomAccountsRoute from './rooms/[roomCode]/accounts/route';
 import * as searchRoute from './search/route';
 import * as settingsRoute from './settings/route';
 
-const app = vi.hoisted(() => ({ harness: null as ApiHarness | null }));
-const harness = (): ApiHarness => {
-  if (!app.harness) throw new Error('harness not set up');
-  return app.harness;
-};
-
 vi.mock('server-only', () => ({}));
-vi.mock('@/infrastructure/auth/auth', () => ({ getSessionUser: vi.fn() }));
+vi.mock('@/infrastructure/auth/auth', async () => (await import('../api-test-support')).authModule());
 vi.mock('@/infrastructure/db/neon', () => ({ isDatabaseConfigured: () => true }));
-vi.mock('@/infrastructure/account/account-container', () => ({ getAccountServices: () => harness().account.services }));
-vi.mock('@/infrastructure/social/social-container', () => ({ getSocialServices: () => harness().social.services }));
+vi.mock('@/infrastructure/account/account-container', async () => (await import('../api-test-support')).accountContainerModule());
+vi.mock('@/infrastructure/social/social-container', async () => (await import('../api-test-support')).socialContainerModule());
+
+setUpApiHarness();
 
 const ROOM = 'room42';
-
-function signInAs(username: string): void {
-  vi.mocked(getSessionUser).mockResolvedValue(sessionUser(username));
-}
 
 const db = () => harness().socialDb;
 
@@ -60,12 +50,7 @@ async function pulseFromSeat(username: string, roomCode = ROOM): Promise<Respons
 }
 
 beforeEach(() => {
-  app.harness = createApiHarness();
   for (const id of ['ada', 'bob', 'cy']) db().addPlayer(id);
-});
-
-afterEach(() => {
-  app.harness = null;
 });
 
 describe('GET, POST /api/social/friends and /api/social/requests/[userId]', () => {

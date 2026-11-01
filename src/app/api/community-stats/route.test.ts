@@ -1,33 +1,25 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { createApiHarness, type ApiHarness } from '../api-test-support';
+import { harness, setUpApiHarness } from '../api-test-support';
 import { GET } from './route';
 
-const app = vi.hoisted(() => ({ harness: null as ApiHarness | null, databaseConfigured: true }));
+const app = vi.hoisted(() => ({ databaseConfigured: true }));
 
 vi.mock('server-only', () => ({}));
 // Next's data cache needs a running server; the route's own answer is what is under test.
 vi.mock('next/cache', () => ({ unstable_cache: (load: () => unknown) => load }));
 vi.mock('@/infrastructure/db/neon', () => ({ isDatabaseConfigured: () => app.databaseConfigured }));
-vi.mock('@/infrastructure/account/account-container', () => ({
-  getAccountServices: () => {
-    if (!app.harness) throw new Error('harness not set up');
-    return app.harness.account.services;
-  },
-}));
+vi.mock('@/infrastructure/account/account-container', async () => (await import('../api-test-support')).accountContainerModule());
 
-const readModels = () => {
-  if (!app.harness) throw new Error('harness not set up');
-  return app.harness.readModels;
-};
+setUpApiHarness();
+
+const readModels = () => harness().readModels;
 
 beforeEach(() => {
-  app.harness = createApiHarness();
   app.databaseConfigured = true;
 });
 
 afterEach(() => {
-  app.harness = null;
   vi.restoreAllMocks();
 });
 

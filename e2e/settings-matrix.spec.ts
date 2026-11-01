@@ -7,14 +7,16 @@ import { expectCleanRun, test } from './support/sandbox';
 
 /**
  * Settings crossed with play, in its own projects (settings-matrix on Chromium, Firefox, WebKit
- * and a touch phone): card theme, table theme, UI theme, collection style and card number size,
- * each with a scenario, a table size and a seeded deal. Each environment, card face and HUD skin
+ * and a touch phone): card theme, table theme, UI theme, collection style, card number size and
+ * reduced motion, each with a scenario and a table size. Each environment, card face and HUD skin
  * brings its own meshes, materials and layout, so a combination can break throws, landing,
  * collection, legibility or HUD placement that every other combination gets right.
  *
  * Pull requests and dispatches run every value at least once (eachChoice); the weekly run
  * (E2E_FULL_MATRIX=1) runs every pair of values (allPairs, about 300 rows). The values are read
- * from the presets, so a new theme joins the matrix without a spec change.
+ * from the presets, so a new theme joins the matrix without a spec change. Every row deals the
+ * sandbox's default seed: which cards a hand holds is no rendering risk of its own, and its size
+ * comes from the scenario and the table size.
  */
 const FULL_MATRIX = process.env.E2E_FULL_MATRIX === '1';
 
@@ -24,8 +26,6 @@ const FULL_MATRIX = process.env.E2E_FULL_MATRIX === '1';
  * transition overlay (round-transition) and the results screen (game-end).
  */
 const SCENARIOS = ['baseline-trick', 'max-hand', 'special-cards', 'round-transition', 'game-end'] as const;
-/** Seeded deals: the hand, the lead and the trump differ per seed. */
-const SEEDS = [7, 19, 42] as const;
 
 /**
  * prefers-reduced-motion: the table environments swap ambient motion for still frames
@@ -42,19 +42,18 @@ const AXES = {
   cardNumberSize: CARD_NUMBER_SIZE_PRESETS.map((preset) => preset.id),
   scenario: SCENARIOS,
   playerCount: SANDBOX_PLAYER_COUNTS,
-  seed: SEEDS,
   motion: MOTION,
 };
 
 const ROWS = FULL_MATRIX ? allPairs(AXES) : eachChoice(AXES);
 
 for (const [index, row] of ROWS.entries()) {
-  const { scenario, playerCount, seed, motion, ...settings } = row;
+  const { scenario, playerCount, motion, ...settings } = row;
   test.describe(`settings ${index + 1}/${ROWS.length}`, () => {
     test.use({ reducedMotion: motion });
 
     test(`${describeRow(row)} plays cleanly`, async ({ sandbox }) => {
-      expectCleanRun(await sandbox.run({ id: `settings-${index + 1}-${scenario}-${playerCount}p`, scenario, playerCount, seed, settings }));
+      expectCleanRun(await sandbox.run({ id: `settings-${index + 1}-${scenario}-${playerCount}p`, scenario, playerCount, settings }));
     });
   });
 }

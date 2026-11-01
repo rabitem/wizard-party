@@ -32,7 +32,7 @@ import { playOfferedWithBots } from './support/seeded-moves';
  * (party/test-support/score-sheet.ts); the game must end on those totals and winners on every
  * screen and in the room.
  *
- * The default run is a pairwise subset of the axes; FULL_MATRIX=1 runs every combination.
+ * The default run is the all-pairs subset of the axes; FULL_MATRIX=1 runs every combination.
  */
 const ROUNDS = 3;
 /**
@@ -75,11 +75,14 @@ interface SeatMix {
 }
 
 const EVERY_LEVEL: BotDifficulty[] = [1, 2, 3, 4, 5];
+/**
+ * A bot's level only changes which legal move its brain picks (the bot-ai and bot-turn suites own
+ * that); the room and the clients treat every level alike. So the mixes vary who is human, and
+ * one mix seats every level.
+ */
 const SEATS: SeatMix[] = [
   { label: 'all humans', humans: (players) => players, bots: () => [] },
-  { label: 'two humans and Novice bots', humans: () => 2, bots: (count) => Array<BotDifficulty>(count).fill(1) },
   { label: 'two humans and Medium bots', humans: () => 2, bots: (count) => Array<BotDifficulty>(count).fill(3) },
-  { label: 'two humans and Expert bots', humans: () => 2, bots: (count) => Array<BotDifficulty>(count).fill(5) },
   { label: 'one human and bots of every level', humans: () => 1, bots: (count) => EVERY_LEVEL.slice(0, count) },
 ];
 

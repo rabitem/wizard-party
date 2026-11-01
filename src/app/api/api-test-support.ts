@@ -4,6 +4,8 @@
  * of the use case tests. A route test then sees what a request persists and what it answers,
  * without Postgres, Redis, Blob or email. Test-only: imported by *.test.ts files under src/app/api.
  */
+import { afterEach, beforeEach, vi } from 'vitest';
+
 import {
   DeleteCustomSoundUseCase,
   EnsureProfileUseCase,
@@ -56,8 +58,6 @@ import {
   UnsubscribeFromEmailsUseCase,
   UpdateSocialSettingsUseCase,
   friendsInboxHandlers,
-  type FriendRequestSent,
-  type GameInviteSent,
 } from '@shared/application/use-cases/friends';
 import { MemorySocial } from '@shared/application/use-cases/friends/social-test-fakes';
 import {
@@ -144,17 +144,16 @@ function createAccount(clock: { now(): number }, tournamentRepo: MemoryTournamen
     purgeAccountStorage: new PurgeAccountStorageUseCase(sounds, blobs),
     progressRefresher: new PlayerProgressRefresher(calculator),
   };
-  return { services, results, progress, profiles, documents, sounds, blobs, characters };
+  return { services, results, profiles, documents, sounds, blobs };
 }
 
 function createTournaments(clock: { now(): number }, repo: MemoryTournamentRepository, db: MemorySocial) {
   const throttle = new FakeTournamentThrottle();
   const ids = new SequentialTournamentIds();
   const progress = new FakeProgressRefresher();
-  const effectErrors: string[] = [];
   // Tournament items land in the same inbox as the social ones, as in production.
   const inbox = new InboxNotifier(db, clock);
-  const store = new TournamentStore(repo, new TournamentEffects(inbox, progress, (effect) => effectErrors.push(effect)), clock);
+  const store = new TournamentStore(repo, new TournamentEffects(inbox, progress), clock);
   const services: TournamentServices = {
     create: new CreateTournamentUseCase(repo, store, db, throttle, ids, clock),
     update: new UpdateTournamentUseCase(store, ids),
@@ -174,7 +173,7 @@ function createTournaments(clock: { now(): number }, repo: MemoryTournamentRepos
     exportData: new ExportTournamentDataUseCase(repo, repo),
     purgeData: new PurgeTournamentDataUseCase(repo, store),
   };
-  return { services, throttle, effectErrors };
+  return { services };
 }
 
 function createSocial(clock: { now(): number }, db: MemorySocial, account: AccountServices, tournaments: TournamentServices) {
@@ -183,16 +182,11 @@ function createSocial(clock: { now(): number }, db: MemorySocial, account: Accou
   const gate = new EmailNotificationGate(db, db, db);
   const friendRequestEmails = new NotifyFriendRequestByEmailUseCase(gate, db);
   const inviteEmails = new NotifyGameInviteByEmailUseCase(gate, db);
-  const friendRequestsSent: FriendRequestSent[] = [];
-  const invitesSent: GameInviteSent[] = [];
   const services: SocialServices = {
     pulse: new SocialPulseUseCase({ graph: db, directory: db, inbox: db, presence: db, roster: db, membership: db, throttle: db, clock }),
     roomAccounts: new GetRoomAccountsUseCase(db, db),
     friends: new GetFriendsOverviewUseCase(db, db),
-    sendFriendRequest: new SendFriendRequestUseCase(db, db, notifier, db, clock, (event) => {
-      friendRequestsSent.push(event);
-      void friendRequestEmails.execute(event);
-    }),
+    sendFriendRequest: new SendFriendRequestUseCase(db, db, notifier, db, clock, (event) => void friendRequestEmails.execute(event)),
     respondToFriendRequest,
     cancelFriendRequest: new CancelFriendRequestUseCase(db, notifier),
     removeFriend: new RemoveFriendUseCase(db),
@@ -200,10 +194,7 @@ function createSocial(clock: { now(): number }, db: MemorySocial, account: Accou
     blockPlayer: new BlockPlayerUseCase(db, db, notifier, clock),
     unblockPlayer: new UnblockPlayerUseCase(db),
     listBlocked: new ListBlockedPlayersUseCase(db),
-    sendGameInvite: new SendGameInviteUseCase(db, db, db, notifier, db, (event) => {
-      invitesSent.push(event);
-      void inviteEmails.execute(event);
-    }),
+    sendGameInvite: new SendGameInviteUseCase(db, db, db, notifier, db, (event) => void inviteEmails.execute(event)),
     listSentGameInvites: new ListSentGameInvitesUseCase(db, clock),
     revokeGameInvite: new RevokeGameInviteUseCase(db, notifier, clock),
     unsubscribeFromEmails: new UnsubscribeFromEmailsUseCase(db, account.ensureProfile),
@@ -219,7 +210,7 @@ function createSocial(clock: { now(): number }, db: MemorySocial, account: Accou
     pruneSocialData: new PruneSocialDataUseCase(db, db),
     exportSocialData: new ExportSocialDataUseCase(db, db, db),
   };
-  return { services, friendRequestsSent, invitesSent };
+  return { services };
 }
 
 /** One app's worth of services over shared in-memory storage, with a clock the test moves. */
@@ -242,7 +233,43 @@ export function sessionUser(username: string): SessionUser {
   return { id: username, email: `${username}@example.test`, emailVerified: true, username, displayUsername: username.toUpperCase() };
 }
 
-export interface ApiRequestInit {
+let current: ApiHarness | null = null;
+let session: SessionUser | null = null;
+
+/** The services of the running test. */
+export function harness(): ApiHarness {
+  if (!current) throw new Error('call setUpApiHarness() at the top of the test file');
+  return current;
+}
+
+/** Gives every test of the calling file fresh services and no session. */
+export function setUpApiHarness(): void {
+  beforeEach(() => {
+    current = createApiHarness();
+    session = null;
+  });
+  afterEach(() => {
+    current = null;
+  });
+}
+
+/** The account getSessionUser() answers from now on; null for a guest. */
+export function signInAs(username: string | null): void {
+  session = username === null ? null : sessionUser(username);
+}
+
+/*
+ * vi.mock factories for the session and the composition roots; they read the running test's
+ * harness and session at call time. vi.mock is hoisted above the imports, so a test file loads them
+ * lazily:
+ *   vi.mock('@/infrastructure/auth/auth', async () => (await import('../api-test-support')).authModule());
+ */
+export const authModule = () => ({ getSessionUser: vi.fn(async () => session) });
+export const accountContainerModule = () => ({ getAccountServices: () => harness().account.services });
+export const socialContainerModule = () => ({ getSocialServices: () => harness().social.services });
+export const tournamentContainerModule = () => ({ getTournamentServices: () => harness().tournaments.services });
+
+interface ApiRequestInit {
   json?: unknown;
   body?: BodyInit;
   headers?: Record<string, string>;

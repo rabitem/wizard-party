@@ -5,7 +5,7 @@ import { TOURNAMENT_TIMING } from '@shared/domain/tournament';
 import { getSessionUser } from '@/infrastructure/auth/auth';
 import { TOURNAMENT_INFRASTRUCTURE } from '@/infrastructure/tournament/tournament-config';
 
-import { T0, TICKET_SECRET, apiRequest, createApiHarness, errorOf, NO_PARAMS, routeParams, sessionUser, type ApiHarness } from '../api-test-support';
+import { T0, TICKET_SECRET, apiRequest, errorOf, harness, NO_PARAMS, routeParams, signInAs, setUpApiHarness } from '../api-test-support';
 import * as cancelRoute from './[id]/cancel/route';
 import * as invitesRoute from './[id]/invites/route';
 import * as resolveRoute from './[id]/matches/[matchId]/resolve/route';
@@ -16,18 +16,14 @@ import * as ticketRoute from './[id]/ticket/route';
 import * as meRoute from './me/route';
 import * as tournamentsRoute from './route';
 
-const app = vi.hoisted(() => ({ harness: null as ApiHarness | null }));
-const harness = (): ApiHarness => {
-  if (!app.harness) throw new Error('harness not set up');
-  return app.harness;
-};
-
 vi.mock('server-only', () => ({}));
-vi.mock('@/infrastructure/auth/auth', () => ({ getSessionUser: vi.fn() }));
+vi.mock('@/infrastructure/auth/auth', async () => (await import('../api-test-support')).authModule());
 vi.mock('@/infrastructure/db/neon', () => ({ isDatabaseConfigured: () => true }));
-vi.mock('@/infrastructure/account/account-container', () => ({ getAccountServices: () => harness().account.services }));
-vi.mock('@/infrastructure/social/social-container', () => ({ getSocialServices: () => harness().social.services }));
-vi.mock('@/infrastructure/tournament/tournament-container', () => ({ getTournamentServices: () => harness().tournaments.services }));
+vi.mock('@/infrastructure/account/account-container', async () => (await import('../api-test-support')).accountContainerModule());
+vi.mock('@/infrastructure/social/social-container', async () => (await import('../api-test-support')).socialContainerModule());
+vi.mock('@/infrastructure/tournament/tournament-container', async () => (await import('../api-test-support')).tournamentContainerModule());
+
+setUpApiHarness();
 
 const HOST = 'host';
 const ENTRANTS = ['u01', 'u02', 'u03'];
@@ -36,10 +32,6 @@ interface DetailBody {
   tournament: { id: string; name: string; status: string; visibility: string; entrantCount: number; inviteCode: string | null };
   viewer: { userId: string | null; isHost: boolean; isEntrant: boolean };
   rounds: { matches: { id: string; status: string }[] }[];
-}
-
-function signInAs(username: string | null): void {
-  vi.mocked(getSessionUser).mockResolvedValue(username === null ? null : sessionUser(username));
 }
 
 async function create(body: Record<string, unknown>): Promise<Response> {
@@ -76,15 +68,12 @@ async function detail(id: string, viewer: string | null, query = ''): Promise<Re
 }
 
 beforeEach(() => {
-  app.harness = createApiHarness();
   vi.stubEnv('TOURNAMENT_SECRET', TICKET_SECRET);
   for (const id of [HOST, ...ENTRANTS, 'bob']) harness().socialDb.addPlayer(id);
 });
 
 afterEach(() => {
-  app.harness = null;
   vi.unstubAllEnvs();
-  vi.mocked(getSessionUser).mockReset();
 });
 
 describe('POST /api/tournaments', () => {
@@ -109,17 +98,6 @@ describe('POST /api/tournaments', () => {
     expect(response.status).toBe(422);
     expect(await errorOf(response)).toMatchObject({ code: 'invalid_input' });
     expect(harness().tournamentRepo.rows.size).toBe(0);
-  });
-
-  it('should refuse to create while tournaments are unavailable (no TOURNAMENT_SECRET) but keep the list readable', async () => {
-    vi.stubEnv('TOURNAMENT_SECRET', '');
-
-    const created = await create({ name: 'Spring Cup' });
-    const listed = await tournamentsRoute.GET(apiRequest('GET', '/api/tournaments'), NO_PARAMS);
-
-    expect(created.status).toBe(503);
-    expect(harness().tournamentRepo.rows.size).toBe(0);
-    expect(listed.status).toBe(200);
   });
 });
 

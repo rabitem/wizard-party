@@ -8,7 +8,6 @@ import {
   loadPlayerStats,
   recordGameResult,
   resetPlayerStats,
-  savePlayerStats,
   type PlayerStats,
   type RoundRecord,
 } from './player-stats';
@@ -112,20 +111,12 @@ describe('guest player stats', () => {
   });
 
   it('should keep only the last 50 games in the stored history', () => {
-    const history = Array.from({ length: 55 }, (_, index) => ({
-      id: `game-${index}`,
-      date: PLAYED_AT + index,
-      playerCount: 3,
-      placement: 1,
-      score: 0,
-      rounds: [],
-    }));
-
-    savePlayerStats({ ...loadPlayerStats(), gamesPlayed: 55, gameHistory: history });
+    let stats = loadPlayerStats();
+    for (let index = 0; index < 51; index++) stats = recordGameResult(stats, 1, 0, 3, [], `game-${index}`);
 
     const saved = storedStats();
-    expect(saved.gamesPlayed).toBe(55);
-    expect(saved.gameHistory.map((game) => game.id)).toEqual(history.slice(5).map((game) => game.id));
+    expect(saved.gamesPlayed).toBe(51);
+    expect(saved.gameHistory.map((game) => game.id)).toEqual(Array.from({ length: 50 }, (_, index) => `game-${index + 1}`));
   });
 
   it('should wipe stored stats on reset', () => {

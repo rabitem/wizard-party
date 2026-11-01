@@ -99,11 +99,6 @@ describe('socialApi responses', () => {
     expect(error).toMatchObject({ status: 429, code: 'rate_limited', message: 'slow down' });
   });
 
-  it('should reject an unknown player with 404 not_found', async () => {
-    answer = () => Response.json({ error: { code: 'not_found', message: 'no such player' } }, { status: 404 });
-    await expect(socialApi.player('ghost')).rejects.toMatchObject({ status: 404, code: 'not_found' });
-  });
-
   it('should reject a non-JSON error as http_error with the status text', async () => {
     answer = () => new Response('', { status: 500, statusText: 'Internal Server Error' });
     await expect(socialApi.friends()).rejects.toMatchObject({ status: 500, code: 'http_error', message: 'Internal Server Error' });

@@ -1,0 +1,38 @@
+name: Full matrix
+
+# The full products of the in-process matrix suites (levels 3 and 4): every combination of table
+# size, deck, hidden bids, house rules, seat mix and network shape in
+# test/integration/table-matrix.integration.test.ts, and every row of party/room/server-matrix.test.ts.
+# Pull requests run the pairwise subset inside `npm test` (ci.yml); the full product takes minutes,
+# so it runs weekly and on demand. No browser, no network: fake timers and loopback sockets.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * 0'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: matrix-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  full-matrix:
+    name: Full in-process matrix
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '26'
+          cache: npm
+      - run: npm ci
+      - name: Every combination
+        env:
+          FULL_MATRIX: '1'
+        run: npx vitest run test/integration/table-matrix.integration.test.ts party/room/server-matrix.test.ts

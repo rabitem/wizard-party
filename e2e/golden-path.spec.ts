@@ -26,12 +26,15 @@ const TURN_WAIT_MS = 30_000;
 /** The play timer, the room's auto-act delay after it (TURN_TIMEOUT_POLICY) and the trick's presentation. */
 const AUTO_PLAY_WAIT_MS = 60_000;
 /**
- * Table sizes: the guest plus bots. CI's verify job plays the smallest and the largest table (the
- * fewest and the most seats in the lobby, the game and the results); the weekly run
- * (E2E_FULL_MATRIX=1) plays every size.
+ * Table sizes: the guest plus bots. Every table size is proven in process (the level-4 table
+ * matrix); here a size only adds the real pages' lobby and results at that many seats. CI plays the
+ * smallest table on every pull request; the weekly run (E2E_FULL_MATRIX=1) adds the largest.
  */
-const SEAT_COUNTS = process.env.E2E_FULL_MATRIX === '1' ? [3, 4, 5, 6] : [3, 6];
+const SEAT_COUNTS = process.env.E2E_FULL_MATRIX === '1' ? [3, 6] : [3];
 const GUEST_NAME = 'Ann';
+
+// Each game has its own room; with two workers the table sizes play at the same time.
+test.describe.configure({ mode: 'parallel' });
 
 interface Standing {
   madeBid: boolean;

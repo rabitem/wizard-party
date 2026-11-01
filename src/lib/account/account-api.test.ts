@@ -98,24 +98,14 @@ describe('accountApi responses', () => {
     await expect(accountApi.unpinGame('game-1')).resolves.toBeUndefined();
   });
 
-  it('should reject with the server error code, message, status and body', async () => {
-    const body = { error: { code: 'invalid_input', message: 'bad results' } };
-    answer = () => Response.json(body, { status: 422 });
-
-    const error = await accountApi.recordGames([GAME]).catch((caught: unknown) => caught);
-
-    expect(error).toBeInstanceOf(AccountApiError);
-    expect(error).toMatchObject({ status: 422, code: 'invalid_input', message: 'bad results', body });
-  });
-
-  it('should keep the conflicting document of a 409 so the caller can retry on top of it', async () => {
-    const body = { error: { code: 'conflict' }, current: { key: 'game-settings', version: 7 } };
+  it('should reject with the server error code, message, status and body, so a 409 keeps the document to retry on top of', async () => {
+    const body = { error: { code: 'conflict', message: 'stale version' }, current: { key: 'game-settings', version: 7 } };
     answer = () => Response.json(body, { status: 409 });
 
-    const error = (await accountApi.saveDocument('game-settings', {}, 6).catch((caught: unknown) => caught)) as AccountApiError;
+    const error = await accountApi.saveDocument('game-settings', {}, 6).catch((caught: unknown) => caught);
 
-    expect(error.code).toBe('conflict');
-    expect(error.body).toEqual(body);
+    expect(error).toBeInstanceOf(AccountApiError);
+    expect(error).toMatchObject({ status: 409, code: 'conflict', message: 'stale version', body });
   });
 
   it('should reject a non-JSON error page as http_error with the status text', async () => {

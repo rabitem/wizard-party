@@ -1,22 +1,22 @@
 /**
- * Combination designs for the matrix suites. A full cartesian product of the sandbox axes (card
- * theme x table theme x UI theme x collection style x card size x scenario x table size x seed)
- * is hundreds of thousands of runs, so the suites pick a covering design instead:
+ * Combination designs for every matrix suite. A full cartesian product of the sandbox axes (card
+ * theme x table theme x UI theme x collection style x card size x motion x scenario x table size)
+ * is tens of thousands of runs, so the suites pick a covering design instead:
  *
  * - `eachChoice`: every value of every axis appears in at least one row (as many rows as the
- *   largest axis). Pull requests and manual dispatches.
+ *   largest axis). Pull requests and manual dispatches of the browser suites.
  * - `allPairs`: every pair of values of any two axes appears in at least one row. Most
- *   interaction bugs need only two settings to line up, so this is the weekly run
- *   (E2E_FULL_MATRIX=1).
+ *   interaction bugs need only two settings to line up, so this is the weekly browser run
+ *   (E2E_FULL_MATRIX=1) and the default of the in-process matrices (party/test-support/matrix.ts,
+ *   which runs the full product under FULL_MATRIX=1).
  *
  * Both are deterministic: the same axes always give the same rows in the same order, so a test
- * title names one row across runs and a failure replays. The in-process matrix suites use
- * party/test-support/matrix.ts instead: it supports excluded combinations but enumerates the full
- * product, which these axes are far too large for.
+ * title names one row across runs and a failure replays. Axis values may be anything; only
+ * `describeRow` needs strings or numbers.
  */
 
 export type MatrixValue = string | number;
-export type MatrixAxes = Record<string, readonly MatrixValue[]>;
+export type MatrixAxes = Record<string, readonly unknown[]>;
 export type MatrixRow<A extends MatrixAxes> = { [K in keyof A]: A[K][number] };
 
 function axisNames<A extends MatrixAxes>(axes: A): Array<keyof A & string> {

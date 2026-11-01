@@ -2,10 +2,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { GameResult } from '@shared/domain/account';
 
-import { getSessionUser } from '@/infrastructure/auth/auth';
 import { revalidateTag } from 'next/cache';
 
-import { T0, apiRequest, createApiHarness, errorOf, NO_PARAMS, routeParams, sessionUser, type ApiHarness } from '../api-test-support';
+import { T0, apiRequest, errorOf, harness, NO_PARAMS, routeParams, sessionUser, signInAs, setUpApiHarness } from '../api-test-support';
 import * as accountRoute from './route';
 import * as documentRoute from './documents/[key]/route';
 import * as documentsRoute from './documents/route';
@@ -16,19 +15,15 @@ import * as importRoute from './import/route';
 import * as soundRoute from './sounds/[id]/route';
 import * as soundsRoute from './sounds/route';
 
-const app = vi.hoisted(() => ({ harness: null as ApiHarness | null }));
-const harness = (): ApiHarness => {
-  if (!app.harness) throw new Error('harness not set up');
-  return app.harness;
-};
-
 vi.mock('server-only', () => ({}));
 vi.mock('next/cache', () => ({ revalidateTag: vi.fn(), revalidatePath: vi.fn(), unstable_cache: (load: () => unknown) => load }));
-vi.mock('@/infrastructure/auth/auth', () => ({ getSessionUser: vi.fn() }));
+vi.mock('@/infrastructure/auth/auth', async () => (await import('../api-test-support')).authModule());
 vi.mock('@/infrastructure/db/neon', () => ({ isDatabaseConfigured: () => true }));
-vi.mock('@/infrastructure/account/account-container', () => ({ getAccountServices: () => harness().account.services }));
-vi.mock('@/infrastructure/social/social-container', () => ({ getSocialServices: () => harness().social.services }));
-vi.mock('@/infrastructure/tournament/tournament-container', () => ({ getTournamentServices: () => harness().tournaments.services }));
+vi.mock('@/infrastructure/account/account-container', async () => (await import('../api-test-support')).accountContainerModule());
+vi.mock('@/infrastructure/social/social-container', async () => (await import('../api-test-support')).socialContainerModule());
+vi.mock('@/infrastructure/tournament/tournament-container', async () => (await import('../api-test-support')).tournamentContainerModule());
+
+setUpApiHarness();
 
 const ADA = sessionUser('ada');
 
@@ -72,13 +67,11 @@ async function recordGames(results: unknown[]): Promise<Response> {
 }
 
 beforeEach(() => {
-  app.harness = createApiHarness();
-  vi.mocked(getSessionUser).mockResolvedValue(ADA);
+  signInAs('ada');
   vi.mocked(revalidateTag).mockClear();
 });
 
 afterEach(() => {
-  app.harness = null;
   vi.useRealTimers();
 });
 
@@ -347,6 +340,7 @@ describe('GET /api/account/export', () => {
     harness().socialDb.addPlayer('bob');
     harness().socialDb.friendships.set('ada->bob', { since: T0 - 10, pinnedAt: null });
     harness().socialDb.friendships.set('bob->ada', { since: T0 - 10, pinnedAt: null });
+    await harness().tournaments.services.create.execute('ada', { name: 'Spring Cup' });
 
     const response = await exportRoute.GET(apiRequest('GET', '/api/account/export'), NO_PARAMS);
 
@@ -359,11 +353,11 @@ describe('GET /api/account/export', () => {
       account: Record<string, unknown>;
       gameResults: { clientGameId: string }[];
       social: { friends: unknown[] };
-      tournaments: unknown;
+      tournaments: { tournaments: { isHost: boolean; summary: { name: string } }[] };
     };
     expect(body.account).toMatchObject({ id: ADA.id, email: ADA.email, username: 'ada', displayUsername: 'ADA', usernameChangedAt: null });
     expect(body.gameResults.map((row) => row.clientGameId)).toEqual(['game-0000001']);
     expect(body.social.friends).toHaveLength(1);
-    expect(body.tournaments).toEqual(expect.any(Object));
+    expect(body.tournaments.tournaments).toEqual([expect.objectContaining({ isHost: true, summary: expect.objectContaining({ name: 'Spring Cup' }) })]);
   });
 });

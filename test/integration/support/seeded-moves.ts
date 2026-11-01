@@ -69,7 +69,7 @@ function effectChoice(prompt: EffectPromptModel, random: () => number): TrickEff
 }
 
 /** A random move among those the player's screen offers now; null when it offers none. */
-export function offeredMove(client: PlayerClient, random: () => number): Move | null {
+function offeredMove(client: PlayerClient, random: () => number): Move | null {
   const screen = view(client);
   const table = screen.table;
   if (screen.status !== 'connected' || !table || table.game.pauseState) return null;
@@ -93,7 +93,7 @@ export function offeredMove(client: PlayerClient, random: () => number): Move | 
 }
 
 /** Makes the move through the driver, which sends it only when the screen offers it. */
-export function makeMove(client: PlayerClient, move: Move): void {
+function makeMove(client: PlayerClient, move: Move): void {
   if (move.kind === 'trump') client.chooseTrump(move.suit);
   else if (move.kind === 'effect') client.resolve(move.response);
   else if (move.kind === 'bid') client.bid(move.bid);

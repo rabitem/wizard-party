@@ -49,8 +49,9 @@ The matrix suites cross the axes a contract may depend on: `party/room/server-ma
 (level 3: turn timers, pause and restart per table size, ruleset and seat mix) and
 `test/integration/table-matrix.integration.test.ts` (level 4: whole games per table size, deck,
 hidden bids, house rules, bot mix and network shape, scored independently by
-`party/test-support/score-sheet.ts`). By default the level-4 matrix runs a pairwise subset
-(`party/test-support/matrix.ts`); `FULL_MATRIX=1` runs every combination, about five minutes:
+`party/test-support/score-sheet.ts`). By default both run a pairwise subset
+(`party/test-support/matrix.ts`, on the generator in `e2e/support/matrix.ts`); `FULL_MATRIX=1`
+runs every combination, about four minutes. The weekly `matrix.yml` workflow runs it:
 
 ```bash
 FULL_MATRIX=1 npm test -- test/integration/table-matrix.integration.test.ts party/room/server-matrix.test.ts
@@ -104,7 +105,7 @@ The specs and the contract each owns:
 | `scenarios.spec.ts` | Throws (including a drag dropped back on the hand), landing, collection styles, shuffle and sort, special cards, a theme change mid-flight, a round at server pace, game end |
 | `viewports.spec.ts` | Layout and playability per device project and table size |
 | `playability-matrix.spec.ts` | The largest hand on the viewport matrix (`SANDBOX_VIEWPORTS`, `src/presentation/config/sandbox.config.ts`) |
-| `settings-matrix.spec.ts` | Card theme, table theme, UI theme, collection style, card number size and reduced motion crossed with scenario, table size and seed (`e2e/support/matrix.ts`) |
+| `settings-matrix.spec.ts` | Card theme, table theme, UI theme, collection style, card number size and reduced motion crossed with scenario and table size (`e2e/support/matrix.ts`) |
 | `reconnect.spec.ts` | Drops, stalls and slow links mid-trick and across a trick completion |
 | `faults.spec.ts` | Superseded connection, offline, state storms, throwing storage, lost WebGL context, hidden tab, social floods |
 | `input.spec.ts` | Synthetic touch, and a card played with real device touch |
@@ -113,8 +114,8 @@ The specs and the contract each owns:
 | `visual.spec.ts` | Reference frames per table theme and UI theme |
 | `golden-path.spec.ts` | A guest plays a one-round game in the real app at the smallest and largest table, reloads into the same seat and reaches the results |
 
-The matrix suites cannot run the full cartesian product (the setting axes alone multiply to about
-245,000 combinations), so `e2e/support/matrix.ts` builds covering designs: `eachChoice` puts every
+The matrix suites cannot run the full cartesian product (the five setting axes alone multiply to
+61,200 combinations, before scenario, table size and reduced motion), so `e2e/support/matrix.ts` builds covering designs: `eachChoice` puts every
 value of every axis in some row, `allPairs` puts every pair of values of any two axes in some row.
 Both are deterministic, so a test title names one combination across runs. Axis values are read
 from the presets, so a new theme or collection style joins the matrix without a spec change.
@@ -152,16 +153,35 @@ git-ignored.
 
 ## CI
 
-GitHub Actions is the source of truth for the checks. Two workflows run tests.
+GitHub Actions is the source of truth for the checks. Three workflows run tests.
 
 | Workflow | Runs on | What it runs |
 | --- | --- | --- |
-| `.github/workflows/ci.yml`, job `verify` | Pull requests to `main`, pushes to `main`, manual dispatch | `npm ci`, `typecheck`, `lint`, `npm test`, `build`, `check:worker`, then the realtime smoke and the golden path |
-| `.github/workflows/e2e.yml`, "Browser suites" | Pull requests labelled `e2e`, a weekly schedule, manual dispatch | `npx playwright test --project=<project> --shard=<n>/<shards> --grep-invert "sustains"`, one job per project and shard |
+| `.github/workflows/ci.yml`, "CI" | Pull requests to `main`, pushes to `main`, manual dispatch | Parallel jobs `Typecheck`, `Lint`, `Tests` and `Build and play`, gated by `Verify application` |
+| `.github/workflows/e2e.yml`, "Browser suites" | Pull requests labelled `e2e`, a weekly schedule, manual dispatch | One build, then `npx playwright test --project=<project> --shard=<n>/<shards> --grep-invert "sustains"`, one job per project and shard |
+| `.github/workflows/matrix.yml`, "Full matrix" | A weekly schedule, manual dispatch | `FULL_MATRIX=1` over the level-3 and level-4 matrix suites |
 
-### The verify job
+### CI
 
-After the build the job installs Chromium, starts `npm run dev:party` in the background, waits for
+The four jobs share nothing, so they run at the same time; each installs from the lockfile and
+keeps its own cache:
+
+| Job | Runs | Cache |
+| --- | --- | --- |
+| `Typecheck` | `npm run typecheck` (the app, then the worker) | `tsconfig.tsbuildinfo` (incremental) |
+| `Lint` | `npm run lint -- --cache --cache-strategy content` | `.eslintcache` |
+| `Tests` | `npm run test:coverage`: levels 1 to 4, with the coverage summary on the run page | |
+| `Build and play` | `npm run build` and `check:worker` while Chromium installs, then the smoke test and the golden path | the Playwright browser |
+
+`Verify application` needs the four and passes only when every one passed; it also runs when one
+failed, so it reports the failure instead of being skipped. It is the check that rulesets and the
+Dependabot policy (`.github/scripts/dependabot-auto-merge.mjs`) name, so a job can be added or
+split without touching either. Coverage is printed, never enforced: a percentage cannot tell a
+meaningful test from a vacuous one.
+
+### Build and play
+
+After the build the job starts `npm run dev:party` in the background, waits for
 `http://localhost:1999/health`, then runs two checks against that one worker:
 
 1. `node scripts/realtime-smoke.mjs` opens raw WebSockets. It checks `/health`, CORS preflight,
@@ -170,7 +190,7 @@ After the build the job installs Chromium, starts `npm run dev:party` in the bac
    status, the tournament room gate and protocol-2 seat tokens. It checks the worker's shape on a
    dealt round; bidding, card play and scoring belong to levels 3 and 4 and the golden path.
 2. `npx playwright test --project=golden-path` plays the build the job made, in Chromium, at three
-   and at six seats.
+   seats (the weekly browser run adds six seats and the other engines and phones).
 
 If either fails the job prints the worker log. A failed or cancelled job uploads the `golden-path`
 artifact (`e2e-report/`, `e2e-results/`).
@@ -185,11 +205,23 @@ artifact (`e2e-report/`, `e2e-results/`).
 - **Manual dispatch.** The same projects in two shards each, without `E2E_FULL_MATRIX`. The inputs
   are `grep` (Playwright `--grep`) and `update_snapshots` (see [Visual baselines](#visual-baselines)).
 
-A `plan` job lists the jobs: one per project and shard, each with its own browser install and
-`npm run e2e:build`. The `golden-path*` jobs also start the worker (`npm run dev:party`) and print its
-log on failure. A shard without tests passes (`--pass-with-no-tests`), so a narrow `grep` does not
-fail the other projects. A failed or cancelled job uploads `e2e-<project>-<shard>`; see
-`.claude/skills/pull-request/references/ci.md` for downloading it.
+A `plan` job lists the jobs, one per project and shard with the engine to install. A `build` job
+runs `npm run e2e:build` once and uploads `.next` as the `e2e-build` artifact; every project job
+downloads it instead of building again, and restores its engine from a cache (the branded Chrome
+and Edge install from their vendors). The `golden-path*` jobs also start the worker
+(`npm run dev:party`) and print its log on failure. A shard without tests passes
+(`--pass-with-no-tests`), so a narrow `grep` does not fail the other projects. A failed or
+cancelled job uploads `e2e-<project>-<shard>`; see `.claude/skills/pull-request/references/ci.md`
+for downloading it.
+
+### Known issues
+
+A product bug a browser suite found and that is not fixed yet goes in
+`e2e/support/known-issues.ts`, with what is broken; nowhere else may a test be skipped or loosened.
+A bug that reproduces on every run is expected to fail (`test.fail`): the test still runs and turns
+red the day the bug is fixed, so the fix's pull request removes the entry. A bug that shows on some
+runs only is marked `fixme` with its reason, and the report lists it. The sandbox fixture applies
+the list, matching the title below the file and, where given, the project.
 
 ### Runner minutes are limited
 

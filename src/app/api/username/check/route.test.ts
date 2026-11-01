@@ -1,15 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { getSessionUser } from '@/infrastructure/auth/auth';
-
-import { APP_ORIGIN, createApiHarness, sessionUser, type ApiHarness } from '../../api-test-support';
+import { APP_ORIGIN, harness, signInAs, setUpApiHarness } from '../../api-test-support';
 import { GET } from './route';
 
 /** The per-IP budget of username checks (src/lib/redis.ts): 30 per minute. */
 const CHECKS_PER_MINUTE = 30;
 
 const app = vi.hoisted(() => ({
-  harness: null as ApiHarness | null,
   databaseConfigured: true,
   requestHeaders: new Headers(),
   /** What Upstash holds: key -> counter. */
@@ -30,19 +27,11 @@ vi.mock('@upstash/redis', () => ({
     }
   },
 }));
-vi.mock('@/infrastructure/auth/auth', () => ({ getSessionUser: vi.fn() }));
+vi.mock('@/infrastructure/auth/auth', async () => (await import('../../api-test-support')).authModule());
 vi.mock('@/infrastructure/db/neon', () => ({ isDatabaseConfigured: () => app.databaseConfigured }));
-vi.mock('@/infrastructure/social/social-container', () => ({
-  getSocialServices: () => {
-    if (!app.harness) throw new Error('harness not set up');
-    return app.harness.social.services;
-  },
-}));
+vi.mock('@/infrastructure/social/social-container', async () => (await import('../../api-test-support')).socialContainerModule());
 
-const harness = (): ApiHarness => {
-  if (!app.harness) throw new Error('harness not set up');
-  return app.harness;
-};
+setUpApiHarness();
 
 interface CheckOptions {
   ip?: string;
@@ -51,7 +40,7 @@ interface CheckOptions {
 
 /** A browser's check; next/headers() serves the same request headers as the route sees. */
 async function check(username: string | null, { ip = '203.0.113.7', signedInAs }: CheckOptions = {}): Promise<Response> {
-  vi.mocked(getSessionUser).mockResolvedValue(signedInAs ? sessionUser(signedInAs) : null);
+  signInAs(signedInAs ?? null);
   const query = username === null ? '' : `?username=${encodeURIComponent(username)}`;
   const request = new Request(`${APP_ORIGIN}/api/username/check${query}`, { headers: { 'x-forwarded-for': ip } });
   app.requestHeaders = request.headers;
@@ -63,8 +52,7 @@ async function bodyOf(response: Response): Promise<{ available?: boolean; error?
 }
 
 beforeEach(() => {
-  app.harness = createApiHarness();
-  app.harness.socialDb.addPlayer('merlin');
+  harness().socialDb.addPlayer('merlin');
   app.databaseConfigured = true;
   app.counters.clear();
   vi.stubEnv('KV_REST_API_URL', 'https://redis.example.test');
@@ -72,7 +60,6 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  app.harness = null;
   vi.unstubAllEnvs();
   vi.restoreAllMocks();
 });

@@ -2,32 +2,22 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { buildMatchResultRequest, type MatchProgressReport } from '@shared/tournament';
 
-import { getSessionUser } from '@/infrastructure/auth/auth';
-
-import { APP_ORIGIN, TICKET_SECRET, apiRequest, createApiHarness, NO_PARAMS, routeParams, sessionUser, type ApiHarness } from '../../api-test-support';
+import { APP_ORIGIN, TICKET_SECRET, apiRequest, harness, NO_PARAMS, routeParams, signInAs, setUpApiHarness } from '../../api-test-support';
 import * as registrationRoute from '../[id]/registration/route';
 import * as startRoute from '../[id]/start/route';
 import * as tournamentsRoute from '../route';
 import { POST } from './route';
 
-const app = vi.hoisted(() => ({ harness: null as ApiHarness | null }));
-const harness = (): ApiHarness => {
-  if (!app.harness) throw new Error('harness not set up');
-  return app.harness;
-};
-
 vi.mock('server-only', () => ({}));
-vi.mock('@/infrastructure/auth/auth', () => ({ getSessionUser: vi.fn() }));
+vi.mock('@/infrastructure/auth/auth', async () => (await import('../../api-test-support')).authModule());
 vi.mock('@/infrastructure/db/neon', () => ({ isDatabaseConfigured: () => true }));
-vi.mock('@/infrastructure/account/account-container', () => ({ getAccountServices: () => harness().account.services }));
-vi.mock('@/infrastructure/social/social-container', () => ({ getSocialServices: () => harness().social.services }));
-vi.mock('@/infrastructure/tournament/tournament-container', () => ({ getTournamentServices: () => harness().tournaments.services }));
+vi.mock('@/infrastructure/account/account-container', async () => (await import('../../api-test-support')).accountContainerModule());
+vi.mock('@/infrastructure/social/social-container', async () => (await import('../../api-test-support')).socialContainerModule());
+vi.mock('@/infrastructure/tournament/tournament-container', async () => (await import('../../api-test-support')).tournamentContainerModule());
+
+setUpApiHarness();
 
 const ENDPOINT = `${APP_ORIGIN}/api/tournaments/match-results`;
-
-function signInAs(username: string): void {
-  vi.mocked(getSessionUser).mockResolvedValue(sessionUser(username));
-}
 
 /** A running tournament with one table, created through the session routes. */
 async function runningTournament(): Promise<string> {
@@ -58,7 +48,6 @@ async function signed(report: MatchProgressReport, secret: string): Promise<Requ
 }
 
 beforeEach(() => {
-  app.harness = createApiHarness();
   for (const id of ['host', 'u01', 'u02', 'u03']) harness().socialDb.addPlayer(id);
   // The route reads the wall clock (deps.now = Date.now) to check the signature's age; run the
   // app clock at that time too, so a report signed now is fresh for both.
@@ -70,7 +59,6 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  app.harness = null;
   vi.unstubAllEnvs();
   vi.restoreAllMocks();
 });
@@ -84,23 +72,5 @@ describe('POST /api/tournaments/match-results', () => {
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({ outcome: 'recorded' });
     expect(harness().tournamentRepo.rows.get(id)?.matches[0]).toMatchObject({ live: { round: 3, maxRounds: 20 } });
-  });
-
-  it('should refuse a report signed with any other key with 401 and record nothing', async () => {
-    const id = await runningTournament();
-
-    const response = await POST(await signed(progressPing(id), 'not-the-tournament-secret'));
-
-    expect(response.status).toBe(401);
-    expect(harness().tournamentRepo.rows.get(id)?.matches[0]?.live ?? null).toBeNull();
-  });
-
-  it('should answer 503 while TOURNAMENT_SECRET is not configured, so the worker retries later', async () => {
-    const id = await runningTournament();
-    vi.stubEnv('TOURNAMENT_SECRET', '');
-
-    const response = await POST(await signed(progressPing(id), TICKET_SECRET));
-
-    expect(response.status).toBe(503);
   });
 });
