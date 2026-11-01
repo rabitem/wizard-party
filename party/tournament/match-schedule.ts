@@ -1,4 +1,4 @@
-import { GamePhase, type Game, type Player } from '../../shared/domain';
+import { GamePhase, getTrickPresentationMs, type Game, type Player } from '../../shared/domain';
 import { TOURNAMENT_TIMING } from '../../shared/domain/tournament';
 import { matchDeadline, noShowDeadline, updateSeat, type MatchSeatRecord, type TournamentMatchRecord } from './match-record';
 import { TOURNAMENT_ROOM_TIMING } from './match-room.constants';
@@ -73,9 +73,10 @@ function earliest(...times: (number | null)[]): number | null {
 export function matchDeadlines(record: TournamentMatchRecord, game: Game): MatchDeadlines {
   const waiting = record.startedAt === null && record.expiredAt === null && game.phase === GamePhase.LOBBY;
   const roundEnded = record.roundEnd !== null && game.phase === GamePhase.ROUND_END;
+  // Without a host, counted from when the tables have collected the round's last trick.
   const advanceDelay = isHostPresent(game)
     ? TOURNAMENT_ROOM_TIMING.ROUND_END_AUTO_ADVANCE_MS
-    : TOURNAMENT_ROOM_TIMING.HOSTLESS_ROUND_END_ADVANCE_MS;
+    : getTrickPresentationMs(game.players.length) + TOURNAMENT_ROOM_TIMING.HOSTLESS_ROUND_END_ADVANCE_MS;
   return {
     start: waiting ? earliest(record.autoStartAt, noShowDeadline(record), matchDeadline(record)) : null,
     roundAdvance: roundEnded && record.roundEnd ? record.roundEnd.since + advanceDelay : null,

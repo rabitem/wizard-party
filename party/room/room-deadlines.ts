@@ -1,4 +1,4 @@
-import { GamePhase, getPauseDeadline, type Game } from '../../shared/domain';
+import { GamePhase, getPauseDeadline, getTrickPresentationMs, type Game } from '../../shared/domain';
 import { ROOM_TIMING, TURN_TIMEOUT_POLICY, type TurnTimeoutPolicy } from '../config/room-timing.config';
 
 /**
@@ -54,10 +54,11 @@ function hasConnectedHumanHost(game: Game): boolean {
 
 function roundAdvanceDeadline(game: Game): number | null {
   if (game.phase !== GamePhase.ROUND_END || game.roundEndedAt === null) return null;
-  const delay = hasConnectedHumanHost(game)
-    ? ROOM_TIMING.ROUND_END_AUTO_ADVANCE_MS
-    : ROOM_TIMING.HOSTLESS_ROUND_END_ADVANCE_MS;
-  return game.roundEndedAt + delay;
+  if (hasConnectedHumanHost(game)) return game.roundEndedAt + ROOM_TIMING.ROUND_END_AUTO_ADVANCE_MS;
+  // Counted from when the tables have collected the last trick (a card per seat), so the round's
+  // result is shown before the next deal.
+  const lastTrickShownAt = game.roundEndedAt + getTrickPresentationMs(game.players.length);
+  return lastTrickShownAt + ROOM_TIMING.HOSTLESS_ROUND_END_ADVANCE_MS;
 }
 
 export function roomDeadlines(game: Game, policy: RoomDeadlinePolicy = DEFAULT_DEADLINE_POLICY): RoomDeadlines {

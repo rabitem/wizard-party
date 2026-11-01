@@ -1,5 +1,5 @@
 import type * as Party from '../runtime';
-import { GameEventType, GamePhase, type TurnTimerExpiredEvent } from '../../shared/domain';
+import { GameEventType, GamePhase, getTrickPresentationMs, type TurnTimerExpiredEvent } from '../../shared/domain';
 import type { IUseCaseRegistry } from '../../shared/application';
 import { ServerTrigger, type GameTelemetry } from '../telemetry';
 import type { ServerContext } from '../utils/types';
@@ -44,8 +44,9 @@ const FAILED_DEADLINE_RETRY_MS = 15_000;
 /**
  * Owns "what happens next" in a room. After every transaction (`settle`, run by the commit gate)
  * it derives from the state what the room waits for:
- * - the next bot turn: one single-flight task, re-armed after every change of the table and
- *   retried with backoff when a turn could not be applied, so a bot error never stalls the room;
+ * - the next bot turn: one single-flight task, re-armed after every change of the table (and held
+ *   back while the tables still present a completed trick) and retried with backoff when a turn
+ *   could not be applied, so a bot error never stalls the room;
  * - the durable alarm: the earliest of the state's deadlines (grace, pause, turn timer, turn
  *   timeout, round advance). When it fires, each deadline is handled only if it is due.
  * It also debounces disconnects, so a socket that comes back quickly costs nothing.
@@ -54,6 +55,10 @@ export class RoomClockwork {
   private pacing: BotPacing = { auto: true, delayMs: ROOM_TIMING.BOT_ACTION_DELAY_MS };
   private settledVersion: number | null = null;
   private botFailures = 0;
+  /** Round and completed tricks at the last settle, to notice a trick that just completed. */
+  private settledTrickKey: string | null = null;
+  /** When the tables finish presenting the last completed trick (in memory: a restart shows none). */
+  private trickPresentedAt = 0;
   private readonly failedDeadlines = new Map<DeadlineKind, { at: number; retryAt: number }>();
 
   constructor(private readonly deps: RoomClockworkDeps) {}
@@ -71,7 +76,10 @@ export class RoomClockwork {
     const { state, scheduler, useCases } = this.deps;
     const changed = state.stateVersion !== this.settledVersion;
     this.settledVersion = state.stateVersion;
-    if (changed) this.botFailures = 0;
+    if (changed) {
+      this.botFailures = 0;
+      this.noteCompletedTrick();
+    }
 
     const botToAct = this.pacing.auto && useCases.botTurn.getActingBot(state.game) !== undefined;
     if (!botToAct) {
@@ -84,8 +92,23 @@ export class RoomClockwork {
     scheduler.schedule(BOT_TURN, this.botDelay(), () => this.deps.transaction(() => this.runBotTurn()));
   }
 
+  /**
+   * A trick completed with this change: the tables now land its last card and collect it, and no
+   * bot may act (lead the next trick, answer a special card) before that has been shown.
+   */
+  private noteCompletedTrick(): void {
+    const { game } = this.deps.state;
+    const trickKey = `${game.currentRound}:${game.completedTricks.length}`;
+    const previousKey = this.settledTrickKey;
+    this.settledTrickKey = trickKey;
+    const trick = game.getLastCompletedTrick();
+    if (previousKey === null || previousKey === trickKey || !trick) return;
+    this.trickPresentedAt = Date.now() + getTrickPresentationMs(trick.cards.length);
+  }
+
+  /** A full delay after the change, or after the completed trick has been presented. */
   private botDelay(): number {
-    if (this.botFailures === 0) return this.pacing.delayMs;
+    if (this.botFailures === 0) return this.pacing.delayMs + Math.max(0, this.trickPresentedAt - Date.now());
     return Math.min(ROOM_TIMING.BOT_RETRY_BASE_MS * 2 ** (this.botFailures - 1), ROOM_TIMING.BOT_RETRY_MAX_MS);
   }
 

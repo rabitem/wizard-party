@@ -110,7 +110,9 @@ state the transaction left:
 
 - **The next bot turn.** One named task (`bot-turn`). When the table changed (the state version
   moved) and a bot is to act, the task is (re)armed a full `ROOM_TIMING.BOT_ACTION_DELAY_MS` later.
-  When nothing changed, a pending task stands (an emote does not push a bot back). When no bot is to
+  When a trick just completed, that delay counts from when the tables have landed and collected it
+  (`getTrickPresentationMs`, `shared/domain/constants/trick-presentation-timing.ts`), so no bot leads
+  the next trick or answers a special card while the last one is still on screen. When nothing changed, a pending task stands (an emote does not push a bot back). When no bot is to
   act (a human's turn, a paused table, another phase) it is cancelled. Two chains cannot exist.
 - **The durable alarm.** Armed for the earliest of `roomDeadlines(game)`
   (`party/room/room-deadlines.ts`):
@@ -121,7 +123,7 @@ state the transaction left:
   | pause | `pauseState.pausedAt + timeoutDuration` | a bot takes the seat, the next disconnected human is waited for |
   | turnTimer | `turnTimerState.expiresAt` | `TURN_TIMER_EXPIRED`, heckling opens |
   | turnTimeout | `expiresAt + TURN_TIMEOUT_POLICY.autoActAfterMs` (human timed player, mode `auto-act`) | the room makes the legal default move |
-  | roundAdvance | `roundEndedAt` + `ROOM_TIMING.ROUND_END_AUTO_ADVANCE_MS`, or `HOSTLESS_ROUND_END_ADVANCE_MS` when no connected human hosts | the next round is dealt |
+  | roundAdvance | `roundEndedAt` + `ROOM_TIMING.ROUND_END_AUTO_ADVANCE_MS`, or `getTrickPresentationMs` (one card per seat) + `HOSTLESS_ROUND_END_ADVANCE_MS` when no connected human hosts | the next round is dealt |
 
   While paused only the pause deadline exists. When the alarm fires, every kind is handled only if
   its own deadline has passed, so an early or stale alarm does nothing. A handler that throws, or
