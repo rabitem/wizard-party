@@ -252,7 +252,8 @@ instance, each stable for the life of the client:
 | `tournament` | the match a room is locked to (`tournamentMatch`) and the lasting refusal of a seat (`tournamentRejection`) | the match: leaving, or a refused seat; the refusal: `dismissRejection` on a deliberate connect |
 
 `TableFeeds.joinFields` supplies the extra `JOIN_GAME` fields for a room: the stored tournament
-ticket (`tournament-join.ts`). `tournament-match.ts` validates the `tournamentMatch` that the
+ticket (`tournament-join.ts`). `game-client.ts` adds the player's character ticket
+(`characterTicketJoinFields` in `src/lib/account/character-ticket.ts`). `tournament-match.ts` validates the `tournamentMatch` that the
 worker sends with every `GAME_STATE` of a match room and moves its deadlines onto the device's
 clock. See [tournaments.md](../accounts/tournaments.md).
 

@@ -68,14 +68,17 @@ describe('buildSeatViews', () => {
     accounts: new Map(), graceEndsAt: new Map(),
   });
 
-  it('should show the local look, account looks and bot looks, and a silhouette for anyone unknown', () => {
+  it('should show the local look, room and account looks and bot looks, and a silhouette for anyone unknown', () => {
     const friendLook = { ...DEFAULT_APPEARANCE, palette: 'palette:frost' };
+    const ticketLook = { ...DEFAULT_APPEARANCE, palette: 'palette:ember' };
+    const signedIn = new Player('signed', 'Signed');
+    signedIn.appearance = ticketLook;
     const seats = buildSeatViews({
-      players: [new Player('me', 'Me'), new Player('friend', 'Friend'), new Player('bot', 'Bot', true, 5), new Player('stranger', 'Stranger')],
+      players: [new Player('me', 'Me'), new Player('friend', 'Friend'), new Player('bot', 'Bot', true, 5), new Player('stranger', 'Stranger'), signedIn],
       hostId: 'me', localPlayerId: 'me', localAppearance: DEFAULT_APPEARANCE, localIsGuest: false,
       accounts: new Map([['friend', { appearance: friendLook, level: 4 }]]), graceEndsAt: new Map(),
     });
-    expect(seats.map((seat) => seat.appearance)).toEqual([DEFAULT_APPEARANCE, friendLook, botAppearance(5), null]);
+    expect(seats.map((seat) => seat.appearance)).toEqual([DEFAULT_APPEARANCE, friendLook, botAppearance(5), null, ticketLook]);
   });
 
   it('should mark only the local seat as a guest, never a seat whose account is merely unknown', () => {

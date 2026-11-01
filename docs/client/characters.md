@@ -102,14 +102,35 @@ cards) cannot use it.
   (`chooseLocalAppearance`). A save in the editor updates it at once
   (`rememberSavedAppearance`). Guests get `null`.
 - At a table (lobby seats, the in-game standings) `seatAppearance` decides: the local look, a
-  bot's look by difficulty (`botAppearance`), the look of the account the room reported
-  (`roomAccounts`), else a silhouette. `useSeatAppearance` wires it for the standings. Players
-  whose account the viewer cannot see, and every player when the viewer is a guest, show a
-  silhouette until the room itself carries looks.
+  bot's look by difficulty (`botAppearance`), the look the room verified (`IPlayer.appearance`,
+  see [At the table](#at-the-table)), the look of the account the social API reported
+  (`roomAccounts`), else a silhouette. `useSeatAppearance` wires it for the standings.
 - The first portrait on a page loads the character model and opens one WebGL context.
 - The Character tab (`CharacterSection`) shows the draft in a turnable 3D view
   (`CharacterPreview`, loaded with `next/dynamic` so three.js stays out of the other tabs) and
   cheers once after a save. Part rewards on the Rewards tab show the starter look wearing the part.
+
+## At the table
+
+Every player sees every signed-in player's look, guests included, because the room carries it:
+
+1. Once the account is known, `usePlayerName` asks for a character ticket
+   (`src/lib/account/character-ticket.ts`, `POST /api/account/character/ticket`). Its `ready`
+   stays false until that fetch settles, so the first `JOIN_GAME` already carries the ticket. A
+   failed fetch (no secret, offline, 3 s timeout) joins without one.
+2. The ticket (`shared/realtime/character-ticket.ts`) is HMAC-SHA256 with
+   `CHARACTER_TICKET_SECRET` over `{ name, appearance, exp }`: the account's display username,
+   the look `GET /api/account/character` returns, and an expiry 12 hours out. Every (re)join sends
+   it as `appearanceTicket`; a ticket within 10 minutes of expiry is still sent while the next is
+   fetched, and a save fetches a new one.
+3. The worker (`party/session/character-tickets.ts`) verifies it while the join is held, like a
+   tournament ticket, and passes the look to the join only when the ticket names the seat's name.
+   The look is stored on the player (`IPlayer.appearance`, persisted with the room) and kept
+   through rejoins without a ticket. A bad, expired or foreign ticket, or a worker without the
+   secret, leaves the seat as it was.
+
+Looks are public, so a ticket is no secret; the name binding stops a seat from wearing another
+player's look. Bots get their look on the client, by difficulty.
 
 ## Checking assets
 

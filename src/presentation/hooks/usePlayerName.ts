@@ -1,7 +1,8 @@
 'use client';
 
-import { useCallback, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useSyncExternalStore } from 'react';
 
+import { forgetCharacterTicket, isCharacterTicketSettled, requestCharacterTicket, subscribeCharacterTicket } from '@/lib/account/character-ticket';
 import { safeLocalStorage } from '@/lib/storage';
 import { CONSTANTS } from '@/presentation/config/constants';
 import { useAccount } from '@/presentation/providers/AccountProvider';
@@ -33,7 +34,10 @@ export interface PlayerName {
   name: string;
   /** Signed in: the name is the account's username and cannot be edited here. */
   isAccountName: boolean;
-  /** False while the session is still loading, so nobody joins under the wrong name. */
+  /**
+   * False while the session is still loading, so nobody joins under the wrong name, and while a
+   * signed-in player's character ticket is on its way, so the first JOIN_GAME shows their look.
+   */
   ready: boolean;
   /** Edits the guest name (remembered on this device); ignored for signed-in players. */
   setGuestName: (name: string) => void;
@@ -47,6 +51,17 @@ export function usePlayerName(): PlayerName {
   const { status, user } = useAccount();
   const guestName = useSyncExternalStore(subscribe, readGuestName, () => '');
   const isAccountName = status === 'signed-in' && user !== null;
+  const userId = isAccountName ? user.id : null;
+  const ticketSettled = useSyncExternalStore(
+    subscribeCharacterTicket,
+    () => userId === null || isCharacterTicketSettled(userId),
+    () => false
+  );
+
+  useEffect(() => {
+    if (userId) requestCharacterTicket(userId);
+    else if (status === 'guest') forgetCharacterTicket();
+  }, [userId, status]);
 
   const setGuestName = useCallback((name: string) => {
     if (!isAccountName) writeGuestName(name);
@@ -55,7 +70,7 @@ export function usePlayerName(): PlayerName {
   return {
     name: isAccountName ? user.displayUsername : guestName,
     isAccountName,
-    ready: status !== 'loading',
+    ready: status !== 'loading' && ticketSettled,
     setGuestName,
   };
 }

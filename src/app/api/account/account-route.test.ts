@@ -53,6 +53,7 @@ const ACCOUNT_ERROR_STATUS: Record<AccountErrorCode, ExpectedStatus> = {
   conflict: OTHER_CLIENT_ERROR,
   quota_exceeded: OTHER_CLIENT_ERROR,
   already_imported: OTHER_CLIENT_ERROR,
+  unavailable: 503,
 };
 
 const SOCIAL_ERROR_STATUS: Record<SocialErrorCode, ExpectedStatus> = {

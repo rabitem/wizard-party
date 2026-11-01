@@ -10,6 +10,7 @@ import {
   type PlayerGraceRestoredEvent,
   type SessionEvent,
 } from "../../shared/domain";
+import type { CharacterAppearance } from "../../shared/domain/character";
 import { claimSeat, usesSessionTokens } from "../../shared/application";
 import type { ServerContext } from "../utils/types";
 import { pauseForDisconnectedHuman } from "../utils/reconnect-recovery";
@@ -37,6 +38,8 @@ export interface JoinOptions {
   protocolVersion?: number;
   /** A seat the caller already proved this join holds (a verified tournament ticket). */
   attestedPlayerId?: string;
+  /** The look a verified character ticket proved for this seat's name. */
+  appearance?: CharacterAppearance;
 }
 
 function cleanupStaleJoins(ctx: ServerContext): void {
@@ -197,6 +200,7 @@ function joinSeat(
     roomSettings: options.roomSettings,
     maxPlayers: ctx.roomSettings.maxPlayers,
     existingPlayerId,
+    appearance: options.appearance,
   });
 
   ctx.persistentIdToPlayerId.set(persistentId, result.playerId);

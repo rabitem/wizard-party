@@ -12,6 +12,7 @@ import type { TrickLead } from '../expansions/trick-lead';
 import { isBidInRange, scoreRound } from '../expansions/round-rules';
 import { BidAlreadyPlacedError, InvalidBidError } from '../errors/game-errors';
 import { parseBotDifficulty, type BotDifficultyLevel } from '../value-objects/bot-difficulty';
+import { parseAppearance, type CharacterAppearance } from '../character';
 
 /**
  * Round history entry for tracking player performance
@@ -43,6 +44,8 @@ export interface IPlayer {
   roundHistory: RoundHistoryEntry[];
   /** Lobby ready flag. Bots are always ready; only meaningful in the LOBBY phase. */
   isReady?: boolean;
+  /** The character look a signed ticket proved for this seat (public). Absent: a silhouette. */
+  appearance?: CharacterAppearance;
 }
 
 /**
@@ -63,6 +66,7 @@ export class Player implements IPlayer {
   public isBot: boolean = false;
   public botDifficulty?: BotDifficultyLevel;
   public roundHistory: RoundHistoryEntry[] = [];
+  public appearance?: CharacterAppearance;
   private _isReady: boolean = false;
 
   constructor(
@@ -260,6 +264,7 @@ export class Player implements IPlayer {
       botDifficulty: this.botDifficulty,
       roundHistory: this.roundHistory.map((entry) => ({ ...entry })),
       isReady: this.isReady,
+      ...(this.appearance ? { appearance: this.appearance } : {}),
     };
   }
 
@@ -276,6 +281,8 @@ export class Player implements IPlayer {
     player.isConnected = data.isConnected;
     player.roundHistory = (data.roundHistory ?? []).map((entry) => ({ ...entry }));
     player.isReady = data.isReady ?? false;
+    // Stored rooms are data from an older release: a look that no longer parses is dropped.
+    player.appearance = parseAppearance(data.appearance) ?? undefined;
     return player;
   }
 }

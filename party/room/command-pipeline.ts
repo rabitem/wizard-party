@@ -29,6 +29,7 @@ import { parseClientCommand, type RefusedClientCommand } from '../utils/client-c
 import type { CommandRateLimiter } from '../protocol/command-rate-limiter';
 import type { CommitGate } from '../protocol/commit-gate';
 import { TOURNAMENT_ROOM_LIMITS, type TournamentMatchController } from '../tournament';
+import { verifiedLook, type CharacterTicketVerifier } from '../session/character-tickets';
 import type { ServerContext } from '../utils/types';
 import type { RoomMessaging } from './room-messaging';
 import type { RoomState } from './room-state';
@@ -59,6 +60,8 @@ export interface CommandPipelineDeps {
   telemetry: GameTelemetry;
   rateLimiter: CommandRateLimiter;
   tournament: TournamentMatchController;
+  /** Null without CHARACTER_TICKET_SECRET: tickets are ignored and seats show no look. */
+  characterTickets: CharacterTicketVerifier | null;
   connections: ConnectionTracker;
   context: () => ServerContext;
   /** A seat the host adapter vouches for on this connection (the sandbox's local player). */
@@ -149,7 +152,7 @@ export class CommandPipeline {
     if (!this.admit(command, sender)) return;
 
     if (command.type === ClientCommandType.JOIN_GAME) {
-      if (this.deps.tournament.handlesJoin(command)) this.holdForTournamentJoin(command, sender);
+      if (this.needsVerifiedJoin(command)) this.holdForVerifiedJoin(command, sender);
       else this.join(command, sender);
     } else if (command.type === ClientCommandType.REQUEST_STATE) {
       this.answerStateRequest(sender, command.requestId);
@@ -225,27 +228,41 @@ export class CommandPipeline {
     );
   }
 
+  /** A join with a ticket to check first: a tournament seat, or a character look. */
+  private needsVerifiedJoin(command: JoinGameCommand): boolean {
+    return this.deps.tournament.handlesJoin(command) || (command.appearanceTicket !== undefined && this.deps.characterTickets !== null);
+  }
+
   /**
-   * JOIN_GAME in a tournament room (or with a ticket): the ticket is verified asynchronously, so
-   * the socket's later frames wait (a reconnecting client flushes its queued moves right behind
+   * JOIN_GAME in a tournament room or with a ticket: tickets are verified asynchronously, so the
+   * socket's later frames wait (a reconnecting client flushes its queued moves right behind
    * JOIN_GAME, and they must not run before the socket holds its seat). The join itself then runs
    * as its own transaction, and the held frames are handled in order.
    */
-  private holdForTournamentJoin(command: JoinGameCommand, sender: Party.Connection): void {
+  private holdForVerifiedJoin(command: JoinGameCommand, sender: Party.Connection): void {
     this.deps.state.heldMessages.set(sender.id, []);
-    void this.joinTournamentMatch(command, sender);
+    void this.joinVerified(command, sender);
   }
 
-  private async joinTournamentMatch(command: JoinGameCommand, sender: Party.Connection): Promise<void> {
-    const { state, tournament, gate } = this.deps;
+  private async joinVerified(command: JoinGameCommand, sender: Party.Connection): Promise<void> {
+    const { state, tournament, gate, characterTickets } = this.deps;
     let held: string[] = [];
     try {
-      const admission = await tournament.admit(command);
-      // The socket may have closed while the ticket was checked.
+      const [admission, look] = await Promise.all([
+        tournament.handlesJoin(command) ? tournament.admit(command) : null,
+        characterTickets && command.appearanceTicket !== undefined ? characterTickets.verify(command.appearanceTicket, Date.now()) : null,
+      ]);
+      // The socket may have closed while the tickets were checked.
       if (state.activeConnections.has(sender.id)) {
         gate.run(() => this.asCommand(command, sender, () =>
           this.seatConnection(command, sender, (persistentId, options) => {
-            tournament.join(admission, persistentId, sender, options);
+            // A look only fits the seat its ticket names: the match seat, or the name joined under.
+            if (!admission) {
+              handleJoinGame(this.deps.context(), command.playerName, persistentId, sender, { ...options, appearance: verifiedLook(look, command.playerName) });
+              return;
+            }
+            const seatName = admission.ok ? admission.claims.name : undefined;
+            tournament.join(admission, persistentId, sender, { ...options, appearance: verifiedLook(look, seatName) });
           })
         ));
       }

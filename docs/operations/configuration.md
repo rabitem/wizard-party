@@ -10,11 +10,11 @@ shipping live in [deployment.md](deployment.md); the database variables are used
 | Target | Holds | Local file | Deployed |
 | --- | --- | --- | --- |
 | Next.js app (Vercel) | Everything except the worker and shell rows | `.env.local`, copied from `.env.example` | Vercel project environment variables |
-| Game worker (Cloudflare) | `TELEMETRY_INGEST_URL`, `TELEMETRY_INGEST_SECRET`, `TOURNAMENT_SECRET`, `TOURNAMENT_RESULT_URL` | `.dev.vars`, copied from `.dev.vars.example` | `vars` in `wrangler.jsonc`, secrets with `npx wrangler secret put <NAME>` |
+| Game worker (Cloudflare) | `TELEMETRY_INGEST_URL`, `TELEMETRY_INGEST_SECRET`, `TOURNAMENT_SECRET`, `TOURNAMENT_RESULT_URL`, `CHARACTER_TICKET_SECRET` | `.dev.vars`, copied from `.dev.vars.example` | `vars` in `wrangler.jsonc`, secrets with `npx wrangler secret put <NAME>` |
 | Shell | Test and tooling knobs | none | none |
 
 - The worker does not read `.env.local`, and the app does not read `.dev.vars`. A value shared by
-  both sides (`TELEMETRY_INGEST_SECRET`, `TOURNAMENT_SECRET`) is set in both places and must be
+  both sides (`TELEMETRY_INGEST_SECRET`, `TOURNAMENT_SECRET`, `CHARACTER_TICKET_SECRET`) is set in both places and must be
   identical.
 - `NEXT_PUBLIC_*` values are inlined into the browser bundle at build time. Changing one needs a
   rebuild. `src/config/deployment.config.ts` reads each one literally for that reason.
@@ -43,6 +43,7 @@ does when the value is missing.
 | `TELEMETRY_INGEST_URL` | worker `vars` | `party/worker.ts` | No | Worker records no telemetry | Endpoint the worker posts signed event batches to (`/api/telemetry/ingest` of your app) |
 | `TELEMETRY_INGEST_SECRET` | worker secret and app | `party/worker.ts`, `src/app/api/telemetry/ingest/route.ts`, `src/infrastructure/rate-limit/rate-limit-key-secret.ts` | Both sides, same value, for telemetry and global stats | Worker: no telemetry. App: the ingest route answers 503 | HMAC key that signs and verifies telemetry batches. Also the fallback source for `RATE_LIMIT_KEY_SECRET` |
 | `TOURNAMENT_SECRET` | worker secret and app | `party/worker.ts`, `src/infrastructure/tournament/tournament-config.ts` | Both sides, same value, for tournaments | Tournaments are unavailable: no tickets issued, worker refuses tickets | Signs match tickets and result reports. Surrounding whitespace is trimmed on both sides. See [tournaments.md](../accounts/tournaments.md#configuration) |
+| `CHARACTER_TICKET_SECRET` | worker secret and app | `party/worker.ts`, `src/infrastructure/account/hmac-character-ticket-signer.ts` | Both sides, same value, for looks at the table | App: `POST /api/account/character/ticket` answers 503. Worker ignores tickets. Seats of signed-in players show a silhouette to anyone who cannot see their account | Signs character tickets (a username and a look). Surrounding whitespace is trimmed on the app side. See [characters.md](../client/characters.md#at-the-table) |
 | `TOURNAMENT_RESULT_URL` | worker `vars` | `party/worker.ts`, `party/tournament/tournament-match-services.ts` | For tournaments | The worker offers no tournaments | Where the worker posts attested match results (`/api/tournaments/match-results` of your app) |
 | `DATABASE_URL` | app | `src/infrastructure/db/neon.ts`, `src/infrastructure/db/pg-pool.ts`, `scripts/db-migrate.mjs`, `scripts/telemetry-query.mjs` | For accounts, friends, tournaments, leaderboard, community stats and stored telemetry | Those features answer "unavailable" (`isDatabaseConfigured()`) | Neon Postgres connection string (pooled). The HTTP driver needs Neon |
 | `DATABASE_URL_UNPOOLED` | app environment, read by migrations only | `scripts/db-migrate.mjs` | No | Falls back to `DATABASE_URL` | Direct (non-pooled) connection that `npm run db:migrate` uses |

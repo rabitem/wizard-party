@@ -14,6 +14,7 @@ import {
   SessionValidationService,
   type PlayerJoinedEvent,
 } from '../../../domain';
+import type { CharacterAppearance } from '../../../domain/character';
 
 export interface JoinGameInput {
   game: Game;
@@ -23,6 +24,8 @@ export interface JoinGameInput {
   roomSettings?: IRoomSettings;
   maxPlayers: number;
   existingPlayerId?: string; // For reconnection - the playerId this persistentId maps to
+  /** A look a verified character ticket proved; absent keeps the seat's look as it is. */
+  appearance?: CharacterAppearance;
 }
 
 export interface JoinGameOutput {
@@ -34,6 +37,11 @@ export interface JoinGameOutput {
   sanitizedName: string;
   /** Set when the returning player became host (the table had no connected human host). */
   newHostId?: string;
+}
+
+/** A verified character ticket's look goes on the seat; without one the seat keeps its look. */
+function wearTicketLook(player: Player, appearance: CharacterAppearance | undefined): void {
+  if (appearance) player.appearance = appearance;
 }
 
 /**
@@ -80,6 +88,7 @@ export class JoinGameUseCase {
 
         // Takes the seat back, also from a bot that held it while they were away.
         existingPlayer.reclaimByHuman(sanitizedName);
+        wearTicketLook(existingPlayer, input.appearance);
         const newHostId = game.ensureHost() ?? undefined;
 
         return {
@@ -118,6 +127,7 @@ export class JoinGameUseCase {
 
     // 8. Create new player
     const player = new Player(playerId, sanitizedName);
+    wearTicketLook(player, input.appearance);
     const isFirstPlayer = game.players.length === 0;
 
     // Set host if first player

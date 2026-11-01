@@ -25,6 +25,7 @@ import { attestSeat, cryptoSessionCredentials } from '../session/seat-sessions';
 import { TOURNAMENTS_UNAVAILABLE, TournamentMatchController, type TournamentMatchServices } from '../tournament';
 import { systemTimers, type RoomTimers } from './ports';
 import { RoomState } from './room-state';
+import type { CharacterTicketVerifier } from '../session/character-tickets';
 import { RoomMessaging } from './room-messaging';
 import { RoomScheduler } from './room-scheduler';
 import { RoomClockwork, type BotPacing } from './room-clockwork';
@@ -37,6 +38,8 @@ export interface GameRoomOptions {
   sessionCredentials?: ISessionCredentialFactory;
   /** Ticket verification, result outbox and alarm of tournament match mode; unavailable by default. */
   tournament?: TournamentMatchServices;
+  /** Verifies character tickets on JOIN_GAME; without it seats show no look. */
+  characterTickets?: CharacterTicketVerifier | null;
   /** In-memory timers (bot pacing, disconnect debounce); the global timers by default. */
   timers?: RoomTimers;
   /** How bots are paced; automatic with the configured delay by default. */
@@ -100,6 +103,7 @@ export class GameRoom {
       telemetry,
       rateLimiter: this.rateLimiter,
       tournament: this.tournament,
+      characterTickets: options.characterTickets ?? null,
       connections: this.connections,
       context: () => this.getContext(),
       attestSeat: options.attestSeat ?? (() => undefined),

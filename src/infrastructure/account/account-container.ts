@@ -6,6 +6,7 @@ import {
   ExportAccountDataUseCase,
   GetAccountOverviewUseCase,
   GetCharacterUseCase,
+  IssueCharacterTicketUseCase,
   GetCommunityStatsUseCase,
   GetLeaderboardsUseCase,
   GetPublicProfileUseCase,
@@ -38,6 +39,8 @@ import { PostgresLeaderboardReader } from './postgres-leaderboard-reader';
 import { PostgresProfileRepository } from './postgres-profile-repository';
 import { PostgresPublicProfileReader } from './postgres-public-profile-reader';
 import { VercelBlobAudioStorage } from './vercel-blob-audio-storage';
+import { HmacCharacterTicketSigner } from './hmac-character-ticket-signer';
+import { CHARACTER_TICKET } from '@shared/realtime/character-ticket';
 
 /** Composition root of the account context: the only place that knows concrete adapters. */
 function createAccountServices() {
@@ -56,6 +59,8 @@ function createAccountServices() {
   const calculator = new ProgressCalculator(results, progress, tournamentHistory, clock);
   const ensureProfile = new EnsureProfileUseCase(profiles, clock);
 
+  const getCharacter = new GetCharacterUseCase(characters, documents, calculator);
+
   return {
     ensureProfile,
     getOverview: new GetAccountOverviewUseCase(ensureProfile, calculator, results),
@@ -70,8 +75,9 @@ function createAccountServices() {
     importGuestProgress: new ImportGuestProgressUseCase(results, progress, calculator, clock),
     listDocuments: new ListAccountDocumentsUseCase(documents),
     saveDocument: new SaveAccountDocumentUseCase(documents),
-    getCharacter: new GetCharacterUseCase(characters, documents, calculator),
+    getCharacter,
     saveCharacter: new SaveCharacterUseCase(ensureProfile, characters, calculator),
+    issueCharacterTicket: new IssueCharacterTicketUseCase(getCharacter, new HmacCharacterTicketSigner(), clock, CHARACTER_TICKET.TTL_MS),
     listCustomSounds: new ListCustomSoundsUseCase(sounds),
     uploadCustomSound: new UploadCustomSoundUseCase(sounds, blobs, clock),
     updateCustomSound: new UpdateCustomSoundUseCase(sounds),

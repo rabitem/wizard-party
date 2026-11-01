@@ -12,6 +12,7 @@ import {
   ExportAccountDataUseCase,
   GetAccountOverviewUseCase,
   GetCharacterUseCase,
+  IssueCharacterTicketUseCase,
   GetCommunityStatsUseCase,
   GetLeaderboardsUseCase,
   GetPublicProfileUseCase,
@@ -99,7 +100,10 @@ import {
   SequentialTournamentIds,
 } from '@shared/application/use-cases/tournament/tournament-test-fakes';
 
+import { CHARACTER_TICKET } from '@shared/realtime/character-ticket';
+
 import type { AccountServices } from '@/infrastructure/account/account-container';
+import { HmacCharacterTicketSigner } from '@/infrastructure/account/hmac-character-ticket-signer';
 import type { SessionUser } from '@/infrastructure/auth/auth';
 import type { SocialServices } from '@/infrastructure/social/social-container';
 import type { TournamentServices } from '@/infrastructure/tournament/tournament-container';
@@ -110,6 +114,7 @@ import { MemoryBlobs, MemoryDocuments, MemorySounds, StubReadModels } from './ac
 export const T0 = 1_800_000_000_000;
 export const APP_ORIGIN = 'https://wizardparty.fun';
 export const TICKET_SECRET = 'route-test-tournament-secret';
+export const CHARACTER_TICKET_SECRET = 'route-test-character-secret';
 
 function createAccount(clock: { now(): number }, tournamentRepo: MemoryTournamentRepository, readModels: StubReadModels) {
   const results = new MemoryGameResults();
@@ -121,6 +126,7 @@ function createAccount(clock: { now(): number }, tournamentRepo: MemoryTournamen
   const characters = new MemoryCharacters();
   const calculator = new ProgressCalculator(results, progress, tournamentRepo, clock);
   const ensureProfile = new EnsureProfileUseCase(profiles, clock);
+  const getCharacter = new GetCharacterUseCase(characters, documents, calculator);
   const services: AccountServices = {
     ensureProfile,
     getOverview: new GetAccountOverviewUseCase(ensureProfile, calculator, results),
@@ -135,8 +141,9 @@ function createAccount(clock: { now(): number }, tournamentRepo: MemoryTournamen
     importGuestProgress: new ImportGuestProgressUseCase(results, progress, calculator, clock),
     listDocuments: new ListAccountDocumentsUseCase(documents),
     saveDocument: new SaveAccountDocumentUseCase(documents),
-    getCharacter: new GetCharacterUseCase(characters, documents, calculator),
+    getCharacter,
     saveCharacter: new SaveCharacterUseCase(ensureProfile, characters, calculator),
+    issueCharacterTicket: new IssueCharacterTicketUseCase(getCharacter, new HmacCharacterTicketSigner(() => CHARACTER_TICKET_SECRET), clock, CHARACTER_TICKET.TTL_MS),
     listCustomSounds: new ListCustomSoundsUseCase(sounds),
     uploadCustomSound: new UploadCustomSoundUseCase(sounds, blobs, clock),
     updateCustomSound: new UpdateCustomSoundUseCase(sounds),

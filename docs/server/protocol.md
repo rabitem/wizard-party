@@ -197,8 +197,9 @@ is always `createPersonalizedState` for the receiving seat
 Match mode (`party/tournament/`, [../accounts/tournaments.md](../accounts/tournaments.md#game-worker-match-mode))
 runs inside the same pipeline:
 
-- `JOIN_GAME` in a match room (or with a `tournamentTicket`) is decoded and budgeted like every
-  join. The ticket is verified asynchronously; meanwhile the socket's later frames are held (at
+- `JOIN_GAME` in a match room (or with a `tournamentTicket`, or an `appearanceTicket` on a worker
+  with `CHARACTER_TICKET_SECRET`) is decoded and budgeted like every join. Tickets are verified
+  asynchronously (both at once); meanwhile the socket's later frames are held (at
   most `TOURNAMENT_ROOM_LIMITS.MAX_HELD_MESSAGES_PER_JOIN`) and handled in order afterwards, each
   as its own transaction. The join itself runs as one transaction under the command's telemetry
   cause, with the client's `protocolVersion` and `sessionToken`, so a protocol-2 member gets an

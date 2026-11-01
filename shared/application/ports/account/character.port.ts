@@ -6,3 +6,17 @@ export interface ICharacterRepository {
   get(userId: string): Promise<unknown | null>;
   save(userId: string, appearance: CharacterAppearance): Promise<void>;
 }
+
+/** What a character ticket states: the account named `name` looks like this until `expiresAt`. */
+export interface CharacterTicketStatement {
+  name: string;
+  appearance: CharacterAppearance;
+  /** Epoch ms. */
+  expiresAt: number;
+}
+
+/** Signs character tickets the game worker verifies (see shared/realtime/character-ticket.ts). */
+export interface ICharacterTicketSigner {
+  /** Throws AccountError('unavailable') when no secret is configured. */
+  sign(statement: CharacterTicketStatement): Promise<string>;
+}

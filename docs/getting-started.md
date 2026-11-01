@@ -68,7 +68,7 @@ Two files carry local configuration, and neither is required.
 Both templates explain every value in comments. Three rules to keep:
 
 - The worker does not read `.env.local`, and the app does not read `.dev.vars`. A secret shared
-  by both sides (`TELEMETRY_INGEST_SECRET`, `TOURNAMENT_SECRET`) must have the same value in each
+  by both sides (`TELEMETRY_INGEST_SECRET`, `TOURNAMENT_SECRET`, `CHARACTER_TICKET_SECRET`) must have the same value in each
   file.
 - `wrangler.jsonc` `vars` point at the production site. `.dev.vars.example` replaces them with
   `http://localhost:3000` URLs, so copy it before you run tournaments or telemetry locally.
@@ -85,6 +85,7 @@ instead of failing the app.
 | --- | --- |
 | Accounts, friends, inbox, leaderboard | `DATABASE_URL` (Neon Postgres) and `BETTER_AUTH_SECRET`; run `npm run db:migrate` once |
 | Tournaments | the above plus an identical `TOURNAMENT_SECRET` in `.env.local` and `.dev.vars` |
+| Characters at the table | accounts plus an identical `CHARACTER_TICKET_SECRET` in `.env.local` and `.dev.vars` |
 | Social sign-in | the client id and secret of at least one provider in `.env.example` |
 | Sign-in codes and other emails | `RESEND_API_KEY`; without it, emails are logged to the server console |
 | Friend presence, shared rate limits | Upstash Redis (`KV_REST_API_*` or `UPSTASH_REDIS_REST_*`) |

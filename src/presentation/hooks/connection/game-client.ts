@@ -1,3 +1,4 @@
+import { characterTicketJoinFields } from '@/lib/account/character-ticket';
 import { ExternalStore } from '@/presentation/state/external-store';
 import type { RoomSettings } from '@/presentation/types';
 
@@ -72,7 +73,9 @@ export function createGameClient({ feeds, ...sessionDeps }: GameClientDeps): Gam
     tournament: feeds.tournament,
     trace: sessionDeps.trace ?? (() => {}),
   };
-  session.setListener(createSessionListener({ context, roomChanged: feeds.roomChanged, joinFields: feeds.joinFields }));
+  // Every (re)join carries the room's tournament ticket and the player's character ticket.
+  const joinFields = (roomId: string) => ({ ...feeds.joinFields(roomId), ...characterTicketJoinFields() });
+  session.setListener(createSessionListener({ context, roomChanged: feeds.roomChanged, joinFields }));
   return { store, trick, session, errors, commands, feeds };
 }
 

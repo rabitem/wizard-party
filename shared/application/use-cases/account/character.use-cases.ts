@@ -8,7 +8,7 @@ import {
   type CharacterAppearance,
   type CharacterUnlockContext,
 } from '../../../domain/character';
-import type { IAccountDocumentRepository, ICharacterRepository } from '../../ports/account';
+import type { IAccountDocumentRepository, ICharacterRepository, ICharacterTicketSigner, IClock } from '../../ports/account';
 import { AccountError } from './account-error';
 import type { ProgressCalculator } from './progress-calculator';
 import type { AccountIdentity, EnsureProfileUseCase } from './profile.use-cases';
@@ -78,5 +78,30 @@ export class SaveCharacterUseCase {
     await this.ensureProfile.execute(identity);
     await this.characters.save(identity.userId, appearance);
     return view(appearance, true, context);
+  }
+}
+
+export interface CharacterTicket {
+  ticket: string;
+  /** Epoch ms; the client fetches a new ticket before then. */
+  expiresAt: number;
+}
+
+/**
+ * A signed ticket for the look others see (the saved look, or the one derived from the old
+ * avatar), bound to the name the player sits at tables with. The browser sends it with JOIN_GAME.
+ */
+export class IssueCharacterTicketUseCase {
+  constructor(
+    private readonly getCharacter: GetCharacterUseCase,
+    private readonly signer: ICharacterTicketSigner,
+    private readonly clock: IClock,
+    private readonly ttlMs: number
+  ) {}
+
+  async execute(identity: AccountIdentity, name: string): Promise<CharacterTicket> {
+    const { appearance } = await this.getCharacter.execute(identity);
+    const expiresAt = this.clock.now() + this.ttlMs;
+    return { ticket: await this.signer.sign({ name, appearance, expiresAt }), expiresAt };
   }
 }
