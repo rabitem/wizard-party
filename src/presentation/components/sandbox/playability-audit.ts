@@ -5,7 +5,8 @@ import { round } from './audit-log';
 import { collectControls, collectHudRegions, type HudRegion } from './hud-regions';
 import { auditLayout } from './layout-audit';
 import { buildSceneScreenModel, type SceneScreenModel } from './scene-screen-model';
-import { coverFraction, exposedTapWidths, outsideFraction, overlaps, roundRect, type ScreenRect } from './screen-geometry';
+import { exposedTapWidth, sceneHandCards } from './hand-hit-test';
+import { coverFraction, outsideFraction, overlaps, roundRect, type ScreenRect } from './screen-geometry';
 import type { SandboxSceneBridge } from './scene-bridge';
 import type { SandboxGameHandles } from './sandbox.types';
 
@@ -27,11 +28,13 @@ const HAND_PHASES = new Set(['BIDDING', 'PLAYING', 'TRUMP_SELECTION']);
 const LIST_LIMIT = 5;
 
 function flagHand(context: ScreenAuditContext, model: SceneScreenModel): void {
-  const { recorder, t, label, handles, input } = context;
-  if (!handles || !HAND_PHASES.has(handles.phase ?? '') || handles.handAnimation !== 'none' || model.hand.length === 0) return;
+  const { recorder, t, label, handles, input, bridge } = context;
+  if (!bridge || !handles || !HAND_PHASES.has(handles.phase ?? '') || handles.handAnimation !== 'none' || model.hand.length === 0) return;
 
   const viewport = { width: window.innerWidth, height: window.innerHeight };
-  const widths = exposedTapWidths(model.hand.map((card) => card.rect));
+  // What a finger can select: the scene is hit-tested, so rows, arcs and overlaps all count.
+  const cards = sceneHandCards(bridge);
+  const widths = model.hand.map((card) => exposedTapWidth(bridge, card.cardId, card.rect, cards));
   const minimum = input.touch ? PLAYABILITY_BUDGETS.MIN_HAND_CARD_TAP_PX.touch : PLAYABILITY_BUDGETS.MIN_HAND_CARD_TAP_PX.pointer;
   const narrow = widths.filter((width) => width < minimum);
   if (narrow.length > 0) {

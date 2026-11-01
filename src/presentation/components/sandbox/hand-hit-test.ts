@@ -15,6 +15,13 @@ export type HitTestBridge = Pick<SandboxSceneBridge, 'camera' | 'canvas' | 'scen
 /** Rows (share of the card's screen height from its top) and columns a tap may aim at. */
 const TAP_ROWS = [0.5, 0.35, 0.65] as const;
 const TAP_COLUMNS = 11;
+/**
+ * Lines across a card along which its tap strip is measured. A hand that wraps into rows covers
+ * the lower part of the cards behind, so the lines reach towards the top and bottom edges.
+ */
+const STRIP_ROWS = [0.1, 0.25, 0.4, 0.55, 0.7, 0.85] as const;
+/** Horizontal distance between hit-test samples along a line, in CSS px. */
+const STRIP_STEP_PX = 2;
 
 function canvasRect(canvas: HTMLCanvasElement): ScreenRect {
   const { left, top, right, bottom } = canvas.getBoundingClientRect();
@@ -51,6 +58,30 @@ export function handCardAt(bridge: HitTestBridge, point: ClientPoint, cards: THR
   raycaster.setFromCamera(ndc, bridge.camera);
   const [nearest] = raycaster.intersectObjects(cards, true);
   return nearest ? owningHandCard(nearest.object) : null;
+}
+
+/**
+ * Width of the widest unbroken strip of `cardId` a finger can land on, in CSS px: along lines
+ * across the card's screen rectangle, the longest run of points whose ray hits this card first.
+ * It holds for any hand shape (a fan, an arc, rows that cover each other), because it asks the
+ * scene which card a tap selects instead of guessing which cards are neighbours.
+ */
+export function exposedTapWidth(bridge: HitTestBridge, cardId: string, rect: ScreenRect, cards: THREE.Object3D[] = handCards(bridge.scene)): number {
+  let widest = 0;
+  for (const row of STRIP_ROWS) {
+    const y = rect.top + row * rectHeight(rect);
+    let run = 0;
+    for (let x = rect.left + STRIP_STEP_PX / 2; x < rect.right; x += STRIP_STEP_PX) {
+      run = handCardAt(bridge, { x, y }, cards) === cardId ? run + STRIP_STEP_PX : 0;
+      widest = Math.max(widest, run);
+    }
+  }
+  return widest;
+}
+
+/** Every hand card in the scene, for callers that hit-test many points. */
+export function sceneHandCards(bridge: HitTestBridge): THREE.Object3D[] {
+  return handCards(bridge.scene);
 }
 
 /**

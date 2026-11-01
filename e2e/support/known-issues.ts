@@ -18,31 +18,23 @@ export interface KnownIssue {
   reason: string;
 }
 
-/** Portrait phones up to the Pro Max at 3 to 5 players: the largest hand fans into rows. */
-const NARROW_HAND_TAP = 'The largest hand on a narrow phone: hand cards expose less than the 24 px tap minimum (tap-target-small). The hand fans into two or three rows, and the audit measures each strip against the neighbouring cards of every row.';
 /** Landscape phones (750x340: iPhone 14 landscape, the matrix's narrow landscape; Pixel 7 landscape) at every table size. */
 const LANDSCAPE_PROMPT = 'A landscape phone: the bidding panel in the prompt region covers the name and bid labels of the far seats (hud-occludes-scene).';
 
 export const KNOWN_ISSUES: readonly KnownIssue[] = [
   {
-    title: /^(galaxy-fold-folded|iphone-se) \(\d+x\d+\) › 3 players: the largest hand is playable$/,
+    title: /^phone-landscape-narrow \(\d+x\d+\) › 6 players: the largest hand is playable$/,
     projects: /^viewport-matrix/,
     mode: 'fails',
-    reason: NARROW_HAND_TAP,
+    reason: LANDSCAPE_PROMPT,
   },
   {
-    title: /^phone-landscape-narrow \(\d+x\d+\) › [36] players: the largest hand is playable$/,
-    projects: /^viewport-matrix/,
+    title: /^phone-landscape-narrow \(\d+x\d+\) › 3 players: the largest hand is playable$/,
+    projects: /^viewport-matrix-(webkit|firefox)$/,
     mode: 'fails',
-    reason: `${LANDSCAPE_PROMPT} At 3 players also ${NARROW_HAND_TAP}`,
+    reason: LANDSCAPE_PROMPT,
   },
-  // The device projects (viewports.spec.ts): the same layout bugs per device and table size.
-  {
-    title: /^3 players: the largest hand is playable$/,
-    projects: /^(android-phone|fold-cover|iphone|iphone-pro-max|iphone-se)$/,
-    mode: 'fails',
-    reason: NARROW_HAND_TAP,
-  },
+  // The device projects (viewports.spec.ts).
   {
     title: /^3 players: the largest hand is playable$/,
     projects: /^android-tablet$/,
@@ -50,22 +42,10 @@ export const KNOWN_ISSUES: readonly KnownIssue[] = [
     reason: 'Galaxy Tab S9 portrait: when your card leaves the 20-card hand, the hand fits 19 cards and a hand card jumps 0.25 NDC in one frame (teleport).',
   },
   {
-    title: /^4 players: the largest hand is playable$/,
-    projects: /^(android-phone|fold-cover|iphone|iphone-pro-max|iphone-se)$/,
-    mode: 'fails',
-    reason: NARROW_HAND_TAP,
-  },
-  {
-    title: /^5 players: the largest hand is playable$/,
-    projects: /^fold-cover$/,
-    mode: 'fails',
-    reason: NARROW_HAND_TAP,
-  },
-  {
     title: /^[3-6] players: the largest hand is playable$/,
     projects: /^(android-landscape|iphone-landscape)$/,
     mode: 'fails',
-    reason: `${LANDSCAPE_PROMPT} At 3 players also ${NARROW_HAND_TAP}`,
+    reason: LANDSCAPE_PROMPT,
   },
 ];
 

@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
   coverFraction,
-  exposedTapWidths,
   intersection,
   ndcToClientRect,
   outsideFraction,
@@ -42,15 +41,5 @@ describe('screen geometry', () => {
     expect(outsideFraction(rect(10, 10, 20, 20), viewport)).toBe(0);
     expect(outsideFraction(rect(90, 0, 110, 10), viewport)).toBe(0.5);
     expect(outsideFraction(rect(200, 200, 210, 210), viewport)).toBe(1);
-  });
-
-  it('should give each card of a fan the strip up to its neighbour, the outer cards their full width', () => {
-    // Four 60px cards, 20px apart, given out of order.
-    const cards = [rect(40, 0, 100, 90), rect(0, 0, 60, 90), rect(60, 0, 120, 90), rect(20, 0, 80, 90)];
-    expect(exposedTapWidths(cards)).toEqual([20, 60, 60, 20]);
-  });
-
-  it('should cap the strip at the card width when cards are spread apart', () => {
-    expect(exposedTapWidths([rect(0, 0, 50, 80), rect(100, 0, 150, 80)])).toEqual([50, 50]);
   });
 });

@@ -69,26 +69,6 @@ export function outsideFraction(rect: ScreenRect, viewport: { width: number; hei
   return 1 - (visible ? rectArea(visible) / area : 0);
 }
 
-/**
- * Width of the strip each card of a fanned hand exposes to a tap, in the order given.
- * Neighbouring cards overlap, so whichever is on top, a card owns at most the distance to its
- * neighbours' centres; the outermost cards own their full width on the open side.
- */
-export function exposedTapWidths(rects: readonly ScreenRect[]): number[] {
-  const order = rects.map((rect, index) => ({ index, centre: (rect.left + rect.right) / 2 }))
-    .sort((a, b) => a.centre - b.centre);
-  const widths = new Array<number>(rects.length).fill(0);
-  order.forEach((entry, position) => {
-    const width = rectWidth(rects[entry.index]);
-    const previous = order[position - 1];
-    const next = order[position + 1];
-    const gapLeft = previous ? entry.centre - previous.centre : width;
-    const gapRight = next ? next.centre - entry.centre : width;
-    widths[entry.index] = Math.min(width, Math.max(gapLeft, gapRight));
-  });
-  return widths;
-}
-
 export function roundRect(rect: ScreenRect): ScreenRect {
   return { left: Math.round(rect.left), top: Math.round(rect.top), right: Math.round(rect.right), bottom: Math.round(rect.bottom) };
 }
