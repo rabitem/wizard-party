@@ -37,6 +37,14 @@ const UNCAPPED_FIREFOX_PREFS = { 'layout.frame_rate': 0, 'webgl.force-enabled': 
 /** Test browsers stay silent: the game's sound code still runs, nothing reaches the speakers. */
 const MUTED_CHROMIUM_ARGS = ['--mute-audio'];
 const MUTED_FIREFOX_PREFS = { 'media.volume_scale': '0.0' };
+/**
+ * Headless Firefox on Linux creates no WebGL context at all, not even with webgl.force-enabled
+ * ("tryNativeGL", FEATURE_FAILURE_WEBGL_EXHAUSTED_DRIVERS), so every sandbox run would end in
+ * webgl-unavailable. Headed on a virtual display it renders through Mesa (llvmpipe): CI starts
+ * Xvfb for the Firefox jobs (e2e.yml); locally use xvfb-run when there is no display. Windows and
+ * macOS keep headless Firefox, which has WebGL.
+ */
+const FIREFOX_HEADLESS = process.platform !== 'linux';
 
 /** The viewport matrix sets its own viewports; it runs once per engine, in its own projects. */
 const MATRIX_SPEC = '**/playability-matrix.spec.ts';
@@ -54,7 +62,9 @@ type ProjectUse = NonNullable<Project['use']>;
 function onEngine(use: ProjectUse, uncapped = true): ProjectUse {
   const engine = use.defaultBrowserType ?? 'chromium';
   if (engine === 'chromium') return { ...use, launchOptions: { args: [...MUTED_CHROMIUM_ARGS, ...(uncapped ? UNCAPPED_CHROMIUM_ARGS : [])] } };
-  if (engine === 'firefox') return { ...use, launchOptions: { firefoxUserPrefs: { ...MUTED_FIREFOX_PREFS, ...(uncapped ? UNCAPPED_FIREFOX_PREFS : {}) } } };
+  if (engine === 'firefox') {
+    return { ...use, headless: FIREFOX_HEADLESS, launchOptions: { firefoxUserPrefs: { ...MUTED_FIREFOX_PREFS, ...(uncapped ? UNCAPPED_FIREFOX_PREFS : {}) } } };
+  }
   // WebKit (the Safari engine) has no frame-rate override; its frame rates are capped at the display rate.
   // On Windows, Playwright's WebKit lacks Web Audio and often GPU WebGL: treat it as a smoke run there.
   return use;
