@@ -9,7 +9,7 @@ import { DEFAULT_OG_REALM } from "./og-realm";
 /** The room moves right by this much, so its lit corner and table clear the text column. */
 const ROOM_SHIFT_X = 260;
 
-export const HOME_PREVIEW_ALT = "Wizard Party: bid your tricks, then hit them exactly. A free online Wizard card game at a 3D table.";
+export const HOME_PREVIEW_ALT = "Wizard Party: predict, play, prevail. A free online Wizard card game at a 3D table.";
 
 /**
  * The site's link preview: a realm's real game room (Classic for the site itself) with its lit
@@ -30,7 +30,7 @@ export function renderHomePreview(realm: string = DEFAULT_OG_REALM): ImageRespon
           <BrandMarkSvg size={88} />
           <div style={{ marginTop: 22, fontSize: 96, lineHeight: 1, color: OG_COLORS.TEXT, letterSpacing: "-0.02em" }}>Wizard Party</div>
           <div style={{ marginTop: 22, width: 120, height: 2, background: OG_COLORS.BRASS }} />
-          <div style={{ marginTop: 22, fontSize: 34, lineHeight: 1.3, color: OG_COLORS.BRASS }}>Bid your tricks, then hit them exactly.</div>
+          <div style={{ marginTop: 22, fontSize: 34, lineHeight: 1.3, color: OG_COLORS.BRASS }}>Predict. Play. Prevail.</div>
           <div style={{ marginTop: 8, fontSize: 26, lineHeight: 1.3, color: OG_COLORS.MUTED }}>Free in your browser, with friends or bots.</div>
           <div style={{ marginTop: 44, display: "flex", alignItems: "center", gap: 18 }}>
             <RealmLensRow size={30} />
