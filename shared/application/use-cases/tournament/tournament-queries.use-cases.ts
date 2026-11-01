@@ -8,7 +8,9 @@ import {
   registrationDueAt,
   type Tournament,
 } from '../../../domain/tournament';
+import type { CharacterAppearance } from '../../../domain/character';
 import type { IClock } from '../../ports/account';
+import type { IPlayerLooks } from '../../ports/social';
 import type { ITournamentHistoryReader, ITournamentRepository, TournamentListPosition, TournamentListStatus, TournamentSummary } from '../../ports/tournament';
 import type { TournamentStore } from './tournament-store';
 import {
@@ -30,15 +32,34 @@ export function canView(tournament: Tournament, viewerId: string | null, code: u
   return normalizeInviteCode(code) !== null && normalizeInviteCode(code) === tournament.inviteCode;
 }
 
+const NO_LOOKS: ReadonlyMap<string, CharacterAppearance> = new Map();
+
 export class GetTournamentUseCase {
-  constructor(private readonly store: TournamentStore) {}
+  /** Without `looks`, standings carry no characters and the podium shows silhouettes. */
+  constructor(
+    private readonly store: TournamentStore,
+    private readonly looks?: IPlayerLooks
+  ) {}
 
   /** `viewerId` is null for guests; `code` unlocks private tournaments. */
   async execute(viewerId: string | null, tournamentId: unknown, code?: unknown): Promise<TournamentDetailView> {
     const { tournament, now } = await this.store.read(tournamentId);
     // Answer exactly like an unknown id, so private tournaments can't be probed.
     if (!canView(tournament, viewerId, code)) throw new TournamentError('not_found', 'No such tournament.');
-    return toDetailView(tournament, viewerId, now);
+    return toDetailView(tournament, viewerId, now, await this.podiumLooks(tournament));
+  }
+
+  /**
+   * Looks for the final podium: only once the tournament is completed, so the polled pages of
+   * running tournaments cost no extra query. A failed read shows silhouettes, not an error.
+   */
+  private async podiumLooks(tournament: Tournament): Promise<ReadonlyMap<string, CharacterAppearance>> {
+    if (!this.looks || tournament.status !== 'completed') return NO_LOOKS;
+    try {
+      return await this.looks.looksOf(tournament.entrants.map((entrant) => entrant.userId));
+    } catch {
+      return NO_LOOKS;
+    }
   }
 }
 

@@ -4,6 +4,7 @@ import { SocialError } from '../friends/social-error';
 import { TOURNAMENT_LIMITS, TOURNAMENT_TIMING, isTournamentError, type Tournament, type TournamentErrorCode } from '../../../domain/tournament';
 import { verifyMatchTicket, type MatchProgressReport, type MatchResultReport } from '../../../tournament';
 import type { InboxItem } from '../../../domain/social';
+import { DEFAULT_APPEARANCE, type CharacterAppearance } from '../../../domain/character';
 import {
   CancelTournamentUseCase,
   CreateTournamentUseCase,
@@ -75,7 +76,7 @@ function setup() {
     register,
     withdraw: new WithdrawFromTournamentUseCase(store),
     invite: new InviteToTournamentUseCase(store, players, players, inbox, throttle),
-    get: new GetTournamentUseCase(store),
+    get: new GetTournamentUseCase(store, players),
     list: new ListTournamentsUseCase(repo, store, clock),
     mine: new ListMyTournamentsUseCase(repo, repo),
     trophies: new GetTrophyCabinetUseCase(repo),
@@ -293,6 +294,23 @@ describe('a full series', () => {
     expect(await h.record.execute(report)).toEqual({ outcome: 'duplicate', tournamentStatus: 'completed' });
     expect(h.inbox.ofKind('tournament_finished')).toHaveLength(5);
     expect(h.progress.refreshed).toHaveLength(1);
+  });
+
+  it('gives the standings of a finished tournament each account look, for the podium', async () => {
+    const h = setup();
+    const look: CharacterAppearance = { ...DEFAULT_APPEARANCE, palette: 'palette:ember' };
+    h.players.add(user(1), { appearance: look });
+    const id = await seeded(h, 4, { settings: { rounds: 1 } });
+    await h.start.execute(HOST, id);
+    // A running tournament's polled page reads no looks.
+    expect((await h.get.execute(null, id)).standings.map((s) => s.appearance)).toEqual([undefined, undefined, undefined, undefined]);
+
+    h.players.players.delete(user(2)); // a deleted account
+    await h.record.execute(wireReport(stored(h, id), stored(h, id).matches[0].id));
+    const looks = new Map((await h.get.execute(null, id)).standings.map((s) => [s.userId, s.appearance]));
+    expect(looks.get(user(1))).toEqual(look);
+    expect(looks.get(user(2))).toBeUndefined();
+    expect(looks.get(user(3))).toEqual(DEFAULT_APPEARANCE);
   });
 
   it('ignores a result for an unknown tournament with not_found', async () => {

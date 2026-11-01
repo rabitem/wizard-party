@@ -1,4 +1,4 @@
-import { DEFAULT_APPEARANCE } from '../../../domain/character';
+import { DEFAULT_APPEARANCE, type CharacterAppearance } from '../../../domain/character';
 import {
   DEFAULT_SOCIAL_SETTINGS,
   INBOX_KINDS,
@@ -21,6 +21,7 @@ import type {
   GameInviteEmail,
   IInboxRepository,
   IPlayerDirectory,
+  IPlayerLooks,
   IPublicProfileDirectory,
   IPresenceStore,
   IRoomMembershipVerifier,
@@ -42,7 +43,7 @@ const pair = (a: string, b: string) => `${a}->${b}`;
 type StoredItem = InboxItem & { userId: string; actorId: string | null; dedupeKey: string | null };
 
 export class MemorySocial
-  implements ISocialGraphRepository, IPlayerDirectory, IPublicProfileDirectory, IInboxRepository, IPresenceStore, IRoomRosterStore, IRoomMembershipVerifier, ISocialThrottle, ISocialMailer
+  implements ISocialGraphRepository, IPlayerDirectory, IPlayerLooks, IPublicProfileDirectory, IInboxRepository, IPresenceStore, IRoomRosterStore, IRoomMembershipVerifier, ISocialThrottle, ISocialMailer
 {
   players = new Map<string, SocialPlayer>();
   settings = new Map<string, SocialSettings>();
@@ -177,6 +178,13 @@ export class MemorySocial
       .filter((player) => player.hasPublicProfile && player.username.includes(query))
       .slice(0, limit)
       .map(({ username, displayName, avatar, appearance, level }) => ({ username, displayName, avatar, appearance, level }));
+  }
+  // IPlayerLooks
+  async looksOf(userIds: readonly string[]): Promise<ReadonlyMap<string, CharacterAppearance>> {
+    return new Map(userIds.flatMap((id) => {
+      const player = this.players.get(id);
+      return player ? [[id, player.appearance] as const] : [];
+    }));
   }
   async findManyForViewer(viewerId: string, userIds: readonly string[]): Promise<PlayerSearchResult[]> {
     return userIds.flatMap((id) => {

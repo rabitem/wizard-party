@@ -1,7 +1,8 @@
 import 'server-only';
 
+import { displayedAppearance, type CharacterAppearance } from '@shared/domain/character';
 import type { PlayerSearchResult, PublicPlayerCard, SocialPlayer, SocialSettings, SocialSettingsChanges } from '@shared/domain/social';
-import type { EmailContact, IPlayerDirectory, IPublicProfileDirectory } from '@shared/application/ports/social';
+import type { EmailContact, IPlayerDirectory, IPlayerLooks, IPublicProfileDirectory } from '@shared/application/ports/social';
 
 import { getSql } from '../db/neon';
 import {
@@ -17,7 +18,7 @@ import {
 /** Upper bound of candidates per search branch before ranking. */
 const SEARCH_CANDIDATES = 25;
 
-export class PostgresPlayerDirectory implements IPlayerDirectory, IPublicProfileDirectory {
+export class PostgresPlayerDirectory implements IPlayerDirectory, IPublicProfileDirectory, IPlayerLooks {
   async findById(userId: string): Promise<SocialPlayer | null> {
     const rows = (await getSql()`SELECT * FROM social_players WHERE user_id = ${userId}`) as SocialPlayerRow[];
     return rows[0] ? toSocialPlayer(rows[0]) : null;
@@ -84,6 +85,14 @@ export class PostgresPlayerDirectory implements IPlayerDirectory, IPublicProfile
       const { username, displayName, avatar, appearance, level } = toSocialPlayer(row);
       return { username, displayName, avatar, appearance, level };
     });
+  }
+
+  async looksOf(userIds: readonly string[]): Promise<ReadonlyMap<string, CharacterAppearance>> {
+    if (userIds.length === 0) return new Map();
+    const rows = (await getSql()`
+      SELECT user_id, avatar, appearance FROM social_players WHERE user_id = ANY(${userIds as string[]}::text[])
+    `) as Pick<SocialPlayerRow, 'user_id' | 'avatar' | 'appearance'>[];
+    return new Map(rows.map((row) => [row.user_id, displayedAppearance(row.appearance, row.avatar)]));
   }
 
   async findManyForViewer(viewerId: string, userIds: readonly string[]): Promise<PlayerSearchResult[]> {

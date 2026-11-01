@@ -145,6 +145,34 @@ makes the test fail until they are rendered.
   (`CharacterPreview`, loaded with `next/dynamic` so three.js stays out of the other tabs) and
   cheers once after a save. Part rewards on the Rewards tab show the starter look wearing the part.
 
+## Podium
+
+`CharacterPodium` (`components/podium/`) stands the top three on a 1-2-3 podium: the champion on
+the tallest step, in the middle, cheering (`CHEER_MS`, then idle for `CHEER_REST_MS`, again);
+second and third idle. Names and scores sit under the steps as text, so screen readers and the 2D
+fallback read the same list.
+
+- **Who stands where.** Callers pass ranked players (`PodiumContender`); `podiumStands` puts each
+  on the step of their rank. The rank comes from the ranking's owner and is never derived again:
+  `getStandings` at game end (`GameEndPodium`, under the title), the tournament standings in
+  `FinalPodium`. Tied players share a step and the next step stays empty (1, 1, 3); more than
+  `PODIUM.MAX_PER_STEP` on one step are counted ("+2 more").
+- **Looks.** Game end dresses each seat by `seatAppearance`. The tournament podium uses the look a
+  completed tournament's standings carry (`StandingView.appearance`, see
+  [tournaments](../accounts/tournaments.md)), and the viewer's own look from the page. Without one a
+  player is a silhouette: the default look in one dark colour in 3D, `CharacterFace`'s silhouette
+  in 2D.
+- **Loading.** `CharacterPodium` is light; `PodiumStage` (three.js, the render tier) and
+  `PodiumScene` (react-three-fiber, the figures) load with `next/dynamic` when a podium shows.
+- **3D or 2D.** `podiumRenderMode` shows figures on the tiers in `PODIUM.FIGURE_TIERS` (the tier
+  the game table would start with: forced, learned, else detected) and portraits on the low tier,
+  without WebGL, or when the figures fail. The game table is a different page, so the podium's
+  small canvas is the only 3D context there; R3F releases it on unmount.
+- **Motion.** With `prefers-reduced-motion` nobody cheers; figures stay idle.
+- **Layout.** The stage is always three steps wide (orthographic camera fitted to the width), so a
+  step lines up with the third of the width its names sit under. Sizes, colours, camera and timings
+  are in `src/presentation/config/podium.config.ts`.
+
 ## At the table
 
 Every player sees every signed-in player's look, guests included, because the room carries it:

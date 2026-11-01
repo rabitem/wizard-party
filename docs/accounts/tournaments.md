@@ -182,6 +182,11 @@ in each definition and is scaled by `fieldSizeFactor(entrants)` (`TOURNAMENT_XP`
   viewer may do, `myMatch`, `resolvableMatchIds`), `TournamentListPage`, `MyTournamentsView`,
   `MatchTicketView`. A private tournament's `inviteCode` is only in the view of the host and the
   entrants.
+- **Standings** (`StandingView`) are the domain's `Standing` rows plus an optional `appearance`:
+  the look other players see (`displayedAppearance`, read through `IPlayerLooks` from the
+  `social_players` view). `GetTournamentUseCase` reads looks only for completed tournaments, for the
+  final podium, so polling a running one costs no extra query. A deleted account, a failed read or
+  an older response carries none, and the podium shows a silhouette.
 - **Account deletion.** `PurgeTournamentDataUseCase` runs before the account row goes: it cancels
   hosted tournaments still in registration (entrants are not notified), clears the host's handle
   and replaces the host's name with "Former host" on every tournament they hosted. Running
@@ -493,7 +498,9 @@ results go to another deployment and are refused there.
 
 Stored per entrant: the username snapshot (as written and lowercase), level at registration,
 results (scores, bids) and awards. Public tournament pages show names, standings and awards of
-entrants; private ones only to holders of the code. Match-room game state never carries account
+entrants; private ones only to holders of the code. A completed tournament's standings also carry
+each entrant's character look, which is public already (tables, profiles, the leaderboard); looks
+are read live, not stored with the tournament. Match-room game state never carries account
 ids; the tournament views and the ticket, whose roster the worker binds seats and results by, carry
 the opaque ids. Seat lists of past matches keep the opaque id of a deleted account, with no name
 stored beside it. Deletion and export are described under Application layer.

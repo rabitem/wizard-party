@@ -25,6 +25,7 @@ import {
   type TournamentVisibility,
   type TrophyTier,
 } from '../../../domain/tournament';
+import type { CharacterAppearance } from '../../../domain/character';
 import type { ChampionRow, TournamentSummary, TrophyRecord, UserTournamentRow } from '../../ports/tournament';
 
 /*
@@ -148,6 +149,15 @@ export interface TournamentViewerView {
   resolvableMatchIds: string[];
 }
 
+/** A standings row with the player's character look, for the final podium. */
+export interface StandingView extends Standing {
+  /**
+   * The look other players see; only on completed tournaments, and absent for accounts without a
+   * row (deleted players) or from older responses. Absent: a silhouette.
+   */
+  appearance?: CharacterAppearance;
+}
+
 export interface TournamentDetailView {
   tournament: TournamentSummaryView & {
     settings: TournamentSettings;
@@ -159,7 +169,7 @@ export interface TournamentDetailView {
   };
   entrants: TournamentEntrantView[];
   rounds: TournamentRoundView[];
-  standings: Standing[];
+  standings: StandingView[];
   awards: TournamentAwardView[];
   viewer: TournamentViewerView;
   serverTime: number;
@@ -322,8 +332,20 @@ function toViewer(tournament: Tournament, viewerId: string | null, now: number):
   };
 }
 
-/** The full, viewer-aware tournament page. */
-export function toDetailView(tournament: Tournament, viewerId: string | null, now: number): TournamentDetailView {
+function withLooks(standings: Standing[], looks: ReadonlyMap<string, CharacterAppearance>): StandingView[] {
+  return standings.map((standing) => {
+    const appearance = looks.get(standing.userId);
+    return appearance ? { ...standing, appearance } : standing;
+  });
+}
+
+/** The full, viewer-aware tournament page. `looks` are the players' characters (see GetTournamentUseCase). */
+export function toDetailView(
+  tournament: Tournament,
+  viewerId: string | null,
+  now: number,
+  looks: ReadonlyMap<string, CharacterAppearance> = new Map()
+): TournamentDetailView {
   const viewer = toViewer(tournament, viewerId, now);
   const format = getTournamentFormat(tournament.format);
   const fieldSize = Math.max(tournament.entrants.length, minimumEntrants(tournament.settings));
@@ -348,7 +370,7 @@ export function toDetailView(tournament: Tournament, viewerId: string | null, no
         finalRank: entrant.final?.rank ?? null,
       })),
     rounds: toRounds(tournament),
-    standings: tournament.status === 'registration' ? [] : computeStandings(tournament),
+    standings: tournament.status === 'registration' ? [] : withLooks(computeStandings(tournament), looks),
     awards: toAwards(tournament),
     viewer,
     serverTime: now,

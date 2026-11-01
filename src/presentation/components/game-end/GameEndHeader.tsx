@@ -1,14 +1,17 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import { IPlayer } from '@shared/domain';
 import { WINNER_NAME_LINE_CLASS } from '../name-score-layout';
 
 interface GameEndHeaderProps {
   winner: IPlayer | undefined;
   isWinner: boolean;
+  /** The podium of the top three, under the title. */
+  children?: ReactNode;
 }
 
-export function GameEndHeader({ winner, isWinner }: GameEndHeaderProps) {
+export function GameEndHeader({ winner, isWinner, children }: GameEndHeaderProps) {
   return (
     <div className="relative px-6 pt-6 pb-4 text-center">
       <div
@@ -33,20 +36,6 @@ export function GameEndHeader({ winner, isWinner }: GameEndHeaderProps) {
         ))}
       </div>
 
-      {/* Trophy icon */}
-      <div
-        className="w-20 h-20 mx-auto mb-4 rounded-xl flex items-center justify-center relative"
-        style={{
-          background: 'linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 50%, var(--accent-cta-bottom) 100%)',
-          boxShadow: '0 8px 32px color-mix(in srgb, var(--accent) 40%, transparent), inset 0 2px 0 rgba(255,255,255,0.2)',
-        }}
-      >
-        <i className="ra ra-trophy text-4xl" style={{ color: '#fff' }} />
-        <div className="absolute -top-2 left-1/2 -translate-x-1/2">
-          <i className="ra ra-crown text-xl" style={{ color: 'var(--accent-bright)' }} />
-        </div>
-      </div>
-
       <h1
         className="text-3xl font-bold mb-1"
         style={{ color: 'var(--color-amber-100)', fontFamily: 'var(--font-serif)' }}
@@ -61,6 +50,7 @@ export function GameEndHeader({ winner, isWinner }: GameEndHeaderProps) {
           </>
         )}
       </p>
+      {children ? <div className="relative mt-3">{children}</div> : null}
     </div>
   );
 }

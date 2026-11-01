@@ -1,5 +1,5 @@
 import { DEFAULT_SOCIAL_SETTINGS, type InboxDelivery, type RelationshipFacts, type SocialPlayer, type SocialSettings } from '../../../domain/social';
-import { DEFAULT_APPEARANCE } from '../../../domain/character';
+import { DEFAULT_APPEARANCE, type CharacterAppearance } from '../../../domain/character';
 import { participationOf, type Tournament, type TournamentParticipation, type TournamentRateLimitedAction } from '../../../domain/tournament';
 import { signMatchTicket, type MatchTicketClaims } from '../../../tournament';
 import type {
@@ -21,6 +21,7 @@ import type {
   TrophyRecord,
   UserTournamentRow,
 } from '../../ports/tournament';
+import type { IPlayerLooks } from '../../ports/social';
 import { summarizeTournament } from './tournament-views';
 
 /* In-memory adapters for tournament use case tests (and other slices' tests). No SQL, no indexes. */
@@ -250,7 +251,7 @@ export class SequentialTournamentIds implements ITournamentIdGenerator {
   }
 }
 
-export class FakeTournamentPlayers implements ITournamentPlayerDirectory, ITournamentRelationships {
+export class FakeTournamentPlayers implements ITournamentPlayerDirectory, ITournamentRelationships, IPlayerLooks {
   players = new Map<string, SocialPlayer>();
   settings = new Map<string, SocialSettings>();
   friends = new Set<string>();
@@ -266,6 +267,13 @@ export class FakeTournamentPlayers implements ITournamentPlayerDirectory, ITourn
 
   async getSettings(userId: string): Promise<SocialSettings> {
     return this.settings.get(userId) ?? DEFAULT_SOCIAL_SETTINGS;
+  }
+
+  async looksOf(userIds: readonly string[]): Promise<ReadonlyMap<string, CharacterAppearance>> {
+    return new Map(userIds.flatMap((userId) => {
+      const player = this.players.get(userId);
+      return player ? [[userId, player.appearance] as const] : [];
+    }));
   }
 
   async relationshipFacts(viewerId: string, targetId: string): Promise<RelationshipFacts> {
