@@ -7,7 +7,7 @@ import { LoopOnce, MeshStandardMaterial, type AnimationAction, type Event, type 
 import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js';
 import type { CharacterAppearance } from '@shared/domain/character';
 
-import { CHARACTER_CLIP_FADE_SECONDS, CHARACTER_CLIPS, SEAT_FIGURE, type CharacterClip } from '@/presentation/config/character.config';
+import { CHARACTER_CLIP_FADE_SECONDS, CHARACTER_CLIPS, CHARACTER_SILHOUETTE_COLOR, type CharacterClip } from '@/presentation/config/character.config';
 import { loadCharacterAnimations, loadCharacterModel } from './character-assets';
 import { ownFigureMaterials } from './character-palette';
 import { applyAppearance } from './character-parts';
@@ -38,7 +38,7 @@ interface CharacterFigureProps extends Omit<ComponentProps<'group'>, 'ref'> {
 let silhouetteMaterial: MeshStandardMaterial | null = null;
 
 function silhouetteOf(figure: Object3D): void {
-  silhouetteMaterial ??= new MeshStandardMaterial({ color: SEAT_FIGURE.SILHOUETTE_COLOR, roughness: 1, metalness: 0 });
+  silhouetteMaterial ??= new MeshStandardMaterial({ color: CHARACTER_SILHOUETTE_COLOR, roughness: 1, metalness: 0 });
   figure.traverse((object) => {
     if ((object as Mesh).isMesh) (object as Mesh).material = silhouetteMaterial as MeshStandardMaterial;
   });

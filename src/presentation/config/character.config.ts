@@ -47,14 +47,15 @@ export const CHARACTER_PORTRAIT = {
   CACHE_LIMIT: 200,
 } as const;
 
+/** Colour of a 3D figure whose look is unknown (a guest, or an account the viewer cannot see). */
+export const CHARACTER_SILHOUETTE_COLOR = '#1d1712';
+
 /** Opponents' figures standing at their seats on the 3D table (SeatFigure). */
 export const SEAT_FIGURE = {
   /** The model is about 2.7 units tall; this makes a figure about 0.75 units. */
   SCALE: 0.28,
   /** How far behind the seat plate's centre the figure stands, away from the table centre. */
   OUTWARD_OFFSET: 0.12,
-  /** Colour of a figure whose look is unknown (a guest, or an account the viewer cannot see). */
-  SILHOUETTE_COLOR: '#1d1712',
 } as const;
 
 /** The account's Character tab (CharacterPreview). */

@@ -5,8 +5,6 @@ import { useSyncExternalStore } from 'react';
 import { equippedCosmetics, type AvatarFrameId } from '@shared/domain/account';
 import type { CharacterAppearance } from '@shared/domain/character';
 
-import { AVATAR_PRESETS, loadGameSettings } from '@/presentation/components/settings';
-import { getOrCreatePlayerId } from '@/presentation/hooks/connection/utils';
 import { useLocalAppearance } from '@/presentation/hooks/account/useLocalAppearance';
 import { useAccount } from '@/presentation/providers/AccountProvider';
 // By path: the character barrel also exports the 3D figure, which avatar-only pages never need.
@@ -14,25 +12,6 @@ import { CharacterFace } from '@/presentation/components/character/CharacterFace
 
 import { AVATAR_FACE_BG, GLOW_SHADOW } from './account-surfaces';
 import { FRAME_STYLES } from './cosmetic-styles';
-import { guestAvatarId } from './guest-avatar';
-
-const AVATAR_IDS = AVATAR_PRESETS.map((preset) => preset.id);
-
-function subscribe(callback: () => void) {
-  window.addEventListener('settings-changed', callback);
-  return () => window.removeEventListener('settings-changed', callback);
-}
-
-/**
- * The local player's avatar id (the sigil chosen before characters). Still read by the Profile
- * tab's picker, which feeds the derived character, and the seat mark on the 3D table. Choosing one comes with an account (Profile tab, synced like every
- * other setting); a guest gets one picked from their browser's player id.
- */
-export function useAvatarId(): string {
-  const { status } = useAccount();
-  const chosen = useSyncExternalStore(subscribe, () => loadGameSettings().avatar, () => 'wizard');
-  return status === 'guest' ? guestAvatarId(getOrCreatePlayerId(), AVATAR_IDS) : chosen;
-}
 
 /** xs fits inside a text-xs chip, so the chip stays as tall as the buttons next to it. */
 export type PlayerAvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';

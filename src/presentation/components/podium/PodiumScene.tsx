@@ -1,8 +1,7 @@
 'use client';
 
-import { Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useLayoutEffect, useState } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
-import { MeshStandardMaterial, type Group, type Mesh } from 'three';
 import { DEFAULT_APPEARANCE, type CharacterAppearance } from '@shared/domain/character';
 
 import { CHARACTER_CLIPS, type CharacterClip } from '@/presentation/config/character.config';
@@ -20,14 +19,6 @@ interface PodiumSceneProps {
 /** One object for the Canvas's lifetime: a new one per render would make R3F reconfigure. */
 const CAMERA = { position: [...PODIUM.CAMERA_POSITION] as [number, number, number], near: PODIUM.CAMERA_NEAR, far: PODIUM.CAMERA_FAR };
 const DPR: [number, number] = [1, PODIUM.MAX_DPR];
-
-let silhouetteMaterial: MeshStandardMaterial | null = null;
-
-/** One flat dark material shared by every silhouette on the page. */
-function getSilhouetteMaterial(): MeshStandardMaterial {
-  silhouetteMaterial ??= new MeshStandardMaterial({ color: PODIUM.SILHOUETTE_COLOR, roughness: 1, metalness: 0 });
-  return silhouetteMaterial;
-}
 
 /** The champion cheers for CHEER_MS, rests, and cheers again; never with reduced motion. */
 function useCheerPulse(enabled: boolean): boolean {
@@ -56,24 +47,6 @@ function StageCamera() {
   return null;
 }
 
-/** A player whose look is unknown: the default look, all in one dark colour. */
-function SilhouetteFigure({ clip }: { clip: CharacterClip }) {
-  const root = useRef<Group>(null);
-  // Runs after CharacterFigure's own effects (children first), so the dark material replaces the
-  // palette materials once the parts are chosen.
-  useEffect(() => {
-    root.current?.traverse((object) => {
-      const mesh = object as Mesh;
-      if (mesh.isMesh) mesh.material = getSilhouetteMaterial();
-    });
-  }, []);
-  return (
-    <group ref={root}>
-      <CharacterFigure appearance={DEFAULT_APPEARANCE} clip={clip} />
-    </group>
-  );
-}
-
 function Step({ place }: { place: PodiumPlace }) {
   const height = PODIUM.STEP_HEIGHT[place];
   return (
@@ -99,7 +72,8 @@ function StepFigures({ stand, cheering }: { stand: PodiumStand; cheering: boolea
 }
 
 function Figure({ appearance, clip }: { appearance: CharacterAppearance | null; clip: CharacterClip }) {
-  return appearance ? <CharacterFigure appearance={appearance} clip={clip} /> : <SilhouetteFigure clip={clip} />;
+  // A player whose look is unknown: the default look, all in one dark colour.
+  return <CharacterFigure appearance={appearance ?? DEFAULT_APPEARANCE} silhouette={appearance === null} clip={clip} />;
 }
 
 /**
