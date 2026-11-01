@@ -1,3 +1,4 @@
+import type { CharacterAppearance } from '../character';
 import type { FriendPresence } from './presence';
 import type { Relationship } from './relationship';
 
@@ -11,7 +12,10 @@ export interface SocialPlayer {
   username: string;
   /** The username as the player spells it. */
   displayName: string;
+  /** The avatar id chosen before characters; emails still draw it. */
   avatar: string | null;
+  /** The look to show (displayedAppearance): saved, or derived from `avatar`. */
+  appearance: CharacterAppearance;
   level: number;
   /** /u/<username> exists. */
   hasPublicProfile: boolean;

@@ -4,7 +4,14 @@ import { SOCIAL_LIMITS } from '../../../domain/social';
 import { InboxNotifier } from '../inbox/inbox-notifier';
 import { PerformInboxActionUseCase } from '../inbox/inbox.use-cases';
 import { CancelFriendRequestUseCase, RespondToFriendRequestUseCase, SendFriendRequestUseCase } from './friend-requests.use-cases';
-import { BlockPlayerUseCase, GetFriendsOverviewUseCase, SetFriendPinnedUseCase } from './friends.use-cases';
+import {
+  BlockPlayerUseCase,
+  GetFriendsOverviewUseCase,
+  ListBlockedPlayersUseCase,
+  RemoveFriendUseCase,
+  SetFriendPinnedUseCase,
+  UnblockPlayerUseCase,
+} from './friends.use-cases';
 import { ListSentGameInvitesUseCase, RevokeGameInviteUseCase, SendGameInviteUseCase } from './game-invites.use-cases';
 import { friendsInboxHandlers } from './inbox-action-handlers';
 import {
@@ -39,7 +46,10 @@ function setup() {
     cancel: new CancelFriendRequestUseCase(db, notifier),
     overview: new GetFriendsOverviewUseCase(db, db),
     pin: new SetFriendPinnedUseCase(db, clock),
+    remove: new RemoveFriendUseCase(db),
     block: new BlockPlayerUseCase(db, db, notifier, clock),
+    unblock: new UnblockPlayerUseCase(db),
+    listBlocked: new ListBlockedPlayersUseCase(db),
     invite: new SendGameInviteUseCase(db, db, db, notifier, db, (event) => invited.push(event)),
     listSent: new ListSentGameInvitesUseCase(db, clock),
     revoke: new RevokeGameInviteUseCase(db, notifier, clock),
@@ -161,6 +171,61 @@ describe('friend list', () => {
     expect(s.db.friendships.size).toBe(0);
     expect(s.db.items.find((item) => item.kind === 'game_invite')?.resolution).toBe('cancelled');
   });
+
+  it('should list pinned friends first, newest pin on top, then by presence and name', async () => {
+    const s = setup();
+    for (const id of ['dave', 'erin', 'frank']) s.db.addPlayer(id);
+    await Promise.all(['bob', 'carol', 'dave', 'erin', 'frank'].map((id) => befriend(s, 'alice', id)));
+    await s.pin.execute('alice', 'erin', true);
+    now += 1;
+    await s.pin.execute('alice', 'frank', true);
+    await seatedPulse(s, 'dave', 'room42');
+
+    const { friends } = await s.overview.execute('alice');
+
+    // Pins (frank pinned last), then dave in a joinable lobby, then the offline rest by name.
+    expect(friends.map((friend) => friend.userId)).toEqual(['frank', 'erin', 'dave', 'bob', 'carol']);
+  });
+
+  it('should only pin players on the friend list, and unpin them again', async () => {
+    const s = setup();
+    await befriend(s, 'alice', 'bob');
+
+    await expect(s.pin.execute('alice', 'carol', true)).rejects.toMatchObject({ code: 'not_found' });
+    await s.pin.execute('alice', 'bob', true);
+    expect(s.db.friendships.get('alice->bob')?.pinnedAt).toBe(now);
+    await s.pin.execute('alice', 'bob', false);
+    expect(s.db.friendships.get('alice->bob')?.pinnedAt).toBeNull();
+  });
+
+  it('should refuse to block yourself or beyond the block list limit', async () => {
+    const s = setup();
+    for (let i = 0; i < SOCIAL_LIMITS.MAX_BLOCKED_PLAYERS; i += 1) s.db.blocks.add(`alice->x${i}`);
+
+    await expect(s.block.execute('bob', 'bob')).rejects.toMatchObject({ code: 'invalid_input' });
+    await expect(s.block.execute('alice', 'bob')).rejects.toMatchObject({ code: 'limit_reached' });
+    expect(s.db.blocks.has('alice->bob')).toBe(false);
+  });
+
+  it('should list blocked players until they are unblocked', async () => {
+    const s = setup();
+    await s.block.execute('alice', 'bob');
+
+    expect((await s.listBlocked.execute('alice')).map((player) => player.userId)).toEqual(['bob']);
+    await expect(s.send.execute('bob', { username: 'alice' })).rejects.toMatchObject({ code: 'forbidden' });
+
+    await s.unblock.execute('alice', 'bob');
+
+    expect(await s.listBlocked.execute('alice')).toEqual([]);
+    await expect(s.send.execute('bob', { username: 'alice' })).resolves.toEqual({ outcome: 'sent' });
+  });
+
+  it.each(['', 'x'.repeat(65), 42])('should refuse %j as a player id', async (target) => {
+    const s = setup();
+
+    await expect(s.remove.execute('alice', target)).rejects.toMatchObject({ code: 'invalid_input' });
+    await expect(s.unblock.execute('alice', target)).rejects.toMatchObject({ code: 'invalid_input' });
+  });
 });
 
 describe('SendGameInviteUseCase', () => {
@@ -251,7 +316,7 @@ describe('RevokeGameInviteUseCase', () => {
 
   it("should cancel the invite in the recipient's inbox", async () => {
     await s.revoke.execute('alice', inviteId(s));
-    const [item] = await s.db.list('bob');
+    const [item] = await s.db.list('bob', { limit: SOCIAL_LIMITS.INBOX_PAGE_SIZE });
     expect(item).toMatchObject({ resolution: 'cancelled', resolvedAt: now });
     expect((await s.listSent.execute('alice', 'room42'))[0].state).toBe('revoked');
     await expect(s.act.execute('bob', item.id, 'accept')).rejects.toBeInstanceOf(SocialError);

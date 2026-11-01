@@ -12,6 +12,7 @@ import {
   type BidAdjustment, type CardForm, type ICardDeclaration, type Suit, type TrickEffectResponse,
 } from '@shared/domain';
 import { getPlayDeclarationKind, type EffectPromptModel } from '@/presentation/components/special-cards/special-card-view-model';
+import { ROOM_TIMING } from '../../../party/config/room-timing.config';
 import type { FullStackTable } from './full-stack-table';
 import { canBid, canChooseTrump, canMoveRoundOn, canResolveEffect } from './offers';
 import type { PlayerClient } from './player-client';
@@ -128,5 +129,41 @@ export async function playOffered(
     await table.settle(QUIET);
     expect(refusalCount(mover.client), `the room refused ${mover.client.name}'s offered ${step.move.kind}`).toBe(refusals);
     step.verify?.();
+  }
+}
+
+export interface BotTableHooks {
+  /** Runs at every rest (I1-I6 already held), before the next move; may inject a fault and settle. */
+  atRest?: () => Promise<void> | void;
+  /** Runs right before a human's move is sent. */
+  beforeMove?: () => void;
+}
+
+/** Fake time a game with bots may take before the scenario counts as stuck. */
+const BOT_TABLE_LIMIT_MS = 60 * 60_000;
+
+/**
+ * `playOffered` for tables with bots, to the game's end: at every rest the first human whose
+ * screen offers a move makes a seeded one; when no screen offers one, the bots' time passes. Every
+ * rest is checked (I1-I6), so a refused move fails at once (I5).
+ */
+export async function playOfferedWithBots(table: FullStackTable, random: () => number, hooks: BotTableHooks = {}): Promise<void> {
+  const deadline = Date.now() + BOT_TABLE_LIMIT_MS;
+  await table.settle();
+  for (let moves = 0; ; moves++) {
+    await hooks.atRest?.();
+    if (table.server.game.phase === GamePhase.GAME_END) return;
+    if (moves >= MOVE_LIMIT || Date.now() >= deadline) throw new Error(`still playing after ${moves} moves (room in ${table.server.game.phase})`);
+    const mover = table.players
+      .filter((client) => !client.isClosed)
+      .map((client) => ({ client, move: offeredMove(client, random) }))
+      .find((offer) => offer.move !== null);
+    if (mover?.move) {
+      hooks.beforeMove?.();
+      makeMove(mover.client, mover.move);
+    } else {
+      await table.advance(ROOM_TIMING.BOT_ACTION_DELAY_MS);
+    }
+    await table.settle();
   }
 }

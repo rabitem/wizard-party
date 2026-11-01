@@ -169,7 +169,7 @@ export const privacySections: SectionContent[] = [
         <Sub title="6.2 Public profile">
           <p>
             Your profile at <code>/u/&lt;username&gt;</code> is public by default and shows
-            username, tagline, avatar, level, statistics, achievements, tournament trophies (award, placement,
+            username, tagline, avatar, character look, level, statistics, achievements, tournament trophies (award, placement,
             field size, date; the tournament&apos;s name only for public tournaments), pinned games and, only if you
             enable it, your recent games. Email addresses and internal IDs are never shown. You can make the
             profile private in your account settings at any time.
