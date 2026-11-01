@@ -22,6 +22,12 @@ export interface CollectionAnimationProfile {
   pathAmplitude: number;
   waitDurationMultiplier: number;
   flyDurationMultiplier: number;
+  /**
+   * Shortest flight to the deck, in seconds. The path is shaped in flight progress, so its bend
+   * per frame grows with 1 / duration²: a hop to a deck near the centre must still last long
+   * enough to sweep through the variant's curves instead of whipping through them.
+   */
+  minFlyDuration: number;
   spinMultiplier: number;
   staggerMultiplier: number;
   settleDuration: number;
@@ -48,6 +54,7 @@ export const COLLECTION_ANIMATION_PROFILES: Record<CollectionAnimationVariant, C
     pathAmplitude: 1,
     waitDurationMultiplier: 1,
     flyDurationMultiplier: 1,
+    minFlyDuration: 0.25,
     spinMultiplier: 1,
     staggerMultiplier: 1,
     settleDuration: 0.18,
@@ -66,6 +73,7 @@ export const COLLECTION_ANIMATION_PROFILES: Record<CollectionAnimationVariant, C
     pathAmplitude: 2.15,
     waitDurationMultiplier: 1.35,
     flyDurationMultiplier: 1.08,
+    minFlyDuration: 0.34,
     spinMultiplier: 2.35,
     staggerMultiplier: 1.05,
     settleDuration: 0.24,
@@ -84,6 +92,7 @@ export const COLLECTION_ANIMATION_PROFILES: Record<CollectionAnimationVariant, C
     pathAmplitude: 2.6,
     waitDurationMultiplier: 1.8,
     flyDurationMultiplier: 1.28,
+    minFlyDuration: 0.38,
     spinMultiplier: 1.75,
     staggerMultiplier: 1.12,
     settleDuration: 0.26,
@@ -102,6 +111,7 @@ export const COLLECTION_ANIMATION_PROFILES: Record<CollectionAnimationVariant, C
     pathAmplitude: 1.3,
     waitDurationMultiplier: 1.08,
     flyDurationMultiplier: 1.12,
+    minFlyDuration: 0.28,
     spinMultiplier: 0.72,
     staggerMultiplier: 1.02,
     settleDuration: 0.28,

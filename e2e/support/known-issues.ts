@@ -23,16 +23,6 @@ const NARROW_HAND_LAYOUT = 'The largest hand on a narrow phone: hand cards under
 
 export const KNOWN_ISSUES: readonly KnownIssue[] = [
   {
-    title: /^reconnect-missed-trick-complete with 6 players recovers cleanly$/,
-    mode: 'fails',
-    reason: 'A trick completed while disconnected: a collecting card changes direction abruptly when the client recovers it from state (path-kink on ELVES-2).',
-  },
-  {
-    title: /^high-latency with [36] players recovers cleanly$/,
-    mode: 'flaky',
-    reason: 'Under 30 ms+ latency with jitter a collecting card sometimes kinks or rotates abruptly (path-kink, rotation-pop), on some runs only.',
-  },
-  {
     title: /^(galaxy-fold-folded|iphone-se) \(\d+x\d+\) › 3 players: the largest hand is playable$/,
     projects: /^viewport-matrix/,
     mode: 'fails',
