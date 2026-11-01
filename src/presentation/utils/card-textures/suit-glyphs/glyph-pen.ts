@@ -1,13 +1,17 @@
 /**
  * Draws glyph outlines in a unit "em" box (x right, y down, centred on 0, about -0.5..0.5) onto
- * a 2D context at a position and size, without touching the context transform: gradients and
- * shadows the caller set up in canvas space keep working exactly as they do for fillText.
+ * a 2D context (or another path sink) at a position and size, without touching the context
+ * transform: gradients and shadows the caller set up in canvas space keep working exactly as they
+ * do for fillText.
  *
  * Winding convention (nonzero fill): solid shapes run clockwise on screen, holes counter-
  * clockwise. Arcs are emitted as short line segments so mirrored/rotated pens stay exact.
  */
 
 export type GlyphPoint = readonly [number, number];
+
+/** The path calls a pen makes: a canvas context, or a 3D shape path for the table emblem */
+export type GlyphPathSink = Pick<CanvasRenderingContext2D, 'moveTo' | 'lineTo' | 'bezierCurveTo' | 'closePath'>;
 
 /** Segments of a full circle; far below a pixel of error at card-face glyph sizes */
 const CIRCLE_SEGMENTS = 40;
@@ -18,7 +22,7 @@ export class GlyphPen {
   private readonly sin: number;
 
   constructor(
-    private readonly ctx: CanvasRenderingContext2D,
+    private readonly ctx: GlyphPathSink,
     private readonly x: number,
     private readonly y: number,
     private readonly size: number,

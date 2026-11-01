@@ -1,5 +1,5 @@
 import { SUIT_GLYPH } from '@/presentation/config/card-render.config';
-import { GlyphPen } from './glyph-pen';
+import { GlyphPen, type GlyphPathSink } from './glyph-pen';
 import { BASIC_GLYPHS, type GlyphBuilder } from './glyph-shapes-basic';
 import { EMBLEM_GLYPHS } from './glyph-shapes-emblems';
 
@@ -45,6 +45,17 @@ export function fillSymbolText(ctx: CanvasRenderingContext2D, text: string, x: n
   }
   traceGlyph(ctx, build, x, y);
   ctx.fill();
+}
+
+/**
+ * Traces a registered suit symbol's outline into any path sink, centred on (0, 0) in a box `size`
+ * across (y down, like canvas). Returns false, tracing nothing, for symbols without an outline.
+ */
+export function traceSuitGlyph(sink: GlyphPathSink, symbol: string, size: number): boolean {
+  const build = SUIT_GLYPHS[symbol];
+  if (!build) return false;
+  build(new GlyphPen(sink, 0, 0, size));
+  return true;
 }
 
 /** strokeText counterpart of fillSymbolText (outlines, neon tubes, ink rims) */

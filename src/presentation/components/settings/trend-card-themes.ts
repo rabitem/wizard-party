@@ -86,8 +86,8 @@ export const TREND_CARD_THEMES: CardTheme[] = [
         pattern: 'stars',
       },
       DWARVES: {
-        primary: '#7a3a0a',
-        secondary: '#b85a14',
+        primary: '#8a5a0a',
+        secondary: '#986e27',
         accent: '#ffb02e',
         gold: '#ffe66b',
         symbol: 'ra-trophy',
@@ -127,7 +127,7 @@ export const TREND_CARD_THEMES: CardTheme[] = [
       ELVES: {
         primary: '#0a1030',
         secondary: '#18245a',
-        accent: '#d8e2ff',
+        accent: '#c0c8ff',
         gold: '#d9dde2',
         symbol: 'ra-moon-sun',
         canvasSymbol: '☾',
@@ -147,7 +147,7 @@ export const TREND_CARD_THEMES: CardTheme[] = [
       HUMANS: {
         primary: '#071a24',
         secondary: '#0e3040',
-        accent: '#9ff0ff',
+        accent: '#7ff0d0',
         gold: '#e6c46a',
         symbol: 'ra-fairy-wand',
         canvasSymbol: '★',
@@ -176,7 +176,7 @@ export const TREND_CARD_THEMES: CardTheme[] = [
       ELVES: {
         primary: '#f2f4ec',
         secondary: '#dbeadf',
-        accent: '#2a8a7a',
+        accent: '#1a7a9a',
         gold: '#b8913a',
         symbol: 'ra-leaf',
         canvasSymbol: '❧',
@@ -196,7 +196,7 @@ export const TREND_CARD_THEMES: CardTheme[] = [
       HUMANS: {
         primary: '#f5f2e8',
         secondary: '#e8e6cf',
-        accent: '#5a8a2a',
+        accent: '#a04a8a',
         gold: '#b8913a',
         symbol: 'ra-sprout',
         canvasSymbol: '❦',

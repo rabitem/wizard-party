@@ -1,132 +1,18 @@
 'use client';
 
-import { useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import { Suit } from '@shared/domain';
+import type { Suit } from '@shared/domain';
 import { useCurrentCardTheme } from '@/presentation/hooks/useCardTheme';
 import { AMBIENT_USER_DATA } from '../three/frame-scheduling/ambient';
+import { TRUMP_EMBLEM, createTrumpEmblemGeometry } from './trump-emblem';
 
 interface PhysicsTrumpIndicatorProps {
   suit: Suit | null;
 }
 
-/** 3D Mountains icon for GIANTS */
-function MountainsIcon({ color }: { color: string }) {
-  return (
-    <group>
-      <mesh position={[0, 0.08, 0]}>
-        <coneGeometry args={[0.1, 0.16, 4]} />
-        <meshStandardMaterial color={color} roughness={0.4} metalness={0.6} />
-      </mesh>
-      <mesh position={[-0.08, 0.05, 0]}>
-        <coneGeometry args={[0.07, 0.1, 4]} />
-        <meshStandardMaterial color={color} roughness={0.4} metalness={0.6} />
-      </mesh>
-      <mesh position={[0.08, 0.05, 0]}>
-        <coneGeometry args={[0.07, 0.1, 4]} />
-        <meshStandardMaterial color={color} roughness={0.4} metalness={0.6} />
-      </mesh>
-      <mesh position={[0, 0.14, 0]}>
-        <coneGeometry args={[0.035, 0.04, 4]} />
-        <meshStandardMaterial color="#ffffff" roughness={0.3} metalness={0.2} />
-      </mesh>
-    </group>
-  );
-}
-
-/** 3D Crescent Moon with stars for ELVES */
-function MoonIcon({ color }: { color: string }) {
-  return (
-    <group>
-      <mesh position={[0, 0.08, 0]} rotation={[0, 0, Math.PI / 6]}>
-        <torusGeometry args={[0.06, 0.02, 16, 32, Math.PI * 1.2]} />
-        <meshStandardMaterial color={color} roughness={0.2} metalness={0.8} />
-      </mesh>
-      <mesh position={[-0.02, 0.08, 0]}>
-        <sphereGeometry args={[0.035, 32, 32]} />
-        <meshStandardMaterial color={color} roughness={0.3} metalness={0.6} />
-      </mesh>
-      <group position={[0.06, 0.12, 0]}>
-        <mesh rotation={[0, 0, Math.PI / 4]}>
-          <octahedronGeometry args={[0.025]} />
-          <meshStandardMaterial color={color} roughness={0.2} metalness={0.8} />
-        </mesh>
-      </group>
-      {[
-        { id: 'star-tl', pos: [-0.07, 0.11, 0.02] as [number, number, number], size: 0.012 },
-        { id: 'star-br', pos: [0.04, 0.04, 0.01] as [number, number, number], size: 0.01 },
-        { id: 'star-bl', pos: [-0.05, 0.04, -0.01] as [number, number, number], size: 0.008 },
-        { id: 'star-tr', pos: [0.08, 0.08, -0.02] as [number, number, number], size: 0.01 },
-      ].map((star) => (
-        <mesh key={star.id} position={star.pos} rotation={[0, 0, Math.PI / 4]}>
-          <octahedronGeometry args={[star.size]} />
-          <meshStandardMaterial color={color} roughness={0.2} metalness={0.7} />
-        </mesh>
-      ))}
-    </group>
-  );
-}
-
-/** 3D Anvil icon for DWARVES */
-function AnvilIcon({ color }: { color: string }) {
-  return (
-    <group>
-      <mesh position={[0, 0.015, 0]}>
-        <boxGeometry args={[0.14, 0.03, 0.08]} />
-        <meshStandardMaterial color={color} roughness={0.4} metalness={0.7} />
-      </mesh>
-      <mesh position={[0, 0.05, 0]}>
-        <boxGeometry args={[0.1, 0.04, 0.06]} />
-        <meshStandardMaterial color={color} roughness={0.4} metalness={0.7} />
-      </mesh>
-      <mesh position={[0, 0.085, 0]}>
-        <boxGeometry args={[0.15, 0.03, 0.08]} />
-        <meshStandardMaterial color={color} roughness={0.3} metalness={0.8} />
-      </mesh>
-      <mesh position={[0.1, 0.085, 0]} rotation={[0, 0, Math.PI / 2]}>
-        <coneGeometry args={[0.015, 0.06, 8]} />
-        <meshStandardMaterial color={color} roughness={0.3} metalness={0.8} />
-      </mesh>
-    </group>
-  );
-}
-
-/** 3D Crown icon for HUMANS */
-function CrownIcon({ color }: { color: string }) {
-  return (
-    <group>
-      <mesh position={[0, 0.02, 0]}>
-        <cylinderGeometry args={[0.08, 0.09, 0.04, 32]} />
-        <meshStandardMaterial color={color} roughness={0.2} metalness={0.9} />
-      </mesh>
-      {[0, 1, 2, 3, 4].map((i) => {
-        const angle = (i / 5) * Math.PI * 2;
-        const x = Math.sin(angle) * 0.065;
-        const z = Math.cos(angle) * 0.065;
-        return (
-          <mesh key={i} position={[x, 0.07, z]}>
-            <coneGeometry args={[0.02, 0.08, 4]} />
-            <meshStandardMaterial color={color} roughness={0.2} metalness={0.9} />
-          </mesh>
-        );
-      })}
-      {[0, 2, 4].map((i) => {
-        const angle = (i / 5) * Math.PI * 2;
-        const x = Math.sin(angle) * 0.065;
-        const z = Math.cos(angle) * 0.065;
-        return (
-          <mesh key={`jewel-${i}`} position={[x, 0.115, z]}>
-            <sphereGeometry args={[0.012, 8, 8]} />
-            <meshStandardMaterial color="#ff3333" emissive="#ff0000" emissiveIntensity={0.3} roughness={0.2} />
-          </mesh>
-        );
-      })}
-    </group>
-  );
-}
-
-/** Generic crystal for unknown suit */
+/** Crystal shown while no trump suit is set */
 function CrystalIcon({ color }: { color: string }) {
   return (
     <group>
@@ -144,19 +30,24 @@ function CrystalIcon({ color }: { color: string }) {
   );
 }
 
-function SuitIcon({ suit, color }: { suit: Suit | null; color: string }) {
-  switch (suit) {
-    case Suit.GIANTS:
-      return <MountainsIcon color={color} />;
-    case Suit.ELVES:
-      return <MoonIcon color={color} />;
-    case Suit.DWARVES:
-      return <AnvilIcon color={color} />;
-    case Suit.HUMANS:
-      return <CrownIcon color={color} />;
-    default:
-      return <CrystalIcon color={color} />;
-  }
+/** The deck's suit symbol as a solid emblem; the crystal when there is no trump or no outline */
+function SuitEmblem({ symbol, color }: { symbol: string | null; color: string }) {
+  const geometry = useMemo(() => (symbol ? createTrumpEmblemGeometry(symbol) : null), [symbol]);
+  useEffect(() => () => geometry?.dispose(), [geometry]);
+
+  if (!geometry) return <CrystalIcon color={color} />;
+  const { ROUGHNESS, METALNESS, EMISSIVE_INTENSITY } = TRUMP_EMBLEM.MATERIAL;
+  return (
+    <mesh geometry={geometry} position={[0, TRUMP_EMBLEM.LIFT, 0]}>
+      <meshStandardMaterial
+        color={color}
+        roughness={ROUGHNESS}
+        metalness={METALNESS}
+        emissive={color}
+        emissiveIntensity={EMISSIVE_INTENSITY}
+      />
+    </mesh>
+  );
 }
 
 // Pre-computed burn mark positions
@@ -249,7 +140,8 @@ function EmberParticles({ color }: { color: string }) {
 export function PhysicsTrumpIndicator({ suit }: PhysicsTrumpIndicatorProps) {
   const iconRef = useRef<THREE.Group>(null);
   const cardTheme = useCurrentCardTheme();
-  const suitColor = suit ? cardTheme.suits[suit].accent : NO_TRUMP_COLOR;
+  const suitTheme = suit ? cardTheme.suits[suit] : null;
+  const suitColor = suitTheme?.accent ?? NO_TRUMP_COLOR;
 
   // Smooth rotation animation
   useFrame((state) => {
@@ -268,9 +160,9 @@ export function PhysicsTrumpIndicator({ suit }: PhysicsTrumpIndicatorProps) {
       {/* Smoke brand effect on table */}
       <SmokeBrand />
 
-      {/* 3D Icon - scaled up 3x */}
+      {/* The deck's suit emblem, scaled up 3x */}
       <group ref={iconRef} position={[0, 0.01, 0]} scale={3}>
-        <SuitIcon suit={suit} color={suitColor} />
+        <SuitEmblem symbol={suitTheme?.canvasSymbol ?? null} color={suitColor} />
       </group>
 
       {/* Ember particles */}
