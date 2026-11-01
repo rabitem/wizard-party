@@ -7,14 +7,18 @@ import { HudPanelDecor, useHudClassName } from '../hud/skins';
 import { HudSlot } from '../hud/layout';
 import type { BiddingUIWithBidProps } from './types';
 import { BidContextHeader } from './BidContextHeader';
-import { BidSelector } from './BidSelector';
+import { BidSelector, type BidSelectorLayout } from './BidSelector';
 import { THEME_SURFACE } from '@/presentation/config/theme-surface.config';
 
-/** Padding per density: the compact panel keeps a landscape phone's table and hand visible. */
+/**
+ * Padding and selector layout per density. The compact panel (landscape phones) is one header
+ * line over one line of bid chips with Place Bid inline, so it stays clear of the far seats'
+ * name labels on a 340px-tall screen.
+ */
 const PANEL_CLASSES = {
-  compact: { header: 'px-3 py-1.5', body: 'px-3 py-2' },
-  regular: { header: 'px-4 py-2.5', body: 'px-4 py-3' },
-} as const satisfies Record<HudDensity, Record<string, string>>;
+  compact: { header: 'px-2 py-0.5', body: 'px-2 py-0.5', selector: 'row' },
+  regular: { header: 'px-4 py-2.5', body: 'px-4 py-3', selector: 'inline' },
+} as const satisfies Record<HudDensity, { header: string; body: string; selector: BidSelectorLayout }>;
 
 /** 95% opaque surface: no backdrop-filter, which would re-blur the live canvas every frame. */
 const PANEL_STYLE = {
@@ -35,8 +39,8 @@ function WaitingLine({ name }: { name: string }) {
 
 /**
  * Bidding panel in the HUD prompt region (every layout except portrait phones). It shares the
- * region grid with the status bar and top-bar buttons, so it never covers them, and its
- * one-row selector keeps Place Bid on screen even on a 340px-tall landscape phone.
+ * region grid with the status bar and top-bar buttons, so it never covers them. On landscape
+ * phones (compact density) it shrinks to a header line and one line of chips with Place Bid.
  */
 export function BiddingPanel({
   players,
@@ -80,7 +84,7 @@ export function BiddingPanel({
                 forbiddenBid={forbiddenBid}
                 onBidChange={onBidChange}
                 onPlaceBid={onPlaceBid}
-                layout="inline"
+                layout={classes.selector}
                 compact={density === 'compact'}
               />
             ) : (

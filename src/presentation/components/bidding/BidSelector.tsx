@@ -9,14 +9,21 @@ import { PlaceBidButton } from './PlaceBidButton';
 /** Shared look of the -/+ step buttons (`group relative` hosts the skin's button decor). */
 const BID_STEP_BUTTON_CLASS = 'group relative hud-tap-target w-9 h-9 flex-shrink-0 rounded-xl border border-amber-700/40 bg-black/30 text-amber-400 flex items-center justify-center cursor-pointer active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed hover:border-amber-600/50 transition-all';
 
-/** 'inline': one row (bidding panel); 'stacked': stepper above the chips (bidding sheet). */
-export type BidSelectorLayout = 'inline' | 'stacked';
+/**
+ * 'inline': stepper, chips and Place Bid in one wrapping row (bidding panel);
+ * 'row': chips and Place Bid on one line without the stepper (compact panel on landscape phones);
+ * 'stacked': stepper above the chips (bidding sheet).
+ */
+export type BidSelectorLayout = 'inline' | 'row' | 'stacked';
 
 const LAYOUT_CLASSES = {
   // Inline chips stop growing at about eleven chips (rounds 1-10 fit); later rounds scroll.
   // The row wraps Place Bid onto a second line when the prompt column is too narrow for one
   // line (tablets and phones with a turn timer), instead of clipping it at the panel edge.
   inline: { root: 'flex flex-wrap items-center gap-3 min-w-0', value: 'w-12 h-12 text-2xl', stepper: 'gap-2', chips: 'max-w-[26rem]' },
+  // One line, one tap-target tall: the chips are the picker (no stepper) and scroll beside the
+  // inline Place Bid, so the panel stays clear of the far seats on a 340px-tall screen.
+  row: { root: 'flex flex-nowrap items-center gap-2 min-w-0', value: '', stepper: '', chips: '' },
   stacked: { root: 'flex flex-col gap-3 min-w-0', value: 'w-16 h-16 text-3xl', stepper: 'justify-center gap-4', chips: '' },
 } as const satisfies Record<BidSelectorLayout, Record<string, string>>;
 
@@ -49,6 +56,33 @@ function StepButton({ direction, disabled, onClick }: { direction: 1 | -1; disab
   );
 }
 
+interface BidStepperProps {
+  selectedBid: number;
+  range: { maxBid: number; forbiddenBid: number | null };
+  valueClass: string;
+  stepperClass: string;
+  onBidChange: (bid: number) => void;
+}
+
+/** -/+ buttons around the selected bid; a step skips the forbidden bid. */
+function BidStepper({ selectedBid, range, valueClass, stepperClass, onBidChange }: BidStepperProps) {
+  const lower = stepBid(selectedBid, -1, range);
+  const higher = stepBid(selectedBid, 1, range);
+  return (
+    <div className={`flex flex-shrink-0 items-center ${stepperClass}`}>
+      <StepButton direction={-1} disabled={lower === null} onClick={() => lower !== null && onBidChange(lower)} />
+      <div
+        className={`${valueClass} flex-shrink-0 rounded-xl flex items-center justify-center border border-amber-600/40 font-bold text-amber-200`}
+        style={{ background: 'linear-gradient(180deg, color-mix(in srgb, var(--color-amber-600) 30%, transparent) 0%, color-mix(in srgb, var(--color-amber-900) 20%, transparent) 100%)', fontFamily: 'var(--font-serif)' }}
+        aria-live="polite"
+      >
+        {selectedBid}
+      </div>
+      <StepButton direction={1} disabled={higher === null} onClick={() => higher !== null && onBidChange(higher)} />
+    </div>
+  );
+}
+
 function ForbiddenBidNotice({ forbiddenBid, centered }: { forbiddenBid: number | null; centered: boolean }) {
   if (forbiddenBid === null) return null;
   return (
@@ -67,23 +101,13 @@ function ForbiddenBidNotice({ forbiddenBid, centered }: { forbiddenBid: number |
 export function BidSelector({ selectedBid, maxBid, forbiddenBid, onBidChange, layout, onPlaceBid, compact = false }: BidSelectorProps) {
   const classes = LAYOUT_CLASSES[layout];
   const range = { maxBid, forbiddenBid };
-  const lower = stepBid(selectedBid, -1, range);
-  const higher = stepBid(selectedBid, 1, range);
+  // The one-line row drops the stepper and the notice: the chips pick, the forbidden chip shows it
+  const isRow = layout === 'row';
 
   return (
     <div className="flex flex-col gap-1.5 min-w-0">
       <div className={classes.root}>
-        <div className={`flex flex-shrink-0 items-center ${classes.stepper}`}>
-          <StepButton direction={-1} disabled={lower === null} onClick={() => lower !== null && onBidChange(lower)} />
-          <div
-            className={`${classes.value} flex-shrink-0 rounded-xl flex items-center justify-center border border-amber-600/40 font-bold text-amber-200`}
-            style={{ background: 'linear-gradient(180deg, color-mix(in srgb, var(--color-amber-600) 30%, transparent) 0%, color-mix(in srgb, var(--color-amber-900) 20%, transparent) 100%)', fontFamily: 'var(--font-serif)' }}
-            aria-live="polite"
-          >
-            {selectedBid}
-          </div>
-          <StepButton direction={1} disabled={higher === null} onClick={() => higher !== null && onBidChange(higher)} />
-        </div>
+        {isRow ? null : <BidStepper selectedBid={selectedBid} range={range} valueClass={classes.value} stepperClass={classes.stepper} onBidChange={onBidChange} />}
 
         <div className={`min-w-0 flex-1 ${classes.chips}`}>
           <BidChipRow selectedBid={selectedBid} maxBid={maxBid} forbiddenBid={forbiddenBid} onBidChange={onBidChange} />
@@ -93,7 +117,7 @@ export function BidSelector({ selectedBid, maxBid, forbiddenBid, onBidChange, la
           <PlaceBidButton selectedBid={selectedBid} maxBid={maxBid} forbiddenBid={forbiddenBid} onPlaceBid={onPlaceBid} compact={compact} />
         ) : null}
       </div>
-      <ForbiddenBidNotice forbiddenBid={forbiddenBid} centered={layout === 'stacked'} />
+      {isRow ? null : <ForbiddenBidNotice forbiddenBid={forbiddenBid} centered={layout === 'stacked'} />}
     </div>
   );
 }

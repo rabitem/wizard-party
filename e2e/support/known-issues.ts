@@ -18,30 +18,7 @@ export interface KnownIssue {
   reason: string;
 }
 
-/** Landscape phones (750x340: iPhone 14 landscape, the matrix's narrow landscape; Pixel 7 landscape) at every table size. */
-const LANDSCAPE_PROMPT = 'A landscape phone: the bidding panel in the prompt region covers the name and bid labels of the far seats (hud-occludes-scene).';
-
-export const KNOWN_ISSUES: readonly KnownIssue[] = [
-  {
-    title: /^phone-landscape-narrow \(\d+x\d+\) › 6 players: the largest hand is playable$/,
-    projects: /^viewport-matrix/,
-    mode: 'fails',
-    reason: LANDSCAPE_PROMPT,
-  },
-  {
-    title: /^phone-landscape-narrow \(\d+x\d+\) › 3 players: the largest hand is playable$/,
-    projects: /^viewport-matrix-(webkit|firefox)$/,
-    mode: 'fails',
-    reason: LANDSCAPE_PROMPT,
-  },
-  // The device projects (viewports.spec.ts).
-  {
-    title: /^[3-6] players: the largest hand is playable$/,
-    projects: /^(android-landscape|iphone-landscape)$/,
-    mode: 'fails',
-    reason: LANDSCAPE_PROMPT,
-  },
-];
+export const KNOWN_ISSUES: readonly KnownIssue[] = [];
 
 /** The entry for a test, if its title and project match one. */
 export function knownIssueFor(title: string, project: string): KnownIssue | undefined {
