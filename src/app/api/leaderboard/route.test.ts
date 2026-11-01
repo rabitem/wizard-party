@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { EMPTY_STATS } from '@shared/domain/account';
 import type { LeaderboardCandidate } from '@shared/domain/account/leaderboard';
+import { DEFAULT_APPEARANCE } from '@shared/domain/character';
 
 import { harness, setUpApiHarness } from '../api-test-support';
 import { GET } from './route';
@@ -19,7 +20,7 @@ setUpApiHarness();
 const readModels = () => harness().readModels;
 
 function candidate(username: string, totalXp: number, gamesWon: number): LeaderboardCandidate {
-  return { username, displayName: username.toUpperCase(), avatar: 'owl', totalXp, stats: { ...EMPTY_STATS, gamesPlayed: gamesWon + 1, gamesWon } };
+  return { username, displayName: username.toUpperCase(), avatar: 'owl', appearance: DEFAULT_APPEARANCE, totalXp, stats: { ...EMPTY_STATS, gamesPlayed: gamesWon + 1, gamesWon } };
 }
 
 beforeEach(() => {
