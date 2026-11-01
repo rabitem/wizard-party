@@ -51,7 +51,9 @@ describe('SessionValidationService.isSessionToken', () => {
 });
 
 describe('SessionValidationService.secretsMatch', () => {
-  const secret = 'Zm9vYmFyYmF6cXV4cXV1eGNvcmdlZ3JhdWx0Z2FycGx5';
+  // Token-shaped but deliberately low-entropy (secret scanners flag random-looking literals);
+  // mixed case and distinct first and last characters keep every row below meaningful.
+  const secret = `Seat${'a'.repeat(39)}Z`;
 
   it('opens a seat only with the identical token', () => {
     expect(SessionValidationService.secretsMatch(secret, secret.slice())).toBe(true);
