@@ -15,7 +15,7 @@ shared/domain/social/              pure rules, unit tested: presence and modes, 
                                    states, email categories, limits and throttle budgets
 shared/application/ports/social/   ISocialGraphRepository, IPlayerDirectory, IInboxRepository,
                                    IPresenceStore, IRoomRosterStore, IRoomMembershipVerifier,
-                                   ISocialThrottle, ISocialMailer (index.ts)
+                                   ISocialThrottle, ISocialMailer, IPlayerLooks (index.ts)
 shared/application/use-cases/friends/
                                    friend requests, friends and blocks, game invites, presence
                                    (SocialPulseUseCase, GetRoomAccountsUseCase), search and settings,

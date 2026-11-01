@@ -171,7 +171,7 @@ function createTournaments(clock: { now(): number }, repo: MemoryTournamentRepos
     register: new RegisterForTournamentUseCase(store, db, throttle),
     withdraw: new WithdrawFromTournamentUseCase(store),
     invite: new InviteToTournamentUseCase(store, db, db, inbox, throttle),
-    get: new GetTournamentUseCase(store),
+    get: new GetTournamentUseCase(store, db),
     list: new ListTournamentsUseCase(repo, store, clock),
     listMine: new ListMyTournamentsUseCase(repo, repo),
     trophyCabinet: new GetTrophyCabinetUseCase(repo),

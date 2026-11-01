@@ -13,6 +13,7 @@ import type {
   SocialSettings,
   SocialSettingsChanges,
 } from '../../../domain/social';
+import type { CharacterAppearance } from '../../../domain/character';
 
 /*
  * Ports of the social context. Segregated by concern so each adapter (Postgres for the graph and
@@ -206,4 +207,13 @@ export interface IPublicProfileDirectory {
    * first, then by level. Private profiles never match, not even by their exact name.
    */
   searchPublic(query: string, limit: number): Promise<PublicPlayerCard[]>;
+}
+
+/** Character looks are public (tables, profiles, leaderboards), so any viewer may read them. */
+export interface IPlayerLooks {
+  /**
+   * The look other players see (displayedAppearance: the saved look, else the one derived from the
+   * legacy avatar) of each given account. Unknown ids are left out.
+   */
+  looksOf(userIds: readonly string[]): Promise<ReadonlyMap<string, CharacterAppearance>>;
 }

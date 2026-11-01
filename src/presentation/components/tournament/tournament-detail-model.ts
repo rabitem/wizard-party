@@ -1,5 +1,6 @@
 import type {
   InviteToTournamentResult,
+  StandingView,
   TournamentAwardView,
   TournamentDetailView,
   TournamentInviteSkipReason,
@@ -7,7 +8,7 @@ import type {
   TournamentRoundView,
 } from '@shared/application/use-cases/tournament';
 import type { CharacterAppearance } from '@shared/domain/character';
-import { TOURNAMENT_LIMITS, createSeededRandom, type Standing } from '@shared/domain/tournament';
+import { TOURNAMENT_LIMITS, createSeededRandom } from '@shared/domain/tournament';
 
 import { TOURNAMENT_UI } from '@/presentation/config/tournament.config';
 import type { PodiumContender } from '@/presentation/types/podium.types';
@@ -204,14 +205,14 @@ export function awardsByPlayer(awards: readonly TournamentAwardView[]): Map<stri
 }
 
 export interface PodiumEntry {
-  standing: Standing;
+  standing: StandingView;
   awards: TournamentAwardView[];
 }
 
 const PODIUM_SIZE = 3;
 
 /** The top three of a completed tournament with their awards. */
-export function podiumEntries(standings: readonly Standing[], awards: readonly TournamentAwardView[]): PodiumEntry[] {
+export function podiumEntries(standings: readonly StandingView[], awards: readonly TournamentAwardView[]): PodiumEntry[] {
   const byPlayer = awardsByPlayer(awards);
   return standings
     .filter((standing) => standing.matchesPlayed > 0)
@@ -231,8 +232,8 @@ export function viewerAwardXp(awards: readonly TournamentAwardView[], viewerId: 
 }
 
 /**
- * The podium's players. Tournament views carry no looks, so only the viewer, whose own look this
- * page knows, stands in theirs; everyone else is a silhouette.
+ * The podium's players in the looks the standings carry. The viewer's own look comes from this
+ * page (a fresh save shows at once); a player without one is a silhouette.
  */
 export function tournamentPodiumContenders(
   entries: readonly PodiumEntry[],
@@ -245,7 +246,7 @@ export function tournamentPodiumContenders(
       id: standing.userId,
       rank: standing.rank,
       name: standing.displayName,
-      appearance: isViewer ? viewerAppearance : null,
+      appearance: (isViewer ? viewerAppearance : null) ?? standing.appearance ?? null,
       detail: `${standing.points} pts`,
       isViewer,
     };

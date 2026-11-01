@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import type { TournamentDetailView, TournamentViewerView } from '@shared/application/use-cases/tournament';
-import { DEFAULT_APPEARANCE } from '@shared/domain/character';
+import { DEFAULT_APPEARANCE, type CharacterAppearance } from '@shared/domain/character';
 import type { Standing } from '@shared/domain/tournament';
 
 import type { PodiumContender } from '@/presentation/types/podium.types';
@@ -237,11 +237,21 @@ describe('tournament detail model', () => {
   describe('podium', () => {
     const entry = (rank: number): PodiumEntry => ({ standing: standing(rank, `p${rank}`), awards: [] });
 
-    it('should stand the champion in the middle, with only the viewer in their own look', () => {
-      const contenders = tournamentPodiumContenders([entry(1), entry(2), entry(3)], 'p2', DEFAULT_APPEARANCE);
-      expect(podiumSteps(contenders)).toEqual(['2:p2', '1:p1', '3:p3']);
-      expect(contenders.map(lookOf)).toEqual([null, DEFAULT_APPEARANCE, null]);
+    it('should stand the champion in the middle', () => {
+      expect(podiumSteps(tournamentPodiumContenders([entry(1), entry(2), entry(3)], null, null))).toEqual(['2:p2', '1:p1', '3:p3']);
       expect(podiumSteps(tournamentPodiumContenders([entry(1)], null, null))).toEqual(['1:p1']);
+    });
+
+    it('should dress each player in the look the standings carry, else a silhouette', () => {
+      const knight: CharacterAppearance = { ...DEFAULT_APPEARANCE, head: 'head:knight' };
+      const withLook = { standing: { ...standing(1, 'p1'), appearance: knight }, awards: [] };
+      expect(tournamentPodiumContenders([withLook, entry(2)], null, null).map(lookOf)).toEqual([knight, null]);
+    });
+
+    it("should show the viewer's own look from this page, ahead of the standings", () => {
+      const saved: CharacterAppearance = { ...DEFAULT_APPEARANCE, palette: 'palette:ember' };
+      const stale = { standing: { ...standing(2, 'me'), appearance: DEFAULT_APPEARANCE }, awards: [] };
+      expect(tournamentPodiumContenders([entry(1), stale], 'me', saved).map(lookOf)).toEqual([null, saved]);
     });
 
     it('should scatter the same confetti for the same tournament', () => {

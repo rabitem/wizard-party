@@ -157,9 +157,11 @@ fallback read the same list.
   `getStandings` at game end (`GameEndPodium`, under the title), the tournament standings in
   `FinalPodium`. Tied players share a step and the next step stays empty (1, 1, 3); more than
   `PODIUM.MAX_PER_STEP` on one step are counted ("+2 more").
-- **Looks.** Game end dresses each seat by `seatAppearance`. Tournament views carry no looks, so
-  only the viewer stands in their own; everyone else is a silhouette. A silhouette is the default
-  look in one dark colour in 3D, and `CharacterFace`'s silhouette in 2D.
+- **Looks.** Game end dresses each seat by `seatAppearance`. The tournament podium uses the look a
+  completed tournament's standings carry (`StandingView.appearance`, see
+  [tournaments](../accounts/tournaments.md)), and the viewer's own look from the page. Without one a
+  player is a silhouette: the default look in one dark colour in 3D, `CharacterFace`'s silhouette
+  in 2D.
 - **Loading.** `CharacterPodium` is light; `PodiumStage` (three.js, the render tier) and
   `PodiumScene` (react-three-fiber, the figures) load with `next/dynamic` when a podium shows.
 - **3D or 2D.** `podiumRenderMode` shows figures on the tiers in `PODIUM.FIGURE_TIERS` (the tier

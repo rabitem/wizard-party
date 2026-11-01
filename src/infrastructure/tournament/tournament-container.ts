@@ -84,7 +84,7 @@ function createTournamentServices() {
     register: new RegisterForTournamentUseCase(store, directory, throttle),
     withdraw: new WithdrawFromTournamentUseCase(store),
     invite: new InviteToTournamentUseCase(store, directory, relationships, inbox, throttle),
-    get: new GetTournamentUseCase(store),
+    get: new GetTournamentUseCase(store, directory),
     list: new ListTournamentsUseCase(repository, store, clock),
     listMine: new ListMyTournamentsUseCase(repository, history),
     trophyCabinet: new GetTrophyCabinetUseCase(history),
