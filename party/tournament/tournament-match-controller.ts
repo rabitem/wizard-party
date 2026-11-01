@@ -50,7 +50,7 @@ type RoomInfoBase = Omit<TournamentRoomInfo, 'isAvailable' | 'tournament'>;
  * What a match join takes from JOIN_GAME besides the ticket: the client's protocol and its seat
  * token. Room settings are never taken from a client: the match fixes them.
  */
-export type MatchJoinOptions = Pick<JoinOptions, 'sessionToken' | 'protocolVersion'>;
+export type MatchJoinOptions = Pick<JoinOptions, 'sessionToken' | 'protocolVersion' | 'appearance'>;
 
 /** The roster seat a ticket opens, and the game seat the account already holds (if any). */
 interface TicketSeat {
@@ -153,6 +153,7 @@ export class TournamentMatchController {
         sessionToken: options.sessionToken,
         protocolVersion: options.protocolVersion,
         attestedPlayerId: heldPlayerId,
+        appearance: options.appearance,
       });
       const playerId = ctx.connectionToPlayer.get(sender.id);
       if (!playerId || ctx.persistentIdToPlayerId.get(persistentId) !== playerId || !ctx.game.getPlayer(playerId)) return false;

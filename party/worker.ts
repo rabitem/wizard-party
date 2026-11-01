@@ -10,6 +10,7 @@ import {
 } from './telemetry';
 import { AlarmMultiplexer } from './utils/alarm-multiplexer';
 import { createTournamentMatchServices, type MatchResultOutbox, type TournamentMatchServices } from './tournament';
+import { createCharacterTicketVerifier } from './session/character-tickets';
 
 interface Env {
   Main: DurableObjectNamespace<Main>;
@@ -20,6 +21,8 @@ interface Env {
   TOURNAMENT_SECRET?: string;
   /** The app's /api/tournaments/match-results; tournaments are unavailable when unset. */
   TOURNAMENT_RESULT_URL?: string;
+  /** Shared with the Next.js server (character tickets); seats show no looks when unset. */
+  CHARACTER_TICKET_SECRET?: string;
   CF_VERSION_METADATA?: WorkerVersionMetadata;
 }
 
@@ -58,7 +61,7 @@ export class Main extends Server<Env> {
       },
       undefined,
       this.createTelemetry(),
-      { tournament: this.createTournamentServices() }
+      { tournament: this.createTournamentServices(), characterTickets: createCharacterTicketVerifier(this.env.CHARACTER_TICKET_SECRET) }
     );
     await this.gameServer.onStart();
     await this.resultOutbox?.resume();

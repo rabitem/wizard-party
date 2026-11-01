@@ -166,21 +166,24 @@ describe('decodeClientCommand', () => {
       expect(decode({ type: ClientCommandType.JOIN_GAME, playerName: 'Bob', persistentId: 'player-1700000000000-bob2222' }).ok).toBe(true);
     });
 
-    it('keeps a tournament ticket next to the session token', () => {
+    it('keeps the tournament and character tickets next to the session token', () => {
       const result = decode({
         type: ClientCommandType.JOIN_GAME,
         playerName: 'Merlin',
         persistentId: 'player-1700000000000-merlin1',
         protocolVersion: 2,
         tournamentTicket: 'v1.payload.signature',
+        appearanceTicket: 'c1.payload.signature',
       });
 
-      expect(result.ok && result.command).toMatchObject({ tournamentTicket: 'v1.payload.signature', protocolVersion: 2 });
+      expect(result.ok && result.command).toMatchObject({ tournamentTicket: 'v1.payload.signature', appearanceTicket: 'c1.payload.signature', protocolVersion: 2 });
     });
 
     it('refuses a ticket that is not text or far too long', () => {
       expectRefused({ type: ClientCommandType.JOIN_GAME, playerName: 'Eve', tournamentTicket: { forged: true } });
       expectRefused({ type: ClientCommandType.JOIN_GAME, playerName: 'Eve', tournamentTicket: 'v'.repeat(17 * 1024) });
+      expectRefused({ type: ClientCommandType.JOIN_GAME, playerName: 'Eve', appearanceTicket: { forged: true } });
+      expectRefused({ type: ClientCommandType.JOIN_GAME, playerName: 'Eve', appearanceTicket: 'c'.repeat(3 * 1024) });
     });
 
     it('refuses a malformed token, version or name', () => {

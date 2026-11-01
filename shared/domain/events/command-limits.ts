@@ -17,6 +17,8 @@ export const COMMAND_LIMITS = {
   MAX_SESSION_TOKEN_LENGTH: 256,
   /** Signed tournament match tickets carry the ruleset; the verifier allows 8 KiB of them. */
   MAX_TOURNAMENT_TICKET_LENGTH: 16 * KIB,
+  /** Signed character tickets (a name and a look); the verifier allows 2 KiB of them. */
+  MAX_APPEARANCE_TICKET_LENGTH: 2 * KIB,
   MAX_PLAYER_NAME_LENGTH: 64,
   MAX_SOUND_NAME_LENGTH: 64,
   /** Raw chat input; the chat use case shortens what it broadcasts. */

@@ -11,3 +11,5 @@ TOURNAMENT_RESULT_URL=http://localhost:3000/api/tournaments/match-results
 # TELEMETRY_INGEST_SECRET=
 # Without TOURNAMENT_SECRET the worker refuses every tournament ticket.
 # TOURNAMENT_SECRET=
+# Without CHARACTER_TICKET_SECRET the worker ignores character tickets (seats show silhouettes).
+# CHARACTER_TICKET_SECRET=

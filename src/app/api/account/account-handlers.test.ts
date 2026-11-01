@@ -4,8 +4,11 @@ import type { GameResult } from '@shared/domain/account';
 
 import { revalidateTag } from 'next/cache';
 
-import { T0, apiRequest, errorOf, harness, NO_PARAMS, routeParams, sessionUser, signInAs, setUpApiHarness } from '../api-test-support';
+import { verifyCharacterTicket } from '@shared/realtime/character-ticket';
+import { CHARACTER_TICKET_SECRET, T0, apiRequest, errorOf, harness, NO_PARAMS, routeParams, sessionUser, signInAs, setUpApiHarness } from '../api-test-support';
 import * as accountRoute from './route';
+import * as characterRoute from './character/route';
+import * as characterTicketRoute from './character/ticket/route';
 import * as documentRoute from './documents/[key]/route';
 import * as documentsRoute from './documents/route';
 import * as exportRoute from './export/route';
@@ -359,5 +362,22 @@ describe('GET /api/account/export', () => {
     expect(body.gameResults.map((row) => row.clientGameId)).toEqual(['game-0000001']);
     expect(body.social.friends).toHaveLength(1);
     expect(body.tournaments.tournaments).toEqual([expect.objectContaining({ isHost: true, summary: expect.objectContaining({ name: 'Spring Cup' }) })]);
+  });
+});
+
+describe('POST /api/account/character/ticket', () => {
+  it('should sign the look the player sees for the name they sit at tables with', async () => {
+    signInAs('merlin');
+    const character = await (await characterRoute.GET(apiRequest('GET', '/api/account/character'), NO_PARAMS)).json();
+
+    const response = await characterTicketRoute.POST(apiRequest('POST', '/api/account/character/ticket'), NO_PARAMS);
+    const { ticket, expiresAt } = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(expiresAt).toBeGreaterThan(T0);
+    await expect(verifyCharacterTicket(CHARACTER_TICKET_SECRET, ticket, T0)).resolves.toEqual({
+      ok: true,
+      claims: { v: 1, name: sessionUser('merlin').displayUsername, appearance: character.appearance, exp: expiresAt },
+    });
   });
 });

@@ -80,6 +80,7 @@ const BODY_DECODERS: { [K in ClientCommandType]: BodyDecoder<K> } = {
     protocolVersion: fields.optionalInteger('protocolVersion', { min: 1, max: COMMAND_LIMITS.MAX_PROTOCOL_VERSION }),
     roomSettings: normalizedByDomain<IRoomSettings>(fields.optionalRecord('roomSettings')),
     tournamentTicket: fields.optionalString('tournamentTicket', { max: COMMAND_LIMITS.MAX_TOURNAMENT_TICKET_LENGTH }),
+    appearanceTicket: fields.optionalString('appearanceTicket', { max: COMMAND_LIMITS.MAX_APPEARANCE_TICKET_LENGTH }),
   }),
   [ClientCommandType.LEAVE_GAME]: NO_FIELDS,
   [ClientCommandType.START_GAME]: NO_FIELDS,

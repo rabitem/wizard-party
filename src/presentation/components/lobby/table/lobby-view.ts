@@ -32,7 +32,7 @@ export function buildSeatViews({ players, hostId, localPlayerId, localAppearance
     return {
       id: player.id,
       name: player.name,
-      appearance: seatAppearance({ isLocal, isBot: player.isBot, botDifficulty: player.botDifficulty }, localAppearance, account?.appearance),
+      appearance: seatAppearance({ isLocal, isBot: player.isBot, botDifficulty: player.botDifficulty, appearance: player.appearance }, localAppearance, account?.appearance),
       level: account?.level,
       isHost: player.id === hostId,
       isLocal,

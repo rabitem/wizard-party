@@ -1,6 +1,7 @@
 import type {
   AccountOverview,
   AccountDocumentKey,
+  CharacterTicket,
   CharacterView,
   GameHistoryPage,
   PinGameOutput,
@@ -63,6 +64,8 @@ export const accountApi = {
   character: () => request<CharacterView>('/api/account/character'),
   /** Saves a look; a refused one answers 422 with the reason (AppearanceError) as the message. */
   saveCharacter: (appearance: CharacterAppearance) => request<CharacterView>('/api/account/character', json('PUT', { appearance })),
+  /** A signed ticket for the look, sent with JOIN_GAME; 503 when the server has no secret for it. */
+  characterTicket: (signal?: AbortSignal) => request<CharacterTicket>('/api/account/character/ticket', { method: 'POST', signal }),
   updateProfile: (changes: ProfileChanges) =>
     request<{ profile: PlayerProfile }>('/api/account', json('PATCH', changes)),
   recordGames: (results: GameResult[]) => request<RecordGameResultsOutput>('/api/account/games', json('POST', { results })),

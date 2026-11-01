@@ -4,6 +4,7 @@ import { useEffect, useSyncExternalStore } from 'react';
 import { appearanceForLegacyAvatar, type CharacterAppearance } from '@shared/domain/character';
 
 import { accountApi } from '@/lib/account/account-api';
+import { requestCharacterTicket } from '@/lib/account/character-ticket';
 import { loadGameSettings } from '@/presentation/components/settings';
 import { useAccount, type AccountStatus } from '@/presentation/providers/AccountProvider';
 
@@ -55,10 +56,11 @@ function load(userId: string): void {
   });
 }
 
-/** After a save: every avatar of the local player on the page shows the new look at once. */
+/** After a save: every avatar of the local player on the page shows the new look at once, and the next table too. */
 export function rememberSavedAppearance(userId: string, appearance: CharacterAppearance): void {
   loaded = { userId, appearance, saved: true };
   listeners.forEach((listener) => listener());
+  requestCharacterTicket(userId, { renew: true });
 }
 
 function subscribeSettings(listener: () => void) {

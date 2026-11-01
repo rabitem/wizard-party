@@ -81,6 +81,12 @@ export interface JoinGameCommand extends BaseCommand {
    * the player by account instead of trusting playerName.
    */
   tournamentTicket?: string;
+  /**
+   * Signed character ticket ('c1.<payload>.<signature>', see shared/realtime/character-ticket.ts)
+   * of a signed-in player. The worker verifies it and shows the look on the seat when the ticket
+   * names that seat; otherwise the seat stays a silhouette.
+   */
+  appearanceTicket?: string;
 }
 
 export interface LeaveGameCommand extends BaseCommand {

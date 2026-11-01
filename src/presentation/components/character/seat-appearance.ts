@@ -4,12 +4,15 @@ interface SeatIdentity {
   isLocal: boolean;
   isBot: boolean;
   botDifficulty?: number;
+  /** The look the room verified for the seat (IPlayer.appearance); absent from older workers. */
+  appearance?: CharacterAppearance;
 }
 
 /**
- * The look of a seat at a table: the local player's own, a bot's by its difficulty, or the
- * account's look when the room told us whose seat it is. Anyone else gets a silhouette (null): a
- * guest, or a player the viewer cannot see (blocked, hidden, or the viewer is a guest).
+ * The look of a seat at a table: the local player's own, a bot's by its difficulty, the look the
+ * room verified with the player's character ticket, or the account's look the social API found
+ * for the seat. Anyone else gets a silhouette (null): a guest, or a signed-in player on a worker
+ * that does not carry looks yet whom the viewer cannot see.
  */
 export function seatAppearance(
   seat: SeatIdentity,
@@ -18,5 +21,5 @@ export function seatAppearance(
 ): CharacterAppearance | null {
   if (seat.isLocal) return localAppearance;
   if (seat.isBot) return botAppearance(seat.botDifficulty);
-  return accountAppearance ?? null;
+  return seat.appearance ?? accountAppearance ?? null;
 }

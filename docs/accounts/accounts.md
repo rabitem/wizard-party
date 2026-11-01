@@ -178,8 +178,9 @@ key the dependent feature is skipped or reduced; `.env.example` says which.
 - **In the UI**, `PlayerAvatar` draws the character's portrait in the level frame
   ([../client/characters.md](../client/characters.md#in-the-ui)). The local player's look comes
   from `GET /api/account/character` (`useLocalAppearance`); at a table, `seatAppearance` gives the
-  local look, a bot's look by difficulty (`botAppearance`), the room account's look, or a
-  silhouette.
+  local look, a bot's look by difficulty (`botAppearance`), the look the room verified with a
+  character ticket, the room account's look, or a silhouette
+  ([../client/characters.md](../client/characters.md#at-the-table)).
 
 ### Public profiles
 
@@ -228,6 +229,7 @@ session, error mapping. Tournament routes wrap it in `tournamentRoute()`
 | `GET /api/account/documents`, `PUT /api/account/documents/[key]` | session | synced settings documents |
 | `GET`, `POST /api/account/sounds`, `PATCH`, `DELETE /api/account/sounds/[id]` | session | custom sounds; upload is multipart (`file`, `metadata`) |
 | `GET`, `PUT /api/account/character` | session | the character look, whether it was saved, and the unlocked part ids; save `{ appearance }` |
+| `POST /api/account/character/ticket` | session | `{ ticket, expiresAt }`: the look signed for the game rooms; `503` without `CHARACTER_TICKET_SECRET` |
 | `GET /api/account/export` | session | JSON download of everything stored, including the social and tournament parts |
 | `GET /api/account/capabilities` | public | `DeploymentCapabilities`, cached for five minutes |
 | `/api/auth/*` | Better Auth | sign-in, sign-up, codes, two-factor, passkeys, sessions, deletion |
@@ -250,7 +252,7 @@ are `private, no-store`. The same table serves the social routes; tournament rou
 | `422` | `invalid_input` | malformed input, including a body over the route's `readJson` limit |
 | `429` | `rate_limited` | a social throttle |
 | `500` | `internal` | anything unexpected, logged as `account_route_failed` |
-| `503` | `unavailable` | no `DATABASE_URL` |
+| `503` | `unavailable` | no `DATABASE_URL`, or no `CHARACTER_TICKET_SECRET` for a character ticket |
 
 Clients branch on a few of these, and `account-route.test.ts` pins each one:
 

@@ -15,6 +15,7 @@ const STATUS: Record<AccountErrorCode, number> = {
   conflict: 409,
   quota_exceeded: 413,
   already_imported: 409,
+  unavailable: 503,
 };
 
 const SOCIAL_STATUS: Record<SocialErrorCode, number> = {
