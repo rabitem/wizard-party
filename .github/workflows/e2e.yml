@@ -147,6 +147,19 @@ jobs:
           path: ~/.cache/ms-playwright
           key: playwright-${{ matrix.engine }}-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
       - run: npx playwright install --with-deps ${{ matrix.engine }}
+      # Headless Firefox on Linux has no WebGL, so playwright.config.ts launches it headed there:
+      # on a virtual display (Xvfb, installed with the deps) large enough for the 4K viewports.
+      - name: Start a virtual display for Firefox
+        if: ${{ matrix.engine == 'firefox' }}
+        shell: bash
+        run: |
+          nohup Xvfb :99 -screen 0 3840x2160x24 -nolisten tcp > "$RUNNER_TEMP/xvfb.log" 2>&1 &
+          for _ in {1..50}; do
+            if [ -S /tmp/.X11-unix/X99 ]; then echo "DISPLAY=:99" >> "$GITHUB_ENV"; exit 0; fi
+            sleep 0.2
+          done
+          cat "$RUNNER_TEMP/xvfb.log"
+          exit 1
       # The golden path plays the real app against the local game worker (see ci.yml).
       - name: Start the game worker
         if: ${{ startsWith(matrix.project, 'golden-path') && !inputs.update_snapshots }}

@@ -241,6 +241,12 @@ render and React budgets, faults and visual baselines. Frame-time budgets do not
 records the renderer in `environment.webgl`, and a software renderer is flagged as an `info`
 anomaly.
 
+Headless Firefox on Linux creates no WebGL context at all, not even with `webgl.force-enabled`;
+every sandbox run would end in `webgl-unavailable`. So `playwright.config.ts` launches Firefox
+headed on Linux, and `e2e.yml` starts a virtual display (Xvfb) for the Firefox jobs, where WebGL
+renders through Mesa's llvmpipe. On Linux without a display, run Firefox projects under
+`xvfb-run`.
+
 ## Budgets
 
 The render, React, frame-time, playability and visual budgets are in
