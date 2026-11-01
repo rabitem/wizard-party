@@ -20,27 +20,27 @@ export function FooterSection() {
         <div className="h-px w-8 bg-gradient-to-l from-transparent to-amber-700/20" />
       </div>
 
-      <p className="text-amber-600/30 text-[10px] sm:text-xs mb-2" style={{ fontFamily: 'Georgia, serif' }}>
+      <p className="text-amber-200/70 text-xs mb-2" style={{ fontFamily: 'Georgia, serif' }}>
         Crafted by{' '}
-        <a href="https://rabitem.de" target="_blank" rel="noopener noreferrer" className="text-amber-500/40 hover:text-amber-400 transition-colors">
+        <a href="https://rabitem.de" target="_blank" rel="noopener noreferrer" className="text-amber-200/85 underline underline-offset-2 decoration-amber-600/50 hover:text-amber-100 transition-colors">
           rabitem.de
         </a>
       </p>
 
       <div className="flex items-center justify-center gap-3 text-[10px] sm:text-xs" style={{ fontFamily: 'Georgia, serif' }}>
-        <Link href="/privacy" className="text-amber-600/30 hover:text-amber-400 transition-colors">
+        <Link href="/privacy" className="text-amber-200/75 hover:text-amber-100 transition-colors">
           Privacy
         </Link>
-        <span className="text-amber-700/20">&middot;</span>
-        <Link href="/imprint" className="text-amber-600/30 hover:text-amber-400 transition-colors">
+        <span className="text-amber-200/40">&middot;</span>
+        <Link href="/imprint" className="text-amber-200/75 hover:text-amber-100 transition-colors">
           Imprint
         </Link>
-        <span className="text-amber-700/20">&middot;</span>
-        <ConsentSettingsButton className="text-amber-600/30 hover:text-amber-400 transition-colors cursor-pointer" />
+        <span className="text-amber-200/40">&middot;</span>
+        <ConsentSettingsButton className="text-amber-200/75 hover:text-amber-100 transition-colors cursor-pointer" />
       </div>
 
       <p
-        className="mt-3 mx-auto max-w-md px-4 text-amber-600/40 text-[10px] leading-relaxed"
+        className="mt-3 mx-auto max-w-md px-4 text-amber-200/60 text-[11px] leading-relaxed"
         style={{ fontFamily: 'Georgia, serif' }}
       >
         {LEGAL_COPY.TRADEMARK_DISCLAIMER}

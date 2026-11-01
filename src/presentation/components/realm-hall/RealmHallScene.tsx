@@ -14,6 +14,7 @@ import { AMBIENT_USER_DATA } from '../three/frame-scheduling/ambient';
 import { selectHtmlOverlayTargetReady } from '../three/html-overlay-target';
 import { cameraPoseAt } from './hall-path';
 import { hallProgressStore } from './hall-progress-store';
+import { HallLoadingReporter } from './HallLoadingReporter';
 
 const NO_PLAYERS: never[] = [];
 
@@ -72,6 +73,7 @@ export function RealmHallScene({ still }: { still: boolean }) {
   return (
     <>
       <CameraRig still={still} />
+      <HallLoadingReporter settled={settled} />
       {/* Compiles the room's shaders before the walk reaches them and draws the first shadow map */}
       <ShaderWarmup warmupKey={`${tableTheme.id}:${structuralTier}`} />
       {/* Room decor animates at the scheduler's ambient rate, as in the game */}
@@ -79,6 +81,8 @@ export function RealmHallScene({ still }: { still: boolean }) {
         {settled ? <ThemedEnvironment /> : null}
       </group>
       <SceneLighting />
+      {/* The game lights the table for play; seen from across the room the walls need a little fill */}
+      <hemisphereLight args={[REALM_HALL.FILL.SKY, REALM_HALL.FILL.GROUND, REALM_HALL.FILL.INTENSITY]} />
       <TableSurface players={NO_PLAYERS} localPlayerId="" currentPlayerIndex={-1} />
     </>
   );

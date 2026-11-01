@@ -3,6 +3,8 @@
 import { useSeasonalPack } from '@/presentation/components/settings/useSeasonalPack';
 import { REALM_OPTIONS } from '../room-browser/realm-switcher.config';
 import { RealmGlyphIcon } from '../room-browser/realm-mascots';
+import { HALL_LOADER } from '@/presentation/config/realm-hall.config';
+import { switchRealm } from './hall-loading-store';
 
 const SERIF = { fontFamily: 'Georgia, serif' } as const;
 
@@ -23,7 +25,7 @@ export function RealmLenses({ className = '' }: { className?: string }) {
             <button
               key={realm.pack.id}
               type="button"
-              onClick={() => applyPack(realm.pack)}
+              onClick={() => switchRealm(() => applyPack(realm.pack), { target: realm.pack.name, curtainMs: HALL_LOADER.CURTAIN_MS, minVisibleMs: HALL_LOADER.MIN_VISIBLE_MS })}
               aria-pressed={isActive}
               aria-label={`${realm.pack.name} realm: ${realm.pack.tagline}`}
               title={realm.pack.name}

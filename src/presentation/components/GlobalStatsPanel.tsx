@@ -2,66 +2,40 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'motion/react';
-import { Scroll, Gamepad2, Sparkles, Ghost, Layers, Target, Trophy, Flame, Swords, type LucideIcon } from 'lucide-react';
 import type { GlobalStats } from '@shared/domain/stats';
 import type { GlobalStatsResponse } from '@/app/api/types/global-stats.types';
 import { CONSTANTS } from '@/presentation/config/constants';
-import { THEME_SURFACE } from '@/presentation/config/theme-surface.config';
-import { SeasonalEmblem } from '@/presentation/components/seasonal';
 
-/** Section header with decorative dividers */
-function SectionHeader() {
+const SERIF = { fontFamily: 'Georgia, serif' } as const;
+
+/** One line of the realm's ledger: what was counted and how many. */
+function LedgerRow({ label, value, description }: { label: string; value: string; description: string }) {
   return (
-    <div className="flex items-center justify-center gap-4 mb-6">
-      <div className="h-px flex-1 max-w-24 bg-gradient-to-r from-transparent to-amber-700/30" />
-      <div className="flex items-center gap-2">
-        <Scroll className="w-5 h-5 text-amber-500/70" />
-        <h2 className="text-amber-300/80 text-lg tracking-wider uppercase" style={{ fontFamily: 'Georgia, serif' }}>Chronicles of the Realm</h2>
-      </div>
-      <div className="h-px flex-1 max-w-24 bg-gradient-to-l from-transparent to-amber-700/30" />
+    <div className="flex items-baseline gap-3 py-2.5 border-b border-amber-800/25">
+      <dt className="min-w-0 flex-1" style={SERIF}>
+        <span className="block text-sm text-amber-100/90">{label}</span>
+        <span className="block text-xs text-amber-200/65">{description}</span>
+      </dt>
+      <dd className="text-xl text-amber-200 tabular-nums" style={SERIF}>{value}</dd>
     </div>
   );
 }
 
-/** Individual stat card */
-function StatCard({ icon: Icon, label, value, description, index }: { icon: LucideIcon; label: string; value: string; description: string; index: number }) {
-  return (
-    <motion.div key={label} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 + index * 0.05 }} className="group relative rounded-lg border border-amber-800/30 p-3 sm:p-4 hover:border-amber-700/50 transition-colors" style={{ background: 'linear-gradient(180deg, color-mix(in srgb, var(--surface) 60%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 10%) 60%, transparent) 100%)' }}>
-      <div className="flex items-center gap-2 mb-2">
-        <Icon className="w-4 h-4 text-amber-500/70 group-hover:text-amber-400/80 transition-colors" />
-        <span className="text-[10px] sm:text-xs text-amber-500/60 uppercase tracking-wider truncate" style={{ fontFamily: 'Georgia, serif' }}>{label}</span>
-      </div>
-      <div className="text-xl sm:text-2xl font-semibold text-amber-200/90 mb-1" style={{ fontFamily: 'Georgia, serif' }}>{value}</div>
-      <div className="text-[10px] sm:text-xs text-amber-600/50" style={{ fontFamily: 'Georgia, serif' }}>{description}</div>
-    </motion.div>
-  );
-}
-
-/** Total cards played banner */
-function TotalCardsBanner({ cardsPlayed }: { cardsPlayed: number }) {
-  return (
-    <div className="mt-4 flex items-center justify-center gap-3 py-3 px-4 rounded-lg border border-amber-800/20" style={{ background: THEME_SURFACE.CARD_BG_SOFT }}>
-      <span className="text-amber-700/50">✦</span>
-      <span className="text-sm text-amber-400/70" style={{ fontFamily: 'Georgia, serif' }}><span className="text-amber-300/90 font-semibold">{cardsPlayed.toLocaleString()}</span> cards have graced the tables of this realm</span>
-      <span className="text-amber-700/50">✦</span>
-    </div>
-  );
-}
-
-/** Build stat items array from stats data */
+/** Build the ledger rows from stats data */
 function buildStatItems(stats: GlobalStats, bidAccuracy: number) {
   return [
-    { icon: Gamepad2, label: 'Battles Fought', value: stats.gamesPlayed.toLocaleString(), description: 'games completed' },
-    { icon: Layers, label: 'Rounds Conquered', value: stats.roundsPlayed.toLocaleString(), description: 'rounds played' },
-    { icon: Swords, label: 'Tricks Claimed', value: stats.tricksPlayed.toLocaleString(), description: 'tricks won' },
-    { icon: Sparkles, label: 'Wizards Summoned', value: stats.wizardsPlayed.toLocaleString(), description: 'wizard cards played' },
-    { icon: Ghost, label: 'Jesters Unleashed', value: stats.jestersPlayed.toLocaleString(), description: 'jester cards played' },
-    { icon: Target, label: 'Prophecy Accuracy', value: `${bidAccuracy}%`, description: `${stats.perfectBids.toLocaleString()} perfect bids` },
-    { icon: Trophy, label: 'Greatest Glory', value: stats.highestScore.toLocaleString(), description: 'highest score ever' },
-    { icon: Flame, label: 'Comeback Victories', value: stats.comebackWins.toLocaleString(), description: 'epic turnarounds' },
+    { label: 'Battles fought', value: stats.gamesPlayed.toLocaleString(), description: 'games completed' },
+    { label: 'Rounds conquered', value: stats.roundsPlayed.toLocaleString(), description: 'rounds played' },
+    { label: 'Tricks claimed', value: stats.tricksPlayed.toLocaleString(), description: 'tricks won' },
+    { label: 'Wizards summoned', value: stats.wizardsPlayed.toLocaleString(), description: 'wizard cards played' },
+    { label: 'Jesters unleashed', value: stats.jestersPlayed.toLocaleString(), description: 'jester cards played' },
+    { label: 'Prophecy accuracy', value: `${bidAccuracy}%`, description: `${stats.perfectBids.toLocaleString()} perfect bids` },
+    { label: 'Greatest glory', value: stats.highestScore.toLocaleString(), description: 'highest score ever' },
+    { label: 'Comeback victories', value: stats.comebackWins.toLocaleString(), description: 'epic turnarounds' },
   ];
 }
 
+/** The realm's statistics as a ledger of label-and-value rows. */
 export function GlobalStatsPanel() {
   const [stats, setStats] = useState<GlobalStatsResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -100,19 +74,15 @@ export function GlobalStatsPanel() {
   }
 
   return (
-    <motion.section className="mb-12" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.32 }}>
-      <SectionHeader />
-      <div className="rounded-xl border border-amber-700/40 overflow-hidden" style={{ background: 'linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--surface), black 5%) 95%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 31%) 95%, transparent) 100%)', boxShadow: '0 4px 30px rgba(0,0,0,0.3), inset 0 1px 0 color-mix(in srgb, var(--accent-deep) 8%, transparent)' }}>
-        <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--accent-deep) 30%, transparent) 50%, transparent 100%)' }} />
-        <div className="p-4 sm:p-6">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-            {statItems.map((item, index) => <StatCard key={item.label} {...item} index={index} />)}
-          </div>
-          <TotalCardsBanner cardsPlayed={stats.cardsPlayed} />
-        </div>
-        <div className="flex justify-center pb-4"><SeasonalEmblem size={14} className="opacity-70" /></div>
-        {stats.isMock ? <div className="text-center pb-3 text-[10px] text-amber-800/40 italic">Sample data - Redis not configured</div> : null}
-      </div>
+    <motion.section aria-labelledby="chronicles-heading" className="mb-8" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.32 }}>
+      <h2 id="chronicles-heading" className="text-2xl sm:text-3xl text-amber-50" style={SERIF}>Chronicles of the realm</h2>
+      <p className="mt-2 text-sm text-amber-100/80" style={SERIF}>
+        <span className="text-amber-200 tabular-nums">{stats.cardsPlayed.toLocaleString()}</span> cards have been played at these tables.
+      </p>
+      <dl className="mt-4 grid sm:grid-cols-2 gap-x-8">
+        {statItems.map((item) => <LedgerRow key={item.label} {...item} />)}
+      </dl>
+      {stats.isMock ? <p className="mt-3 text-xs text-amber-200/70 italic" style={SERIF}>Sample figures: live statistics are not configured on this server.</p> : null}
     </motion.section>
   );
 }

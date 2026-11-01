@@ -20,6 +20,8 @@ export const REALM_HALL = {
   MAX_DPR: 1.5,
   /** How quickly the camera eases toward the scroll position (per second, exponential). */
   CAMERA_EASE: 6,
+  /** A warm fill light over the room, on top of the game's own lighting */
+  FILL: { SKY: '#ffe2b8', GROUND: '#2a1c10', INTENSITY: 0.9 },
   /**
    * Stops in page order; HallStation sections map onto them one to one: the room's edge, four
    * turns around the table, and the player's own seat (the game's desktop camera). Between the
@@ -27,13 +29,51 @@ export const REALM_HALL = {
    * half of the view and the station's text the other (the HallStation sides in StartHall).
    */
   STOPS: [
-    // From the edge of the room the target sits below the table, lifting it into the gap
-    // between the hanging sign at the top of the page and the host stand at the bottom.
-    { position: [0, 3.4, 12.5], target: [0, -0.9, 0] },
-    { position: [9, 3.5, 9], target: [2.5, 0.3, -2.5] },
-    { position: [-9, 3, 6], target: [-1.9, 0.3, -2.8] },
-    { position: [4, 1.8, -7.5], target: [-2.6, 0.2, -1.5] },
-    { position: [-6, 2.4, -6.5], target: [2.1, 0.3, -2] },
+    // The edge of the room, looking down over the table: the back wall and its signs fall above the
+    // frame, so the room's busiest props stay clear of the wordmark.
+    { position: [0, 7, 11], target: [0, -2.8, -1.5] },
+    // The back wall (the casino's sign, the manor's windows, the barn doors), left of the text panel.
+    { position: [7.5, 2.6, 6], target: [3, 2.6, -11] },
+    // The left wall's props, past the table, to the right of the text.
+    { position: [5, 2.4, -1], target: [-12, 0.5, 1.5] },
+    // Over the felt, looking along it to the right wall: the table fills the left of the frame.
+    { position: [-6.5, 2.6, 4], target: [12, 0, -4] },
+    // Across the table into the lit back corner (signs, machines, windows), right of the text panel.
+    { position: [-6, 4.2, 8], target: [6, 1.2, -11] },
     { position: CAMERA_CONFIG.DESKTOP.POSITION, target: [0, 0, 0] },
   ] satisfies HallCameraStop[],
+} as const;
+
+/** The player lookup in the top-right dock (ProfileSearch). */
+export const PROFILE_SEARCH = {
+  /** Wait this long after the last keystroke before asking the server */
+  DEBOUNCE_MS: 250,
+  /** Shortest query worth sending (SOCIAL_LIMITS.SEARCH_MIN_LENGTH on the server) */
+  MIN_LENGTH: 2,
+} as const;
+
+/** The loader shown while the room loads, and while a realm switch loads the next one (HallLoader). */
+export const HALL_LOADER = {
+  /** Shown only when loading takes longer than this, so a fast load never flashes */
+  SHOW_DELAY_MS: 180,
+  /** A realm switch waits this long after showing the loader, so it paints before the switch blocks the main thread */
+  CURTAIN_MS: 160,
+  /** Once a realm switch shows the loader, it stays at least this long */
+  MIN_VISIBLE_MS: 1100,
+  /** A load that stalls longer than this no longer holds the loader over the page */
+  MAX_VISIBLE_MS: 12_000,
+  /** How long each line stays before the next */
+  LINE_MS: 2600,
+  LINES: [
+    'Polishing the Wizards. They insist.',
+    'Teaching the Jesters to keep a straight face.',
+    'Counting to sixty. Twice, just to be sure.',
+    'Asking trump which suit it feels like today.',
+    'Reminding the bots that zero is a perfectly good bid.',
+    'Shuffling. Then shuffling again, because someone was watching.',
+    'Dusting the felt and warming up the lamps.',
+    'Looking for the fifth Wizard. There are only four.',
+    'Convincing the 13 of hearts it is not a trump card.',
+    'Sharpening the pencil for the score sheet.',
+  ],
 } as const;
