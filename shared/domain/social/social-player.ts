@@ -22,7 +22,7 @@ export interface SocialPlayer {
 }
 
 /** What anyone may see of a public profile in a search: no ids, no relationships, no presence. */
-export type PublicPlayerCard = Pick<SocialPlayer, 'username' | 'displayName' | 'avatar' | 'level'>;
+export type PublicPlayerCard = Pick<SocialPlayer, 'username' | 'displayName' | 'avatar' | 'appearance' | 'level'>;
 
 export interface Friend extends SocialPlayer {
   since: number;

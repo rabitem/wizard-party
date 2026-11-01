@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
+import { DEFAULT_APPEARANCE } from '../../../domain/character';
 import type { PublicPlayerCard } from '../../../domain/social';
 import type { IPublicProfileDirectory, ISocialThrottle } from '../../ports/social';
 import { SearchPublicProfilesUseCase } from './directory.use-cases';
 import { SocialError } from './social-error';
 
-const ANN: PublicPlayerCard = { username: 'ann', displayName: 'Ann', avatar: 'wizard', level: 7 };
+const ANN: PublicPlayerCard = { username: 'ann', displayName: 'Ann', avatar: 'wizard', appearance: DEFAULT_APPEARANCE, level: 7 };
 
 function setup({ allow = true } = {}) {
   const queries: string[] = [];

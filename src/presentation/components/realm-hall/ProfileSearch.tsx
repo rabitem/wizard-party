@@ -61,7 +61,7 @@ function SearchResults({ listId, state, query, active, phone, onPick, onHover }:
             onPointerEnter={() => onHover(index)}
             className={`flex items-center gap-3 px-3 py-2 cursor-pointer ${index === active ? 'bg-amber-900/40' : ''}`}
           >
-            <PlayerAvatar avatarId={player.avatar ?? 'wizard'} level={player.level} size="sm" />
+            <PlayerAvatar appearance={player.appearance} label={player.displayName} level={player.level} size="sm" />
             <span className="min-w-0 flex-1 truncate text-sm text-amber-50" style={SERIF}>{player.displayName}</span>
             <span className="text-xs text-amber-300/80 tabular-nums" style={SERIF}>Level {player.level}</span>
           </li>
