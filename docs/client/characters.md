@@ -99,13 +99,17 @@ cards) cannot use it.
   they never load the 3D figure code.
 - `useLocalAppearance` (`hooks/account/`) loads the signed-in player's look once per page. Until
   it has loaded, and while nothing was saved, it shows the look derived from the `avatar` setting
-  (`chooseLocalAppearance`), so a new sigil in the Profile tab shows at once. Guests get `null`.
+  (`chooseLocalAppearance`). A save in the editor updates it at once
+  (`rememberSavedAppearance`). Guests get `null`.
 - At a table (lobby seats, the in-game standings) `seatAppearance` decides: the local look, a
   bot's look by difficulty (`botAppearance`), the look of the account the room reported
   (`roomAccounts`), else a silhouette. `useSeatAppearance` wires it for the standings. Players
   whose account the viewer cannot see, and every player when the viewer is a guest, show a
   silhouette until the room itself carries looks.
 - The first portrait on a page loads the character model and opens one WebGL context.
+- The Character tab (`CharacterSection`) shows the draft in a turnable 3D view
+  (`CharacterPreview`, loaded with `next/dynamic` so three.js stays out of the other tabs) and
+  cheers once after a save. Part rewards on the Rewards tab show the starter look wearing the part.
 
 ## Checking assets
 

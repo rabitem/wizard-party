@@ -138,3 +138,20 @@ export function displayedAppearance(stored: unknown, legacyAvatarId: string | nu
   const saved = parseAppearance(stored);
   return saved && validateAppearance(saved) === null ? saved : appearanceForLegacyAvatar(legacyAvatarId);
 }
+
+/**
+ * The look with `partId` chosen in its slot. The new choice wins a conflict: a two-handed prop
+ * empties the off hand (and an off-hand choice puts it away), a covering head drops the headwear
+ * (and headwear uncovers the head). Unknown ids leave the look unchanged; unlocks are not checked.
+ */
+export function withPart(appearance: CharacterAppearance, partId: string): CharacterAppearance {
+  const part = findCharacterPart(partId);
+  if (!part) return appearance;
+  const next: CharacterAppearance = { ...appearance, [part.slot]: part.id };
+  if (part.slot === 'mainHand' && part.twoHanded) next.offHand = 'off:none';
+  if (part.slot === 'offHand' && part.id !== 'off:none' && findCharacterPart(next.mainHand)?.twoHanded) next.mainHand = 'main:none';
+  if (part.slot === 'head' && part.coversHead) next.headwear = 'headwear:none';
+  const head = findCharacterPart(next.head);
+  if (part.slot === 'headwear' && part.id !== 'headwear:none' && head?.coversHead) next.head = head.bareHeadId ?? DEFAULT_APPEARANCE.head;
+  return next;
+}

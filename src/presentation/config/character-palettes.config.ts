@@ -28,6 +28,9 @@ export const PALETTE_COLORS: Readonly<Record<string, PaletteColors | null>> = {
   'palette:royal': { primary: '#22337a', accent: '#d4af37' },
 };
 
+/** Editor swatch of the classic palette, which keeps the textures: the mage robe and cape. */
+export const CLASSIC_PALETTE_SWATCH: PaletteColors = { primary: '#4b3f8f', accent: '#b0204f' };
+
 export interface ClothingCells {
   primary: readonly string[];
   accent: readonly string[];

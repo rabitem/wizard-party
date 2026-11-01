@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, type ReactNode } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Award, Database, LayoutDashboard, LogOut, Map as MapIcon, ScrollText, Shield, SlidersHorizontal, UserRound } from 'lucide-react';
+import { Award, Database, LayoutDashboard, LogOut, Map as MapIcon, ScrollText, Shield, SlidersHorizontal, Sparkles, UserRound } from 'lucide-react';
 
 import { useAccount } from '@/presentation/providers/AccountProvider';
 import { PreferencesPanel } from '@/presentation/components/settings';
@@ -10,6 +10,7 @@ import { PreferencesPanel } from '@/presentation/components/settings';
 import { SectionDivider } from './AccountOrnaments';
 import { AccountShell } from './AccountShell';
 import { centeredScrollLeft } from './account-tabs.utils';
+import { CharacterSection } from './character';
 import { AchievementsSection } from './sections/AchievementsSection';
 import { DataSection } from './sections/DataSection';
 import { OwnPublicProfileLink } from './public/PublicProfileLink';
@@ -26,6 +27,7 @@ const TABS = [
   { id: 'overview', label: 'Overview', icon: <LayoutDashboard className="w-4 h-4" /> },
   { id: 'history', label: 'History', icon: <ScrollText className="w-4 h-4" /> },
   { id: 'achievements', label: 'Achievements', icon: <Award className="w-4 h-4" /> },
+  { id: 'character', label: 'Character', icon: <Sparkles className="w-4 h-4" /> },
   { id: 'rewards', label: 'Rewards', icon: <MapIcon className="w-4 h-4" /> },
   { id: 'profile', label: 'Profile', icon: <UserRound className="w-4 h-4" /> },
   { id: 'preferences', label: 'Preferences', icon: <SlidersHorizontal className="w-4 h-4" /> },
@@ -67,6 +69,7 @@ function AccountTabPanel({ tab, userId, overview, onRefresh, onShowHistory }: Ac
         <AchievementsSection overview={overview} />
       </div>
     );
+    case 'character': return <CharacterSection />;
     case 'rewards': return <RewardsSection overview={overview} />;
     case 'profile': return <ProfileSection overview={overview} onSaved={onRefresh} />;
     case 'preferences': return <PreferencesPanel />;

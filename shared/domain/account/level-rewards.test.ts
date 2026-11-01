@@ -89,16 +89,20 @@ describe('levelsGained', () => {
   it('should list each crossed level with its rewards', () => {
     const gained = levelsGained(totalXpForLevel(4) + 10, totalXpForLevel(6));
     expect(gained.map((levelUp) => levelUp.level)).toEqual([5, 6]);
-    expect(gained[0].rewards.map((reward) => reward.id)).toEqual(['frame:bronze']);
+    expect(gained[0].rewards.map((reward) => reward.id)).toEqual(['frame:bronze', 'part:head:knight', 'part:outfit:knight', 'part:headwear:knight-helmet', 'part:cape:knight']);
     expect(gained[1]).toMatchObject({ title: 'Conjurer' });
-    expect(levelsGained(totalXpForLevel(9), totalXpForLevel(10))[0].rewards.map((reward) => reward.id)).toEqual(['title:sorcerer', 'frame:silver']);
+    expect(levelsGained(totalXpForLevel(9), totalXpForLevel(10))[0].rewards.map((reward) => reward.id)).toEqual([
+      'title:sorcerer', 'frame:silver', 'part:head:barbarian', 'part:outfit:barbarian', 'part:headwear:barbarian-hat', 'part:cape:barbarian', 'part:off:barbarian-shield',
+    ]);
     expect(levelsGained(totalXpForLevel(1), totalXpForLevel(2))[0].rewards).toEqual([]);
   });
 
   it('should summarize several level-ups into the highest one with all rewards', () => {
     const summary = summarizeLevelUps(levelsGained(0, totalXpForLevel(5)));
     expect(summary).toMatchObject({ level: 5, title: 'Hedge Mage' });
-    expect(summary?.rewards.map((reward) => reward.id)).toEqual(['title:hedge-mage', 'frame:bronze']);
+    expect(summary?.rewards.map((reward) => reward.id)).toEqual([
+      'title:hedge-mage', 'part:palette:ember', 'frame:bronze', 'part:head:knight', 'part:outfit:knight', 'part:headwear:knight-helmet', 'part:cape:knight',
+    ]);
     expect(summarizeLevelUps([])).toBeNull();
   });
 });

@@ -99,8 +99,8 @@ key the dependent feature is skipped or reduced; `.env.example` says which.
   required `name` always mirrors the username. A rename is allowed once per
   `CHANGE_COOLDOWN_MS` and the first rename is free; casing edits are free. The casing must spell
   the stored name.
-- **Avatar.** Players are shown as their character (see Characters). The old `avatar` id is only
-  set in the Profile tab and still decides the derived look until a look is saved; emails and the
+- **Avatar.** Players are shown as their character (see Characters). The old `avatar` id can no
+  longer be chosen; it still decides the derived look until a look is saved, and emails and the
   seat mark on the 3D table still draw it. A guest has no character: a silhouette, and a guest badge
   on their own lobby seat. Other seats never show the badge: a seat without account data may also
   be a blocked or hidden account.
@@ -131,7 +131,8 @@ key the dependent feature is skipped or reduced; `.env.example` says which.
   twice.
 - **Levels and rewards.** Level comes from `player_progress.total_xp` through `getProgression()`.
   `LEVEL_TITLES` (`progression.ts`), `AVATAR_FRAMES` and `PROFILE_BANNERS` (`level-rewards.ts`)
-  declare what each level unlocks; cosmetics are derived from the level, never stored. Level-up
+  declare what each level unlocks; character parts with a level unlock join the track as
+  `part:<part id>` rewards. Cosmetics are derived from the level, never stored. Level-up
   toasts come from `summarizeLevelUps(levelsGained(prevXp, nextXp))` in `AccountProvider`.
 - **Tournaments feed progress.** `ProgressCalculator` reads completed tournaments through
   `ITournamentParticipationReader` (served by `PostgresTournamentHistoryReader`). When a tournament
@@ -170,6 +171,10 @@ key the dependent feature is skipped or reduced; `.env.example` says which.
   `social_players` view, migration `0111`), inbox actors, sent invites, public profiles and
   leaderboard entries carry it as `appearance` next to the old `avatar`, which emails still draw.
   Saving a look purges the player's public profile and the leaderboards.
+- **The editor** is the Character tab of `/account` (`components/account/character/`). Each choice
+  goes through `withPart`, which keeps the look valid: a two-handed prop empties the off hand, a
+  hood takes off the headwear, headwear on a hood swaps in the bare head (`bareHeadId`). The
+  editor lists locked parts with what unlocks them; the server still checks every save.
 - **In the UI**, `PlayerAvatar` draws the character's portrait in the level frame
   ([../client/characters.md](../client/characters.md#in-the-ui)). The local player's look comes
   from `GET /api/account/character` (`useLocalAppearance`); at a table, `seatAppearance` gives the

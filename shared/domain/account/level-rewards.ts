@@ -1,15 +1,17 @@
+import { CHARACTER_PARTS, type CharacterPart } from '../character';
 import { LEVEL_TITLES, getProgression, titleForLevel } from './progression';
 
 /*
  * The rewards track. Every reward is a declarative entry unlocked by reaching a level, so adding a
- * reward means adding an entry to one of the catalogs below; the helpers and the UI pick it up.
+ * reward means adding an entry to one of the catalogs below (or a level-unlocked character part to
+ * CHARACTER_PARTS); the helpers and the UI pick it up.
  * Cosmetics are derived from the level (never stored), so they apply retroactively like titles.
  */
 
-export type LevelRewardKind = 'title' | 'frame' | 'banner';
+export type LevelRewardKind = 'title' | 'frame' | 'banner' | 'part';
 
 export interface LevelReward {
-  /** Unique across all kinds, e.g. `frame:gold`. */
+  /** Unique across all kinds, e.g. `frame:gold`, `part:head:knight`. */
   id: string;
   kind: LevelRewardKind;
   /** Level at which the reward unlocks. */
@@ -46,7 +48,15 @@ export const PROFILE_BANNERS = [
 export type AvatarFrameId = (typeof AVATAR_FRAMES)[number]['id'];
 export type ProfileBannerId = (typeof PROFILE_BANNERS)[number]['id'];
 
-const KIND_ORDER: Record<LevelRewardKind, number> = { title: 0, frame: 1, banner: 2 };
+const KIND_ORDER: Record<LevelRewardKind, number> = { title: 0, frame: 1, banner: 2, part: 3 };
+
+/** Heads and palettes share names with other parts (Knight, Knight Armour …), so say which. */
+function partRewardName(part: CharacterPart): string {
+  if (part.slot === 'head') return `${part.name} head`;
+  if (part.slot === 'palette') return `${part.name} palette`;
+  if (part.slot === 'familiar') return `${part.name} familiar`;
+  return part.name;
+}
 
 /** Every reward on the track, sorted by level (then title, frame, banner). */
 export const LEVEL_REWARDS: readonly LevelReward[] = [
@@ -58,6 +68,8 @@ export const LEVEL_REWARDS: readonly LevelReward[] = [
   })),
   ...AVATAR_FRAMES.filter((frame) => frame.level > 1).map((frame) => ({ id: `frame:${frame.id}`, kind: 'frame' as const, level: frame.level, name: frame.name })),
   ...PROFILE_BANNERS.filter((banner) => banner.level > 1).map((banner) => ({ id: `banner:${banner.id}`, kind: 'banner' as const, level: banner.level, name: banner.name })),
+  // Character parts unlocked by level (achievement parts unlock with their achievement instead).
+  ...CHARACTER_PARTS.flatMap((part) => (part.unlock.kind === 'level' ? [{ id: `part:${part.id}`, kind: 'part' as const, level: part.unlock.level, name: partRewardName(part) }] : [])),
 ].sort((a, b) => a.level - b.level || KIND_ORDER[a.kind] - KIND_ORDER[b.kind]);
 
 export interface RewardMilestone {

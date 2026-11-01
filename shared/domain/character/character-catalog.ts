@@ -25,6 +25,8 @@ export interface CharacterPart {
   twoHanded?: boolean;
   /** Heads that already cover the hair (a hood): no headwear on top. */
   coversHead?: boolean;
+  /** For a covered head: the same face without the cover, worn when headwear is chosen. */
+  bareHeadId?: string;
 }
 
 const starter: PartUnlock = { kind: 'starter' };
@@ -39,7 +41,7 @@ export const CHARACTER_PARTS: readonly CharacterPart[] = [
   { id: 'head:rogue', slot: 'head', name: 'Rogue', unlock: starter },
   { id: 'head:knight', slot: 'head', name: 'Knight', unlock: level(CHARACTER_SET_LEVELS.knight) },
   { id: 'head:barbarian', slot: 'head', name: 'Barbarian', unlock: level(CHARACTER_SET_LEVELS.barbarian) },
-  { id: 'head:rogue-hooded', slot: 'head', name: 'Hooded Rogue', unlock: level(CHARACTER_SET_LEVELS.hoodedRogue), coversHead: true },
+  { id: 'head:rogue-hooded', slot: 'head', name: 'Hooded Rogue', unlock: level(CHARACTER_SET_LEVELS.hoodedRogue), coversHead: true, bareHeadId: 'head:rogue' },
 
   { id: 'outfit:mage', slot: 'outfit', name: 'Mage Robes', unlock: starter },
   { id: 'outfit:rogue', slot: 'outfit', name: 'Rogue Leathers', unlock: starter },
