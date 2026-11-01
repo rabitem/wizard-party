@@ -204,7 +204,8 @@ artifact (`e2e-report/`, `e2e-results/`).
   devices, both matrices on every engine, the golden path on every engine and both phones) with
   `E2E_FULL_MATRIX=1`, each project split into four shards.
 - **Manual dispatch.** The same projects in two shards each, without `E2E_FULL_MATRIX`. The inputs
-  are `grep` (Playwright `--grep`) and `update_snapshots` (see [Visual baselines](#visual-baselines)).
+  are `grep` (Playwright `--grep`), `update_snapshots` (see [Visual baselines](#visual-baselines))
+  and `full_matrix`, which runs the weekly scope (`E2E_FULL_MATRIX=1`, four shards) on demand.
 
 A `plan` job lists the jobs, one per project and shard with the engine to install. A `build` job
 runs `npm run e2e:build` once and uploads `.next` as the `e2e-build` artifact; every project job
