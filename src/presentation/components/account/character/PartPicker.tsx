@@ -3,7 +3,6 @@
 import { Lock } from 'lucide-react';
 
 import { CLASSIC_PALETTE_SWATCH, PALETTE_COLORS } from '@/presentation/config/character-palettes.config';
-import { SERIF } from '../ui';
 import type { PartOption } from './character-editor';
 
 function PaletteSwatch({ id }: { id: string }) {
@@ -31,7 +30,7 @@ interface PartPickerProps {
 export function PartPicker({ label, options, swatches = false, onPick }: PartPickerProps) {
   return (
     <fieldset>
-      <legend className="text-xs uppercase tracking-wider text-amber-500/80 mb-2" style={SERIF}>{label}</legend>
+      <legend className="text-xs uppercase tracking-wider text-amber-500/80 mb-2 font-serif">{label}</legend>
       <div className="flex flex-wrap gap-2">
         {options.map((option) => (
           <button
@@ -41,8 +40,7 @@ export function PartPicker({ label, options, swatches = false, onPick }: PartPic
             disabled={option.locked}
             title={option.requirement ?? undefined}
             onClick={() => onPick(option.id)}
-            className={`inline-flex items-center gap-2 min-h-11 rounded-xl border px-3 py-1.5 text-left text-sm transition-colors ${optionClass(option)}`}
-            style={SERIF}
+            className={`inline-flex items-center gap-2 min-h-11 rounded-xl border px-3 py-1.5 text-left text-sm font-serif transition-colors ${optionClass(option)}`}
           >
             {swatches ? <PaletteSwatch id={option.id} /> : null}
             <span className="flex flex-col leading-tight">
