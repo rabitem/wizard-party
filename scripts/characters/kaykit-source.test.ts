@@ -27,8 +27,9 @@ describe('KayKit character source', () => {
     expect(Object.values(source.files).every((file) => /^[0-9a-f]{64}$/.test(file.sha256))).toBe(true);
   });
 
-  it('should have built public/characters/characters.glb from the current manifest', () => {
+  it('should have built every drawable part, familiars included, into public/characters/characters.glb', () => {
     const builtParts = new Set(glbNodeNames('../../public/characters/characters.glb').map((name) => name.split('/')[0]));
-    expect(Object.keys(source.parts).filter((partId) => !builtParts.has(partId))).toEqual([]);
+    const drawable = CHARACTER_PARTS.filter((part) => !part.id.endsWith(':none') && part.slot !== 'palette').map((part) => part.id);
+    expect(drawable.filter((partId) => !builtParts.has(partId))).toEqual([]);
   });
 });

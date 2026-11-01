@@ -8,12 +8,12 @@ look is, which parts exist and how they unlock is in
 ## Assets
 
 The bodies, headwear, capes and props are the KayKit Character Pack: Adventurers 1.0 (CC0, see
-`THIRD_PARTY_NOTICES.md`). `npm run characters:build` turns the five upstream models into two
-committed files:
+`THIRD_PARTY_NOTICES.md`); the familiars are ours. `npm run characters:build` turns the five
+upstream models and the familiars into two committed files:
 
 | File | Holds | Size (gzip) |
 | --- | --- | --- |
-| `public/characters/characters.glb` | One rig (41 bones) with every catalog part on it, four textures | about 530 KB (360 KB) |
+| `public/characters/characters.glb` | One rig (41 bones) with every catalog part on it, four textures | about 610 KB (390 KB) |
 | `public/characters/character-animations.glb` | The same rig without meshes, plus the clips in `CHARACTER_CLIPS` | about 240 KB (115 KB) |
 
 The build (`scripts/characters/build-character-assets.mjs`):
@@ -50,7 +50,18 @@ every part.
 - three.js strips `:` `/` and `.` from node names when it loads them (`head:mage` becomes `headmage`,
   `upperarm.l` becomes `upperarml`), so code finds parts by `userData.part`, never by name.
 - The model is about 2.7 units tall, standing on y = 0.
-- Familiars are not drawn yet.
+
+## Familiars
+
+The owl, cat, raven and toad are built in code (`scripts/characters/familiars.mjs`) from three.js
+primitives: faceted, with per-vertex colours, so they sit next to the KayKit style without a
+texture. The asset build adds each one to `characters.glb` as a part like any other (node and
+`userData.part` = its catalog id, material `familiar`), on the `root` bone beside the left foot
+(`FAMILIAR_PLACEMENT`). The chibi head is too wide for a shoulder perch. Palettes never recolour
+them: their material has no texture.
+
+To add a familiar, add the catalog part, a builder in `familiars.mjs` keyed by that id, then
+rebuild.
 
 ## Palettes
 

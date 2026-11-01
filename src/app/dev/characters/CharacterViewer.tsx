@@ -15,8 +15,6 @@ import {
 import { CharacterFigure, CharacterPortrait } from '@/presentation/components/character';
 import { CHARACTER_CLIPS, type CharacterClip } from '@/presentation/config/character.config';
 
-/** Slots the model shows; familiars arrive with their own assets. */
-const MODEL_SLOTS: readonly CharacterSlot[] = CHARACTER_SLOTS.filter((slot) => slot !== 'familiar');
 const PALETTES = CHARACTER_PARTS.filter((part) => part.slot === 'palette');
 const CAMERA = { position: [0, 1.6, 7] as [number, number, number], fov: 35 };
 const TARGET: [number, number, number] = [0, 1.35, 0];
@@ -44,7 +42,7 @@ export function CharacterViewer() {
     <main className="min-h-dvh grid md:grid-cols-[18rem_1fr] bg-[var(--page-base)] text-amber-100">
       <aside className="flex flex-col gap-3 p-4 border-b md:border-b-0 md:border-r border-amber-900/40">
         <h1 className="text-lg" style={{ fontFamily: 'Georgia, serif' }}>Characters</h1>
-        {MODEL_SLOTS.map((slot) => (
+        {CHARACTER_SLOTS.map((slot) => (
           <SlotPicker key={slot} slot={slot} value={appearance[slot]} onChange={(id) => setAppearance((current) => ({ ...current, [slot]: id }))} />
         ))}
         <label className="flex flex-col gap-1 text-xs text-amber-200/80">
