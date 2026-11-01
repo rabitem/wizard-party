@@ -21,7 +21,7 @@ export const EXPANSIONS_UI_CONFIG = {
   ROUND_COUNT_NOTE: 'Round count still follows the classic 60-card deck.',
 
   // Expansion guide (tutorial picker, home-page carousel, explainer)
-  GUIDE_HEADING: 'Special Card Editions',
+  GUIDE_HEADING: 'Special card editions',
   GUIDE_PICKER_INTRO: 'Curious about the anniversary editions? Pick one to read its cards:',
   GUIDE_OPEN_LABEL: 'Read the cards',
   GUIDE_BACK_LABEL: 'All editions',

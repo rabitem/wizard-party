@@ -69,14 +69,13 @@ function ExpansionSlide({ set, position, total, isActive, onOpen }: ExpansionSli
       <button
         type="button"
         onClick={() => onOpen(set.id)}
-        className="w-full h-full p-4 rounded-xl border border-amber-800/30 hover:border-amber-600/50 text-left transition-colors cursor-pointer"
-        style={{ background: 'linear-gradient(135deg, color-mix(in srgb, color-mix(in srgb, var(--surface), black 5%) 75%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 31%) 55%, transparent) 100%)' }}
+        className="w-full h-full px-1 py-3 rounded-xl text-left transition-colors cursor-pointer hover:bg-amber-900/20"
       >
         <span className="flex items-baseline justify-between gap-2">
           <span className="text-amber-200/90">{set.name}</span>
-          <span className="text-xs text-amber-600/70">{getExpansionYearLabel(set)}</span>
+          <span className="text-xs text-amber-300/75">{getExpansionYearLabel(set)}</span>
         </span>
-        <span className="block mt-1 text-xs text-amber-300/60 leading-relaxed">{set.description}</span>
+        <span className="block mt-1 text-xs text-amber-100/80 leading-relaxed">{set.description}</span>
         <span className="flex flex-wrap gap-1.5 mt-3" aria-hidden="true">
           {set.cards.map((type) => {
             const Icon = SPECIAL_CARD_ICONS[type];

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import type { Leaderboards } from '@shared/domain/account/leaderboard';
 
@@ -9,9 +9,10 @@ export type LeaderboardsState =
   | { status: 'ready'; boards: Leaderboards }
   | { status: 'error' };
 
-/** Public boards from /api/leaderboard; one request serves every category tab. */
-export function useLeaderboards(): LeaderboardsState {
+/** Public boards from /api/leaderboard; one request serves every category tab. `retry` asks again. */
+export function useLeaderboards(): LeaderboardsState & { retry: () => void } {
   const [state, setState] = useState<LeaderboardsState>({ status: 'loading' });
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -25,7 +26,12 @@ export function useLeaderboards(): LeaderboardsState {
         }
       });
     return () => controller.abort();
+  }, [attempt]);
+
+  const retry = useCallback(() => {
+    setState({ status: 'loading' });
+    setAttempt((count) => count + 1);
   }, []);
 
-  return state;
+  return { ...state, retry };
 }

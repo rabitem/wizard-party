@@ -13,11 +13,11 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   return {
     title: "Join Wizard Party - Free Online Multiplayer Card Game",
     description:
-      "You've been invited to play Wizard Party! Join the magical multiplayer trick-taking card game. Predict your tricks, compete with friends, and become the ultimate wizard.",
+      "You're invited to a table at Wizard Party. Bid your tricks, then hit them exactly: the Wizard card game, free in your browser.",
     openGraph: {
       title: "Join Wizard Party - Free Online Multiplayer Card Game",
       description:
-        "You've been invited to play Wizard Party! Join the magical multiplayer trick-taking card game.",
+        "You're invited to a table. Tap to take your seat: the Wizard card game, free in your browser.",
       type: "website",
       images: [`/join/og${roomParam}`],
     },
@@ -25,7 +25,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       card: "summary_large_image",
       title: "Join Wizard Party - Free Online Multiplayer Card Game",
       description:
-        "You've been invited to play Wizard Party! Join the magical multiplayer trick-taking card game.",
+        "You're invited to a table. Tap to take your seat: the Wizard card game, free in your browser.",
       images: [`/join/og${roomParam}`],
     },
   };

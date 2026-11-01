@@ -5,6 +5,7 @@ import type {
   InboxDelivery,
   InboxItem,
   PlayerSearchResult,
+  PublicPlayerCard,
   PresenceHeartbeat,
   RelationshipFacts,
   SocialPlayer,
@@ -196,4 +197,13 @@ export interface FriendRequestEmail {
 export interface ISocialMailer {
   gameInvite(mail: GameInviteEmail): Promise<void>;
   friendRequest(mail: FriendRequestEmail): Promise<void>;
+}
+
+/** Public profiles by name, for anyone (the start page's search). */
+export interface IPublicProfileDirectory {
+  /**
+   * Public profiles whose handle starts with or contains `query` (normalized), prefix matches
+   * first, then by level. Private profiles never match, not even by their exact name.
+   */
+  searchPublic(query: string, limit: number): Promise<PublicPlayerCard[]>;
 }

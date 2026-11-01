@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     template: "%s | Wizard Party",
   },
   description:
-    "Play Wizard Party free online! A magical multiplayer trick-taking card game. Predict your tricks, cast spells, compete with friends, and become the ultimate wizard. No download required.",
+    "Play the Wizard card game free online at a 3D table. Bid your tricks, then hit them exactly. Three to six players, friends or bots, eleven themed realms. No download, no account needed.",
   keywords: [
     "wizard card game",
     "online card game",
@@ -40,8 +40,9 @@ export const metadata: Metadata = {
     "wizard party",
     "browser game",
     "card game with friends",
+    "3d card game",
+    "wizard card game rules",
   ],
-  authors: [{ name: "Wizard Party Team" }],
   creator: "Wizard Party",
   publisher: "Wizard Party",
   metadataBase: new URL(SITE_URL),
@@ -55,20 +56,22 @@ export const metadata: Metadata = {
     siteName: "Wizard Party",
     title: "Wizard Party - Free Online Multiplayer Card Game",
     description:
-      "Play Wizard Party free online! A magical multiplayer trick-taking card game. Predict your tricks, compete with friends, and become the ultimate wizard.",
+      "Bid your tricks, then hit them exactly. The Wizard card game, free in your browser at a 3D table, with friends or bots.",
   },
   twitter: {
     card: "summary_large_image",
     title: "Wizard Party - Free Online Multiplayer Card Game",
     description:
-      "Play Wizard Party free online! A magical multiplayer trick-taking card game. Predict your tricks, compete with friends!",
+      "Bid your tricks, then hit them exactly. The Wizard card game, free in your browser at a 3D table, with friends or bots.",
   },
+  // The favicon and home-screen icon carry the Wizard Party mark (src/app/icon.tsx, apple-icon.tsx).
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.png", type: "image/png", sizes: "512x512" },
     ],
     shortcut: "/favicon.svg",
-    apple: "/favicon.svg",
+    apple: "/apple-icon",
   },
   manifest: "/manifest.json",
   robots: {
@@ -91,9 +94,9 @@ const jsonLd = [
     "@type": "Organization",
     name: "Wizard Party",
     url: SITE_URL,
-    logo: `${SITE_URL}/opengraph-image`,
+    logo: `${SITE_URL}/favicon.png`,
     description:
-      "Free online multiplayer card game platform. Play Wizard Party - a magical trick-taking card game with friends.",
+      "Wizard Party, an unofficial fan version of the Wizard trick-taking card game, free to play online at a 3D table.",
     sameAs: [],
   },
   {
@@ -101,19 +104,13 @@ const jsonLd = [
     "@type": "WebApplication",
     name: "Wizard Party",
     description:
-      "A magical multiplayer trick-taking card game. Predict your tricks, compete with friends, and become the ultimate wizard.",
+      "The Wizard trick-taking card game at a 3D table: bid your tricks, then hit them exactly. Three to six players, friends or bots.",
     url: SITE_URL,
+    image: `${SITE_URL}/opengraph-image`,
     applicationCategory: "Game",
     applicationSubCategory: "Card Game",
     operatingSystem: "All",
     browserRequirements: "Requires JavaScript. Requires WebGL.",
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.8",
-      ratingCount: "1",
-      bestRating: "5",
-      worstRating: "1",
-    },
     offers: {
       "@type": "Offer",
       price: "0",

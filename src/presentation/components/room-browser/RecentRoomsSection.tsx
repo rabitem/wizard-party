@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'motion/react';
-import { Clock, Users, ChevronRight } from 'lucide-react';
+import { Users, ChevronRight } from 'lucide-react';
 import type { RecentRoom } from './utils';
 
 interface RecentRoomsSectionProps {
@@ -22,12 +22,9 @@ export function RecentRoomsSection({ recentRooms, canPlay, onJoinRoom }: RecentR
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
     >
-      <div className="flex items-center gap-2 mb-3 px-1">
-        <Clock className="w-3.5 h-3.5 text-amber-500/50" />
-        <h2 className="text-amber-400/60 text-xs uppercase tracking-wider" style={{ fontFamily: 'Georgia, serif' }}>
-          Recent
-        </h2>
-      </div>
+      <h2 className="text-xl text-amber-50 mb-3" style={{ fontFamily: 'Georgia, serif' }}>
+        Your recent tables
+      </h2>
 
       <div className="space-y-2">
         {recentRooms.slice(0, 3).map((room) => (

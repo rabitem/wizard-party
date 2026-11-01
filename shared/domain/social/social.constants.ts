@@ -31,6 +31,8 @@ export const SOCIAL_RATE_LIMITS = {
   /** Re-inviting the same player: one invite per pair and window. */
   game_invite_pair: { limit: 1, windowSeconds: 30 },
   search: { limit: 40, windowSeconds: 60 },
+  /** The start page's public profile search, per visitor (keyed by a hash of the address). */
+  public_profile_search: { limit: 30, windowSeconds: 60 },
   /** Invite emails a player receives per day, from everyone together. */
   invite_email: { limit: 5, windowSeconds: 24 * 60 * 60 },
   /** Invite emails to an unverified address per day (it may belong to someone else). */

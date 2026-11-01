@@ -7,6 +7,7 @@ import {
   type InboxAction,
   type InboxItem,
   type PlayerSearchResult,
+  type PublicPlayerCard,
   type PresenceHeartbeat,
   type RelationshipFacts,
   type SocialPlayer,
@@ -20,6 +21,7 @@ import type {
   GameInviteEmail,
   IInboxRepository,
   IPlayerDirectory,
+  IPublicProfileDirectory,
   IPresenceStore,
   IRoomMembershipVerifier,
   IRoomRosterStore,
@@ -40,7 +42,7 @@ const pair = (a: string, b: string) => `${a}->${b}`;
 type StoredItem = InboxItem & { userId: string; actorId: string | null; dedupeKey: string | null };
 
 export class MemorySocial
-  implements ISocialGraphRepository, IPlayerDirectory, IInboxRepository, IPresenceStore, IRoomRosterStore, IRoomMembershipVerifier, ISocialThrottle, ISocialMailer
+  implements ISocialGraphRepository, IPlayerDirectory, IPublicProfileDirectory, IInboxRepository, IPresenceStore, IRoomRosterStore, IRoomMembershipVerifier, ISocialThrottle, ISocialMailer
 {
   players = new Map<string, SocialPlayer>();
   settings = new Map<string, SocialSettings>();
@@ -168,6 +170,13 @@ export class MemorySocial
   }
   async search(): Promise<PlayerSearchResult[]> {
     return [];
+  }
+  // IPublicProfileDirectory
+  async searchPublic(query: string, limit: number): Promise<PublicPlayerCard[]> {
+    return [...this.players.values()]
+      .filter((player) => player.hasPublicProfile && player.username.includes(query))
+      .slice(0, limit)
+      .map(({ username, displayName, avatar, level }) => ({ username, displayName, avatar, level }));
   }
   async findManyForViewer(viewerId: string, userIds: readonly string[]): Promise<PlayerSearchResult[]> {
     return userIds.flatMap((id) => {

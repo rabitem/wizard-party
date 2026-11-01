@@ -42,6 +42,11 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     '/api/social/invites': ['./public/fonts/rpgawesome-webfont.ttf'],
     '/api/social/friends': ['./public/fonts/rpgawesome-webfont.ttf'],
+    // Link previews read their serif and the room captures from disk (src/app/_og/og-kit.tsx).
+    '/opengraph-image': ['./assets/og/**'],
+    '/twitter-image': ['./assets/og/**'],
+    '/share/og': ['./assets/og/**'],
+    '/join/og': ['./assets/og/**'],
   },
   images: {
     formats: ["image/avif", "image/webp"],
