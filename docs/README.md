@@ -37,6 +37,7 @@ are touching. The repository root holds [README.md](../README.md),
 | [client/render-scene.md](client/render-scene.md) | Frame scheduling, quality tiers, the draw-call budget |
 | [client/cards-camera.md](client/cards-camera.md) | Card meshes and faces, the hand, the camera |
 | [client/platform.md](client/platform.md) | Web Storage, settings surfaces, custom sound audio, Web Audio, multi-touch drag |
+| [client/characters.md](client/characters.md) | Character models: the asset build, the files, loading and showing a look |
 
 ## Testing
 

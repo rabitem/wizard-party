@@ -117,6 +117,7 @@ All scripts are in `package.json`. Commands marked "worker" need `npm run dev:pa
 | `npm run audit:animations` | Animation audit over the sandbox (`scripts/animation-audit.mjs`; the dev server must run) |
 | `npm run test:physics` | The physics subset of the unit tests |
 | `npm run sounds:generate` | Regenerate `public/sounds/*.mp3` (needs FFmpeg) |
+| `npm run characters:build` | Rebuild `public/characters/` from the pinned KayKit models (downloads them once) |
 | `npm run db:migrate` | Apply database migrations |
 | `npm run deploy:party` | Deploy the worker; see [operations/deployment.md](operations/deployment.md) |
 
