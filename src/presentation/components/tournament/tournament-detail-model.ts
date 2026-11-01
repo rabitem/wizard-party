@@ -6,9 +6,11 @@ import type {
   TournamentMatchView,
   TournamentRoundView,
 } from '@shared/application/use-cases/tournament';
+import type { CharacterAppearance } from '@shared/domain/character';
 import { TOURNAMENT_LIMITS, createSeededRandom, type Standing } from '@shared/domain/tournament';
 
 import { TOURNAMENT_UI } from '@/presentation/config/tournament.config';
+import type { PodiumContender } from '@/presentation/types/podium.types';
 
 import { ordinal } from '../account/public/public-profile-format';
 import { formatDuration } from './tournament-view-model';
@@ -228,18 +230,26 @@ export function viewerAwardXp(awards: readonly TournamentAwardView[], viewerId: 
   return awards.filter((award) => award.player.userId === viewerId).reduce((sum, award) => sum + award.xp, 0);
 }
 
-/** Podium steps left to right: 2nd, 1st, 3rd (fewer when the field was smaller). */
-export function podiumOrder(entries: readonly PodiumEntry[]): PodiumEntry[] {
-  const [first, second, third] = entries;
-  return [second, first, third].filter((entry): entry is PodiumEntry => entry !== undefined);
-}
-
-const PODIUM_STEPS = ['first', 'second', 'third'] as const;
-export type PodiumStep = (typeof PODIUM_STEPS)[number];
-
-/** Podium step of a rank (1..3; anything lower stands on the third step). */
-export function podiumStep(rank: Standing['rank']): PodiumStep {
-  return PODIUM_STEPS[Math.min(Math.max(rank, 1), PODIUM_STEPS.length) - 1];
+/**
+ * The podium's players. Tournament views carry no looks, so only the viewer, whose own look this
+ * page knows, stands in theirs; everyone else is a silhouette.
+ */
+export function tournamentPodiumContenders(
+  entries: readonly PodiumEntry[],
+  viewerId: string | null,
+  viewerAppearance: CharacterAppearance | null
+): PodiumContender[] {
+  return entries.map(({ standing }) => {
+    const isViewer = standing.userId === viewerId;
+    return {
+      id: standing.userId,
+      rank: standing.rank,
+      name: standing.displayName,
+      appearance: isViewer ? viewerAppearance : null,
+      detail: `${standing.points} pts`,
+      isViewer,
+    };
+  });
 }
 
 export interface ConfettiPiece {

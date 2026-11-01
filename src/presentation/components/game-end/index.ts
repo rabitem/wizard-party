@@ -10,3 +10,4 @@ export { RecapTab } from './RecapTab';
 export { StatsTab } from './StatsTab';
 export { GameEndHeader } from './GameEndHeader';
 export { GameEndActions } from './GameEndActions';
+export { GameEndPodium } from './GameEndPodium';

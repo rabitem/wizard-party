@@ -15,6 +15,7 @@ import {
   StatsTab,
   GameEndHeader,
   GameEndActions,
+  GameEndPodium,
 } from './game-end';
 import { SeasonalCorner } from './seasonal';
 import { TournamentResultNotice } from './tournament/in-game';
@@ -91,8 +92,9 @@ export function GameEndUI({
   const { shareUrl, shareText } = useShareData(sortedPlayers, maxRounds, stats);
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center bg-black/90 backdrop-blur-sm z-20 p-4">
-      <div className="relative w-full max-w-md">
+    <div className="absolute inset-0 flex overflow-y-auto bg-black/90 backdrop-blur-sm z-20 p-4">
+      {/* m-auto centres the card and lets a card taller than the screen scroll from its top. */}
+      <div className="relative w-full max-w-md m-auto">
         {/* Outer glow */}
         <div
           className="absolute -inset-3 rounded-xl blur-2xl opacity-40"
@@ -117,7 +119,9 @@ export function GameEndUI({
           />
 
           <CornerOrnaments />
-          <GameEndHeader winner={winner} isWinner={isWinner} />
+          <GameEndHeader winner={winner} isWinner={isWinner}>
+            <GameEndPodium players={players} localPlayerId={localPlayerId} />
+          </GameEndHeader>
           {tournament ? <TournamentResultNotice match={tournament.match} /> : null}
           <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 

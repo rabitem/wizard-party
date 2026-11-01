@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
 import type { TournamentDetailView, TournamentViewerView } from '@shared/application/use-cases/tournament';
+import { DEFAULT_APPEARANCE } from '@shared/domain/character';
 import type { Standing } from '@shared/domain/tournament';
+
+import type { PodiumContender } from '@/presentation/types/podium.types';
+
+import { podiumStands } from '../podium/podium-layout';
 
 import {
   advanceCaption,
@@ -10,19 +15,25 @@ import {
   inviteCandidates,
   inviteSummary,
   matchStatusPresentation,
-  podiumOrder,
-  podiumStep,
   reachedLabel,
   managesTables,
   resolveBlockedReason,
   shouldAutoJoin,
   startBlocker,
   toggleInvite,
+  tournamentPodiumContenders,
   viewerProgressLine,
   type PodiumEntry,
 } from './tournament-detail-model';
 
 const MINUTE = 60_000;
+
+/** Podium steps left to right as "place:ids". */
+function podiumSteps(contenders: PodiumContender[]): string[] {
+  return podiumStands(contenders).map((stand) => `${stand.place}:${stand.occupants.map(idOf).join(',')}`);
+}
+const idOf = (contender: PodiumContender) => contender.id;
+const lookOf = (contender: PodiumContender) => contender.appearance;
 
 function viewer(overrides: Partial<TournamentViewerView> = {}): TournamentViewerView {
   return {
@@ -226,14 +237,11 @@ describe('tournament detail model', () => {
   describe('podium', () => {
     const entry = (rank: number): PodiumEntry => ({ standing: standing(rank, `p${rank}`), awards: [] });
 
-    it('should place the champion in the middle', () => {
-      expect(podiumOrder([entry(1), entry(2), entry(3)]).map((item) => item.standing.rank)).toEqual([2, 1, 3]);
-      expect(podiumOrder([entry(1), entry(2)]).map((item) => item.standing.rank)).toEqual([2, 1]);
-      expect(podiumOrder([entry(1)]).map((item) => item.standing.rank)).toEqual([1]);
-    });
-
-    it('should map ranks to steps', () => {
-      expect([1, 2, 3, 4].map(podiumStep)).toEqual(['first', 'second', 'third', 'third']);
+    it('should stand the champion in the middle, with only the viewer in their own look', () => {
+      const contenders = tournamentPodiumContenders([entry(1), entry(2), entry(3)], 'p2', DEFAULT_APPEARANCE);
+      expect(podiumSteps(contenders)).toEqual(['2:p2', '1:p1', '3:p3']);
+      expect(contenders.map(lookOf)).toEqual([null, DEFAULT_APPEARANCE, null]);
+      expect(podiumSteps(tournamentPodiumContenders([entry(1)], null, null))).toEqual(['1:p1']);
     });
 
     it('should scatter the same confetti for the same tournament', () => {
