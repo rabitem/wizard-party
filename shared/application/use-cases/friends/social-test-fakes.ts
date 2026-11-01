@@ -1,3 +1,4 @@
+import { DEFAULT_APPEARANCE } from '../../../domain/character';
 import {
   DEFAULT_SOCIAL_SETTINGS,
   INBOX_KINDS,
@@ -58,7 +59,7 @@ export class MemorySocial
   private nextId = 1;
 
   addPlayer(userId: string, overrides: Partial<SocialPlayer> = {}) {
-    this.players.set(userId, { userId, username: userId, displayName: userId.toUpperCase(), avatar: null, level: 1, hasPublicProfile: true, ...overrides });
+    this.players.set(userId, { userId, username: userId, displayName: userId.toUpperCase(), avatar: null, appearance: DEFAULT_APPEARANCE, level: 1, hasPublicProfile: true, ...overrides });
   }
 
   // ISocialThrottle
@@ -253,7 +254,7 @@ export class MemorySocial
   }
   private toSent(item: StoredItem): SentInboxItem | null {
     const recipient = this.players.get(item.userId);
-    return recipient ? { item, recipient: { userId: recipient.userId, username: recipient.username, displayName: recipient.displayName, avatar: recipient.avatar, level: recipient.level } } : null;
+    return recipient ? { item, recipient: { userId: recipient.userId, username: recipient.username, displayName: recipient.displayName, avatar: recipient.avatar, appearance: recipient.appearance, level: recipient.level } } : null;
   }
   async exportRaw(userId: string) {
     return this.items.filter((item) => item.userId === userId);

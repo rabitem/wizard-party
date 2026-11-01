@@ -128,3 +128,13 @@ export function appearanceForLegacyAvatar(avatarId: string | null | undefined): 
   const look = (avatarId && Object.prototype.hasOwnProperty.call(LEGACY_AVATAR_LOOKS, avatarId)) ? LEGACY_AVATAR_LOOKS[avatarId] : {};
   return { ...DEFAULT_APPEARANCE, ...look };
 }
+
+/**
+ * The look other players see: the saved one while every part still exists in the slot it was
+ * saved in, else the one derived from the avatar chosen before characters. Display never checks
+ * unlocks; the server checked them when the look was saved.
+ */
+export function displayedAppearance(stored: unknown, legacyAvatarId: string | null | undefined): CharacterAppearance {
+  const saved = parseAppearance(stored);
+  return saved && validateAppearance(saved) === null ? saved : appearanceForLegacyAvatar(legacyAvatarId);
+}

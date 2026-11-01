@@ -164,16 +164,21 @@ key the dependent feature is skipped or reduced; `.env.example` says which.
   avatar in the synced `game-settings` document (`appearanceForLegacyAvatar`, starter parts
   only). A stored look whose parts are no longer allowed is repaired slot by slot on read
   (`repairAppearance`).
-- Characters are not shown anywhere yet: avatars still render from the `avatar` setting until
-  the presentation switches over.
+- **What others see** is `displayedAppearance(stored, avatar)`: the saved look while every part is
+  still valid, else the derived one; unlocks are not checked again. Social players (the
+  `social_players` view, migration `0111`), inbox actors, sent invites, public profiles and
+  leaderboard entries carry it as `appearance` next to the old `avatar`, which emails still draw.
+  Saving a look purges the player's public profile and the leaderboards. The UI still draws
+  avatars until the presentation switches over.
 
 ### Public profiles
 
 - `/u/<username>` exists while `player_profiles.is_public` is true (the default, see
   `DEFAULT_PROFILE_VISIBILITY`). `buildPublicProfile()` is the whitelist of what leaves the server:
-  name, tagline, avatar, level, headline stats, achievements, pinned games, the trophy cabinet and,
-  only with `show_history`, recent games. Never the email, user id or game ids. The avatar is the
-  `avatar` field of the synced `game-settings` document.
+  name, tagline, avatar, character look, level, headline stats, achievements, pinned games, the
+  trophy cabinet and, only with `show_history`, recent games. Never the email, user id or game ids.
+  The avatar is the `avatar` field of the synced `game-settings` document; the look is
+  `displayedAppearance` (see Characters).
 - The page is ISR (`revalidate = 60`) and served only at the lowercase handle; other spellings
   redirect permanently. Its data carries the cache tag `public-profile:<handle>`.
   `revalidatePublicProfiles()` (`public-profile-cache.ts`) expires that tag and the path at once
@@ -301,6 +306,7 @@ Env vars, secrets and their defaults for accounts are in
 | `0107_one_player_name.sql` | usernames for accounts without one, `usernameChangedAt`, `NOT NULL` names |
 | `0108_tournaments.sql`, `0109_tournament_match_activity.sql` | tournaments and live match state (see [tournaments.md](tournaments.md)) |
 | `0110_character_appearance.sql` | `player_profiles.appearance` (nullable, no backfill) |
+| `0111_social_players_appearance.sql` | `appearance` appended to the `social_players` view |
 
 ## Tests
 

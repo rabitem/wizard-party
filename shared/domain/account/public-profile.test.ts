@@ -94,7 +94,7 @@ describe('buildPublicProfile', () => {
     expect(json).not.toContain('secret-game-id');
     expect(json).not.toContain('"rounds"');
     expect(Object.keys(buildPublicProfile(raw) ?? {}).sort()).toEqual(
-      ['achievements', 'avatar', 'displayName', 'memberSince', 'pinnedGames', 'progression', 'recentGames', 'stats', 'tagline', 'trophies', 'trophyCounts', 'username'].sort()
+      ['achievements', 'appearance', 'avatar', 'displayName', 'memberSince', 'pinnedGames', 'progression', 'recentGames', 'stats', 'tagline', 'trophies', 'trophyCounts', 'username'].sort()
     );
   });
 

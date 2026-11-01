@@ -1,3 +1,4 @@
+import type { CharacterAppearance } from '../character';
 import { getProgression } from './progression';
 import { EMPTY_STATS, getWinRate, type PlayerStatsSummary } from './player-stats';
 
@@ -22,6 +23,7 @@ export interface LeaderboardCandidate {
   /** The username as the player spells it. */
   displayName: string;
   avatar: string;
+  appearance: CharacterAppearance;
   totalXp: number;
   stats: PlayerStatsSummary;
 }
@@ -32,6 +34,7 @@ export interface LeaderboardEntry {
   username: string;
   displayName: string;
   avatar: string;
+  appearance: CharacterAppearance;
   level: number;
   title: string;
   gamesPlayed: number;
@@ -75,6 +78,7 @@ export function rankLeaderboard(
       username: candidate.username,
       displayName: candidate.displayName,
       avatar: candidate.avatar,
+      appearance: candidate.appearance,
       level: progression.level,
       title: progression.title,
       gamesPlayed: candidate.stats.gamesPlayed,

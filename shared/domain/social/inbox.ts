@@ -1,3 +1,4 @@
+import type { CharacterAppearance } from '../character';
 import { isMatchId, isTournamentId, normalizeInviteCode } from '../tournament/tournament-ids';
 import { TOURNAMENT_LIMITS, TOURNAMENT_TIMING } from '../tournament/tournament.constants';
 import { isRoomCode } from './presence';
@@ -167,6 +168,7 @@ export interface InboxActor {
   username: string;
   displayName: string;
   avatar: string | null;
+  appearance: CharacterAppearance;
   level: number;
 }
 

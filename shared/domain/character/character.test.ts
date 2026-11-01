@@ -7,6 +7,7 @@ import {
   DEFAULT_APPEARANCE,
   LEGACY_AVATAR_LOOKS,
   appearanceForLegacyAvatar,
+  displayedAppearance,
   parseAppearance,
   repairAppearance,
   unlockedCharacterParts,
@@ -97,5 +98,18 @@ describe('appearanceForLegacyAvatar', () => {
   it('should carry the flavour of the old avatar over', () => {
     expect(appearanceForLegacyAvatar('skull')).toMatchObject({ head: 'head:rogue', palette: 'palette:shadow' });
     expect(appearanceForLegacyAvatar('beer').mainHand).toBe('main:mug');
+  });
+});
+
+describe('displayedAppearance', () => {
+  it('should show a saved look, even with parts the viewer could not unlock', () => {
+    const knight = look({ head: 'head:knight', outfit: 'outfit:knight' });
+    expect(displayedAppearance(JSON.parse(JSON.stringify(knight)), 'skull')).toEqual(knight);
+  });
+
+  it('should fall back to the old avatar when nothing valid was saved', () => {
+    expect(displayedAppearance(null, 'skull')).toEqual(appearanceForLegacyAvatar('skull'));
+    expect(displayedAppearance(look({ head: 'head:retired' }), 'beer')).toEqual(appearanceForLegacyAvatar('beer'));
+    expect(displayedAppearance({ v: 9 }, null)).toEqual(DEFAULT_APPEARANCE);
   });
 });
