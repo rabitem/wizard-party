@@ -30,7 +30,7 @@ export function ChampionList({ entries, category, selfUsername }: { entries: Lea
               <span className="flex-1 min-w-0">
                 <span className="flex items-center gap-1.5">
                   <span className="truncate text-sm text-amber-50" style={SERIF}>{entry.displayName}</span>
-                  {isSelf ? <span className="shrink-0 rounded-full bg-amber-600/80 px-1.5 text-[9px] uppercase tracking-wider text-amber-950">You</span> : null}
+                  {isSelf ? <span className="shrink-0 rounded-full bg-amber-600/80 px-1.5 text-[11px] text-amber-950">You</span> : null}
                 </span>
                 <span className="block truncate text-[11px] text-amber-500/55">{entry.title}</span>
               </span>

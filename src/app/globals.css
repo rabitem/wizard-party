@@ -304,6 +304,27 @@ select:focus-visible {
   outline-offset: 2px;
 }
 
+/*
+ * The start page loader's shuffling cards (HallLoader). A CSS animation on transform runs on the
+ * compositor, so the cards keep moving while building the next realm's room blocks the main thread.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .hall-shuffle-card {
+    animation: hall-shuffle 1.6s ease-in-out infinite;
+    animation-delay: var(--shuffle-delay, 0s);
+  }
+}
+
+@keyframes hall-shuffle {
+  0%, 100% { transform: translateX(var(--shuffle-x)) rotate(var(--shuffle-r)); }
+  50% { transform: translateX(calc(var(--shuffle-x) * -1)) translateY(var(--shuffle-lift, 0px)) rotate(calc(var(--shuffle-r) * -1)); }
+}
+
+/* A field whose container draws the focus ring itself (focus-within), like the player search. */
+.focus-shown-by-parent:focus-visible {
+  outline: none;
+}
+
 /* Selection - warm amber */
 ::selection {
   background: rgba(212, 168, 83, 0.35);

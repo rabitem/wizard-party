@@ -84,10 +84,27 @@ larger size inside a `split` layout is written `split:2xl:...`, not `2xl:...`.
 The home page (`components/realm-hall/`) renders the active realm's game room and table behind
 the page: `ThemedEnvironment`, `SceneLighting` and `TableSurface`, the same parts as the game, in
 a canvas set up like `Game3DCanvas`. Each `HallStation` section is one stop of a camera walk
-(`REALM_HALL.STOPS` in `config/realm-hall.config.ts`, same order); `useHallScrollProgress` turns
+(`REALM_HALL.STOPS` in `config/realm-hall.config.ts`, same order; portrait screens swap in
+`PORTRAIT_STOPS` through `hallStopsFor`, because there the panels span the width); `useHallScrollProgress` turns
 the scroll position into walk progress, and the camera eases toward it inside `useFrame`. With
 reduced motion the camera stays at the first stop; without WebGL the page keeps a painted
 backdrop.
+
+`HallLoader` covers the wait: shuffling cards, the realm being set up and a rotating line from
+`HALL_LOADER.LINES`. Inside the canvas `HallLoadingReporter` writes `hallLoadingStore` (room
+ready, textures still loading); a realm lens calls `switchRealm`, which raises the loader first and
+applies the switch only after `HALL_LOADER.CURTAIN_MS`, because building the next room blocks the
+main thread. `HallDock` holds the top-right controls in one capsule: `ProfileSearch` (public
+profiles, see docs/accounts/social.md), friends, preferences and the account. On phones it slides
+away while scrolling down (`useHideOnScrollDown`).
+
+The link previews (`src/app/_og/`, `opengraph-image.tsx`, `twitter-image.tsx`, `join/og`,
+`share/og`) render on the Node.js runtime from `assets/og`: Gelasio (an OFL serif with Georgia's
+metrics) and two captures of the Classic room taken from the start page with its UI hidden.
+`next.config.ts` traces that folder into those routes. Satori, the renderer, needs
+`display: flex` on any div with more than one child, does not read variable fonts, and ignores
+the `inset` shorthand. The favicon (`public/favicon.svg`, `favicon.png`) and `icon.tsx` /
+`apple-icon.tsx` draw the mark from `config/wizard-party-mark.config.ts`.
 
 The game route sets `viewportFit: 'cover'` (`src/app/game/[id]/page.tsx`, merged over the root
 viewport), so the canvas fills the screen edge to edge and every HUD edge adds

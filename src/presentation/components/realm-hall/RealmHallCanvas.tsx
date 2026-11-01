@@ -1,6 +1,6 @@
 'use client';
 
-import { Component, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
+import { Component, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { useReducedMotion } from 'motion/react';
 import { REALM_HALL } from '@/presentation/config/realm-hall.config';
@@ -10,6 +10,7 @@ import { FrameScheduler } from '../three/frame-scheduling';
 import { getGameCanvasGlOptions } from '../three/game-canvas-gl';
 import { RenderQualityProvider, resolveAntialias, useRenderQuality } from '../three/render-quality';
 import { RealmHallScene } from './RealmHallScene';
+import { hallLoadingStore } from './hall-loading-store';
 
 // The rooms carry 3D text (banners, signs): fallback fonts come through our proxy, as in the game.
 configureTextRendering();
@@ -43,6 +44,9 @@ class HallErrorBoundary extends Component<{ children: ReactNode }, { failed: boo
   state = { failed: false };
   static getDerivedStateFromError() {
     return { failed: true };
+  }
+  componentDidCatch() {
+    hallLoadingStore.setStatus('unavailable');
   }
   render() {
     return this.state.failed ? null : this.props.children;
@@ -81,7 +85,11 @@ function RealmHallCanvasHost() {
  * missing.
  */
 export function RealmHallCanvas() {
+  // Mounted client-only (next/dynamic, ssr: false), so this reads the real probe on first render.
   const webgl = useSyncExternalStore(noSubscribe, hasWebGL, () => false);
+  useEffect(() => {
+    if (!webgl) hallLoadingStore.setStatus('unavailable');
+  }, [webgl]);
   if (!webgl) return null;
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 z-0">

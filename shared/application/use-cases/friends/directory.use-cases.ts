@@ -4,11 +4,12 @@ import {
   normalizeSearchQuery,
   parseSocialSettingsChanges,
   type PlayerSearchResult,
+  type PublicPlayerCard,
   type SocialSettings,
 } from '../../../domain/social';
 import { normalizeUsername, validateUsername } from '../../../domain/account/username';
 import type { IClock } from '../../ports/account';
-import type { IInboxRepository, IPlayerDirectory, IPresenceStore, ISocialGraphRepository, ISocialThrottle } from '../../ports/social';
+import type { IInboxRepository, IPlayerDirectory, IPresenceStore, IPublicProfileDirectory, ISocialGraphRepository, ISocialThrottle } from '../../ports/social';
 import type { AccountIdentity, EnsureProfileUseCase } from '../account/profile.use-cases';
 import { RATE_LIMITED_MESSAGE, SocialError } from './social-error';
 
@@ -24,6 +25,25 @@ export class SearchPlayersUseCase {
     if (!query) return [];
     if (!(await this.throttle.allow('search', viewerId))) throw new SocialError('rate_limited', RATE_LIMITED_MESSAGE);
     return this.directory.search(viewerId, query, SOCIAL_LIMITS.SEARCH_MAX_RESULTS);
+  }
+}
+
+/**
+ * Public profiles by name for anyone, signed in or not (the start page's search). `visitorKey`
+ * identifies the caller for the rate limit (the route passes the client address; the throttle
+ * stores only a keyed hash of it).
+ */
+export class SearchPublicProfilesUseCase {
+  constructor(
+    private readonly directory: IPublicProfileDirectory,
+    private readonly throttle: ISocialThrottle
+  ) {}
+
+  async execute(visitorKey: string, rawQuery: unknown): Promise<PublicPlayerCard[]> {
+    const query = normalizeSearchQuery(rawQuery, SOCIAL_LIMITS.SEARCH_MIN_LENGTH, SOCIAL_LIMITS.SEARCH_MAX_LENGTH);
+    if (!query) return [];
+    if (!(await this.throttle.allow('public_profile_search', visitorKey))) throw new SocialError('rate_limited', RATE_LIMITED_MESSAGE);
+    return this.directory.searchPublic(query, SOCIAL_LIMITS.SEARCH_MAX_RESULTS);
   }
 }
 

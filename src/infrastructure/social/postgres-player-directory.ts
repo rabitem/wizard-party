@@ -1,7 +1,7 @@
 import 'server-only';
 
-import type { PlayerSearchResult, SocialPlayer, SocialSettings, SocialSettingsChanges } from '@shared/domain/social';
-import type { EmailContact, IPlayerDirectory } from '@shared/application/ports/social';
+import type { PlayerSearchResult, PublicPlayerCard, SocialPlayer, SocialSettings, SocialSettingsChanges } from '@shared/domain/social';
+import type { EmailContact, IPlayerDirectory, IPublicProfileDirectory } from '@shared/application/ports/social';
 
 import { getSql } from '../db/neon';
 import {
@@ -17,7 +17,7 @@ import {
 /** Upper bound of candidates per search branch before ranking. */
 const SEARCH_CANDIDATES = 25;
 
-export class PostgresPlayerDirectory implements IPlayerDirectory {
+export class PostgresPlayerDirectory implements IPlayerDirectory, IPublicProfileDirectory {
   async findById(userId: string): Promise<SocialPlayer | null> {
     const rows = (await getSql()`SELECT * FROM social_players WHERE user_id = ${userId}`) as SocialPlayerRow[];
     return rows[0] ? toSocialPlayer(rows[0]) : null;
@@ -59,6 +59,31 @@ export class PostgresPlayerDirectory implements IPlayerDirectory {
       LIMIT ${limit}
     `) as (SocialPlayerRow & RelationshipRow)[];
     return rows.map(toSearchResult);
+  }
+
+  /** Two ranked branches, each served by an index: name prefix and name substring, public profiles only. */
+  async searchPublic(query: string, limit: number): Promise<PublicPlayerCard[]> {
+    const escaped = escapeLike(query);
+    const rows = (await getSql()`
+      WITH hits AS (
+        (SELECT u.id, 0 AS rank
+         FROM auth_users u LEFT JOIN player_profiles p ON p.user_id = u.id
+         WHERE u."username" LIKE ${`${escaped}%`} AND COALESCE(p.is_public, true)
+         ORDER BY u."username" LIMIT ${SEARCH_CANDIDATES})
+        UNION ALL
+        (SELECT u.id, 1 AS rank
+         FROM auth_users u LEFT JOIN player_profiles p ON p.user_id = u.id
+         WHERE u."username" LIKE ${`%${escaped}%`} AND COALESCE(p.is_public, true)
+         LIMIT ${SEARCH_CANDIDATES})
+      ), best AS (SELECT id, min(rank) AS rank FROM hits GROUP BY id)
+      SELECT sp.* FROM best JOIN social_players sp ON sp.user_id = best.id
+      ORDER BY best.rank, sp.total_xp DESC, sp.display_name
+      LIMIT ${limit}
+    `) as SocialPlayerRow[];
+    return rows.map((row) => {
+      const { username, displayName, avatar, level } = toSocialPlayer(row);
+      return { username, displayName, avatar, level };
+    });
   }
 
   async findManyForViewer(viewerId: string, userIds: readonly string[]): Promise<PlayerSearchResult[]> {

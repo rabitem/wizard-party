@@ -3,6 +3,8 @@
 import { useSeasonalPack } from '@/presentation/components/settings/useSeasonalPack';
 import { REALM_OPTIONS } from '../room-browser/realm-switcher.config';
 import { RealmGlyphIcon } from '../room-browser/realm-mascots';
+import { HALL_LOADER } from '@/presentation/config/realm-hall.config';
+import { switchRealm } from './hall-loading-store';
 
 const SERIF = { fontFamily: 'Georgia, serif' } as const;
 
@@ -23,7 +25,7 @@ export function RealmLenses({ className = '' }: { className?: string }) {
             <button
               key={realm.pack.id}
               type="button"
-              onClick={() => applyPack(realm.pack)}
+              onClick={() => switchRealm(() => applyPack(realm.pack), { target: realm.pack.name, curtainMs: HALL_LOADER.CURTAIN_MS, minVisibleMs: HALL_LOADER.MIN_VISIBLE_MS })}
               aria-pressed={isActive}
               aria-label={`${realm.pack.name} realm: ${realm.pack.tagline}`}
               title={realm.pack.name}
@@ -45,7 +47,7 @@ export function RealmLenses({ className = '' }: { className?: string }) {
           );
         })}
       </div>
-      <p aria-live="polite" className="text-xs text-amber-200/80 text-center lg:text-left max-w-[16rem]" style={SERIF}>
+      <p aria-live="polite" className="text-xs text-amber-100 text-center lg:text-left max-w-[16rem] [text-shadow:0_1px_3px_rgba(0,0,0,0.95),0_0_10px_rgba(0,0,0,0.8)]" style={SERIF}>
         {active ? <><span className="text-amber-100">{active.pack.name}</span> · {active.pack.tagline}</> : ' '}
       </p>
     </div>

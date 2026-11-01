@@ -91,6 +91,11 @@ Limits and per-user budgets are `SOCIAL_LIMITS` and `SOCIAL_RATE_LIMITS`; heartb
   name), and prefix and substring matches for public profiles only. Every search long enough to run
   (`SEARCH_MIN_LENGTH`) and every friend request attempt, failed lookups included, counts against
   the `search` and `friend_request` budgets, so neither endpoint can probe handles.
+- **Public profile search** (`GET /api/profiles/search`, the start page's player lookup) needs no
+  account. It returns public profiles only, with no exact-handle exception, as `PublicPlayerCard`
+  (handle, display name, avatar, level: no ids, relationships or presence). It is rate-limited per
+  client address (`public_profile_search`; the throttle stores only a keyed hash of the address)
+  and answers an empty list when accounts are not configured.
 - **Privacy settings** live on `player_profiles` (`invite_policy`, `friend_request_policy`,
   `presence_mode`, `email_game_invites`, `email_friend_requests`) and default through the
   `social_players` view for profiles that were never created. That view is also the whitelist of
@@ -170,6 +175,7 @@ Handlers go through `accountRoute()`; statuses and the error body are in
 | `GET /api/social/blocks`, `PUT`, `DELETE /api/social/blocks/[userId]` | block list; block or unblock |
 | `GET`, `POST /api/social/invites`, `DELETE /api/social/invites/[id]` | sent invites of a room; invite `{ userId, roomCode }`; revoke |
 | `GET /api/social/search?q=`, `GET /api/social/players/[username]` | search; one player with the viewer's relationship |
+| `GET /api/profiles/search?q=` | public profiles by name, no account needed (start page) |
 | `GET /api/social/rooms/[roomCode]/accounts` | accounts at the viewer's attested table |
 | `GET`, `PATCH /api/social/settings` | invite and request policies, presence mode, email opt-outs |
 | `GET /api/inbox`, `POST /api/inbox/read`, `POST /api/inbox/[id]/actions`, `DELETE /api/inbox/[id]` | page, mark read, `{ action: 'accept' \| 'decline' }`, dismiss |

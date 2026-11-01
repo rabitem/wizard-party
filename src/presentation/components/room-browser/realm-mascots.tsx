@@ -86,15 +86,12 @@ function PixelHeart({ className = 'w-6 h-6' }: { className?: string }) {
   );
 }
 
-/** Renders a realm's glyph: an animated mascot, the pixel heart or a plain emoji. */
+/** Renders a realm's glyph: an animated mascot, the pixel heart or a line icon. */
 export function RealmGlyphIcon({ glyph, animate }: { glyph: RealmGlyph; animate: boolean }) {
   if (glyph.kind === 'pixel-heart') return <PixelHeart />;
-  if (glyph.kind === 'emoji') {
-    return (
-      <span className="text-lg leading-none drop-shadow" aria-hidden="true">
-        {glyph.emoji}
-      </span>
-    );
+  if (glyph.kind === 'icon') {
+    const Icon = glyph.icon;
+    return <Icon className="w-5 h-5 text-amber-50 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" strokeWidth={1.75} aria-hidden="true" />;
   }
   const Mascot = glyph.mascot === 'pumpkin' ? PumpkinMascot : LeafMascot;
   return <Mascot animate={animate} className="w-7 h-7" />;

@@ -1,59 +1,33 @@
 'use client';
 
-import { motion } from 'motion/react';
-import { Sparkles, Wand2, Target, Star, Trophy } from 'lucide-react';
+import { DEFAULT_RULESET_CONFIG } from '@shared/domain';
 
-const HOW_TO_WIN_ITEMS = [
-  { icon: Wand2, label: 'Predict', desc: 'Bid tricks' },
-  { icon: Target, label: 'Strategize', desc: 'Play smart' },
-  { icon: Star, label: 'Wizards', desc: 'Always win' },
-  { icon: Trophy, label: 'Score', desc: 'Hit your bid' },
+const SERIF = { fontFamily: 'Georgia, serif' } as const;
+const { baseBidPoints, pointsPerTrick, penaltyPerMiss } = DEFAULT_RULESET_CONFIG.scoring;
+
+/** A round in three steps, in running type; the point values are the default room rules. */
+const STEPS = [
+  { title: 'Bid', text: 'Look at your hand and call how many tricks you will take this round.' },
+  { title: 'Play', text: 'Follow suit if you can. Trump beats the other suits, the first Wizard always takes the trick and a Jester never does.' },
+  { title: 'Score', text: `Hit your bid exactly for ${baseBidPoints} points plus ${pointsPerTrick} per trick. Miss it and lose ${penaltyPerMiss} for every trick you were off.` },
 ] as const;
 
 export function HowToWinSection() {
   return (
-    <motion.section
-      className="mb-6 sm:mb-8"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.3 }}
-    >
-      <div className="flex items-center gap-2 mb-3 px-1">
-        <Sparkles className="w-3.5 h-3.5 text-amber-500/50" />
-        <h2 className="text-amber-400/60 text-xs uppercase tracking-wider" style={{ fontFamily: 'Georgia, serif' }}>
-          How to Win
-        </h2>
-      </div>
-
-      <div className="grid grid-cols-2 gap-2 sm:gap-3">
-        {HOW_TO_WIN_ITEMS.map((item, i) => (
-          <motion.div
-            key={item.label}
-            className="flex items-center gap-2.5 p-3 rounded-xl border border-amber-800/20"
-            style={{
-              background: 'linear-gradient(135deg, color-mix(in srgb, color-mix(in srgb, var(--surface), black 5%) 70%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 31%) 50%, transparent) 100%)',
-            }}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.35 + i * 0.05 }}
-          >
-            <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg, color-mix(in srgb, var(--accent-dim) 25%, transparent) 0%, color-mix(in srgb, var(--color-amber-950) 15%, transparent) 100%)' }}
-            >
-              <item.icon className="w-4 h-4 text-amber-500/70" />
-            </div>
-            <div className="min-w-0">
-              <div className="text-amber-200/80 text-xs sm:text-sm" style={{ fontFamily: 'Georgia, serif' }}>
-                {item.label}
-              </div>
-              <div className="text-amber-600/40 text-[10px]" style={{ fontFamily: 'Georgia, serif' }}>
-                {item.desc}
-              </div>
-            </div>
-          </motion.div>
+    <section aria-labelledby="how-to-win-heading" className="mb-8 sm:mb-10">
+      <h2 id="how-to-win-heading" className="text-2xl sm:text-3xl text-amber-50 mb-5" style={SERIF}>How to win</h2>
+      <ol className="space-y-4">
+        {STEPS.map((step, index) => (
+          <li key={step.title} className="flex gap-4">
+            <span className="shrink-0 w-8 h-8 rounded-full border border-amber-500/50 flex items-center justify-center text-sm text-amber-300 tabular-nums" style={SERIF} aria-hidden>
+              {index + 1}
+            </span>
+            <p className="text-sm sm:text-base leading-relaxed text-amber-100/85" style={SERIF}>
+              <span className="text-amber-200">{step.title}.</span> {step.text}
+            </p>
+          </li>
         ))}
-      </div>
-    </motion.section>
+      </ol>
+    </section>
   );
 }
