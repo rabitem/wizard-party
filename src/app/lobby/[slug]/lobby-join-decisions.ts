@@ -2,7 +2,7 @@
  * When the lobby joins by itself and when it shows the joining screen (pure, so the page and its
  * tests share one decision).
  */
-import type { ConnectionStatus } from '@/presentation/types';
+import { isAwaitingSeat, type ConnectionStatus } from '@/presentation/types';
 
 /**
  * Where the lobby's automatic join stands for this visit. `skipped`: the page became ready while a
@@ -21,22 +21,23 @@ export function calcCanAutoRejoin(sessionLoaded: boolean, status: ConnectionStat
 
 /**
  * An automatic join is underway from the render it becomes possible (before its effect fires)
- * until it fails, so a player who already has a name never sees the name form flash by. A socket
- * that is already open (the home page connects before navigating here) is a join awaiting its seat.
+ * until it fails, so a player who already has a name never sees the name form flash by. A
+ * connection the home page started before navigating here is a join awaiting its seat, from the
+ * moment it starts connecting, not only once the socket is open.
  */
 export function calcIsAutoRejoining({
   canAutoRejoin,
   autoRejoinState,
-  isConnected,
+  status,
   error,
 }: {
   canAutoRejoin: boolean;
   autoRejoinState: AutoRejoinState;
-  isConnected: boolean;
+  status: ConnectionStatus;
   error: string | null;
 }): boolean {
   if (error) return false;
-  if (isConnected) return true;
+  if (isAwaitingSeat(status, false)) return true;
   return autoRejoinState === 'triggered' || (autoRejoinState === 'idle' && canAutoRejoin);
 }
 
