@@ -9,6 +9,7 @@ import type {
 } from '../../src/presentation/components/sandbox';
 import type { SandboxHold } from '../../src/presentation/components/sandbox/sandbox-hold';
 import { knownIssueFor } from './known-issues';
+import { muteAudio } from './mute-audio';
 
 export type SandboxClockMode = 'fast' | 'real';
 /** 'perf' samples the probe every Nth frame and skips per-commit render counting (see sandbox-profile.ts). */
@@ -41,6 +42,7 @@ async function openSandbox(page: Page, clock: SandboxClockMode, profile: Sandbox
   await page.route('**/api/**', (route) => route.fulfill({ status: 204, body: '' }));
   // Before any page script: React DOM and R3F register with it as they load, so commits are counted.
   await page.addInitScript(installReactCommitHook);
+  await page.addInitScript(muteAudio);
   const perf = profile === 'perf' ? '&perf=1' : '';
   const response = await page.goto(`${SANDBOX_PATH}?clock=${clock}&ui=0${perf}`, { waitUntil: 'domcontentloaded' });
   // The web server is ready once the home page answers, which a plain `npm run build` serves too.
