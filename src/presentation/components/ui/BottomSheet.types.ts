@@ -31,6 +31,8 @@ export interface BottomSheetHandleProps {
 }
 
 export interface BottomSheetHeaderProps {
+  /** Id of the title element; the sheet's dialog role is labelled by it. */
+  titleId?: string;
   title: string;
   subtitle?: string;
   showHandle?: boolean;

@@ -92,6 +92,7 @@ The specs and the contract each owns:
 | `reconnect.spec.ts` | Drops, stalls and slow links mid-trick and across a trick completion |
 | `faults.spec.ts` | Superseded connection, offline, state storms, throwing storage, lost WebGL context, hidden tab, social floods |
 | `input.spec.ts` | Synthetic touch, and a card played with real device touch |
+| `accessibility.spec.ts` | The trump choice is a modal dialog named by its title on every browser and device (centred dialog or bottom sheet) |
 | `render-budget.spec.ts` | Render and React count budgets, per table size and per table theme |
 | `performance.spec.ts` | Frame-time budgets on the real clock (titles contain `sustains`) |
 | `visual.spec.ts` | Reference frames per table theme and UI theme |
