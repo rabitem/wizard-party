@@ -1,5 +1,5 @@
 import { GameEventType, type ChatMessageEvent, type EmoteEvent, type TimeoutSoundPlayedEvent } from '@shared/domain';
-import { EMOTES, QUICK_MESSAGES } from '../social/types';
+import { EMOTES, QUICK_MESSAGES } from '../social';
 import type { SandboxGameHandles, SocialBurstKind } from './sandbox.types';
 
 export interface SocialTarget {

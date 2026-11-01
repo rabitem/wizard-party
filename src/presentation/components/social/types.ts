@@ -1,23 +1,4 @@
-import { AVATAR_PRESETS } from '../settings';
 import { CONSTANTS } from '@/presentation/config/constants';
-
-/**
- * Emote interface for social interactions
- */
-export interface Emote {
-  id: string;
-  icon: string; // RPG-Awesome icon class
-  label: string;
-}
-
-/**
- * Use avatar presets as emotes for consistent theming
- */
-export const EMOTES: Emote[] = AVATAR_PRESETS.map(avatar => ({
-  id: avatar.id,
-  icon: avatar.icon,
-  label: avatar.label,
-}));
 
 /**
  * Rate limit cooldown in seconds (derived from CONSTANTS)

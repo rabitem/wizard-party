@@ -30,7 +30,10 @@ export const COMMAND_LIMITS = {
   MAX_PROTOCOL_VERSION: 1_000,
 } as const;
 
-/** Emote ids are catalogue keys (avatar preset ids such as `wizard` or `thumbs_up`). */
+/**
+ * Emote ids are keys of the client's emote catalog (`EMOTES`, such as `wizard` or `crossed-swords`).
+ * Only their shape is checked: a build that does not know an id shows a fallback icon.
+ */
 export const EMOTE_ID_PATTERN = /^[A-Za-z0-9_-]{1,32}$/;
 
 const SOUND_FRAME_OVERHEAD = 16 * KIB;
