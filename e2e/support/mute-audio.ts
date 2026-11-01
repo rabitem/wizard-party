@@ -24,9 +24,31 @@ export function muteAudio(): void {
       },
     });
   }
-  const play = HTMLMediaElement.prototype.play;
-  HTMLMediaElement.prototype.play = function playMuted(this: HTMLMediaElement) {
-    this.muted = true;
-    return play.call(this);
-  };
+  // Media elements (WebKit's only audio path on Windows): muted and at zero volume whatever the
+  // game sets; the game still reads back the volume it chose.
+  const media = HTMLMediaElement.prototype;
+  const volume = Object.getOwnPropertyDescriptor(media, 'volume');
+  const muted = Object.getOwnPropertyDescriptor(media, 'muted');
+  if (volume?.get && volume.set && muted?.set) {
+    const chosen = new WeakMap<HTMLMediaElement, number>();
+    const silence = (element: HTMLMediaElement) => {
+      volume.set?.call(element, 0);
+      muted.set?.call(element, true);
+    };
+    Object.defineProperty(media, 'volume', {
+      configurable: true,
+      get(this: HTMLMediaElement) { return chosen.get(this) ?? 1; },
+      set(this: HTMLMediaElement, value: number) { chosen.set(this, value); silence(this); },
+    });
+    Object.defineProperty(media, 'muted', {
+      configurable: true,
+      get() { return true; },
+      set(this: HTMLMediaElement) { silence(this); },
+    });
+    const play = media.play;
+    media.play = function playSilently(this: HTMLMediaElement) {
+      silence(this);
+      return play.call(this);
+    };
+  }
 }
