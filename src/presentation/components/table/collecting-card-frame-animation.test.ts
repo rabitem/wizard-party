@@ -1,10 +1,10 @@
+import { DEFAULT_THRESHOLDS } from 'three-motion-audit';
 import { describe, expect, it } from 'vitest';
 import {
   COLLECTION_ANIMATION_VARIANTS,
   type CollectionAnimationVariant,
 } from '../../config/collection-animation.config';
 import { CARD_DIMENSIONS, COLLECT_ANIMATION } from '../../config/physics.config';
-import { SANDBOX_AUDIT } from '../../config/sandbox.config';
 import {
   COLLECTING_CARD_HOVER_SCALE,
   getCollectingAnimationProfile,
@@ -23,6 +23,8 @@ import {
 } from './collecting-card-frame-animation';
 
 const FRAME_S = 1 / 60;
+/** The sandbox audit's path-kink limit (an acceleration, units/s²) as a second difference per frame. */
+const MAX_PATH_KINK = DEFAULT_THRESHOLDS.maxAcceleration * FRAME_S ** 2;
 const OFFSETS: PhaseOffsets = {
   gatherArcMultiplier: 1.1,
   flySpinZ: 0.14,
@@ -198,7 +200,7 @@ describe('resolveFrameAnimationResult', () => {
 
     it.each(SHORT_HOPS)('sweeps a short hop to a near deck without a path kink ($variant, stack slot $stackIndex)', (timelineCase) => {
       for (const targetPosition of NEAR_DECKS) {
-        expect(getSharpestFlightBend(buildParams({ ...timelineCase, targetPosition }))).toBeLessThan(SANDBOX_AUDIT.MAX_PATH_KINK);
+        expect(getSharpestFlightBend(buildParams({ ...timelineCase, targetPosition }))).toBeLessThan(MAX_PATH_KINK);
       }
     });
 
