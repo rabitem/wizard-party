@@ -1,5 +1,6 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import { CONSTANTS } from '../src/presentation/config/constants';
+import { muteAudio } from './support/mute-audio';
 import { DEFAULT_RULESET_CONFIG, RULESET_LIMITS, TURN_TIMER_LIMITS } from '../shared/domain/value-objects/ruleset-config';
 
 /**
@@ -114,6 +115,7 @@ for (const seats of SEAT_COUNTS) test(`${seats} seats: a guest creates a room, a
   test.setTimeout(2 * 60_000);
   // The first-visit tutorial has no labelled close control; a returning guest has seen it.
   await page.addInitScript((key) => window.localStorage.setItem(key, 'true'), CONSTANTS.STORAGE_KEYS.TUTORIAL_SEEN);
+  await page.addInitScript(muteAudio);
 
   await test.step('create a room as a guest', async () => {
     await page.goto('/');
