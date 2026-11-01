@@ -111,7 +111,7 @@ export function InviteFriendsDialog({ entrantIds, sending, onInvite, onClose }: 
                       onClick={() => setSelected((current) => toggleInvite(current, friend.userId))}
                       className={`flex w-full min-h-11 items-center gap-3 rounded-xl border px-3 py-2 text-left transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 ${checked ? 'border-amber-500/60 bg-amber-900/30' : 'border-amber-900/30 hover:border-amber-700/50'}`}
                     >
-                      <PlayerAvatar avatarId={friend.avatar ?? 'wizard'} level={friend.level} size="sm" />
+                      <PlayerAvatar appearance={friend.appearance} label={friend.displayName} level={friend.level} size="sm" />
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-sm text-amber-100" style={SERIF}>
                           {friend.displayName}

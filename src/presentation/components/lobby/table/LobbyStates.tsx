@@ -130,7 +130,7 @@ export function LobbyToasts({ items }: { items: LobbyActivityView[] }) {
             className="flex items-center gap-2.5 pl-1.5 pr-4 py-1.5 rounded-full border shadow-lg max-w-full"
             style={{ ...SURFACE_STYLE, backdropFilter: 'blur(10px)', ...SERIF }}
           >
-            {item.avatarId ? <PlayerAvatar avatarId={item.avatarId} size="sm" /> : <span className="w-8 h-8 rounded-full flex items-center justify-center">{ACTIVITY_ICON[item.kind]}</span>}
+            {item.appearance ? <PlayerAvatar appearance={item.appearance} size="sm" /> : <span className="w-8 h-8 rounded-full flex items-center justify-center">{ACTIVITY_ICON[item.kind]}</span>}
             <span className="text-amber-50 text-sm truncate">{item.text}</span>
           </motion.div>
         ))}

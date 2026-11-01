@@ -91,6 +91,22 @@ on a transparent background. Renders run one at a time and are cached per look
 component shows an empty circle of the same size. Server-rendered images (emails, Open Graph
 cards) cannot use it.
 
+## In the UI
+
+- `PlayerAvatar` (`components/account/`) takes `appearance`: left out for the local player's own
+  look (`useLocalAppearance`), `null` for a silhouette. It draws `CharacterFace` (the portrait, or
+  the silhouette) inside the level frame. Avatar-only screens import `CharacterFace` by path, so
+  they never load the 3D figure code.
+- `useLocalAppearance` (`hooks/account/`) loads the signed-in player's look once per page. Until
+  it has loaded, and while nothing was saved, it shows the look derived from the `avatar` setting
+  (`chooseLocalAppearance`), so a new sigil in the Profile tab shows at once. Guests get `null`.
+- At a table (lobby seats, the in-game standings) `seatAppearance` decides: the local look, a
+  bot's look by difficulty (`botAppearance`), the look of the account the room reported
+  (`roomAccounts`), else a silhouette. `useSeatAppearance` wires it for the standings. Players
+  whose account the viewer cannot see, and every player when the viewer is a guest, show a
+  silhouette until the room itself carries looks.
+- The first portrait on a page loads the character model and opens one WebGL context.
+
 ## Checking assets
 
 `/dev/characters` (local dev and Vercel previews only) shows every part, palette and clip on the
