@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * Builds the character assets in public/characters/ from the KayKit Adventurers pack (CC0):
+ * Builds the character assets in public/characters/ from the KayKit Adventurers pack (CC0) and our
+ * own familiars (familiars.mjs):
  *
  *   characters.glb            one rig with every catalog part on it, each node named by part id
  *                             (`head:mage`, `outfit:knight/2`, …); the game shows the chosen ones
@@ -18,6 +19,9 @@ import { NodeIO } from '@gltf-transform/core';
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
 import { dedup, mergeDocuments, meshopt, prune, resample, unpartition } from '@gltf-transform/functions';
 import { MeshoptDecoder, MeshoptEncoder } from 'meshoptimizer';
+import { Quaternion, Vector3 } from 'three';
+
+import { FAMILIAR_PLACEMENT, buildFamiliarGeometries } from './familiars.mjs';
 
 const SOURCE = JSON.parse(await readFile(new URL('./kaykit-source.json', import.meta.url), 'utf8'));
 const CACHE = new URL('../../node_modules/.cache/kaykit/', import.meta.url);
@@ -108,6 +112,31 @@ function adoptForeignParts(document) {
   root.setDefaultScene(scene);
 }
 
+/** Adds each familiar as a vertex-coloured mesh on the rig, tagged with its part id like the rest. */
+function addFamiliars(document) {
+  const root = document.getRoot();
+  const buffer = root.listBuffers()[0];
+  const anchor = root.listNodes().find((node) => node.getName() === FAMILIAR_PLACEMENT.bone);
+  if (!anchor) throw new Error(`rig has no node ${FAMILIAR_PLACEMENT.bone}`);
+  const material = document.createMaterial('familiar').setBaseColorFactor([1, 1, 1, 1]).setMetallicFactor(0).setRoughnessFactor(0.85);
+  const turn = new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), FAMILIAR_PLACEMENT.turnY).toArray();
+  const accessor = (attribute) => document.createAccessor().setArray(attribute.array).setType('VEC3').setBuffer(buffer);
+  for (const { partId, geometry } of buildFamiliarGeometries()) {
+    const primitive = document.createPrimitive()
+      .setAttribute('POSITION', accessor(geometry.attributes.position))
+      .setAttribute('NORMAL', accessor(geometry.attributes.normal))
+      .setAttribute('COLOR_0', accessor(geometry.attributes.color))
+      .setMaterial(material);
+    const node = document.createNode(partId)
+      .setMesh(document.createMesh(partId).addPrimitive(primitive))
+      .setExtras({ part: partId })
+      .setTranslation(FAMILIAR_PLACEMENT.position)
+      .setRotation(turn);
+    anchor.addChild(node);
+    geometry.dispose();
+  }
+}
+
 async function buildCharacters(io) {
   const files = Object.keys(SOURCE.files);
   const documents = new Map();
@@ -119,7 +148,9 @@ async function buildCharacters(io) {
   const target = documents.get(SOURCE.rigFile);
   for (const [file, document] of documents) if (file !== SOURCE.rigFile) mergeDocuments(target, document);
   adoptForeignParts(target);
-  await target.transform(unpartition(), prune(), dedup(), meshopt({ encoder: MeshoptEncoder, level: 'medium' }));
+  await target.transform(unpartition());
+  addFamiliars(target);
+  await target.transform( prune(), dedup(), meshopt({ encoder: MeshoptEncoder, level: 'medium' }));
   return target;
 }
 

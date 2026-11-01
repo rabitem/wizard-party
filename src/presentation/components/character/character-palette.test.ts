@@ -6,11 +6,14 @@ import { CLOTHING_CELLS, PALETTE_COLORS } from '@/presentation/config/character-
 import { cellIndex, paletteRoles } from './character-palette';
 import { portraitKey } from './character-portrait-renderer';
 
-function glbMaterialNames(): string[] {
+/** Materials with a texture atlas; familiars are vertex-coloured and never recoloured. */
+function glbTexturedMaterialNames(): string[] {
   const bytes = readFileSync(new URL('../../../../public/characters/characters.glb', import.meta.url));
   const jsonLength = bytes.readUInt32LE(12);
-  const json = JSON.parse(bytes.subarray(20, 20 + jsonLength).toString('utf8')) as { materials: { name: string }[] };
-  return json.materials.map((material) => material.name);
+  const json = JSON.parse(bytes.subarray(20, 20 + jsonLength).toString('utf8')) as {
+    materials: { name: string; pbrMetallicRoughness?: { baseColorTexture?: unknown } }[];
+  };
+  return json.materials.filter((material) => material.pbrMetallicRoughness?.baseColorTexture).map((material) => material.name);
 }
 
 describe('character palettes', () => {
@@ -20,7 +23,7 @@ describe('character palettes', () => {
   });
 
   it('should know the clothing cells of every texture in characters.glb, and only those', () => {
-    expect(Object.keys(CLOTHING_CELLS).sort()).toEqual(glbMaterialNames().sort());
+    expect(Object.keys(CLOTHING_CELLS).sort()).toEqual(glbTexturedMaterialNames().sort());
   });
 
   it('should never give a cell two roles', () => {
