@@ -9,8 +9,8 @@ export const REACT_ZERO: ReactCommitTotals = { domCommits: 0, r3fCommits: 0, r3f
 
 /** One scene object, named `kind:cardId` like the probe names them. */
 export function sample(name: string, position: Vec3, overrides: Partial<ObjectSample> = {}): ObjectSample {
-  const [kind, cardId] = name.split(':') as [ObjectSample['kind'], string];
-  return { name, kind, cardId, position, cameraPosition: position, quaternion: [0, 0, 0, 1], scale: 1, visible: true, finite: true, ndc: null, ...overrides };
+  const [kind, cardId] = name.split(':') as [string, string];
+  return { id: name, entity: cardId, role: kind, position, ...overrides };
 }
 
 export function renderSample(overrides: Partial<RenderSample> = {}): RenderSample {
@@ -37,9 +37,9 @@ export function createRecorder() {
   recorder.start(0);
   recorder.markReady(0);
   let frame = 0;
-  const step = (samples: ObjectSample[], handAnimating = false) => {
+  const step = (samples: ObjectSample[]) => {
     frame++;
-    recorder.frame(frame * FRAME, samples, { handAnimating });
+    recorder.frame(frame * FRAME, samples);
   };
   return { recorder, step, now: () => frame * FRAME };
 }

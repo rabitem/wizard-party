@@ -107,7 +107,7 @@ Triage by code:
 | `step-failed` | A step threw; the message names it (card not played, hand card never interactive, no open measurement window) |
 | `webgl-unavailable` | The renderer never started; environment, not game |
 | `console-error`, `page-error` | `data.phase` says when (teardown of the previous mount, load, scenario, settle); `data.stack` where |
-| `teleport`, `path-kink`, `rotation-pop`, `handoff-*`, `double-render`, `remount-flicker` | Motion bugs on the track named by `subject` |
+| `teleport`, `path-kink`, `rotation-pop`, `handoff-*`, `double-render`, `remount-flicker`, `below-table`, `camera-jump` | Motion bugs on the object (`kind:cardId`, `camera`) or handoff (`from->to`) named by `subject`; three-motion-audit finds them (`card-motion-audit.ts` sets what each kind is judged by), `data.history` holds the last frames |
 | `premature-*`, `collect-before-landed`, `skipped-*`, `trick-overlap` | Trick lifecycle order |
 | `not-settled`, `*-stuck`, `hand-count-mismatch` | End state after settling |
 | `hud-offscreen`, `page-overflow` | Page layout, checked at the end of every run and at checkpoints |

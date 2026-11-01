@@ -1,8 +1,9 @@
+import type { Track } from 'three-motion-audit';
 import { SANDBOX_AUDIT } from '../../config/sandbox.config';
 import type { SceneObjectKind } from '../three/scene-object-names';
-import { AuditLog, round } from './audit-log';
+import { AuditLog, round, roundVec } from './audit-log';
+import { CardSceneMotion, cardIdOf } from './card-motion-audit';
 import { RunRenderLedger, reactTotalsBetween } from './render-metrics';
-import { SceneTrackAudit, TABLE_KINDS, type FrameContext, type Track } from './scene-track-audit';
 import type {
   Anomaly,
   AnomalyCode,
@@ -41,18 +42,16 @@ const NO_REACT_TOTALS: ReactCommitTotals = { domCommits: null, r3fCommits: null,
 /**
  * Turns per-frame scene samples and lifecycle events into a timeline and anomalies.
  *
- * Per-object checks live in SceneTrackAudit; this class owns the trick lifecycle: one card
+ * Per-object motion checks (teleports, kinks, handoff seams, flicker, placement) come from
+ * three-motion-audit through CardSceneMotion; this class owns the trick lifecycle: one card
  * flies at a time, the trick result waits for every landing, collection waits for the
  * result, completion waits for every collected card, and nothing played goes unanimated.
  * Pure (no DOM, no three.js), so every invariant is unit-testable.
  */
 export class AnimationAuditRecorder {
   private readonly audit = new AuditLog();
-  private readonly scene = new SceneTrackAudit(this.audit, {
-    onMount: (t, sample) => this.onMount(t, sample),
-    onUnmount: (t, track) => this.onUnmount(t, track),
-    isPlayedCardAnimating: (cardId) => this.playedAnimating.has(cardId),
-  });
+  private readonly motionChecks: boolean;
+  private readonly scene: CardSceneMotion;
   private readonly playedAnimating = new Set<string>();
   private readonly landedCards = new Set<string>();
   private readonly announcedCards = new Set<string>();
@@ -79,7 +78,11 @@ export class AnimationAuditRecorder {
   private readonly snapshots: SnapshotRecord[] = [];
 
   constructor(options: RecorderOptions = {}) {
-    this.scene.motionChecks = options.motionChecks ?? true;
+    this.motionChecks = options.motionChecks ?? true;
+    this.scene = new CardSceneMotion(this.motionChecks, {
+      mounted: (t, track) => this.onMount(t, track),
+      unmounted: (t, track) => this.onUnmount(t, track),
+    });
   }
 
   start(t: number): void {
@@ -93,7 +96,7 @@ export class AnimationAuditRecorder {
     this.render.markReady(ready.inventory ?? null);
     this.reactAtReady = ready.react ?? NO_REACT_TOTALS;
     this.reactAtEnd = this.reactAtReady;
-    this.scene.ready = true;
+    this.scene.startJudging(t);
     this.log(t, 'run', 'ready');
   }
 
@@ -130,7 +133,7 @@ export class AnimationAuditRecorder {
    * one by one, so no handoff or stuck checks apply to them; a remount starts fresh.
    */
   sceneUnmounted(t: number): void {
-    this.scene.clear();
+    this.scene.forgetObjects();
     this.playedAnimating.clear();
     this.log(t, 'run', 'scene-unmounted');
   }
@@ -140,7 +143,7 @@ export class AnimationAuditRecorder {
   }
 
   isAnimationInFlight(): boolean {
-    return this.playedAnimating.size > 0 || this.countPresent('collecting-card') > 0 || this.scene.isTableMoving();
+    return this.playedAnimating.size > 0 || this.countPresent('collecting-card') > 0 || this.scene.moving().length > 0;
   }
 
   log(t: number, kind: TimelineKind, label: string, data?: Record<string, unknown>): void {
@@ -176,7 +179,7 @@ export class AnimationAuditRecorder {
 
   playedAnimationComplete(t: number, cardId: string): void {
     this.playedAnimating.delete(cardId);
-    if (!this.scene.present('played-card').some((track) => track.cardId === cardId)) this.restedPlays.add(cardId);
+    if (!this.scene.present('played-card').some((track) => cardIdOf(track) === cardId)) this.restedPlays.add(cardId);
     this.log(t, 'client', 'played-animation-complete', { cardId });
   }
 
@@ -196,9 +199,7 @@ export class AnimationAuditRecorder {
   trickCollectComplete(t: number): void {
     // Finished cards stay mounted until the completion re-renders the table; only moving ones are
     // premature. Speeds need every frame: a sparse (perf) sample of the last flight frames reads as moving.
-    const moving = !this.scene.motionChecks ? [] : this.scene.present('collecting-card')
-      .filter((track) => track.speed > SANDBOX_AUDIT.SETTLED_MAX_SPEED_UNITS_PER_S)
-      .map((track) => track.cardId);
+    const moving = !this.motionChecks ? [] : this.scene.moving('collecting-card').map(cardIdOf);
     if (moving.length > 0) {
       this.flag(t, 'premature-collect-complete', `Collection reported complete while ${moving.join(', ')} still flying`, moving[0], { moving });
     }
@@ -223,13 +224,14 @@ export class AnimationAuditRecorder {
   }
 
   /** `samples` is null on frames the probe did not sample (perf mode); the frame still counts. */
-  frame(t: number, samples: ObjectSample[] | null, context: FrameContext): void {
+  frame(t: number, samples: readonly ObjectSample[] | null): void {
     this.audit.frame++;
     this.lastT = t;
     this.checkLandedActivation();
-    if (samples && this.undrawnFrames) this.scene.breakContinuity();
-    if (samples) this.scene.frame(t, samples, context);
-    if (samples) this.undrawnFrames = false;
+    if (!samples) return;
+    if (this.undrawnFrames) this.scene.breakContinuity();
+    this.undrawnFrames = false;
+    this.scene.frame(t, this.audit.frame, samples);
   }
 
   private checkLandedActivation(): void {
@@ -242,34 +244,40 @@ export class AnimationAuditRecorder {
     }
   }
 
-  private onMount(t: number, sample: ObjectSample): void {
-    if (sample.kind === 'played-card') {
-      this.animatedCards.add(sample.cardId);
+  private onMount(t: number, track: Track): void {
+    this.log(t, 'mount', track.id, { position: roundVec(track.last.position) });
+    const cardId = cardIdOf(track);
+
+    if (track.role === 'played-card') {
+      this.animatedCards.add(cardId);
       // A card placed at rest (catch-up, the player's turn) shows the trick; it does not fly.
-      if (this.restedPlays.delete(sample.cardId)) return;
+      if (this.restedPlays.delete(cardId)) return;
       // Opponent cards fly one at a time; the player's own card starts at once and may overlap one.
-      const others = [...this.playedAnimating].filter((cardId) => cardId !== sample.cardId && !this.localCards.has(cardId));
-      if (others.length > 0 && !this.localCards.has(sample.cardId)) {
-        this.flag(t, 'overlapping-play-animations', `${sample.cardId} started flying while ${others.join(', ')} had not landed`, sample.cardId, { others });
+      const others = [...this.playedAnimating].filter((other) => other !== cardId && !this.localCards.has(other));
+      if (others.length > 0 && !this.localCards.has(cardId)) {
+        this.flag(t, 'overlapping-play-animations', `${cardId} started flying while ${others.join(', ')} had not landed`, cardId, { others });
       }
-      if (this.scene.remaining('collecting-card').some((track) => track.cardId !== sample.cardId)) {
-        this.flag(t, 'trick-overlap', `${sample.cardId} entered the table while the previous trick was still being collected`, sample.cardId);
+      // A card that mounts in the frame the previous trick's collected cards unmount did not overlap them.
+      if (this.scene.remaining('collecting-card').some((other) => cardIdOf(other) !== cardId)) {
+        this.flag(t, 'trick-overlap', `${cardId} entered the table while the previous trick was still being collected`, cardId);
       }
-      this.playedAnimating.add(sample.cardId);
+      this.playedAnimating.add(cardId);
     }
 
-    if (sample.kind === 'collecting-card') {
-      this.collectedCards.add(sample.cardId);
+    if (track.role === 'collecting-card') {
+      this.collectedCards.add(cardId);
       if (!this.allLandedForTrick) {
-        this.flag(t, 'collect-before-landed', `${sample.cardId} started collecting before the trick reported all cards landed`, sample.cardId);
+        this.flag(t, 'collect-before-landed', `${cardId} started collecting before the trick reported all cards landed`, cardId);
       }
     }
   }
 
   private onUnmount(t: number, track: Track): void {
-    if (track.kind === 'played-card' && this.playedAnimating.has(track.cardId)) {
-      this.playedAnimating.delete(track.cardId);
-      this.flag(t, 'skipped-play-animation', `${track.cardId} left the table before its play animation completed`, track.cardId);
+    this.log(t, 'unmount', track.id, { position: roundVec(track.last.position) });
+    const cardId = cardIdOf(track);
+    if (track.role === 'played-card' && this.playedAnimating.has(cardId)) {
+      this.playedAnimating.delete(cardId);
+      this.flag(t, 'skipped-play-animation', `${cardId} left the table before its play animation completed`, cardId);
     }
   }
 
@@ -281,12 +289,7 @@ export class AnimationAuditRecorder {
     this.reactAtEnd = react;
     this.render.windows.finish(t, react);
     this.checkEndState(t, end);
-
-    for (const track of this.scene.present()) {
-      if (TABLE_KINDS.has(track.kind) && track.speed > SANDBOX_AUDIT.SETTLED_MAX_SPEED_UNITS_PER_S) {
-        this.flag(t, 'not-settled', `${track.name} still moves at ${round(track.speed, 2)} u/s after settling`, track.name);
-      }
-    }
+    this.scene.finish();
     this.closeRound(t);
   }
 
@@ -306,7 +309,7 @@ export class AnimationAuditRecorder {
   private checkEndState(t: number, end: EndState): void {
     const collecting = this.scene.present('collecting-card');
     if (collecting.length > 0) {
-      this.flag(t, 'collection-stuck', `${collecting.length} card(s) never finished collecting`, undefined, { cards: collecting.map((track) => track.cardId) });
+      this.flag(t, 'collection-stuck', `${collecting.length} card(s) never finished collecting`, undefined, { cards: collecting.map(cardIdOf) });
     }
     if (end.trickResult || end.pendingTrickResult || end.isTrickAnimating) {
       this.flag(t, 'trick-state-stuck', 'Trick animation state never cleared', undefined, {
@@ -324,8 +327,9 @@ export class AnimationAuditRecorder {
     }
   }
 
+  /** The run's anomalies, the motion audit's findings (from ready on) included. */
   anomalyList(): Anomaly[] {
-    return this.audit.anomalyList();
+    return [...this.audit.anomalyList(), ...this.scene.anomalies()].sort((a, b) => a.t - b.t);
   }
 
   timelineEntries(): TimelineEntry[] {

@@ -1,4 +1,4 @@
-import type { NdcBounds } from './sandbox.types';
+import type { ScreenBounds } from 'three-motion-audit';
 
 /** A rectangle in client (CSS pixel) coordinates. */
 export interface ScreenRect {
@@ -50,7 +50,7 @@ export function unionRect(rects: readonly ScreenRect[]): ScreenRect | null {
 }
 
 /** Client rectangle of normalised-device-coordinate bounds drawn into `canvas` (y points up in NDC). */
-export function ndcToClientRect(ndc: NdcBounds, canvas: ScreenRect): ScreenRect {
+export function ndcToClientRect(ndc: ScreenBounds, canvas: ScreenRect): ScreenRect {
   const width = rectWidth(canvas);
   const height = rectHeight(canvas);
   return {

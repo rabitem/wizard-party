@@ -52,16 +52,12 @@ export const ANOMALY_SEVERITY: Record<AnomalyCode, AnomalySeverity> = {
   'hold-timeout': 'error',
 };
 
-export function distance(a: Vec3, b: Vec3): number {
-  return Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
-}
-
 export function round(value: number, digits = 3): number {
   const factor = 10 ** digits;
   return Math.round(value * factor) / factor;
 }
 
-export function roundVec(vec: Vec3): Vec3 {
+export function roundVec(vec: readonly [number, number, number]): Vec3 {
   return [round(vec[0]), round(vec[1]), round(vec[2])];
 }
 

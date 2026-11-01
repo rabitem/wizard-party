@@ -1,6 +1,6 @@
 import * as THREE from 'three';
+import { isVisibleInScene } from 'three-motion-audit/three';
 import { parseSceneObjectName, type SceneObjectKind } from '../three/scene-object-names';
-import { isVisibleInScene } from './scene-sampler';
 import type { RendererState, SceneFacts, SceneInventory } from './sandbox-report.types';
 
 /** troika-three-text meshes, recognised by shape so the sandbox does not import troika. */

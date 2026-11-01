@@ -39,7 +39,6 @@ import type {
   SandboxServer,
   SandboxServerFactory,
   SandboxStep,
-  Vec3,
   WaitCondition,
 } from './sandbox.types';
 
@@ -100,7 +99,7 @@ export class SandboxController implements SandboxLifecycleSink {
     this.handles = handles;
   }
 
-  recordFrame(samples: ObjectSample[] | null, camera: Vec3, render?: RenderSample): void {
+  recordFrame(samples: ObjectSample[] | null, render?: RenderSample): void {
     if (!this.recorder || !this.acceptingFrames) return;
     if (render) {
       this.recorder.renderSample(render);
@@ -108,7 +107,7 @@ export class SandboxController implements SandboxLifecycleSink {
     }
     this.lastDrawnAt = this.clock.now();
     this.sceneMounted = true;
-    this.recorder.frame(this.clock.now(), samples, { handAnimating: this.handAnimating, camera });
+    this.recorder.frame(this.clock.now(), samples);
     this.recorder.frameCost(this.clock.stats().lastFrameCostMs);
     if (this.autoplay && this.handles) this.autoplayer.act(this.handles);
   }

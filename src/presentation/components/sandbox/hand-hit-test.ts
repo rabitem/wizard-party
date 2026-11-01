@@ -1,6 +1,6 @@
 import * as THREE from 'three';
+import { projectBounds } from 'three-motion-audit/three';
 import { parseSceneObjectName } from '../three/scene-object-names';
-import { projectBounds } from './scene-sampler';
 import { ndcToClientRect, rectHeight, rectWidth, type ScreenRect } from './screen-geometry';
 import type { SandboxSceneBridge } from './scene-bridge';
 

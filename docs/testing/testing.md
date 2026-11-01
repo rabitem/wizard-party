@@ -245,8 +245,10 @@ anomaly.
 The render, React, frame-time, playability and visual budgets are in
 `src/presentation/config/sandbox-budgets.config.ts`. The file is constants and pure functions
 without imports, so the Playwright suites import it directly. The assertions are in
-`e2e/support/budgets.ts`. The motion and layout thresholds of the audit itself are `SANDBOX_AUDIT`
-in `src/presentation/config/sandbox.config.ts`.
+`e2e/support/budgets.ts`. The audit's own thresholds are `SANDBOX_AUDIT`
+in `src/presentation/config/sandbox.config.ts`; the per-object motion checks use the defaults of
+[three-motion-audit](https://github.com/rabitem/three-motion-audit) with the per-kind settings in
+`src/presentation/components/sandbox/card-motion-audit.ts`.
 
 | Constant | Judges | Checked in |
 | --- | --- | --- |

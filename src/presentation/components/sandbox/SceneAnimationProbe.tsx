@@ -8,11 +8,11 @@ import { LoadingTracker } from './loading-tracker';
 import { publishSandboxSceneBridge, type SandboxSceneBridge } from './scene-bridge';
 import { sampleSceneObjects } from './scene-sampler';
 import { useRenderInstrumentation } from './useRenderInstrumentation';
-import type { ObjectSample, RenderSample, Vec3 } from './sandbox.types';
+import type { ObjectSample, RenderSample } from './sandbox.types';
 
 interface SceneAnimationProbeProps {
   /** `samples` is null on frames the profile skips (perf mode samples every Nth frame). */
-  onFrame: (samples: ObjectSample[] | null, camera: Vec3, render: RenderSample) => void;
+  onFrame: (samples: ObjectSample[] | null, render: RenderSample) => void;
   /** The scene is going away (game end, disconnect overlay, run teardown); its objects did not just vanish. */
   onSceneUnmount: () => void;
   /** Real (wall) time, for measuring frame and probe cost under the virtual clock. */
@@ -32,7 +32,7 @@ function readCanvas(canvas: HTMLCanvasElement): string | null {
 }
 
 /**
- * Samples every named card object once per drawn frame and publishes the scene bridge.
+ * Samples every named card object and the camera once per drawn frame and publishes the scene bridge.
  * Sampling runs as an R3F after-effect, after every useFrame subscriber has updated and the
  * frame was rendered, so sample N is exactly what frame N showed (camera-relative children
  * included). Scene and camera are read from the store each time, never from a stale closure.
@@ -110,7 +110,7 @@ export function SceneAnimationProbe({ onFrame, onSceneUnmount, realNow, sampleSt
       const drawn = !gl.getContext().isContextLost();
       const samples = drawn && frame++ % sampleStride === 0 ? sampleSceneObjects(scene, camera) : null;
       render.probeMs = Math.max(0, realNow() - probeStartedAt);
-      onFrame(samples, [camera.position.x, camera.position.y, camera.position.z], render);
+      onFrame(samples, render);
     });
   }, [get, onFrame, realNow, sampleStride, instrumentation]);
 

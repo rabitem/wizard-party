@@ -80,6 +80,10 @@ with `wait-timeout` or `step-failed`.
 - Every `measure-start` has a `measure-end` with the same label (the registry test checks it).
 - Thresholds and shared defaults live in `sandbox.config.ts` (`SANDBOX_AUDIT`, `SANDBOX_FAULTS`)
   or `sandbox-budgets.config.ts`. Step timings are part of the script and stay in it.
+- Per-object motion checks (teleports, kinks, handoffs, flicker, placement) are
+  [three-motion-audit](https://github.com/rabitem/three-motion-audit)'s. Change what a card kind is
+  judged by in its role in `card-motion-audit.ts`; never re-implement a check here. A detection bug
+  belongs upstream. Trick lifecycle rules stay in `animation-audit-recorder.ts`.
 - Drive the game only through what production calls: `SandboxGameHandles`, the `SandboxServer`
   port, `FaultableSocket`, `BrowserFaults`. Never a test-only hook in game code.
 
