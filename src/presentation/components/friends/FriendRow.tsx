@@ -36,7 +36,7 @@ export function FriendRow({ friend, actions }: FriendRowProps) {
   return (
     <motion.li layout initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: -12 }} className="rounded-xl border border-amber-900/30 hover:border-amber-700/40 transition-colors" style={{ background: 'color-mix(in srgb, color-mix(in srgb, var(--surface), black 55%) 45%, transparent)' }}>
       <div className="flex items-center gap-3 px-3 py-2.5">
-        <PresenceAvatar avatarId={friend.avatar} level={friend.level} status={presence.status} playing={presence.activity === 'lobby' || presence.activity === 'game'} />
+        <PresenceAvatar appearance={friend.appearance} label={friend.displayName} level={friend.level} status={presence.status} playing={presence.activity === 'lobby' || presence.activity === 'game'} />
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
             {friend.pinnedAt !== null ? <Pin className="w-3 h-3 text-amber-400/70 shrink-0" aria-label="Pinned" /> : null}

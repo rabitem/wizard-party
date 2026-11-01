@@ -39,7 +39,7 @@ function Toast({ item, onDismiss }: { item: InboxItem; onDismiss: (id: string) =
       <motion.span aria-hidden className="absolute bottom-0 left-0 h-0.5 bg-amber-400/70" initial={{ width: '100%' }} animate={{ width: '0%' }} transition={{ duration: TOAST_MS / 1000, ease: 'linear' }} />
       <div className="flex items-start gap-3 p-3">
         <motion.span initial={{ rotate: -20, scale: 0.6 }} animate={{ rotate: 0, scale: 1 }} transition={{ type: 'spring', stiffness: 300, damping: 12, delay: 0.1 }}>
-          <PlayerAvatar avatarId={item.actor?.avatar ?? 'wizard'} level={item.actor?.level ?? 1} size="md" />
+          <PlayerAvatar appearance={item.actor?.appearance ?? null} label={item.actor?.displayName} level={item.actor?.level ?? 1} size="md" />
         </motion.span>
         <button type="button" className="min-w-0 flex-1 text-left cursor-pointer" onClick={() => open('inbox')}>
           <span className="block text-sm text-amber-50 leading-snug font-serif">{renderer.title(item)}</span>

@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from 'motion/react';
 
+import type { CharacterAppearance } from '@shared/domain/character';
 import type { PresenceStatus } from '@shared/domain/social';
 
 import { PlayerAvatar, type PlayerAvatarSize } from '../account/PlayerAvatar';
@@ -10,7 +11,9 @@ import { STATUS_COLORS } from './social-format';
 const DOT: Record<PlayerAvatarSize, string> = { xs: 'w-2 h-2', sm: 'w-2.5 h-2.5', md: 'w-3 h-3', lg: 'w-4 h-4', xl: 'w-5 h-5' };
 
 interface PresenceAvatarProps {
-  avatarId: string | null | undefined;
+  /** As PlayerAvatar: left out for the local player's own look, null for a silhouette. */
+  appearance?: CharacterAppearance | null;
+  label?: string;
   level: number;
   status: PresenceStatus;
   size?: PlayerAvatarSize;
@@ -23,7 +26,7 @@ interface PresenceAvatarProps {
  * in a lobby or game, a status dot that pops when it changes, and a desaturated face when offline.
  * All motion stops under prefers-reduced-motion.
  */
-export function PresenceAvatar({ avatarId, level, status, size = 'md', playing = false }: PresenceAvatarProps) {
+export function PresenceAvatar({ appearance, label, level, status, size = 'md', playing = false }: PresenceAvatarProps) {
   const reduceMotion = useReducedMotion();
   const color = STATUS_COLORS[status];
   const live = status !== 'offline';
@@ -45,7 +48,7 @@ export function PresenceAvatar({ avatarId, level, status, size = 'md', playing =
         </motion.span>
       ) : null}
       <span className={`relative inline-flex rounded-full transition-[filter,opacity] duration-500 ${live ? '' : 'grayscale opacity-60'}`}>
-        <PlayerAvatar avatarId={avatarId ?? 'wizard'} level={level} size={size} />
+        <PlayerAvatar appearance={appearance} label={label} level={level} size={size} />
       </span>
       <motion.span
         key={status}

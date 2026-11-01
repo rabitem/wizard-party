@@ -9,7 +9,7 @@ import { accountApi, type AccountOverviewDto } from '@/lib/account/account-api';
 import { AVATAR_PRESETS, loadGameSettings, saveGameSettings } from '@/presentation/components/settings';
 import { useAccount, type AccountUser } from '@/presentation/providers/AccountProvider';
 
-import { useAvatarId } from '../PlayerAvatar';
+import { PlayerAvatar, useAvatarId } from '../PlayerAvatar';
 import { ProfileVisibilityPanel } from '../public/ProfileVisibilityPanel';
 import { UsernamePanel } from '../public/UsernamePanel';
 import { BlockedPlayersPanel, SocialSettingsPanel } from '../../friends';
@@ -69,8 +69,11 @@ function AvatarPanel() {
   return (
     <Panel accent={false}>
       <div className="p-4 sm:p-5">
-        <SectionHeading title="Avatar" description="Saved instantly and synced to all your devices." />
-        <div className="grid grid-cols-5 sm:grid-cols-8 gap-2">
+        <div className="flex items-start justify-between gap-4">
+          <SectionHeading title="Avatar" description="Sets the look of your character. Saved instantly and synced to all your devices." />
+          <PlayerAvatar size="lg" label="Your character" />
+        </div>
+        <div className="grid grid-cols-5 sm:grid-cols-8 gap-2 mt-3">
           {AVATAR_PRESETS.map((avatar) => {
             const selected = avatar.id === avatarId;
             return (

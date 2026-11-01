@@ -43,7 +43,7 @@ export function StatusPicker() {
   return (
     <div className="relative">
       <button type="button" onClick={() => setOpen((value) => !value)} aria-expanded={open} className="flex items-center gap-3 w-full rounded-xl px-2 py-1.5 hover:bg-amber-900/20 transition-colors cursor-pointer text-left">
-        <PresenceAvatar avatarId={undefined} level={overview?.progression.level ?? 1} status={MODE_STATUS[current]} size="lg" />
+        <PresenceAvatar level={overview?.progression.level ?? 1} status={MODE_STATUS[current]} size="lg" />
         <span className="min-w-0 flex-1">
           <span className="block truncate text-base text-amber-50 font-serif">{user?.displayUsername ?? '…'}</span>
           <span className="flex items-center gap-1.5 text-xs" style={{ color: MODE_COLORS[current] }}>

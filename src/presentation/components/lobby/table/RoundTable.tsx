@@ -61,7 +61,7 @@ function SeatBadge({ seat }: { seat: LobbySeatView }) {
   return null;
 }
 
-/** Guests get a random avatar; choosing one (and this badge going away) comes with an account. */
+/** Guests show a silhouette; a character (and this badge going away) comes with an account. */
 function GuestBadge() {
   return (
     // A see-through sash across the avatar's top-right corner, clipped to the circle, so the
@@ -97,13 +97,12 @@ function TakenSeat({ seat, index, onClick }: { seat: LobbySeatView; index: numbe
       className="group flex flex-col items-center w-[88px] cursor-pointer focus-visible:outline-none"
     >
       <span className={`relative rounded-full transition-transform group-hover:scale-105 group-focus-visible:ring-2 group-focus-visible:ring-amber-400 ${seat.isConnected ? '' : 'opacity-55'}`}>
+        <PlayerAvatar appearance={seat.appearance} label={seat.name} level={seat.level} size="lg" glow={seat.isLocal} />
         {seat.isBot ? (
-          <span className="w-14 h-14 rounded-full border-2 border-amber-700/60 flex items-center justify-center text-amber-400/90" style={{ background: 'var(--surface)' }}>
-            <Bot className="w-6 h-6" />
+          <span className="absolute -bottom-1 -left-1 w-5 h-5 rounded-full border border-amber-700/60 flex items-center justify-center text-amber-300" style={{ background: 'var(--surface)' }} aria-hidden>
+            <Bot className="w-3 h-3" />
           </span>
-        ) : (
-          <PlayerAvatar avatarId={seat.avatarId} level={seat.level} size="lg" glow={seat.isLocal} />
-        )}
+        ) : null}
         <LobbyAvatarFrame index={index} isLocal={seat.isLocal} isHost={seat.isHost} isBot={seat.isBot} />
         {seat.isHost ? (
           <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 w-4 h-4 text-amber-300 drop-shadow" aria-hidden>

@@ -26,7 +26,7 @@ export function PublicProfileHeader({ profile }: { profile: PublicProfile }) {
       <HeaderCorners />
       <div className="relative p-5 sm:p-7 flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-7 text-center sm:text-left">
         <div className="relative shrink-0 pb-2">
-          <PlayerAvatar avatarId={profile.avatar} size="xl" level={level} glow />
+          <PlayerAvatar appearance={profile.appearance} label={profile.displayName} size="xl" level={level} glow />
           <span
             className="absolute bottom-0 left-1/2 -translate-x-1/2 min-w-11 px-2 h-7 rounded-full border-2 border-amber-500/70 inline-flex items-center justify-center text-sm text-amber-100 tabular-nums"
             style={{ fontFamily: 'var(--font-serif)', background: SEAL_BG, boxShadow: '0 2px 12px rgba(0,0,0,0.5)' }}

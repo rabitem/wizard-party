@@ -28,7 +28,7 @@ function PodiumSpot({ entry, category, place, isSelf }: { entry: LeaderboardEntr
       <div className="relative mb-2">
         {entry.rank === 1 ? <Crown className="absolute -top-5 left-1/2 -translate-x-1/2 w-5 h-5 text-amber-300 drop-shadow" strokeWidth={1.75} /> : null}
         <div className="rounded-full p-[3px] transition-transform group-hover:scale-105 group-focus-visible:scale-105" style={{ background: medal.ring, boxShadow: `0 0 22px ${medal.glow}` }}>
-          <PlayerAvatar avatarId={entry.avatar} size={place === CHAMPION_PLACE ? 'lg' : 'md'} level={entry.level} />
+          <PlayerAvatar appearance={entry.appearance} label={entry.displayName} size={place === CHAMPION_PLACE ? 'lg' : 'md'} level={entry.level} />
         </div>
         <span
           className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 min-w-6 h-6 px-1 rounded-full border-2 text-[11px] font-bold inline-flex items-center justify-center tabular-nums"

@@ -3,9 +3,8 @@
 import { useCallback, useMemo, useState } from 'react';
 import { AnimatePresence } from 'motion/react';
 import { DEFAULT_ROOM_SETTINGS, type IGameState } from '@shared/domain';
-import { AVATAR_PRESETS } from './settings';
 import { ShareModal } from './lobby';
-import { useAvatarId } from './account/PlayerAvatar';
+import { useLocalAppearance } from '../hooks/account/useLocalAppearance';
 import {
   InviteSheet,
   OpenSeatSheet,
@@ -41,8 +40,6 @@ type Sheet =
   | { kind: 'settings' }
   | { kind: 'share' };
 
-const FALLBACK_AVATARS = AVATAR_PRESETS.map((preset) => preset.id);
-
 /** The invite link: the join page, whose preview shows the room code over the inviter's realm. */
 function shareUrlFor(roomId: string, realmParam: string): string {
   const path = `/join?room=${roomId}${realmParam}`;
@@ -53,7 +50,7 @@ function toInviteView(invite: SentInviteDto): LobbyInviteView {
   return {
     id: invite.id,
     name: invite.recipient.displayName,
-    avatarId: invite.recipient.avatarId ?? 'wizard',
+    appearance: invite.recipient.appearance,
     state: invite.state,
     expiresAt: Date.parse(invite.expiresAt),
   };
@@ -90,7 +87,7 @@ function RoundTableLobby({ gameState, localPlayerId }: LobbyUIProps) {
   const [sheet, setSheet] = useState<Sheet | null>(null);
   const [isStarting, setIsStarting] = useState(false);
   const { status: accountStatus } = useAccount();
-  const localAvatar = useAvatarId();
+  const localAppearance = useLocalAppearance();
 
   const roomSettings = gameState.roomSettings ?? DEFAULT_ROOM_SETTINGS;
   const ruleset = gameState.rulesetConfig ?? roomSettings.rulesetConfig;
@@ -99,7 +96,7 @@ function RoundTableLobby({ gameState, localPlayerId }: LobbyUIProps) {
 
   const accounts = useMemo(() => {
     const map = new Map<string, SeatAccount>();
-    roomAccounts.forEach((seat, playerId) => map.set(playerId, { avatar: seat.player.avatar, level: seat.player.level }));
+    roomAccounts.forEach((seat, playerId) => map.set(playerId, { appearance: seat.player.appearance, level: seat.player.level }));
     return map;
   }, [roomAccounts]);
 
@@ -108,13 +105,12 @@ function RoundTableLobby({ gameState, localPlayerId }: LobbyUIProps) {
       players: gameState.players,
       hostId: gameState.hostId,
       localPlayerId,
-      localAvatarId: localAvatar,
+      localAppearance,
       localIsGuest: accountStatus === 'guest',
-      fallbackAvatarIds: FALLBACK_AVATARS,
       accounts,
       graceEndsAt: graceDeadlines(gameState),
     }),
-    [gameState, localPlayerId, localAvatar, accountStatus, accounts]
+    [gameState, localPlayerId, localAppearance, accountStatus, accounts]
   );
   const hostName = seats.find((seat) => seat.isHost)?.name ?? 'The host';
   const localSeat = seats.find((seat) => seat.isLocal);
@@ -132,7 +128,7 @@ function RoundTableLobby({ gameState, localPlayerId }: LobbyUIProps) {
       return {
         userId: friend.userId,
         name: friend.displayName,
-        avatarId: friend.avatar ?? 'wizard',
+        appearance: friend.appearance,
         level: friend.level,
         presence: friend.presence.status,
         activity: friend.presence.activity,

@@ -99,10 +99,11 @@ key the dependent feature is skipped or reduced; `.env.example` says which.
   required `name` always mirrors the username. A rename is allowed once per
   `CHANGE_COOLDOWN_MS` and the first rename is free; casing edits are free. The casing must spell
   the stored name.
-- **Avatar.** Choosing one comes with an account: only the Profile tab sets the `avatar` field of
-  the synced `game-settings` document. A guest gets one picked from the browser's player id
-  (`guestAvatarId`, read through `useAvatarId`) and a guest badge on their own lobby seat. Other
-  seats never show the badge: a seat without account data may also be a blocked or hidden account.
+- **Avatar.** Players are shown as their character (see Characters). The old `avatar` id is only
+  set in the Profile tab and still decides the derived look until a look is saved; emails and the
+  seat mark on the 3D table still draw it. A guest has no character: a silhouette, and a guest badge
+  on their own lobby seat. Other seats never show the badge: a seat without account data may also
+  be a blocked or hidden account.
 - A signed-in player always sits under their username (`usePlayerName`).
   `GET /api/username/check` also refuses a registered account's name to guests.
 
@@ -168,8 +169,12 @@ key the dependent feature is skipped or reduced; `.env.example` says which.
   still valid, else the derived one; unlocks are not checked again. Social players (the
   `social_players` view, migration `0111`), inbox actors, sent invites, public profiles and
   leaderboard entries carry it as `appearance` next to the old `avatar`, which emails still draw.
-  Saving a look purges the player's public profile and the leaderboards. The UI still draws
-  avatars until the presentation switches over.
+  Saving a look purges the player's public profile and the leaderboards.
+- **In the UI**, `PlayerAvatar` draws the character's portrait in the level frame
+  ([../client/characters.md](../client/characters.md#in-the-ui)). The local player's look comes
+  from `GET /api/account/character` (`useLocalAppearance`); at a table, `seatAppearance` gives the
+  local look, a bot's look by difficulty (`botAppearance`), the room account's look, or a
+  silhouette.
 
 ### Public profiles
 

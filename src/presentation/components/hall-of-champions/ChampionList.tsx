@@ -25,7 +25,7 @@ export function ChampionList({ entries, category, selfUsername }: { entries: Lea
               className={`flex items-center gap-3 px-3 sm:px-4 min-h-14 py-2 transition-colors hover:bg-amber-900/20 focus-visible:bg-amber-900/25 focus-visible:outline-none ${isSelf ? 'bg-amber-900/25' : ''}`}
             >
               <span className="w-6 shrink-0 text-center text-sm text-amber-500/70 tabular-nums font-serif">{entry.rank}</span>
-              <PlayerAvatar avatarId={entry.avatar} size="sm" level={entry.level} />
+              <PlayerAvatar appearance={entry.appearance} label={entry.displayName} size="sm" level={entry.level} />
               <span className="flex-1 min-w-0">
                 <span className="flex items-center gap-1.5">
                   <span className="truncate text-sm text-amber-50 font-serif">{entry.displayName}</span>

@@ -36,7 +36,7 @@ export function SocialButton({ className = '', label = 'Social', tab }: { classN
           <AnimatePresence initial={false}>
             {online.slice(0, STACK).map((friend, index) => (
               <motion.span key={friend.userId} initial={{ scale: 0, x: -8 }} animate={{ scale: 1, x: 0 }} exit={{ scale: 0 }} transition={{ delay: index * 0.05 }} className="rounded-full ring-2 ring-[color-mix(in_srgb,_var(--surface),_black_5%)]" style={{ zIndex: STACK - index }}>
-                <PlayerAvatar avatarId={friend.avatar ?? 'wizard'} level={friend.level} size="sm" />
+                <PlayerAvatar appearance={friend.appearance} label={friend.displayName} level={friend.level} size="sm" />
               </motion.span>
             ))}
           </AnimatePresence>

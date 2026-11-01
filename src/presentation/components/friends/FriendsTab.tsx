@@ -27,7 +27,7 @@ function RequestRow({ request, incoming, actions }: { request: FriendRequestView
   const { player } = request;
   return (
     <li className="flex items-center gap-3 rounded-xl border border-amber-700/30 px-3 py-2.5 animate-in" style={{ background: 'color-mix(in srgb, var(--color-amber-900) 25%, transparent)' }}>
-      <PlayerAvatar avatarId={player.avatar ?? 'wizard'} level={player.level} size="sm" />
+      <PlayerAvatar appearance={player.appearance} label={player.displayName} level={player.level} size="sm" />
       <span className="min-w-0 flex-1">
         <span className="block truncate text-sm text-amber-100 font-serif">{player.displayName}</span>
         <span className="block text-xs text-amber-200/45">{incoming ? 'wants to be friends' : 'request sent'}</span>

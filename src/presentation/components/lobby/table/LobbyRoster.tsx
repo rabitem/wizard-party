@@ -1,6 +1,6 @@
 'use client';
 
-import { Bot, Check, Crown, Plus, WifiOff } from 'lucide-react';
+import { Check, Crown, Plus, WifiOff } from 'lucide-react';
 import { PlayerAvatar } from '../../account/PlayerAvatar';
 import type { LobbySeatView } from './lobby-view.types';
 import { seatStatusLabel } from './RoundTable';
@@ -46,11 +46,7 @@ export function LobbyRoster({ seats, maxPlayers, className = '', onSeatClick, on
               onClick={() => onSeatClick(seat)}
               className="w-full flex items-center gap-3 px-2 py-1.5 rounded-xl text-left cursor-pointer hover:bg-amber-900/25 focus-visible:bg-amber-900/25"
             >
-              {seat.isBot ? (
-                <span className="w-8 h-8 shrink-0 rounded-full border-2 border-amber-700/60 flex items-center justify-center text-amber-400/90"><Bot className="w-4 h-4" aria-hidden /></span>
-              ) : (
-                <PlayerAvatar avatarId={seat.avatarId} level={seat.level} size="sm" />
-              )}
+              <PlayerAvatar appearance={seat.appearance} label={seat.name} level={seat.level} size="sm" />
               <span className={`font-serif min-w-0 flex-1 truncate text-sm text-amber-50 ${seat.isConnected ? '' : 'opacity-60'}`}>
                 {seat.name}{seat.isLocal ? <span className="text-amber-400/80"> (you)</span> : null}
                 {seat.isGuest ? <span className="text-amber-500/70 text-xs"> · guest</span> : null}

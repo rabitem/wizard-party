@@ -1,8 +1,8 @@
 'use client';
 
 import { LeaderboardEntry } from './types';
-import { getPlayerAvatarIcon } from './utils';
-import { useAvatarId } from '../../account/PlayerAvatar';
+import { CharacterFace } from '../../character/CharacterFace';
+import { useSeatAppearance } from '@/presentation/hooks/account/useSeatAppearance';
 import { NAME_SCORE_TEXT_CLASS, NAME_SCORE_VALUE_CLASS } from '../../name-score-layout';
 import { THEME_SURFACE } from '@/presentation/config/theme-surface.config';
 
@@ -39,7 +39,8 @@ function getPodiumRoundScoreColor(madeCurrentBid: boolean, roundScore: number, f
 type PodiumColors = { bg: string; border: string; accent: string; text: string };
 
 /** Medieval framed avatar with corner accents */
-function PodiumAvatar({ avatarIcon, isCurrentTurn, isLocal, color }: { avatarIcon: string; isCurrentTurn: boolean; isLocal: boolean; color: PodiumColors }) {
+function PodiumAvatar({ entry, isCurrentTurn, isLocal, color }: { entry: LeaderboardEntry; isCurrentTurn: boolean; isLocal: boolean; color: PodiumColors }) {
+  const appearance = useSeatAppearance(entry.player, isLocal);
   return (
     <div className="relative mb-2">
       <div
@@ -51,7 +52,7 @@ function PodiumAvatar({ avatarIcon, isCurrentTurn, isLocal, color }: { avatarIco
         <div className="absolute top-0.5 right-0.5 w-1.5 h-1.5 border-t border-r" style={{ borderColor: color.accent }} />
         <div className="absolute bottom-0.5 left-0.5 w-1.5 h-1.5 border-b border-l" style={{ borderColor: color.accent }} />
         <div className="absolute bottom-0.5 right-0.5 w-1.5 h-1.5 border-b border-r" style={{ borderColor: color.accent }} />
-        <i className={`ra ${avatarIcon} text-xl leading-none relative`} style={{ color: color.text }} />
+        <CharacterFace appearance={appearance} label={entry.player.name} className="relative w-full h-full" />
       </div>
       {isLocal ? (
         <div
@@ -103,14 +104,12 @@ export function PodiumPlace({
   isCurrentTurn: boolean;
   height: 'tall' | 'medium' | 'short';
 }) {
-  const localAvatarId = useAvatarId();
-  const avatarIcon = getPlayerAvatarIcon(isLocal, entry.originalIndex, localAvatarId);
   const heightClass = getPodiumHeightClass(height);
   const color = PODIUM_COLORS[entry.position] || DEFAULT_PODIUM_COLOR;
 
   return (
     <div className="flex flex-col items-center">
-      <PodiumAvatar avatarIcon={avatarIcon} isCurrentTurn={isCurrentTurn} isLocal={isLocal} color={color} />
+      <PodiumAvatar entry={entry} isCurrentTurn={isCurrentTurn} isLocal={isLocal} color={color} />
       <span
         className={`text-[11px] font-medium text-center mb-1 max-w-[70px] block ${NAME_SCORE_TEXT_CLASS}`}
         style={{ color: getPodiumNameColor(isCurrentTurn, isLocal), fontFamily: 'var(--font-serif)' }}
@@ -135,8 +134,7 @@ export function RunnerUpChip({
   isLocal: boolean;
   isCurrentTurn: boolean;
 }) {
-  const localAvatarId = useAvatarId();
-  const avatarIcon = getPlayerAvatarIcon(isLocal, entry.originalIndex, localAvatarId);
+  const appearance = useSeatAppearance(entry.player, isLocal);
 
   return (
     <div
@@ -161,7 +159,7 @@ export function RunnerUpChip({
       {/* Position */}
       <span className="text-[10px] font-bold text-amber-600 relative">{entry.position}</span>
       {/* Avatar */}
-      <i className={`ra ${avatarIcon} text-xs leading-none text-amber-400 relative flex-shrink-0`} />
+      <CharacterFace appearance={appearance} label={entry.player.name} className="relative w-4 h-4 flex-shrink-0" />
       {/* Name */}
       <span
         className={`text-[10px] relative max-w-[50px] ${NAME_SCORE_TEXT_CLASS}`}
