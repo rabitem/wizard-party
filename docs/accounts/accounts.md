@@ -99,6 +99,10 @@ key the dependent feature is skipped or reduced; `.env.example` says which.
   required `name` always mirrors the username. A rename is allowed once per
   `CHANGE_COOLDOWN_MS` and the first rename is free; casing edits are free. The casing must spell
   the stored name.
+- **Avatar.** Choosing one comes with an account: only the Profile tab sets the `avatar` field of
+  the synced `game-settings` document. A guest gets one picked from the browser's player id
+  (`guestAvatarId`, read through `useAvatarId`) and a guest badge on their own lobby seat. Other
+  seats never show the badge: a seat without account data may also be a blocked or hidden account.
 - A signed-in player always sits under their username (`usePlayerName`).
   `GET /api/username/check` also refuses a registered account's name to guests.
 

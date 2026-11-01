@@ -46,7 +46,7 @@ export function WinterPanelDecor({ variant }: LobbyPanelDecorProps) {
   return (
     <>
       <PanelSnow />
-      {variant === 'avatar' ? null : <span className={styles.icicles} />}
+      <span className={styles.icicles} />
       {variant === 'players' ? <Robin /> : null}
     </>
   );

@@ -1,10 +1,11 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence } from 'motion/react';
 import { DEFAULT_ROOM_SETTINGS, type IGameState } from '@shared/domain';
-import { AVATAR_PRESETS, loadGameSettings, saveGameSettings } from './settings';
-import { AvatarPicker, ShareModal } from './lobby';
+import { AVATAR_PRESETS } from './settings';
+import { ShareModal } from './lobby';
+import { useAvatarId } from './account/PlayerAvatar';
 import {
   InviteSheet,
   OpenSeatSheet,
@@ -28,6 +29,7 @@ import { useSocialActions } from './friends/useSocialActions';
 import { useSelectedTableTheme } from './table/table-theme';
 import { useGame } from '../providers/GameProvider';
 import { useSocial } from '../providers/SocialProvider';
+import { useAccount } from '../providers/AccountProvider';
 import { useTournamentTable } from '../providers/TournamentTableProvider';
 import { useSentInvites } from '../hooks/social/useSentInvites';
 import type { SentInviteDto } from '@/app/api/types/social-invites.types';
@@ -37,8 +39,7 @@ type Sheet =
   | { kind: 'open-seat'; seatNumber: number }
   | { kind: 'invite' }
   | { kind: 'settings' }
-  | { kind: 'share' }
-  | { kind: 'avatar' };
+  | { kind: 'share' };
 
 const FALLBACK_AVATARS = AVATAR_PRESETS.map((preset) => preset.id);
 
@@ -85,7 +86,8 @@ function RoundTableLobby({ gameState, localPlayerId }: LobbyUIProps) {
   const palette = useSelectedTableTheme();
   const [sheet, setSheet] = useState<Sheet | null>(null);
   const [isStarting, setIsStarting] = useState(false);
-  const [localAvatar, setLocalAvatar] = useState(() => loadGameSettings().avatar);
+  const { status: accountStatus } = useAccount();
+  const localAvatar = useAvatarId();
 
   const roomSettings = gameState.roomSettings ?? DEFAULT_ROOM_SETTINGS;
   const ruleset = gameState.rulesetConfig ?? roomSettings.rulesetConfig;
@@ -104,11 +106,12 @@ function RoundTableLobby({ gameState, localPlayerId }: LobbyUIProps) {
       hostId: gameState.hostId,
       localPlayerId,
       localAvatarId: localAvatar,
+      localIsGuest: accountStatus === 'guest',
       fallbackAvatarIds: FALLBACK_AVATARS,
       accounts,
       graceEndsAt: graceDeadlines(gameState),
     }),
-    [gameState, localPlayerId, localAvatar, accounts]
+    [gameState, localPlayerId, localAvatar, accountStatus, accounts]
   );
   const hostName = seats.find((seat) => seat.isHost)?.name ?? 'The host';
   const localSeat = seats.find((seat) => seat.isLocal);
@@ -153,12 +156,6 @@ function RoundTableLobby({ gameState, localPlayerId }: LobbyUIProps) {
     void invite(friend.userId, gameState.id, friend.name);
   }, [invite, gameState.id]);
 
-  const handleAvatarSelect = useCallback((avatarId: string) => {
-    setLocalAvatar(avatarId);
-    saveGameSettings({ ...loadGameSettings(), avatar: avatarId });
-    setSheet(null);
-  }, []);
-
   const openSeat = sheet?.kind === 'seat' ? seats.find((seat) => seat.id === sheet.seatId) : undefined;
 
   return (
@@ -188,7 +185,8 @@ function RoundTableLobby({ gameState, localPlayerId }: LobbyUIProps) {
         onOpenSettings={() => setSheet({ kind: 'settings' })}
         onOpenInvite={() => setSheet({ kind: 'invite' })}
         onRevokeInvite={sentInvites.revoke}
-        onSeatClick={(seat: LobbySeatView) => setSheet({ kind: 'seat', seatId: seat.id })}
+        // Every seat action targets someone else; your own avatar is chosen in the account.
+        onSeatClick={(seat: LobbySeatView) => { if (!seat.isLocal) setSheet({ kind: 'seat', seatId: seat.id }); }}
         onEmptySeatClick={(seatNumber) => setSheet({ kind: 'open-seat', seatNumber })}
       />
 
@@ -200,7 +198,6 @@ function RoundTableLobby({ gameState, localPlayerId }: LobbyUIProps) {
             isHost={isHost}
             friendAction={openSeat.hasAccount && !openSeat.isLocal ? <SeatFriendAction gamePlayerId={openSeat.id} /> : undefined}
             onClose={close}
-            onChangeAvatar={() => setSheet({ kind: 'avatar' })}
             onKick={() => { kickPlayer(openSeat.id); close(); }}
             onMakeHost={() => { transferHost(openSeat.id); close(); }}
             onRemoveBot={() => { removeBot(openSeat.id); close(); }}
@@ -245,12 +242,6 @@ function RoundTableLobby({ gameState, localPlayerId }: LobbyUIProps) {
             onRulesetChange={setRuleset}
             onClose={close}
           />
-        ) : null}
-        {sheet?.kind === 'avatar' ? (
-          <motion.div key="avatar" className="fixed inset-0 z-50 flex items-center justify-center p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <button type="button" aria-label="Close avatar picker" className="absolute inset-0 bg-black/60 cursor-default" onClick={close} />
-            <div className="relative z-10"><AvatarPicker selectedAvatar={localAvatar} onSelect={handleAvatarSelect} /></div>
-          </motion.div>
         ) : null}
       </AnimatePresence>
       {sheet?.kind === 'share' ? <ShareModal roomId={gameState.id} onClose={close} /> : null}

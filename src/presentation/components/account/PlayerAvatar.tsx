@@ -5,18 +5,28 @@ import { useSyncExternalStore } from 'react';
 import { equippedCosmetics, type AvatarFrameId } from '@shared/domain/account';
 
 import { AVATAR_PRESETS, loadGameSettings } from '@/presentation/components/settings';
+import { getOrCreatePlayerId } from '@/presentation/hooks/connection/utils';
+import { useAccount } from '@/presentation/providers/AccountProvider';
 
 import { AVATAR_FACE_BG, GLOW_SHADOW } from './account-surfaces';
 import { FRAME_STYLES } from './cosmetic-styles';
+import { guestAvatarId } from './guest-avatar';
+
+const AVATAR_IDS = AVATAR_PRESETS.map((preset) => preset.id);
 
 function subscribe(callback: () => void) {
   window.addEventListener('settings-changed', callback);
   return () => window.removeEventListener('settings-changed', callback);
 }
 
-/** The avatar chosen in settings; synced with the account like every other setting. */
+/**
+ * The local player's avatar. Choosing one comes with an account (Profile tab, synced like every
+ * other setting); a guest gets one picked from their browser's player id.
+ */
 export function useAvatarId(): string {
-  return useSyncExternalStore(subscribe, () => loadGameSettings().avatar, () => 'wizard');
+  const { status } = useAccount();
+  const chosen = useSyncExternalStore(subscribe, () => loadGameSettings().avatar, () => 'wizard');
+  return status === 'guest' ? guestAvatarId(getOrCreatePlayerId(), AVATAR_IDS) : chosen;
 }
 
 /** xs fits inside a text-xs chip, so the chip stays as tall as the buttons next to it. */

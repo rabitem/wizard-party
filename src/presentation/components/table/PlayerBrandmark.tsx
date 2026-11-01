@@ -6,7 +6,8 @@ import { SceneText } from '../three/SceneText';
 import { DECORATIVE_TEXT_USER_DATA } from '../three/scene-text-roles';
 import * as THREE from 'three';
 import { IPlayer } from '@shared/domain';
-import { AVATAR_PRESETS, loadGameSettings } from '../settings';
+import { AVATAR_PRESETS } from '../settings';
+import { useAvatarId } from '../account/PlayerAvatar';
 import { CAMERA_CONFIG } from '../../config/layout.config';
 import { SeatNameplate } from './SeatNameplate';
 
@@ -35,9 +36,9 @@ const BRAND_COLORS = {
 } as const;
 
 /** Get avatar symbol for player */
-function getAvatarSymbol(isLocalPlayer: boolean, playerIndex: number): string {
+function getAvatarSymbol(isLocalPlayer: boolean, playerIndex: number, localAvatarId: string): string {
   if (isLocalPlayer) {
-    const preset = AVATAR_PRESETS.find((a) => a.id === loadGameSettings().avatar);
+    const preset = AVATAR_PRESETS.find((a) => a.id === localAvatarId);
     return preset?.symbol || AVATAR_PRESETS[0].symbol;
   }
   return AVATAR_PRESETS[playerIndex % AVATAR_PRESETS.length].symbol;
@@ -91,7 +92,7 @@ export function SeatPlate({ position, rotation }: { position: [number, number, n
  */
 export function PlayerBrandmark({ position, rotation, player, isCurrentTurn, isLocalPlayer, playerIndex }: PlayerBrandmarkProps) {
   const glowRef = useRef<THREE.Mesh>(null);
-  const avatarSymbol = getAvatarSymbol(isLocalPlayer, playerIndex);
+  const avatarSymbol = getAvatarSymbol(isLocalPlayer, playerIndex, useAvatarId());
 
   useFrame((state) => {
     if (isCurrentTurn && glowRef.current) (glowRef.current.material as THREE.MeshBasicMaterial).opacity = 0.15 + Math.sin(state.clock.elapsedTime * 2.5) * 0.1;

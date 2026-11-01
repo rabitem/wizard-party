@@ -4,16 +4,17 @@ import {
   GameAlreadyStartedError,
   MaxPlayersReachedError,
   PlayerKickedError,
+  Player,
   PlayerNameTakenError,
   ROOM_PLAYER_LIMITS,
   RoomFullError,
 } from '@shared/domain';
-import { startReadiness, summarizeRules } from './lobby-view';
+import { buildSeatViews, startReadiness, summarizeRules } from './lobby-view';
 import { classifyLobbyError } from './LobbyStates';
 import type { LobbySeatView } from './lobby-view.types';
 
 function seat(overrides: Partial<LobbySeatView>): LobbySeatView {
-  return { id: 'x', name: 'X', avatarId: 'wizard', isHost: false, isLocal: false, isBot: false, isReady: false, isConnected: true, graceEndsAt: null, hasAccount: false, ...overrides };
+  return { id: 'x', name: 'X', avatarId: 'wizard', isHost: false, isLocal: false, isBot: false, isReady: false, isConnected: true, graceEndsAt: null, hasAccount: false, isGuest: false, ...overrides };
 }
 
 describe('summarizeRules', () => {
@@ -56,6 +57,19 @@ describe('startReadiness', () => {
   it('should mention a reconnecting player first', () => {
     const seats = [seat({ isHost: true }), seat({ id: 'b', name: 'Bea', isConnected: false }), seat({ id: 'c', name: 'Cy', isReady: true })];
     expect(startReadiness(seats, 'X', true).reason).toContain('Waiting for Bea to reconnect');
+  });
+});
+
+describe('buildSeatViews', () => {
+  const players = [new Player('me', 'Me'), new Player('other', 'Other')];
+  const build = (localIsGuest: boolean) => buildSeatViews({
+    players, hostId: 'me', localPlayerId: 'me', localAvatarId: 'dragon', localIsGuest,
+    fallbackAvatarIds: ['wizard'], accounts: new Map(), graceEndsAt: new Map(),
+  });
+
+  it('should mark only the local seat as a guest, never a seat whose account is merely unknown', () => {
+    expect(build(true).map((view) => [view.id, view.isGuest])).toEqual([['me', true], ['other', false]]);
+    expect(build(false).every((view) => !view.isGuest)).toBe(true);
   });
 });
 

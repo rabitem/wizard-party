@@ -14,6 +14,8 @@ interface BuildSeatsInput {
   hostId: string;
   localPlayerId: string;
   localAvatarId: string;
+  /** The local player plays without an account. Only known for the local seat (see LobbySeatView.isGuest). */
+  localIsGuest: boolean;
   fallbackAvatarIds: readonly string[];
   accounts: ReadonlyMap<string, SeatAccount>;
   /** playerId -> epoch ms when their reconnect window closes */
@@ -21,7 +23,7 @@ interface BuildSeatsInput {
 }
 
 /** Turns server players into the seats the round table draws, in seating order. */
-export function buildSeatViews({ players, hostId, localPlayerId, localAvatarId, fallbackAvatarIds, accounts, graceEndsAt }: BuildSeatsInput): LobbySeatView[] {
+export function buildSeatViews({ players, hostId, localPlayerId, localAvatarId, localIsGuest, fallbackAvatarIds, accounts, graceEndsAt }: BuildSeatsInput): LobbySeatView[] {
   return players.map((player, index) => {
     const isLocal = player.id === localPlayerId;
     const account = accounts.get(player.id);
@@ -38,6 +40,7 @@ export function buildSeatViews({ players, hostId, localPlayerId, localAvatarId, 
       isConnected: player.isBot || player.isConnected,
       graceEndsAt: graceEndsAt.get(player.id) ?? null,
       hasAccount: Boolean(account),
+      isGuest: isLocal && localIsGuest,
     };
   });
 }
