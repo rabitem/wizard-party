@@ -113,6 +113,11 @@ underside of the lowest geometry spanning the table, per room; the open-sky room
 an entry or an open-sky mark does not compile. Orbiting is clamped into the same envelope along the
 view ray (`getEnvelopeClampScale`, called from `SceneCamera`).
 
+Because the envelope belongs to the room, a narrow screen frames each table theme differently (up
+to ~6 units apart). Switching the theme glides the camera to the new framing
+(`useRoomCameraTransition`, `camera-transition.ts`, `CAMERA_CONFIG.FRAMING_TRANSITION`) instead
+of cutting; a resize or a seat change still re-frames at once.
+
 ### In-scene labels
 
 Information (seat name and bid progress, played-card owner) is drawn with `ScreenSizedBillboard`
@@ -163,4 +168,5 @@ Paths are under `src/presentation/`.
 | `hooks/useCardMaterials.test.ts` | material identity and the retain and release lifecycle |
 | `components/Card3D.motion.test.ts`, `components/PlayerHand.layout.test.ts` | hand card states and the hand layout on real viewports |
 | `components/three/camera-framing.test.ts`, `stage-viewport.test.ts` | table framing, the room envelope, zoom compensation |
+| `components/three/camera-transition.test.ts` | the glide between room framings stays under the camera-jump limit |
 | `components/three/particles/SoftPointsMaterial.test.tsx` | soft point sprites |

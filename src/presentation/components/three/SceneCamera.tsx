@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useLayoutEffect, useMemo } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { PerspectiveCamera, OrbitControls } from '@react-three/drei';
@@ -10,6 +10,7 @@ import { useSelectedTableTheme } from '../table/table-theme';
 import { frameCamera, getEnvelopeClampScale } from './camera-framing';
 import { useStageViewport, type StageViewport } from './stage-viewport';
 import { getTableFitPoints } from './table-fit-points';
+import { useRoomCameraTransition, type OrbitControlsHandle } from './useRoomCameraTransition';
 
 interface SceneCameraProps {
   /** Whether the user is on a mobile device */
@@ -74,13 +75,18 @@ export function SceneCamera({ isMobile, playerCount = 0, lockCamera = false }: S
     tableCenterNdcY: getTableCenterNdcY(aspect),
   });
   useStageViewOffset(stage);
+  const controlsRef = useRef<OrbitControlsHandle>(null);
+  // A new room's framing is glided to; until the camera arrives the props keep the old one.
+  const { shown, isGliding } = useRoomCameraTransition(framing, tableTheme.id, controlsRef);
   // Keyed on the coordinates, not the aspect: resizing a wide window keeps the user's orbit.
-  const cameraPosition = useStableVec3(framing.position);
-  const target = useStableVec3(framing.target);
+  const cameraPosition = useStableVec3(shown.position);
+  const target = useStableVec3(shown.target);
   const presetMaxDistance = isMobile ? CAMERA_CONFIG.MAX_DISTANCE.MOBILE : CAMERA_CONFIG.MAX_DISTANCE.DESKTOP;
 
   // Zooming out or tilting up stops at the envelope: the camera slides back along its view ray.
+  // A glide between rooms passes through both envelopes and is left alone.
   const keepInsideEnvelope = useCallback(() => {
+    if (isGliding()) return;
     const { camera } = get();
     const position = camera.position;
     const scale = getEnvelopeClampScale([position.x, position.y, position.z], target, envelope);
@@ -90,7 +96,7 @@ export function SceneCamera({ isMobile, playerCount = 0, lockCamera = false }: S
       target[1] + (position.y - target[1]) * scale,
       target[2] + (position.z - target[2]) * scale
     );
-  }, [get, target, envelope]);
+  }, [get, target, envelope, isGliding]);
 
   return (
     <>
@@ -98,14 +104,15 @@ export function SceneCamera({ isMobile, playerCount = 0, lockCamera = false }: S
         makeDefault
         position={cameraPosition}
         fov={preset.FOV}
-        zoom={framing.zoom}
+        zoom={shown.zoom}
         near={0.1}
         far={100}
       />
       <OrbitControls
+        ref={controlsRef}
         target={target}
         minDistance={isMobile ? CAMERA_CONFIG.MIN_DISTANCE.MOBILE : CAMERA_CONFIG.MIN_DISTANCE.DESKTOP}
-        maxDistance={Math.max(presetMaxDistance, framing.distance)}
+        maxDistance={Math.max(presetMaxDistance, shown.distance, framing.distance)}
         maxPolarAngle={CAMERA_CONFIG.MAX_POLAR_ANGLE}
         minPolarAngle={CAMERA_CONFIG.MIN_POLAR_ANGLE}
         enablePan={false}
