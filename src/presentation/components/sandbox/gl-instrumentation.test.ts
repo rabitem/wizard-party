@@ -50,8 +50,8 @@ describe('GlInstrumentation', () => {
     context.linkProgram();
     (shadowMap.render as () => void)();
 
-    expect(instrumentation.takeFrame()).toEqual({ shadowDrawCalls: 7, textureUploads: 1, uploadBytes: 16 * 16 * BYTES_PER_TEXEL, programLinks: 1 });
-    expect(instrumentation.takeFrame()).toEqual({ shadowDrawCalls: 0, textureUploads: 0, uploadBytes: 0, programLinks: 0 });
+    expect(instrumentation.takeFrame()).toEqual({ shadowDrawCalls: 7, textureUploads: 1, boneUploads: 0, uploadBytes: 16 * 16 * BYTES_PER_TEXEL, programLinks: 1 });
+    expect(instrumentation.takeFrame()).toEqual({ shadowDrawCalls: 0, textureUploads: 0, boneUploads: 0, uploadBytes: 0, programLinks: 0 });
     expect(calls).toEqual(['texImage2D', 'linkProgram']);
   });
 
@@ -63,6 +63,17 @@ describe('GlInstrumentation', () => {
 
     expect(instrumentation.takeFrame()).toMatchObject({ textureUploads: 1, uploadBytes: bytes });
     expect(calls).toEqual([method]);
+  });
+
+  it('should count float uploads (the bone matrices of skinned meshes) apart from texture uploads', () => {
+    const { renderer, context } = fakeRenderer();
+    const instrumentation = new GlInstrumentation(renderer);
+    const FLOAT = 0x1406;
+
+    context.texSubImage2D(0, 0, 0, 0, 16, 16, 0, FLOAT, new Float32Array(16 * 16 * 4));
+    context.texImage2D(0, 0, 0, 16, 16, 0, 0, FLOAT, null);
+
+    expect(instrumentation.takeFrame()).toMatchObject({ textureUploads: 0, boneUploads: 2, uploadBytes: 0 });
   });
 
   it('should restore the original methods on dispose', () => {

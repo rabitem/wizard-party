@@ -1,6 +1,8 @@
 'use client';
 
+import { useEffect } from 'react';
 import { IPlayer } from '@shared/domain';
+import { preloadCharacterAssets } from '../character/CharacterFigure';
 import { StaticBatch } from '../three/batching';
 import { PlayerBrandmark, SeatPlate } from './PlayerBrandmark';
 import { CupHolders } from './CupHolders';
@@ -17,6 +19,8 @@ interface WoodTableRimProps {
   players?: IPlayer[];
   localPlayerId?: string;
   currentPlayerIndex?: number;
+  /** The player who won the trick being shown, if any (their figure cheers). */
+  trickWinnerId?: string | null;
 }
 
 /**
@@ -27,11 +31,18 @@ export function WoodTableRim({
   players = [],
   localPlayerId,
   currentPlayerIndex = -1,
+  trickWinnerId,
 }: WoodTableRimProps) {
   // Get texture material properties
   const { woodMaterialProps, leatherMaterialProps } = useTableTextures();
 
   // Calculate brandmark positions for players
+  // Seat figures should be ready before the shader warm-up runs, so it compiles them too.
+  const seated = players.length > 0;
+  useEffect(() => {
+    if (seated) preloadCharacterAssets();
+  }, [seated]);
+
   const brandmarkPositions = useBrandmarkPositions({
     players,
     localPlayerId,
@@ -72,7 +83,7 @@ export function WoodTableRim({
             player={player}
             isCurrentTurn={index === currentPlayerIndex}
             isLocalPlayer={player.id === localPlayerId}
-            playerIndex={index}
+            trickWinnerId={trickWinnerId}
           />
         );
       })}

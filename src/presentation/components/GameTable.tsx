@@ -72,7 +72,7 @@ function GameTableView({
   return (
     <group>
       {/* TABLE SURFACE */}
-      <TableSurface players={players} localPlayerId={localPlayerId} currentPlayerIndex={currentPlayerIndex} />
+      <TableSurface players={players} localPlayerId={localPlayerId} currentPlayerIndex={currentPlayerIndex} trickWinnerId={trickWinnerId} />
 
       {/* PHYSICS-ENABLED TRUMP INDICATOR - only show during active gameplay phases */}
       {shouldShowTrumpIndicator(gamePhase) && <PhysicsTrumpIndicator suit={trumpSuit} />}

@@ -252,7 +252,7 @@ in `src/presentation/config/sandbox.config.ts`; the per-object motion checks use
 
 | Constant | Judges | Checked in |
 | --- | --- | --- |
-| `RENDER_BUDGETS` | Draw calls, shadow draws, triangles, programs, shader links after warm-up, texture uploads and growth, lights | `e2e/render-budget.spec.ts` on the virtual clock, every table size and every table theme |
+| `RENDER_BUDGETS` | Draw calls, shadow draws, triangles, programs, shader links after warm-up, texture uploads and growth, bone uploads of character figures (counted apart, none while idle), lights | `e2e/render-budget.spec.ts` on the virtual clock, every table size and every table theme |
 | `REACT_BUDGETS` | R3F commits while idle, components per R3F commit, DOM commits per idle second | `e2e/render-budget.spec.ts` |
 | `FRAME_BUDGETS` | p95 frame time at the target fps, main-thread work per frame, probe cost | `e2e/performance.spec.ts`, real clock, perf mode, real hardware |
 | `PLAYABILITY_BUDGETS`, `OCCLUSION_PROBE`, `HUD_REGIONS` | Tap targets, legibility, HUD overlap, blocked sight lines | The playability audit of the `checkpoint` and `snapshot` steps |

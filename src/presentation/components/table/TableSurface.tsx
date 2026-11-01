@@ -17,6 +17,8 @@ interface TableSurfaceProps {
   players: IPlayer[];
   localPlayerId: string;
   currentPlayerIndex: number;
+  /** The player who won the trick being shown, if any (their figure cheers). */
+  trickWinnerId?: string | null;
 }
 
 /** Flat stand-ins for the rim and felt while their textures load */
@@ -40,10 +42,10 @@ function TableSurfaceFallback() {
  * frame. The rim's ground shadow is baked once on that frame and must see the felt too; with
  * separate boundaries a late felt would be missing from the shadow for the whole game.
  */
-export function TableSurface({ players, localPlayerId, currentPlayerIndex }: TableSurfaceProps) {
+export function TableSurface({ players, localPlayerId, currentPlayerIndex, trickWinnerId }: TableSurfaceProps) {
   return (
     <Suspense fallback={<TableSurfaceFallback />}>
-      <WoodTableRim players={players} localPlayerId={localPlayerId} currentPlayerIndex={currentPlayerIndex} />
+      <WoodTableRim players={players} localPlayerId={localPlayerId} currentPlayerIndex={currentPlayerIndex} trickWinnerId={trickWinnerId} />
       <FeltSurface />
     </Suspense>
   );

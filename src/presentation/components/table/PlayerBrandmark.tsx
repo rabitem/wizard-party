@@ -2,14 +2,12 @@
 
 import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { SceneText } from '../three/SceneText';
-import { DECORATIVE_TEXT_USER_DATA } from '../three/scene-text-roles';
 import * as THREE from 'three';
 import { IPlayer } from '@shared/domain';
-import { AVATAR_PRESETS } from '../settings';
-import { useAvatarId } from '../account/PlayerAvatar';
 import { CAMERA_CONFIG } from '../../config/layout.config';
+import { SeatFigure } from './SeatFigure';
 import { SeatNameplate } from './SeatNameplate';
+import { useTableCharacters } from './useTableCharacters';
 
 interface PlayerBrandmarkProps {
   position: [number, number, number];
@@ -17,7 +15,8 @@ interface PlayerBrandmarkProps {
   player: IPlayer;
   isCurrentTurn: boolean;
   isLocalPlayer: boolean;
-  playerIndex: number;
+  /** The player who won the trick being shown, if any. */
+  trickWinnerId?: string | null;
 }
 
 /** Plate footprint, shared with the camera framing so every plate stays on screen */
@@ -35,19 +34,6 @@ const BRAND_COLORS = {
   neutral: '#7a5a30',
 } as const;
 
-/** Get avatar symbol for player */
-function getAvatarSymbol(isLocalPlayer: boolean, playerIndex: number, localAvatarId: string): string {
-  if (isLocalPlayer) {
-    const preset = AVATAR_PRESETS.find((a) => a.id === localAvatarId);
-    return preset?.symbol || AVATAR_PRESETS[0].symbol;
-  }
-  return AVATAR_PRESETS[playerIndex % AVATAR_PRESETS.length].symbol;
-}
-
-/** Get color based on turn state */
-function getTurnColor(isCurrentTurn: boolean, defaultColor: string): string {
-  return isCurrentTurn ? BRAND_COLORS.goldBright : defaultColor;
-}
 
 /** Turn indicator glow - ember effect */
 function TurnIndicatorGlow({ glowRef }: { glowRef: React.RefObject<THREE.Mesh | null> }) {
@@ -86,13 +72,14 @@ export function SeatPlate({ position, rotation }: { position: [number, number, n
 
 /**
  * Seat plate branded into the wooden table rim: the live decoration on top of its SeatPlate
- * (avatar emblem, turn glow). Who sits there and their bid progress are on the SeatNameplate, a
- * camera-facing label of constant on-screen size, because text engraved flat on the rim
- * shrinks to a few pixels on phones.
+ * (turn glow, the opponent's character). Who sits there and their bid progress are on the
+ * SeatNameplate, a camera-facing label of constant on-screen size, because text engraved flat on
+ * the rim shrinks to a few pixels on phones. The local seat has no figure: it is nearest the
+ * camera and would stand in front of the player's own hand.
  */
-export function PlayerBrandmark({ position, rotation, player, isCurrentTurn, isLocalPlayer, playerIndex }: PlayerBrandmarkProps) {
+export function PlayerBrandmark({ position, rotation, player, isCurrentTurn, isLocalPlayer, trickWinnerId }: PlayerBrandmarkProps) {
   const glowRef = useRef<THREE.Mesh>(null);
-  const avatarSymbol = getAvatarSymbol(isLocalPlayer, playerIndex, useAvatarId());
+  const showFigure = useTableCharacters() && !isLocalPlayer;
 
   useFrame((state) => {
     if (isCurrentTurn && glowRef.current) (glowRef.current.material as THREE.MeshBasicMaterial).opacity = 0.15 + Math.sin(state.clock.elapsedTime * 2.5) * 0.1;
@@ -102,7 +89,7 @@ export function PlayerBrandmark({ position, rotation, player, isCurrentTurn, isL
     <>
       <group position={position} rotation={[0, rotation, 0]}>
         {isCurrentTurn ? <TurnIndicatorGlow glowRef={glowRef} /> : null}
-        <SceneText position={[0, 0.006, 0]} rotation={[-Math.PI / 2, 0, 0]} userData={DECORATIVE_TEXT_USER_DATA} fontSize={0.09} color={getTurnColor(isCurrentTurn, BRAND_COLORS.gold)} anchorX="center" anchorY="middle">{avatarSymbol}</SceneText>
+        {showFigure ? <SeatFigure player={player} trickWinnerId={trickWinnerId} /> : null}
         {isLocalPlayer ? <mesh position={[0.1, 0.008, 0.04]} rotation={[-Math.PI / 2, 0, 0]}><circleGeometry args={[0.015, 8]} /><meshStandardMaterial color={BRAND_COLORS.goldBright} emissive={BRAND_COLORS.goldBright} emissiveIntensity={0.5} /></mesh> : null}
       </group>
       <SeatNameplate brandmarkPosition={position} player={player} isCurrentTurn={isCurrentTurn} isLocalPlayer={isLocalPlayer} />

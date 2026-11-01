@@ -10,6 +10,7 @@ import {
   CardThemeSection,
   CardNumberSizeSection,
   TableThemeSection,
+  TableCharactersSection,
   KeyboardShortcutsSection,
   LeaderboardSection,
   CollectionAnimationSection,
@@ -120,6 +121,7 @@ function SettingsContent({ gameSettings, updateGameSettings, soundSettings, setS
       <CardThemeSection selectedTheme={gameSettings.cardTheme} onSelect={(themeId) => updateGameSettings({ cardTheme: themeId })} />
       <CardNumberSizeSection selectedSize={gameSettings.cardNumberSize} onSelect={(size) => updateGameSettings({ cardNumberSize: size })} />
       <TableThemeSection selectedTheme={gameSettings.tableTheme} onSelect={(tableTheme) => updateGameSettings({ tableTheme })} />
+      <TableCharactersSection enabled={gameSettings.tableCharacters} onChange={(tableCharacters) => updateGameSettings({ tableCharacters })} />
       <CollectionAnimationSection selectedMode={gameSettings.collectionAnimation} onSelect={(collectionAnimation) => updateGameSettings({ collectionAnimation })} />
       <LeaderboardSection position={gameSettings.leaderboardPosition} compact={gameSettings.leaderboardCompact}
         onPositionChange={(leaderboardPosition) => updateGameSettings({ leaderboardPosition })}

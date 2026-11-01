@@ -25,6 +25,7 @@ export function expectIdleBudgets(report: AuditReport, label: string = RENDER_BU
   const seconds = Math.max(idle.virtualDurationMs / 1000, 1e-3);
   check(idle.render.shadowDrawCallsMax, 'shadow-map draws while idle').toBeLessThanOrEqual(RENDER_BUDGETS.IDLE_SHADOW_DRAW_CALLS_MAX);
   check(idle.render.textureUploads, 'texture uploads while idle').toBeLessThanOrEqual(RENDER_BUDGETS.IDLE_TEXTURE_UPLOADS_MAX);
+  check(idle.render.boneUploads, 'bone uploads while idle').toBeLessThanOrEqual(RENDER_BUDGETS.IDLE_BONE_UPLOADS_MAX);
   check(idle.render.programLinks, 'shader links while idle').toBe(0);
   if (idle.react.r3fCommits !== null) {
     check(idle.react.r3fCommits, 'R3F commits while idle').toBeLessThanOrEqual(REACT_BUDGETS.IDLE_R3F_COMMITS_MAX);
@@ -46,6 +47,7 @@ export function expectWarmRoundBudgets(report: AuditReport, playerCount: number)
   }
   check(round.render.programLinks, 'shader links after warm-up').toBeLessThanOrEqual(RENDER_BUDGETS.WARM_PROGRAM_LINKS_MAX);
   check(round.render.textureUploads, 'texture uploads in a warm round').toBeLessThanOrEqual(warmTextureUploadBudget(warmRoundCardsDealt(playerCount)));
+  check(round.render.boneUploads, 'bone uploads in a warm round').toBeLessThanOrEqual(RENDER_BUDGETS.WARM_ROUND_BONE_UPLOADS_MAX);
   if (round.react.r3fRendersPerCommitMax !== null) {
     check(round.react.r3fRendersPerCommitMax, 'components rendered by one R3F commit').toBeLessThanOrEqual(REACT_BUDGETS.R3F_RENDERS_PER_COMMIT_MAX);
   }

@@ -36,6 +36,8 @@ export interface RenderSample {
   programs: number;
   /** texImage/texSubImage/compressedTexImage calls and their estimated bytes during this frame. */
   textureUploads: number;
+  /** Bone-matrix uploads of skinned meshes (character figures) during this frame. */
+  boneUploads: number;
   uploadBytes: number;
   /** linkProgram calls during this frame. */
   programLinks: number;
@@ -58,6 +60,7 @@ export interface RenderWindowStats {
   trianglesMean: number | null;
   nonFiniteTriangleFrames: number;
   textureUploads: number;
+  boneUploads: number;
   uploadBytes: number;
   programLinks: number;
   cpuFrameMs: DistributionStats | null;

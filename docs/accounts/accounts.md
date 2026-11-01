@@ -100,8 +100,8 @@ key the dependent feature is skipped or reduced; `.env.example` says which.
   `CHANGE_COOLDOWN_MS` and the first rename is free; casing edits are free. The casing must spell
   the stored name.
 - **Avatar.** Players are shown as their character (see Characters). The old `avatar` id can no
-  longer be chosen; it still decides the derived look until a look is saved, and the seat mark on
-  the 3D table still draws it. Emails and link previews show portrait sprites of the look. A guest has no character: a silhouette, and a guest badge
+  longer be chosen; it only decides the derived look until a look is saved. Emails and link
+  previews show portrait sprites of the look. A guest has no character: a silhouette, and a guest badge
   on their own lobby seat. Other seats never show the badge: a seat without account data may also
   be a blocked or hidden account.
 - A signed-in player always sits under their username (`usePlayerName`).

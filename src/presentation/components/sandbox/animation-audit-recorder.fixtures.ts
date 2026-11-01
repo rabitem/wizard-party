@@ -22,6 +22,7 @@ export function renderSample(overrides: Partial<RenderSample> = {}): RenderSampl
     geometries: 20,
     programs: 12,
     textureUploads: 0,
+    boneUploads: 0,
     uploadBytes: 0,
     programLinks: 0,
     cpuMs: 2,
