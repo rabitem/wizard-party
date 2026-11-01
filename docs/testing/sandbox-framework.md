@@ -24,7 +24,8 @@ SandboxController ── run lifecycle: mount, ready, steps, settle, report
   ├─ SocketFaults (wraps the socket factory) · BrowserFaults (navigator, document, Storage,
   │    WEBGL_lose_context)
   ├─ SandboxHoldGate ── the hand-over point between a run and its driver
-  ├─ AnimationAuditRecorder ── motion and lifecycle invariants, RunRenderLedger, windows, snapshots
+  ├─ AnimationAuditRecorder ── lifecycle invariants, RunRenderLedger, windows, snapshots
+  │    └─ CardSceneMotion (card-motion-audit.ts) ── per-object motion checks from three-motion-audit
   └─ auditScreen (playability-audit.ts) ── SceneScreenModel + HUD regions -> playability anomalies
       ▲
 SceneAnimationProbe (inside the Canvas) ── useRenderInstrumentation (GlInstrumentation,
@@ -172,8 +173,19 @@ Defaults of the fault steps are `SANDBOX_FAULTS` in `src/presentation/config/san
 `ANOMALY_SEVERITY` (`audit-log.ts`). A run passes (`report.passed`) when no anomaly is a `warn` or
 an `error`.
 
-- **Motion and lifecycle.** Teleports, path kinks, rotation pops, handoff seams, double renders,
-  stuck or skipped animations, trick lifecycle order.
+- **Motion.** Every named card object (`kind:cardId`, see `scene-object-names.ts`) and the camera
+  are followed frame by frame by [three-motion-audit](https://github.com/rabitem/three-motion-audit),
+  from the frame the scene is ready. `card-motion-audit.ts` maps the object name to the library's
+  `id`, the card id (scoped to its round, since ids repeat after the reshuffle) to `entity` and the
+  kind to `role`, and sets what each kind is judged by: hand cards on screen (`space: 'screen'`),
+  dragged cards without speed checks, path and spin checks for scripted table cards only, the felt as
+  a lower bound for table cards, more slack and no time limit for the hand -> table handoff. The
+  library's findings keep their names in the report except `non-finite` (`non-finite-transform`),
+  `duplicate` (`double-render`), `out-of-bounds` (`below-table`), `offscreen`
+  (`hand-offscreen`, `played-offscreen`) and a camera `teleport` (`camera-jump`). Thresholds are
+  the library defaults, which were tuned on this scene; Wizard Party's own are in `SANDBOX_AUDIT`.
+- **Lifecycle.** Stuck or skipped animations and trick lifecycle order, in `AnimationAuditRecorder`
+  (which the motion audit feeds with mounts and unmounts).
 - **Page layout** (at `checkpoint` and `snapshot` steps and at the end of a run). Page overflow and
   controls off screen.
 - **Playability** (at `checkpoint` and `snapshot` steps, `playability-audit.ts`). Hand cards outside

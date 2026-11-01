@@ -1,5 +1,4 @@
 import type { Suit } from '@shared/domain';
-import type { SceneObjectKind } from '../three/scene-object-names';
 import type { GameSettings } from '../settings';
 import type { GameSocketFactory } from '../../hooks/connection/game-socket';
 import type { FrameTimingStats } from './sandbox-report.types';
@@ -10,28 +9,8 @@ export type * from './sandbox-report.types';
 
 export type Vec3 = [number, number, number];
 
-export interface NdcBounds {
-  minX: number;
-  maxX: number;
-  minY: number;
-  maxY: number;
-}
-
-/** One probed scene object in one rendered frame. */
-export interface ObjectSample {
-  name: string;
-  kind: SceneObjectKind;
-  cardId: string;
-  position: Vec3;
-  /** Position in camera space; hand cards are parented to the camera, so they move in this frame. */
-  cameraPosition: Vec3;
-  /** World orientation as [x, y, z, w]. */
-  quaternion: [number, number, number, number];
-  scale: number;
-  visible: boolean;
-  finite: boolean;
-  ndc: NdcBounds | null;
-}
+/** One probed scene object in one rendered frame: id `kind:cardId`, entity the card id, role the kind (scene-sampler.ts). */
+export type { ObjectSample } from 'three-motion-audit';
 
 export type AnomalySeverity = 'error' | 'warn' | 'info';
 

@@ -1,10 +1,10 @@
 import * as THREE from 'three';
+import { isVisibleInScene, projectBounds } from 'three-motion-audit/three';
 import { TABLE_SURFACE } from '../../config/card-physics';
 import { OCCLUSION_PROBE } from '../../config/sandbox-budgets.config';
 import { parseSceneObjectName } from '../three/scene-object-names';
 import { isDecorativeText } from '../three/scene-text-roles';
 import { isSceneText } from './scene-inventory';
-import { isVisibleInScene, projectBounds } from './scene-sampler';
 import { ndcToClientRect, rectHeight, rectWidth, type ScreenRect } from './screen-geometry';
 import type { SandboxSceneBridge } from './scene-bridge';
 

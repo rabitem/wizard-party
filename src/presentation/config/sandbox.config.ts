@@ -4,69 +4,26 @@
  */
 
 export const SANDBOX_AUDIT = {
-  /** Faster than any scripted card motion (collection fly tops out near 15 u/s). */
-  MAX_CARD_SPEED_UNITS_PER_S: 30,
-  /** Ignore sub-centimetre jitter when checking speed. */
-  MIN_TELEPORT_DISTANCE: 0.2,
-  /**
-   * Second difference of a scripted path (|p[n] - 2p[n-1] + p[n-2]|, units per frame²) above
-   * which the path has a visible kink: a snap out of a hover or between animation phases.
-   * Smooth scripted motion here peaks near 0.06; bounces stay under 0.1.
-   */
-  MAX_PATH_KINK: 0.15,
-  /**
-   * A step or curvature only counts as a break when it differs from the previous frame's by more
-   * than this share of itself. Smooth motion changes gradually (a falling card speeds up, an orbit
-   * turns at constant curvature); a pop changes it in one frame.
-   */
-  MOTION_BREAK_RATIO: 0.5,
-  /** Rotation step (radians per frame) above which a sudden change of spin is visible. */
-  ROTATION_POP_RAD: 0.12,
-  /**
-   * Spin faster than this (radians per frame, ~48 rad/s) strobes regardless of smoothness. A thrown
-   * card leaves the hand at its fastest spin, easing out up to one turn over the shortest throw
-   * (3 x ~6.6 rad / PLAY_ANIMATION.MIN_DURATION = ~0.64 rad per frame at release); that is intended.
-   */
-  MAX_SPIN_RAD_PER_FRAME: 0.8,
-  /**
-   * Hand cards are judged on screen (normalised device coordinates, the viewport spans 2): a card
-   * moving more than this per frame visibly jumps. Moving toward the camera barely moves it on screen.
-   */
-  MAX_HAND_SCREEN_STEP: 0.25,
-  /** Frames after a mount before continuity checks apply (the first steps set up the path). */
-  CONTINUITY_GRACE_FRAMES: 2,
-  /** Virtual time a mounted scene may go without drawing a frame (Suspense, remounts) before it is flagged. */
-  MAX_RENDER_STALL_MS: 200,
-  /** Consecutive idle frames before a run counts as settled. */
-  SETTLED_IDLE_FRAMES: 30,
-  /** A card changing owner (played -> collecting -> deck) may not visibly jump further than this. */
-  HANDOFF_TOLERANCE: 0.08,
-  /** Hand -> table handoff starts from a camera-relative hand, so it gets more slack. */
+  // Per-object motion checks come from three-motion-audit with its default thresholds, which were
+  // tuned on these cards (about 0.6 units across, moving at up to ~15 units/s, on the 60 Hz virtual
+  // clock). The next three values are what Wizard Party sets on top (card-motion-audit.ts).
+  // A thrown card leaves the hand at its fastest spin, easing out up to one turn over the shortest
+  // throw (3 x ~6.6 rad / PLAY_ANIMATION.MIN_DURATION = ~38 rad/s at release): under the library's
+  // 48 rad/s strobe limit, as intended.
+  /** A dragged card's flight starts where the pointer let go, so the drag -> table handoff gets more slack (units). */
   HAND_HANDOFF_TOLERANCE: 0.6,
-  /** Rendered frames a card may be missing while it changes owner (0: any blank frame is a flicker). */
-  HANDOFF_MAX_GAP_FRAMES: 0,
-  /** How long a departed owner is remembered when looking for the next one. */
-  HANDOFF_WINDOW_MS: 1500,
-  /** The camera moving further than this in one frame (outside orbit input) is a visible cut. */
+  /** The camera moving further than this in one frame (and out of line with its motion) is a visible cut. */
   MAX_CAMERA_STEP: 0.25,
-  /** Unmount and remount of the same object inside this window is a flicker. */
-  REMOUNT_FLICKER_WINDOW_MS: 400,
-  /** The same card rendered by two owners for longer than this is a double render. */
-  DOUBLE_RENDER_MAX_FRAMES: 2,
   /**
    * Card centres below the felt by more than this clip through the table. The felt itself
    * tilts with the table shake (TABLE_SHAKE.INTENSITY rad over a ~3 unit radius), so the
    * tolerance covers that tilt.
    */
   BELOW_TABLE_TOLERANCE: 0.025,
-  /** Normalised-device-coordinate slack before a card counts as off screen. */
-  OFFSCREEN_NDC_TOLERANCE: 0.02,
-  /** Fraction of a resting card that may sit outside the viewport before it is flagged. */
-  OFFSCREEN_MAX_HIDDEN_FRACTION: 0.15,
-  /** A card that still moves more than this per second after settling has not come to rest. */
-  SETTLED_MAX_SPEED_UNITS_PER_S: 0.02,
-  /** Frames of history attached to an anomaly. */
-  CONTEXT_FRAMES: 6,
+  /** Virtual time a mounted scene may go without drawing a frame (Suspense, remounts) before it is flagged. */
+  MAX_RENDER_STALL_MS: 200,
+  /** Consecutive idle frames before a run counts as settled. */
+  SETTLED_IDLE_FRAMES: 30,
   /** Wall-clock cost of one frame above which the run reports a slow frame (render budget). */
   SLOW_FRAME_COST_MS: 50,
   /** Virtual time the runner lets a scenario settle before final checks. */

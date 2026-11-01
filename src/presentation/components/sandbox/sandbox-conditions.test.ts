@@ -101,10 +101,7 @@ describe('isSandboxReady', () => {
   it('should wait until the scene draws every card of the hand', () => {
     const recorder = new AnimationAuditRecorder();
     expect(isSandboxReady(handles(), recorder, true)).toBe(false);
-    recorder.frame(16, [{
-      name: 'hand-card:A', kind: 'hand-card', cardId: 'A', position: [0, 0, 0], cameraPosition: [0, 0, 0],
-      quaternion: [0, 0, 0, 1], scale: 1, visible: true, finite: true, ndc: null,
-    }], { handAnimating: false });
+    recorder.frame(16, [{ id: 'hand-card:A', entity: 'A', role: 'hand-card', position: [0, 0, 0] }]);
     expect(isSandboxReady(handles(), recorder, true)).toBe(true);
     expect(isSandboxReady(handles(), recorder, false)).toBe(false);
   });

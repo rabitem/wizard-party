@@ -46,7 +46,7 @@ export function AnimationSandbox({ clock, createServer, renderGame, showControls
   const probe = useMemo(
     () => (
       <SceneAnimationProbe
-        onFrame={(samples, camera, render) => controller.recordFrame(samples, camera, render)}
+        onFrame={(samples, render) => controller.recordFrame(samples, render)}
         onSceneUnmount={() => controller.sceneUnmounted()}
         realNow={() => clock.realNow()}
         sampleStride={controller.profile.probeStride}
