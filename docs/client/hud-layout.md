@@ -84,7 +84,8 @@ larger size inside a `split` layout is written `split:2xl:...`, not `2xl:...`.
 The home page (`components/realm-hall/`) renders the active realm's game room and table behind
 the page: `ThemedEnvironment`, `SceneLighting` and `TableSurface`, the same parts as the game, in
 a canvas set up like `Game3DCanvas`. Each `HallStation` section is one stop of a camera walk
-(`REALM_HALL.STOPS` in `config/realm-hall.config.ts`, same order); `useHallScrollProgress` turns
+(`REALM_HALL.STOPS` in `config/realm-hall.config.ts`, same order; portrait screens swap in
+`PORTRAIT_STOPS` through `hallStopsFor`, because there the panels span the width); `useHallScrollProgress` turns
 the scroll position into walk progress, and the camera eases toward it inside `useFrame`. With
 reduced motion the camera stays at the first stop; without WebGL the page keeps a painted
 backdrop.

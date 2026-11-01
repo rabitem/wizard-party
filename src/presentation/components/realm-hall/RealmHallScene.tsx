@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Vector3 } from 'three';
-import { REALM_HALL } from '@/presentation/config/realm-hall.config';
+import { REALM_HALL, hallStopsFor } from '@/presentation/config/realm-hall.config';
 import { TableSurface } from '../table';
 import { useSelectedTableTheme } from '../table/table-theme';
 import { useRenderQuality } from '../three/render-quality';
@@ -25,10 +25,13 @@ const NO_PLAYERS: never[] = [];
  */
 function CameraRig({ still }: { still: boolean }) {
   const invalidate = useThree((state) => state.invalidate);
+  const aspect = useThree((state) => state.size.width / Math.max(state.size.height, 1));
+  const stops = useMemo(() => hallStopsFor(aspect), [aspect]);
   const eased = useRef(hallProgressStore.get());
   const lookAt = useMemo(() => new Vector3(), []);
 
   useEffect(() => (still ? undefined : hallProgressStore.subscribe(() => invalidate())), [still, invalidate]);
+  useEffect(() => invalidate(), [stops, invalidate]);
 
   useFrame(({ camera }, delta) => {
     const target = still ? 0 : hallProgressStore.get();
@@ -36,7 +39,7 @@ function CameraRig({ still }: { still: boolean }) {
     eased.current += (target - eased.current) * step;
     if (Math.abs(target - eased.current) < 0.0005) eased.current = target;
     else invalidate();
-    const pose = cameraPoseAt(REALM_HALL.STOPS, eased.current);
+    const pose = cameraPoseAt(stops, eased.current);
     camera.position.set(...pose.position);
     camera.lookAt(lookAt.set(...pose.target));
   });

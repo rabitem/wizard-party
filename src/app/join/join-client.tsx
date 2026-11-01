@@ -35,7 +35,7 @@ function NoRoomCodeView() {
       >
         <i className="ra ra-scroll-unfurled text-5xl mb-4" style={{ color: 'var(--accent)' }} />
         <h1 className="text-2xl font-bold mb-2" style={{ color: 'var(--color-amber-100)', fontFamily: 'Georgia, serif' }}>
-          No Room Code Found
+          No room code found
         </h1>
         <p className="mb-6" style={{ color: 'var(--text-muted)' }}>
           This invite link appears to be invalid or expired.
@@ -114,7 +114,7 @@ export function JoinClient({ roomCode }: JoinClientProps) {
             className="flex flex-col items-center justify-center gap-3 p-6 rounded-lg mb-6"
             style={{ background: 'color-mix(in srgb, var(--accent) 10%, transparent)', border: '2px solid var(--surface-border)' }}
           >
-            <span style={{ color: 'var(--text-muted)', fontFamily: 'Georgia, serif', fontSize: '0.875rem' }}>Room Code</span>
+            <span style={{ color: 'var(--text-muted)', fontFamily: 'Georgia, serif', fontSize: '0.875rem' }}>Room code</span>
             <span
               className="font-mono font-bold text-4xl tracking-widest"
               style={{ color: 'var(--accent-bright)' }}

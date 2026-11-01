@@ -34,15 +34,30 @@ export const REALM_HALL = {
     { position: [0, 7, 11], target: [0, -2.8, -1.5] },
     // The back wall (the casino's sign, the manor's windows, the barn doors), left of the text panel.
     { position: [7.5, 2.6, 6], target: [3, 2.6, -11] },
-    // The left wall's props, past the table, to the right of the text.
-    { position: [5, 2.4, -1], target: [-12, 0.5, 1.5] },
+    // The left wall's props, past the table, to the right of the text; high and looking down, so
+    // the rooms' unlit ceilings stay out of frame.
+    { position: [5, 4.6, -1], target: [-12, -0.8, 1.5] },
     // Over the felt, looking along it to the right wall: the table fills the left of the frame.
-    { position: [-6.5, 2.6, 4], target: [12, 0, -4] },
+    { position: [-6.5, 4.4, 4], target: [12, -1.4, -4] },
     // Across the table into the lit back corner (signs, machines, windows), right of the text panel.
     { position: [-6, 4.2, 8], target: [6, 1.2, -11] },
     { position: CAMERA_CONFIG.DESKTOP.POSITION, target: [0, 0, 0] },
   ] satisfies HallCameraStop[],
+  /**
+   * Stops that differ on portrait screens (phones), by index into STOPS. There the panels span the
+   * full width, so a stop's feature has to sit above its panel rather than beside it.
+   */
+  PORTRAIT_STOPS: {
+    // The back wall's sign centred over the notices panel.
+    1: { position: [0, 2.4, 8], target: [0, 0.4, -11] },
+  } satisfies Record<number, HallCameraStop>,
 } as const;
+
+/** The camera path for a viewport's aspect ratio (width / height). */
+export function hallStopsFor(aspect: number): readonly HallCameraStop[] {
+  if (aspect >= 1) return REALM_HALL.STOPS;
+  return REALM_HALL.STOPS.map((stop, index) => (REALM_HALL.PORTRAIT_STOPS as Partial<Record<number, HallCameraStop>>)[index] ?? stop);
+}
 
 /** The player lookup in the top-right dock (ProfileSearch). */
 export const PROFILE_SEARCH = {

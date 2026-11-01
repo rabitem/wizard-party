@@ -54,7 +54,7 @@ function QRCodeSection({ shareUrl }: { shareUrl: string }) {
 function RoomCodeDisplay({ roomId }: { roomId: string }) {
   return (
     <div className="mb-3 sm:mb-4">
-      <label className="block text-xs text-amber-500/70 uppercase tracking-widest mb-1.5 sm:mb-2" style={{ fontFamily: 'Georgia, serif' }}>Room Code</label>
+      <label className="block text-sm text-amber-100/85 mb-1.5 sm:mb-2" style={{ fontFamily: 'Georgia, serif' }}>Room code</label>
       <div className="text-xl sm:text-2xl font-mono text-amber-200 text-center py-2.5 sm:py-3 rounded-lg border border-amber-700/40 tracking-widest" style={{ background: 'linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--surface), black 55%) 90%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 65%) 90%, transparent) 100%)' }}>
         {roomId}
       </div>
@@ -66,7 +66,7 @@ function RoomCodeDisplay({ roomId }: { roomId: string }) {
 function ShareLinkSection({ shareUrl, copied, onCopy }: { shareUrl: string; copied: boolean; onCopy: () => void }) {
   return (
     <div className="mb-4 sm:mb-6">
-      <label className="block text-xs text-amber-500/70 uppercase tracking-widest mb-1.5 sm:mb-2" style={{ fontFamily: 'Georgia, serif' }}>Share Link</label>
+      <label className="block text-sm text-amber-100/85 mb-1.5 sm:mb-2" style={{ fontFamily: 'Georgia, serif' }}>Share link</label>
       <div className="flex gap-2">
         <div className="flex-1 px-3 py-2.5 rounded-lg border border-amber-700/40 text-amber-400/80 text-xs sm:text-sm font-mono overflow-hidden" style={{ background: 'linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--surface), black 55%) 90%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 65%) 90%, transparent) 100%)' }}>
           <span className="block truncate">{shareUrl}</span>

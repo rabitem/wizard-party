@@ -47,7 +47,7 @@ export function RealmLenses({ className = '' }: { className?: string }) {
           );
         })}
       </div>
-      <p aria-live="polite" className="text-xs text-amber-200/80 text-center lg:text-left max-w-[16rem]" style={SERIF}>
+      <p aria-live="polite" className="text-xs text-amber-100 text-center lg:text-left max-w-[16rem] [text-shadow:0_1px_3px_rgba(0,0,0,0.95),0_0_10px_rgba(0,0,0,0.8)]" style={SERIF}>
         {active ? <><span className="text-amber-100">{active.pack.name}</span> · {active.pack.tagline}</> : ' '}
       </p>
     </div>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { HallCameraStop } from '@/presentation/config/realm-hall.config';
+import { REALM_HALL, hallStopsFor, type HallCameraStop } from '@/presentation/config/realm-hall.config';
 import { cameraPoseAt, progressForScroll } from './hall-path';
 
 const STOPS: HallCameraStop[] = [
@@ -44,5 +44,17 @@ describe('progressForScroll', () => {
 
   it('stays at the door when there is only one station', () => {
     expect(progressForScroll([{ top: 0, height: 800 }], 500, 800)).toBe(0);
+  });
+});
+
+describe('hallStopsFor', () => {
+  it('uses the landscape path on wide screens', () => {
+    expect(hallStopsFor(16 / 9)).toBe(REALM_HALL.STOPS);
+  });
+
+  it('swaps in the portrait stops on phones and keeps the rest', () => {
+    const portrait = hallStopsFor(390 / 844);
+    expect(portrait[1]).toEqual(REALM_HALL.PORTRAIT_STOPS[1]);
+    expect(portrait.filter((stop, index) => index !== 1)).toEqual(REALM_HALL.STOPS.filter((stop, index) => index !== 1));
   });
 });

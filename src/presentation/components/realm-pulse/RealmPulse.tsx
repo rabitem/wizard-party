@@ -46,7 +46,7 @@ function Pulse({ value, label, icon: Icon, live }: { value: number; label: strin
       ) : null}
       <span className="min-w-0">
         <span className="block text-base sm:text-lg leading-tight text-amber-100 tabular-nums" style={SERIF}>{value.toLocaleString('en-US')}</span>
-        <span className="block truncate text-[10px] sm:text-[11px] uppercase tracking-wider text-amber-500/60" style={SERIF}>{label}</span>
+        <span className="block truncate text-xs text-amber-200/75" style={SERIF}>{label}</span>
       </span>
     </div>
   );

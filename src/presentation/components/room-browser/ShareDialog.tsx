@@ -44,7 +44,7 @@ function RoomCodeSection({ roomId }: { roomId: string }) {
     <div className="mb-4">
       <div className="flex items-center gap-2 mb-2 px-1">
         <div className="w-1.5 h-1.5 rounded-full bg-amber-500/60" />
-        <span className="text-amber-400/70 text-xs uppercase tracking-wider" style={{ fontFamily: 'Georgia, serif' }}>Room Code</span>
+        <span className="text-amber-100/85 text-sm" style={{ fontFamily: 'Georgia, serif' }}>Room code</span>
       </div>
       <div className="text-xl sm:text-2xl font-mono text-amber-200 text-center py-2.5 sm:py-3 rounded-xl border border-amber-700/30 tracking-widest" style={{ background: 'color-mix(in srgb, color-mix(in srgb, var(--surface), black 60%) 60%, transparent)' }}>{roomId}</div>
     </div>
@@ -59,7 +59,7 @@ function ShareLinkSection({ shareUrl, copied, onCopy }: { shareUrl: string; copi
     <div className="mb-4">
       <div className="flex items-center gap-2 mb-2 px-1">
         <div className="w-1.5 h-1.5 rounded-full bg-amber-500/60" />
-        <span className="text-amber-400/70 text-xs uppercase tracking-wider" style={{ fontFamily: 'Georgia, serif' }}>Share Link</span>
+        <span className="text-amber-100/85 text-sm" style={{ fontFamily: 'Georgia, serif' }}>Share link</span>
       </div>
       <div className="flex gap-2">
         <div className="flex-1 px-3 py-2.5 rounded-xl border border-amber-700/30 text-amber-400/80 text-xs sm:text-sm font-mono overflow-hidden" style={{ background: 'color-mix(in srgb, color-mix(in srgb, var(--surface), black 60%) 60%, transparent)' }}>
