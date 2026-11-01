@@ -12,7 +12,7 @@ export interface SocialPlayer {
   username: string;
   /** The username as the player spells it. */
   displayName: string;
-  /** The avatar id chosen before characters; emails still draw it. */
+  /** The avatar id chosen before characters; `appearance` is derived from it, and that is what is drawn. */
   avatar: string | null;
   /** The look to show (displayedAppearance): saved, or derived from `avatar`. */
   appearance: CharacterAppearance;

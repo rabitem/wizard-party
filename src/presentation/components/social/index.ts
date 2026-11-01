@@ -1,5 +1,6 @@
 // Types and constants
-export { EMOTES, QUICK_MESSAGES } from './types';
+export { EMOTES, findEmote, type Emote } from './emotes';
+export { QUICK_MESSAGES } from './types';
 
 // Components
 export { EmoteBar } from './EmoteBar';

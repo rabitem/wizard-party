@@ -1,6 +1,6 @@
 'use client';
 
-import { AVATAR_PRESETS } from '../settings';
+import { findEmote } from '../social';
 
 interface EmoteDisplayData {
   id: string;
@@ -29,7 +29,7 @@ export function ReactionsFeed({ emotes, chatMessages }: ReactionsFeedProps) {
   return (
     <div className="flex flex-col gap-1.5 mb-1 max-w-[200px]">
       {emotes.map((emote) => {
-        const emojiData = AVATAR_PRESETS.find(a => a.id === emote.emoteId);
+        const emojiData = findEmote(emote.emoteId);
         return (
           <div
             key={emote.id}

@@ -149,9 +149,10 @@ Limits and per-user budgets are `SOCIAL_LIMITS` and `SOCIAL_RATE_LIMITS`; heartb
 - **Never in the request path.** Both mails are sent after the response (`inBackground` in
   `social-container.ts`, over `after()`); outcomes and failures are logged, never thrown.
 - **Rendering.** `EmailSocialMailer` builds the mail from `social-email-templates.ts` in
-  `src/infrastructure/email/`. The two avatars are rendered server side with `next/og`
-  (`player-pair-card.tsx`) into one PNG attached inline (`cid:`), because Gmail strips `data:`
-  URIs. A friend request mail links to
+  `src/infrastructure/email/`. The two players' characters (their portrait sprites, see
+  [../client/characters.md](../client/characters.md#portrait-sprites)) in their level frames are
+  rendered server side with `next/og` (`player-pair-card.tsx`) into one PNG attached inline
+  (`cid:`), because Gmail strips `data:` URIs. A friend request mail links to
   `/?social=inbox`, which opens the panel's inbox (`useSocialDeepLink`).
 - **Unsubscribe.** Every social mail has `List-Unsubscribe` and the one-click `List-Unsubscribe-Post`
   header (RFC 8058) with a stateless HMAC token
