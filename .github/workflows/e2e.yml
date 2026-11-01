@@ -8,7 +8,8 @@ name: Browser suites
 # viewport and settings matrices on every engine, and the golden path through the real app.
 #
 # - Pull requests labelled `e2e`: Chromium and one touch phone.
-# - Manual dispatch: every project in two shards (inputs: grep, update_snapshots).
+# - Manual dispatch: every project in two shards (inputs: grep, update_snapshots), or the weekly
+#   scope in four shards with full_matrix.
 # - Weekly: every project in four shards, with E2E_FULL_MATRIX=1 (every table size, every viewport,
 #   every pair of settings).
 #
@@ -31,6 +32,11 @@ on:
         default: ''
       update_snapshots:
         description: 'Regenerate the visual baselines and upload them as artifacts (runs only e2e/visual.spec.ts)'
+        type: boolean
+        required: false
+        default: false
+      full_matrix:
+        description: 'Run the weekly scope (E2E_FULL_MATRIX=1: every table size, viewport and settings pair) in four shards'
         type: boolean
         required: false
         default: false
@@ -59,6 +65,7 @@ jobs:
         env:
           EVENT: ${{ github.event_name }}
           UPDATE_SNAPSHOTS: ${{ inputs.update_snapshots }}
+          FULL_MATRIX: ${{ inputs.full_matrix }}
         run: |
           desktop='"chromium","firefox","webkit","chrome","edge"'
           devices='"android-phone","android-landscape","android-tablet","fold-cover","fold-open","iphone","iphone-landscape","iphone-se","iphone-pro-max","ipad","ipad-landscape","ipad-mini","chromium-hidpi","firefox-hidpi","touch-laptop"'
@@ -69,7 +76,7 @@ jobs:
           elif [ "$UPDATE_SNAPSHOTS" = true ]; then
             # Only the projects that run e2e/visual.spec.ts.
             projects="[$desktop,$devices]"; shards=1
-          elif [ "$EVENT" = schedule ]; then
+          elif [ "$EVENT" = schedule ] || [ "$FULL_MATRIX" = true ]; then
             projects="[$desktop,$devices,$matrices,$golden]"; shards=4
           else
             projects="[$desktop,$devices,$matrices,$golden]"; shards=2
@@ -156,7 +163,7 @@ jobs:
         if: ${{ !inputs.update_snapshots }}
         env:
           E2E_WORKERS: '2'
-          E2E_FULL_MATRIX: ${{ github.event_name == 'schedule' && '1' || '0' }}
+          E2E_FULL_MATRIX: ${{ (github.event_name == 'schedule' || inputs.full_matrix) && '1' || '0' }}
           GREP: ${{ inputs.grep }}
         # A narrow grep or a small project can leave a shard without tests.
         run: npx playwright test --project=${{ matrix.project }} --shard=${{ matrix.shard }}/${{ matrix.shards }} --pass-with-no-tests --grep-invert "sustains" ${GREP:+--grep "$GREP"}
