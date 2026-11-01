@@ -1,0 +1,26 @@
+/** Colours of the autumn (harvest forest) HUD skin. */
+export const AUTUMN_PALETTE = {
+  red: '#c8361d',
+  redDark: '#7f1f0e',
+  orange: '#e8781e',
+  orangeDark: '#9e4a0a',
+  gold: '#eab33a',
+  goldDark: '#9a6e14',
+  acorn: '#c98a4a',
+  acornDark: '#7e5022',
+  acornLight: '#e8b578',
+  cap: '#6e4524',
+  capDark: '#3f2510',
+  cream: '#fbefd6',
+  wheat: '#e6c46a',
+  wheatDark: '#9a7a26',
+  wood: '#a0683a',
+  woodDark: '#5a3618',
+  woodLight: '#c99262',
+  iron: '#4a4448',
+  apple: '#d43c2c',
+  leafGreen: '#8a9a3a',
+  bark: '#4e3420',
+  /** Dark rim around every icon shape so bright fills separate on any surface. */
+  outline: 'color-mix(in srgb, var(--surface) 60%, transparent)',
+} as const;

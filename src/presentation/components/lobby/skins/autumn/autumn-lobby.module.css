@@ -1,0 +1,361 @@
+/* Autumn lobby skin: harvest festival scene, crate + hay bale seats, a cider barrel start button.
+   Purely decorative: every element sits in an aria-hidden, pointer-events-none wrapper. */
+
+/* ---------- header scene ---------- */
+
+.sceneSky {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(232, 120, 30, 0.14) 40%, rgba(234, 179, 58, 0.3) 74%, transparent 100%);
+}
+
+.driftLeaf {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+
+.shirt {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+}
+
+.crow {
+  transform-box: fill-box;
+  transform-origin: 30% 100%;
+}
+
+.headerWreath {
+  position: absolute;
+  top: -14px;
+  left: -14px;
+  width: calc(100% + 28px);
+  height: calc(100% + 28px);
+  z-index: -1;
+  overflow: visible;
+  filter: drop-shadow(0 1px 1px rgba(36, 18, 6, 0.45));
+}
+
+/* ---------- seats: harvest crate + hay bale bench ---------- */
+
+.crate {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    linear-gradient(180deg, transparent calc(33% - 0.5px), rgba(0, 0, 0, 0.4) calc(33% - 0.5px) calc(33% + 0.5px), transparent calc(33% + 0.5px) calc(67% - 0.5px), rgba(0, 0, 0, 0.4) calc(67% - 0.5px) calc(67% + 0.5px), transparent calc(67% + 0.5px)),
+    repeating-linear-gradient(91deg, rgba(255, 220, 170, 0.04) 0 1px, transparent 1px 13px),
+    linear-gradient(180deg, rgba(160, 104, 58, 0.42), rgba(90, 54, 24, 0.5));
+}
+
+.crateLocal {
+  composes: crate;
+  background:
+    radial-gradient(ellipse 45% 110% at 0% 50%, rgba(234, 179, 58, 0.2), transparent 70%),
+    linear-gradient(180deg, transparent calc(33% - 0.5px), rgba(0, 0, 0, 0.4) calc(33% - 0.5px) calc(33% + 0.5px), transparent calc(33% + 0.5px) calc(67% - 0.5px), rgba(0, 0, 0, 0.4) calc(67% - 0.5px) calc(67% + 0.5px), transparent calc(67% + 0.5px)),
+    repeating-linear-gradient(91deg, rgba(255, 220, 170, 0.05) 0 1px, transparent 1px 13px),
+    linear-gradient(180deg, rgba(178, 116, 62, 0.5), rgba(100, 60, 26, 0.56));
+}
+
+/* A stencilled brand stamp on the crate side, behind the text. */
+.crateStencil {
+  position: absolute;
+  top: 50%;
+  right: 16%;
+  width: 26px;
+  height: 26px;
+  z-index: -1;
+  border: 2px dashed var(--crate-ink);
+  border-radius: 9999px;
+  background: radial-gradient(circle, var(--crate-ink) 0 28%, transparent 31%);
+  opacity: 0.2;
+  transform: translateY(-50%) rotate(-12deg);
+}
+
+.battenLeft {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  border-radius: 0.5rem 0 0 0.5rem;
+  background:
+    radial-gradient(circle at 50% 6px, #c9c2b8 0 1px, transparent 1.4px),
+    radial-gradient(circle at 50% calc(100% - 6px), #c9c2b8 0 1px, transparent 1.4px),
+    linear-gradient(90deg, rgba(160, 104, 58, 0.85), rgba(90, 54, 24, 0.85));
+  opacity: 0.8;
+}
+
+.battenRight {
+  composes: battenLeft;
+  left: auto;
+  right: 0;
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+/* Straw sticking out from under the row, as if it sat on a hay bale bench. */
+.strawFringe {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: -4px;
+  height: 5px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='5'%3E%3Cpath d='M1 0L0 5M4 0L5 4M7 0L6.4 5M10 0L11.4 4.6M13 0L12 4M16 0L17 5M19 0L18.6 4.4' stroke='%23e6c46a' stroke-width='0.9' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / 22px 5px repeat-x;
+  opacity: 0.75;
+}
+
+.avatarWreath {
+  position: absolute;
+  top: -25%;
+  left: -25%;
+  width: 150%;
+  height: 150%;
+  z-index: -1;
+  overflow: visible;
+}
+
+.avatarAcorn {
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  width: 10px;
+  height: 12px;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.45));
+}
+
+.strawBehind {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    repeating-linear-gradient(78deg, rgba(230, 196, 106, 0.08) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(-70deg, rgba(230, 196, 106, 0.06) 0 1px, transparent 1px 9px),
+    linear-gradient(0deg, rgba(230, 196, 106, 0.12), transparent 70%);
+}
+
+.emptyArt {
+  position: absolute;
+  right: 6px;
+  top: 2px;
+  height: calc(100% - 4px);
+  width: min(45%, 150px);
+  z-index: -1;
+  opacity: 0.82;
+}
+
+.waveHand {
+  transform-box: fill-box;
+  transform-origin: 0 100%;
+}
+
+/* ---------- panels ---------- */
+
+.barnWood {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 27px, rgba(0, 0, 0, 0.45) 27px 28px),
+    repeating-linear-gradient(90deg, rgba(255, 210, 160, 0.5) 0 1px, transparent 1px 17px, rgba(255, 210, 160, 0.3) 17px 18px, transparent 18px 41px);
+  opacity: 0.07;
+}
+
+.lanternGlow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 70% at 100% 0%, rgba(234, 179, 58, 0.14), transparent 70%);
+}
+
+.strawFloor {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(80deg, rgba(230, 196, 106, 0.07) 0 1px, transparent 1px 8px),
+    linear-gradient(180deg, transparent 30%, rgba(230, 196, 106, 0.1) 100%);
+}
+
+.plankEdge {
+  position: absolute;
+  top: -4px;
+  left: 10px;
+  right: 10px;
+  height: 7px;
+  border-radius: 2px;
+  background:
+    radial-gradient(circle at 8px 50%, #d8d0c4 0 1.1px, transparent 1.5px),
+    radial-gradient(circle at calc(100% - 8px) 50%, #d8d0c4 0 1.1px, transparent 1.5px),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.12) 0 1px, transparent 1px 29px),
+    linear-gradient(180deg, #b47a46, #7a4a22);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 220, 180, 0.3);
+}
+
+.pileLeft {
+  position: absolute;
+  bottom: -8px;
+  left: -8px;
+  width: 36px;
+  height: 26px;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.4));
+}
+
+.pileRight {
+  composes: pileLeft;
+  left: auto;
+  right: -8px;
+  transform: scaleX(-1);
+}
+
+.appleBasket {
+  position: absolute;
+  top: -17px;
+  right: 20px;
+  width: 28px;
+  height: 22px;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.45));
+}
+
+.squirrelRun {
+  position: absolute;
+  bottom: -4px;
+  left: 22%;
+  width: 26px;
+  height: 18px;
+}
+
+.squirrel {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.45));
+}
+
+/* ---------- start button: the cider barrel ---------- */
+
+.barrel {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    radial-gradient(ellipse 60% 120% at 50% 50%, rgba(255, 220, 160, 0.22), transparent 70%),
+    repeating-linear-gradient(180deg, transparent 0 9px, rgba(40, 20, 6, 0.55) 9px 10px),
+    linear-gradient(180deg, #8a5226 0%, #b5773f 30%, #a0683a 60%, #6a3c18 100%);
+}
+
+.barrelCold {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 9px, rgba(20, 10, 4, 0.4) 9px 10px),
+    linear-gradient(180deg, rgba(110, 70, 36, 0.45), rgba(60, 36, 16, 0.45));
+}
+
+.hoopLeft {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 15%;
+  width: 5px;
+  z-index: -1;
+  background: linear-gradient(90deg, #2e2a2c, #6a6266 50%, #2e2a2c);
+  opacity: 0.85;
+}
+
+.hoopRight {
+  composes: hoopLeft;
+  left: auto;
+  right: 15%;
+}
+
+.tap {
+  position: absolute;
+  top: 50%;
+  left: 4px;
+  width: 14px;
+  height: 14px;
+  transform: translateY(-60%);
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5));
+}
+
+.drip {
+  position: absolute;
+  top: calc(50% + 3px);
+  left: 12.5px;
+  width: 3px;
+  height: 4px;
+  border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
+  background: #e8a63a;
+  opacity: 0;
+}
+
+.barrelApples {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  width: 22px;
+  height: 14px;
+  transform: translateY(-50%);
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5));
+}
+
+.barrelApplesCold {
+  composes: barrelApples;
+  opacity: 0.45;
+}
+
+/* Guests see a carved wooden sign: dark planks with a chiselled inner bevel. */
+.carvedSign {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 13px, rgba(0, 0, 0, 0.35) 13px 14px),
+    linear-gradient(180deg, rgba(120, 76, 38, 0.4), rgba(70, 42, 18, 0.45));
+  box-shadow: inset 0 0 0 3px rgba(40, 20, 6, 0.35), inset 0 0 0 4px rgba(255, 210, 160, 0.12);
+}
+
+/* ---------- motion (never under reduced motion) ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .driftLeaf { animation: autumn-lobby-drift 9s ease-in-out infinite; }
+  .shirt { animation: autumn-lobby-flap 3.6s ease-in-out infinite; }
+  .crow { animation: autumn-lobby-peck 4.2s ease-in-out infinite; }
+  .birds { animation: autumn-lobby-glide 10s ease-in-out infinite alternate; }
+  .headerWreath { animation: autumn-lobby-rustle 6s ease-in-out infinite; }
+  .waveHand { animation: autumn-lobby-wave 2.2s ease-in-out infinite; }
+  .squirrelRun { animation: autumn-lobby-scurry 7s ease-in-out infinite; }
+  .squirrel { animation: autumn-lobby-hop 0.36s ease-in-out infinite; }
+  .drip { animation: autumn-lobby-drip 2.6s ease-in infinite; }
+  .barrelApplesCold { animation: none; }
+}
+
+@keyframes autumn-lobby-drift {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+  12% { opacity: 1; }
+  50% { transform: translate(-16px, 22px) rotate(140deg); }
+  85% { opacity: 1; }
+  100% { transform: translate(-6px, 46px) rotate(260deg); opacity: 0; }
+}
+@keyframes autumn-lobby-flap { 50% { transform: skewX(-4deg) scaleY(0.97); } }
+@keyframes autumn-lobby-peck { 0%, 80%, 100% { transform: rotate(0deg); } 86%, 94% { transform: rotate(14deg); } 90% { transform: rotate(4deg); } }
+@keyframes autumn-lobby-glide { to { transform: translate(18px, -4px); } }
+@keyframes autumn-lobby-rustle { 50% { transform: rotate(4deg); } }
+@keyframes autumn-lobby-wave { 50% { transform: rotate(-35deg); } }
+@keyframes autumn-lobby-scurry {
+  0% { transform: translateX(0) scaleX(1); }
+  44% { transform: translateX(56px) scaleX(1); }
+  50% { transform: translateX(56px) scaleX(-1); }
+  94% { transform: translateX(0) scaleX(-1); }
+  100% { transform: translateX(0) scaleX(1); }
+}
+@keyframes autumn-lobby-hop { 50% { transform: translateY(-1.5px); } }
+@keyframes autumn-lobby-drip {
+  0% { transform: translateY(0) scale(0.4); opacity: 0; }
+  30% { transform: translateY(0) scale(1); opacity: 1; }
+  80% { transform: translateY(10px); opacity: 0.9; }
+  100% { transform: translateY(14px); opacity: 0; }
+}

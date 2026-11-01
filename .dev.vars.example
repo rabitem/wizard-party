@@ -1,0 +1,13 @@
+# Local overrides for the game worker. Copy to .dev.vars for `npm run dev:party` (wrangler dev).
+# Values here replace the "vars" in wrangler.jsonc, which point at production.
+# Deployed secrets are set with `wrangler secret put <NAME>`, never in a file.
+
+# Report telemetry and tournament results to the local Next.js app instead of production.
+TELEMETRY_INGEST_URL=http://localhost:3000/api/telemetry/ingest
+TOURNAMENT_RESULT_URL=http://localhost:3000/api/tournaments/match-results
+
+# Optional. Each must equal the value in the app's .env.local.
+# Without TELEMETRY_INGEST_SECRET the worker records no telemetry.
+# TELEMETRY_INGEST_SECRET=
+# Without TOURNAMENT_SECRET the worker refuses every tournament ticket.
+# TOURNAMENT_SECRET=

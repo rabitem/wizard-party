@@ -1,0 +1,238 @@
+/* Neon HUD skin: glowing glass tubes, mounting clips, a horizon grid, a palm/sun sign and a ring.
+   Purely decorative: every element sits in an aria-hidden, pointer-events-none wrapper. */
+
+/* ---------- icons: soft glow in each icon's own colour (set via `color`) ---------- */
+
+.iconGlow {
+  filter: drop-shadow(0 0 1.5px currentColor) drop-shadow(0 0 3px currentColor);
+}
+
+/* ---------- shared clipping layers ---------- */
+
+.clip {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.clipBehind {
+  composes: clip;
+  /* Behind the host's content, above its background (the host is `isolate`). */
+  z-index: -1;
+}
+
+/* ---------- buttons: neon outline tube ---------- */
+
+.tubeOutline {
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  border: var(--neon-tube, 1.5px) solid #ff3fd2;
+  box-shadow:
+    0 0 4px rgba(255, 63, 210, 0.85),
+    0 0 9px rgba(255, 63, 210, 0.35),
+    inset 0 0 4px rgba(255, 63, 210, 0.6),
+    inset 0 0 0 calc(var(--neon-tube, 1.5px) + 0.5px) rgba(255, 220, 248, 0.25);
+}
+
+/* ---------- panels: tubes along the top and bottom edges ---------- */
+
+.tube {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #ffe3fa 0 40%, #ff3fd2 60%);
+  box-shadow: 0 0 3px #ff3fd2, 0 0 8px rgba(255, 63, 210, 0.6);
+}
+
+.tubeTop {
+  composes: tube;
+  top: 0;
+}
+
+.tubeBottom {
+  composes: tube;
+  bottom: 0;
+  background: linear-gradient(180deg, #dcfdff 0 40%, #2ef2ff 60%);
+  box-shadow: 0 0 3px #2ef2ff, 0 0 8px rgba(46, 242, 255, 0.6);
+}
+
+.tubeTopSlim {
+  composes: tube;
+  top: 0;
+  left: 14px;
+  right: 14px;
+  height: 1.5px;
+}
+
+/* A small dark clip holding the tube, centred on it. */
+.mount {
+  position: absolute;
+  width: 5px;
+  height: 6px;
+  border-radius: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, #6c6284 0 1px, #2a2338 1px 4px, #6c6284 4px);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.mountTop {
+  composes: mount;
+  top: -2px;
+}
+
+.mountBottom {
+  composes: mount;
+  bottom: -2px;
+}
+
+/* Contained hosts clip their overflow: pull tubes and clips fully inside the box. */
+.tubeTop.insetContained {
+  top: 3px;
+}
+
+.tubeBottom.insetContained {
+  bottom: 3px;
+}
+
+.mountTop.insetContained {
+  top: 1px;
+}
+
+.mountBottom.insetContained {
+  bottom: 1px;
+}
+
+/* ---------- panels: synthwave horizon grid behind the content ---------- */
+
+.horizonGlow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 90% 45% at 50% 100%, rgba(255, 63, 210, 0.5), transparent 70%);
+  opacity: 0.14;
+}
+
+.grid {
+  position: absolute;
+  left: -50%;
+  right: -50%;
+  bottom: 0;
+  height: 65%;
+  background:
+    linear-gradient(rgba(178, 100, 255, 0.95) 1px, transparent 1px) 0 0 / 100% 12px,
+    linear-gradient(90deg, rgba(178, 100, 255, 0.95) 1px, transparent 1px) 0 0 / 16px 100%;
+  transform: perspective(90px) rotateX(52deg);
+  transform-origin: 50% 100%;
+  -webkit-mask-image: linear-gradient(to top, #000 10%, transparent 95%);
+  mask-image: linear-gradient(to top, #000 10%, transparent 95%);
+  opacity: 0.13;
+}
+
+/* ---------- picker: glowing palm/sun sign ---------- */
+
+.sign {
+  position: absolute;
+  top: -15px;
+  right: 16px;
+  width: 28px;
+  height: 22px;
+  filter: drop-shadow(0 0 1.5px rgba(255, 63, 210, 0.9)) drop-shadow(0 0 3px rgba(46, 242, 255, 0.6));
+}
+
+.signContained {
+  composes: sign;
+  top: 7px;
+  right: 8px;
+  width: 22px;
+  height: 17px;
+}
+
+/* ---------- status bar: glowing neon ring around the round counter ---------- */
+
+.ring {
+  position: absolute;
+  inset: -4px -7px;
+  z-index: -1;
+  border-radius: 9999px;
+  border: 1.5px solid #2ef2ff;
+  box-shadow:
+    0 0 4px rgba(46, 242, 255, 0.9),
+    0 0 10px rgba(46, 242, 255, 0.4),
+    inset 0 0 5px rgba(46, 242, 255, 0.55);
+  background: radial-gradient(farthest-side, transparent 60%, rgba(46, 242, 255, 0.12));
+}
+
+/* ---------- motion (never under reduced motion) ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .tubeOutline {
+    /* Brightness, not opacity, so the host's hover opacity transition keeps working. */
+    animation: neon-buzz 7s linear infinite;
+  }
+
+  .grid {
+    animation: neon-grid 2.4s linear infinite;
+  }
+
+  .sign {
+    animation: neon-flicker 9s linear infinite 1.5s;
+  }
+
+  .ring {
+    animation: neon-pulse 3s ease-in-out infinite;
+  }
+}
+
+@keyframes neon-flicker {
+  0%,
+  91%,
+  93.5%,
+  96%,
+  100% {
+    opacity: 1;
+  }
+
+  92% {
+    opacity: 0.45;
+  }
+
+  95% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes neon-buzz {
+  0%,
+  91%,
+  93.5%,
+  96%,
+  100% {
+    filter: none;
+  }
+
+  92% {
+    filter: brightness(0.45);
+  }
+
+  95% {
+    filter: brightness(0.7);
+  }
+}
+
+@keyframes neon-grid {
+  to {
+    background-position: 0 12px, 0 0;
+  }
+}
+
+@keyframes neon-pulse {
+  50% {
+    box-shadow:
+      0 0 6px rgba(46, 242, 255, 1),
+      0 0 14px rgba(46, 242, 255, 0.5),
+      inset 0 0 7px rgba(46, 242, 255, 0.7);
+  }
+}

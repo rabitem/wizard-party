@@ -1,0 +1,197 @@
+/* Pixel HUD skin: 8-bit bevels, stepped frame corners, a coin row, a blinking star, scanlines
+   and a notched pixel frame around the round counter.
+   Purely decorative: every element sits in an aria-hidden, pointer-events-none wrapper. */
+
+/* ---------- shared clipping layers ---------- */
+
+.clip {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.clipBehind {
+  composes: clip;
+  /* Behind the host's content, above its background (the host is `isolate`). */
+  z-index: -1;
+}
+
+/* ---------- corner sprites: drawn top-left, mirrored into each corner ---------- */
+
+.tl {
+  top: var(--pixel-inset);
+  left: var(--pixel-inset);
+}
+
+.tr {
+  top: var(--pixel-inset);
+  right: var(--pixel-inset);
+  transform: scaleX(-1);
+}
+
+.bl {
+  bottom: var(--pixel-inset);
+  left: var(--pixel-inset);
+  transform: scaleY(-1);
+}
+
+.br {
+  bottom: var(--pixel-inset);
+  right: var(--pixel-inset);
+  transform: scale(-1, -1);
+}
+
+/* ---------- buttons: 8-bit bevel + stepped corner brackets ---------- */
+
+.bevel {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow:
+    inset 2px 2px 0 rgba(255, 255, 255, 0.2),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.35);
+}
+
+.bevelThin {
+  composes: bevel;
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.2),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.35);
+}
+
+.buttonCorner {
+  --pixel-inset: 2px;
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  opacity: 0.85;
+  filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.55));
+}
+
+/* ---------- panels: scanlines + chunky stepped corners ---------- */
+
+.scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0 1px, transparent 1px 3px);
+  opacity: 0.05;
+}
+
+.panelCorner {
+  --pixel-inset: 2px;
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  opacity: 0.75;
+  filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.6));
+}
+
+.panelCornerSlim {
+  composes: panelCorner;
+  --pixel-inset: 1px;
+  width: 8px;
+  height: 8px;
+}
+
+/* ---------- standings: pixel coin row along the bottom ---------- */
+
+.coin {
+  position: absolute;
+  bottom: -5px;
+  width: 9px;
+  height: 10.5px;
+  transform: translateX(-50%);
+  filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.5));
+}
+
+.coinContained {
+  composes: coin;
+  bottom: 3px;
+}
+
+/* ---------- picker: blinking pixel star ---------- */
+
+.star {
+  position: absolute;
+  top: -12px;
+  right: 18px;
+  width: 14px;
+  height: 14px;
+  filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.55));
+}
+
+.starContained {
+  composes: star;
+  top: 6px;
+  right: 8px;
+  width: 10.5px;
+  height: 10.5px;
+}
+
+/* ---------- status bar: notched pixel frame around the round counter ---------- */
+
+.roundFrame {
+  position: absolute;
+  inset: -3px -6px;
+  z-index: -1;
+  border-radius: 0;
+  background: rgba(255, 210, 63, 0.12);
+  /* Four offset shadows leave the corner pixels empty: a classic notched 8-bit border. */
+  box-shadow:
+    0 -2px 0 0 rgba(255, 210, 63, 0.85),
+    -2px 0 0 0 rgba(255, 210, 63, 0.85),
+    0 2px 0 0 rgba(200, 134, 10, 0.9),
+    2px 0 0 0 rgba(200, 134, 10, 0.9),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+
+/* ---------- motion (never under reduced motion) ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .buttonCorner {
+    transition: top 0.15s steps(2), right 0.15s steps(2), bottom 0.15s steps(2), left 0.15s steps(2);
+  }
+
+  :global(.group:hover) .buttonCorner {
+    --pixel-inset: 3px;
+  }
+
+  .coin {
+    animation: pixel-hop 1.25s steps(1) infinite;
+  }
+
+  .star {
+    animation: pixel-blink 1.6s steps(1) infinite;
+  }
+}
+
+@keyframes pixel-hop {
+  0%,
+  100% {
+    transform: translate(-50%, 0);
+  }
+
+  50% {
+    transform: translate(-50%, -1px);
+  }
+}
+
+@keyframes pixel-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  70% {
+    opacity: 0.25;
+  }
+
+  80% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 0.25;
+  }
+}

@@ -1,0 +1,1 @@
+export { StaticBatch } from './StaticBatch';

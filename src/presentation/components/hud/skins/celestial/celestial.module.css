@@ -1,0 +1,253 @@
+/* Celestial HUD skin: gold filigree, star dust, a zodiac arc, a dangling moon, a telescope, sun rays.
+   Purely decorative: every element sits in an aria-hidden, pointer-events-none wrapper. */
+
+/* ---------- buttons: gold rim, filigree corners, twinkling star ---------- */
+
+.goldRim {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 1px rgba(242, 201, 76, 0.32),
+    inset 0 1px 0 rgba(255, 240, 184, 0.25);
+  background: radial-gradient(circle at 100% 0%, rgba(255, 246, 204, 0.16), transparent 50%);
+}
+
+.filigree {
+  position: absolute;
+  opacity: 0.85;
+  filter: drop-shadow(0 0.5px 0.5px rgba(0, 0, 0, 0.45));
+}
+
+.filigreeTl {
+  composes: filigree;
+  top: 2px;
+  left: 2px;
+}
+
+.filigreeBr {
+  composes: filigree;
+  bottom: 2px;
+  right: 2px;
+  transform: rotate(180deg);
+}
+
+.buttonStar {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  filter: drop-shadow(0 0 1.5px rgba(255, 230, 150, 0.8));
+}
+
+/* ---------- panels: star dust, twinkles, gilded edge ---------- */
+
+.clip {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.clipBehind {
+  composes: clip;
+  /* Behind the host's content, above its background (the host is `isolate`). */
+  z-index: -1;
+}
+
+.stardust {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 12px 18px, #fff6cc 0 0.8px, transparent 1.2px) 0 0 / 46px 46px,
+    radial-gradient(circle at 30px 6px, #fff0b8 0 0.6px, transparent 1px) 0 0 / 46px 46px,
+    radial-gradient(circle at 40px 34px, #c9c3ff 0 0.7px, transparent 1.1px) 0 0 / 46px 46px,
+    radial-gradient(circle at 22px 50px, #fff6cc 0 0.5px, transparent 0.9px) 0 0 / 70px 70px,
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(138, 127, 224, 0.35), transparent 70%);
+  opacity: 0.22;
+}
+
+.twinkle {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  opacity: 0.35;
+}
+
+.goldEdge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #a3761a 8%, #fff0b8 50%, #a3761a 92%, transparent);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  opacity: 0.85;
+}
+
+.goldEdgeSlim {
+  composes: goldEdge;
+  height: 1px;
+}
+
+/* ---------- standings: zodiac arc along the top edge ---------- */
+
+.zodiac {
+  position: absolute;
+  top: -7px;
+  left: 10px;
+  right: 10px;
+  height: 12px;
+}
+
+.zodiacContained {
+  composes: zodiac;
+  top: 2px;
+  left: 14px;
+  right: 14px;
+}
+
+.zodiacLine {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.medallion {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.45));
+}
+
+.medallionContained {
+  composes: medallion;
+  width: 9px;
+  height: 9px;
+}
+
+/* ---------- standings: crescent moon dangling below the panel ---------- */
+
+.moon {
+  position: absolute;
+  bottom: -14px;
+  right: 18px;
+  width: 12px;
+  height: 16px;
+  transform-origin: 50% 0;
+  filter: drop-shadow(0 0 2px rgba(255, 240, 184, 0.45));
+}
+
+.moonContained {
+  composes: moon;
+  bottom: 4px;
+  right: 8px;
+  width: 9px;
+  height: 12px;
+}
+
+/* ---------- picker: telescope peeking over the top edge ---------- */
+
+.telescope {
+  position: absolute;
+  top: -12px;
+  right: 14px;
+  width: 22px;
+  height: 20px;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.45));
+}
+
+.telescopeContained {
+  composes: telescope;
+  top: 5px;
+  right: 8px;
+  width: 17px;
+  height: 15.5px;
+}
+
+/* ---------- status bar: sun rays and a zodiac ring around the round counter ---------- */
+
+.sunRays {
+  position: absolute;
+  inset: -8px -11px;
+  z-index: -1;
+  border-radius: 9999px;
+  background: repeating-conic-gradient(rgba(242, 201, 76, 0.9) 0 4deg, transparent 0 15deg);
+  -webkit-mask-image: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4.5px), transparent);
+  mask-image: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4.5px), transparent);
+  opacity: 0.6;
+}
+
+.zodiacRing {
+  position: absolute;
+  inset: -4px -7px;
+  z-index: -1;
+  border-radius: 9999px;
+  background:
+    repeating-conic-gradient(#fff0b8 0 2deg, transparent 0 30deg),
+    linear-gradient(#f2c94c, #a3761a);
+  -webkit-mask-image: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
+  mask-image: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
+  opacity: 0.8;
+}
+
+/* ---------- motion (never under reduced motion) ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .twinkle {
+    animation: celestial-twinkle 4.2s ease-in-out infinite;
+  }
+
+  .buttonStar {
+    animation: celestial-glint 3.6s ease-in-out infinite;
+  }
+
+  .moon {
+    animation: celestial-swing 4.8s ease-in-out infinite;
+  }
+
+  .sunRays {
+    animation: celestial-glow 5s ease-in-out infinite;
+  }
+}
+
+@keyframes celestial-twinkle {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+
+  50% {
+    opacity: 0.75;
+  }
+}
+
+@keyframes celestial-glint {
+  0%,
+  70%,
+  100% {
+    opacity: 1;
+  }
+
+  80% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes celestial-swing {
+  0%,
+  100% {
+    rotate: -6deg;
+  }
+
+  50% {
+    rotate: 6deg;
+  }
+}
+
+@keyframes celestial-glow {
+  50% {
+    opacity: 0.85;
+  }
+}

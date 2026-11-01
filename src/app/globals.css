@@ -1,0 +1,659 @@
+/* Self-hosted: no request to Google's servers (LG München I, 3 O 17493/20). */
+@import "@fontsource-variable/inter";
+@import "tailwindcss";
+@import "./theme-palettes.css";
+
+:root {
+  --background: #0a0908;
+  --foreground: #faf6f0;
+  --muted: #8b7355;
+  --border: #3d3428;
+  --card: #1a1510;
+  --primary: #d4a853;
+  --primary-hover: #c49a48;
+  --success: #5d8c4a;
+  --warning: #c9953c;
+  --danger: #a84632;
+}
+
+/* ================================
+   THEME SYSTEM
+   Apply theme classes to <html> element
+   e.g., <html class="theme-dark">
+   ================================ */
+
+/* Theme: Dark (Default) - Medieval amber/gold on dark background */
+.theme-dark {
+  --background: #0a0908;
+  --foreground: #faf6f0;
+  --muted: #8b7355;
+  --border: #3d3428;
+  --card: #1a1510;
+  --primary: #d4a853;
+  --primary-hover: #c49a48;
+  --success: #5d8c4a;
+  --warning: #c9953c;
+  --danger: #a84632;
+}
+
+/* Theme: Light - Clean parchment/cream with amber accents */
+.theme-light {
+  --background: #f5f0e6;
+  --foreground: #1a1510;
+  --muted: #6b5a48;
+  --border: #d4c9b8;
+  --card: #ffffff;
+  --primary: #b8860b;
+  --primary-hover: #996f0a;
+  --success: #4a7c3a;
+  --warning: #b8860b;
+  --danger: #8b3626;
+}
+
+/* Theme: Forest - Deep green enchanted forest theme */
+.theme-forest {
+  --background: #0d1210;
+  --foreground: #e6f0e8;
+  --muted: #5a7a60;
+  --border: #2a3e30;
+  --card: #14201a;
+  --primary: #4d9b5d;
+  --primary-hover: #3d8b4d;
+  --success: #5d9b5d;
+  --warning: #b8a848;
+  --danger: #9b4d4d;
+}
+
+/* Theme: Royal - Deep purple/gold royal magic theme */
+.theme-royal {
+  --background: #0e0a14;
+  --foreground: #f0e8f5;
+  --muted: #7a5a8a;
+  --border: #3a2848;
+  --card: #18101e;
+  --primary: #9b6dd4;
+  --primary-hover: #8b5dc4;
+  --success: #5d8c5d;
+  --warning: #d4a853;
+  --danger: #a84650;
+}
+
+/* Theme: Frost - Cool blue ice magic theme */
+.theme-frost {
+  --background: #080a0e;
+  --foreground: #e8f0f5;
+  --muted: #5a7a8a;
+  --border: #28383e;
+  --card: #101518;
+  --primary: #5da8d4;
+  --primary-hover: #4d98c4;
+  --success: #5d9b7d;
+  --warning: #d4b853;
+  --danger: #a85050;
+}
+
+/* Theme: Halloween - Pumpkin orange on haunted purple-black */
+.theme-halloween {
+  --background: #0c0810;
+  --foreground: #f5ebe0;
+  --muted: #8a6a7a;
+  --border: #3a2440;
+  --card: #170f1c;
+  --primary: #ff7a1a;
+  --primary-hover: #e86a0c;
+  --success: #6aa84f;
+  --warning: #e0a030;
+  --danger: #b03040;
+}
+
+/* Theme: Autumn - Russet and harvest gold */
+.theme-autumn {
+  --background: #120c08;
+  --foreground: #f7ede2;
+  --muted: #8f6f52;
+  --border: #4a3220;
+  --card: #1e140c;
+  --primary: #d9752b;
+  --primary-hover: #c46521;
+  --success: #7a9a3a;
+  --warning: #d9a02b;
+  --danger: #a8432a;
+}
+
+/* Theme: Winter - Snowy white and silver with warm hearth embers */
+.theme-winter {
+  --background: #eef1f5;
+  --foreground: #1c2430;
+  --muted: #5f6b7a;
+  --border: #cfd6df;
+  --card: #ffffff;
+  --primary: #c2410c;
+  --primary-hover: #a8380a;
+  --success: #3f7d4f;
+  --warning: #b7791f;
+  --danger: #a8322d;
+}
+
+/* Theme: Spring - Blossom pink over fresh green shoots */
+.theme-spring {
+  --background: #0e100c;
+  --foreground: #f4f1ec;
+  --muted: #7f8a6e;
+  --border: #33402c;
+  --card: #171c13;
+  --primary: #e58bb0;
+  --primary-hover: #d4779e;
+  --success: #6fae5a;
+  --warning: #d9b44a;
+  --danger: #b5485a;
+}
+
+/* Theme: Summer - Sunlit turquoise sea and golden sand */
+.theme-summer {
+  --background: #071113;
+  --foreground: #eef8f6;
+  --muted: #5f8a86;
+  --border: #1f3c3d;
+  --card: #0e1d1f;
+  --primary: #22b8b0;
+  --primary-hover: #1aa39c;
+  --success: #6ab04c;
+  --warning: #f2b630;
+  --danger: #d9534f;
+}
+
+/* Theme: Shonen Ink - ink-black panels, paper white and one bold red */
+.theme-manga {
+  --background: #0b0b0c;
+  --foreground: #f4f1ea;
+  --muted: #8a8580;
+  --border: #3a3838;
+  --card: #161617;
+  --primary: #e5262f;
+  --primary-hover: #c81e27;
+  --success: #4a9b5a;
+  --warning: #e0a92e;
+  --danger: #b81d3a;
+}
+
+/* Theme: Neon Night - synthwave magenta and cyan on near-black */
+.theme-neon {
+  --background: #07040d;
+  --foreground: #f5ecff;
+  --muted: #8a6aa8;
+  --border: #3a1f5a;
+  --card: #120a20;
+  --primary: #ff3fd2;
+  --primary-hover: #e62dbb;
+  --success: #3dffa8;
+  --warning: #ffd23f;
+  --danger: #ff4d6d;
+}
+
+/* Theme: Pixel Arcade - 8-bit navy with bright yellow and green */
+.theme-pixel {
+  --background: #0a1030;
+  --foreground: #f4f7ff;
+  --muted: #6f7fb8;
+  --border: #26357a;
+  --card: #111a48;
+  --primary: #ffd93b;
+  --primary-hover: #f0c419;
+  --success: #4ade5a;
+  --warning: #ff9f1c;
+  --danger: #ff4d4d;
+}
+
+/* Theme: Celestial Tarot - midnight blue with gilded gold */
+.theme-celestial {
+  --background: #070a1f;
+  --foreground: #f3efe2;
+  --muted: #7d84b0;
+  --border: #262d5e;
+  --card: #10153a;
+  --primary: #e6c46a;
+  --primary-hover: #d4ae4f;
+  --success: #6fb58a;
+  --warning: #e6a94a;
+  --danger: #c0475a;
+}
+
+/* Theme: Solarpunk - fresh botanical green, white and brass */
+.theme-solarpunk {
+  --background: #0a1a12;
+  --foreground: #f2f8ee;
+  --muted: #7fa58c;
+  --border: #24503a;
+  --card: #10291c;
+  --primary: #8fdc6a;
+  --primary-hover: #7bc957;
+  --success: #6fd06a;
+  --warning: #e8c25a;
+  --danger: #d65a4a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: 'Inter Variable', system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter Variable', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Theme surfaces (see theme-palettes.css): html paints the solid per-theme base, body stays
+   transparent so the fixed <SeasonalAmbience /> backdrop (z-index -1, painting --page-bg)
+   shows through on screens that do not paint their own background. */
+html {
+  background: var(--page-base);
+}
+
+body {
+  background: transparent;
+}
+
+/* Only hide overflow on game pages with full-screen canvas */
+/* Don't hide overflow on pages with fixed background 3D canvas */
+body:has(.game-canvas) {
+  overflow: hidden;
+}
+
+/* Focus states - medieval amber */
+input:focus,
+button:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
+
+input:focus-visible,
+button:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Selection - warm amber */
+::selection {
+  background: rgba(212, 168, 83, 0.35);
+  color: var(--foreground);
+}
+
+/* Scrollbar - medieval styled */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0908;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #5a4d3a 0%, #3d3428 100%);
+  border-radius: 6px;
+  border: 3px solid #0a0908;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #6a5d4a 0%, #4d4438 100%);
+}
+
+/* Firefox scrollbar */
+html {
+  scrollbar-width: auto;
+  scrollbar-color: #5a4d3a #0a0908;
+}
+
+/* Cookie banner animation */
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation: slideInFromBottom 0.5s ease-out forwards;
+}
+
+.slide-in-from-bottom-4 {
+  --tw-enter-translate-y: 1rem;
+}
+
+.fade-in {
+  --tw-enter-opacity: 0;
+}
+
+@keyframes timeoutSoundboardRevealAbove {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem) scale(0.96);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(-0.08rem) scale(1.01);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes timeoutSoundboardRevealBelow {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem) scale(0.96);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(0.08rem) scale(1.01);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.timeout-soundboard-panel {
+  backface-visibility: hidden;
+  will-change: opacity, transform;
+}
+
+.timeout-soundboard-panel-above {
+  animation: timeoutSoundboardRevealAbove 240ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  transform-origin: bottom center;
+}
+
+.timeout-soundboard-panel-below {
+  animation: timeoutSoundboardRevealBelow 240ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  transform-origin: top center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timeout-soundboard-panel-above,
+  .timeout-soundboard-panel-below {
+    animation: none;
+  }
+}
+
+/* =================================
+   MOBILE TOUCH TARGETS
+   Minimum 48x48px per WCAG 2.5.5
+   ================================= */
+
+/* Touch target utility - ensures minimum 48px hit area */
+.touch-target {
+  min-width: 48px;
+  min-height: 48px;
+}
+
+/* Touch target for inline elements (adds padding if needed) */
+.touch-target-inline {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Button touch target - common pattern */
+.btn-touch {
+  min-width: 48px;
+  min-height: 48px;
+  padding: 12px 16px;
+  touch-action: manipulation;
+}
+
+/* Icon button touch target */
+.icon-btn-touch {
+  min-width: 48px;
+  min-height: 48px;
+  padding: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+}
+
+/* Prevent accidental double-tap zoom on interactive elements */
+button,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+a {
+  touch-action: manipulation;
+}
+
+/* Ensure adequate spacing between touch targets */
+.touch-spacing > * + * {
+  margin-top: 8px;
+}
+
+/* =================================
+   GAME VIEWPORT & HUD REGIONS (docs/client/hud-layout.md)
+   Sizes come from CSS variables the layout policy sets on the game root (getHudCssVariables);
+   env() adds the device safe areas (the game route uses viewport-fit=cover).
+   ================================= */
+@layer components {
+  /* 100dvh follows the mobile browser toolbars; 100vh is the fallback for older engines */
+  .game-viewport {
+    height: 100vh;
+    height: 100dvh;
+    /* Sheets still scroll; pinch and double-tap zoom of the fixed HUD do not happen */
+    touch-action: pan-x pan-y;
+  }
+
+  /* Touch-sized hit area on a coarse pointer (--hud-tap-target is 0 with a mouse) */
+  .hud-tap-target {
+    min-width: var(--hud-tap-target, 0px);
+    min-height: var(--hud-tap-target, 0px);
+  }
+
+  /* Square HUD button: 44px on touch, 40px with a mouse */
+  .hud-control-size {
+    width: var(--hud-control-size, 40px);
+    height: var(--hud-control-size, 40px);
+  }
+
+  .hud-layout {
+    position: absolute;
+    inset: 0;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    gap: var(--hud-gap, 8px);
+    padding:
+      max(var(--hud-gutter, 8px), env(safe-area-inset-top, 0px))
+      max(var(--hud-gutter, 8px), env(safe-area-inset-right, 0px))
+      max(var(--hud-gutter, 8px), env(safe-area-inset-bottom, 0px))
+      max(var(--hud-gutter, 8px), env(safe-area-inset-left, 0px));
+    pointer-events: none;
+  }
+
+  .hud-row {
+    display: grid;
+    gap: var(--hud-gap, 8px);
+    min-width: 0;
+  }
+
+  /* Edge columns keep their content width and share the rest, so the centre stays centred */
+  .hud-row-top,
+  .hud-row-bottom {
+    grid-template-columns: minmax(max-content, 1fr) minmax(0, auto) minmax(max-content, 1fr);
+  }
+
+  .hud-row-top {
+    align-items: start;
+  }
+
+  .hud-row-bottom {
+    align-items: end;
+  }
+
+  .hud-row-middle {
+    flex: 1 1 0;
+    min-height: 0;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .hud-region {
+    display: flex;
+    flex-direction: column;
+    gap: var(--hud-gap, 8px);
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .hud-region-status,
+  .hud-region-dock-left,
+  .hud-region-social {
+    align-items: flex-start;
+  }
+
+  .hud-region-prompt,
+  .hud-region-bottom {
+    align-items: center;
+  }
+
+  .hud-region-actions,
+  .hud-region-dock-right,
+  .hud-region-controls {
+    align-items: flex-end;
+  }
+
+  .hud-region-dock-left,
+  .hud-region-dock-right {
+    justify-content: center;
+  }
+
+  .hud-region-social,
+  .hud-region-bottom,
+  .hud-region-controls {
+    justify-content: flex-end;
+  }
+
+  /* A slot shrinks with its region, so a docked panel never spills into the next row */
+  .hud-slot {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    max-width: 100%;
+  }
+
+  .hud-slot:empty {
+    display: none;
+  }
+
+  /* Bottom sheets: --sheet-max-height is a percentage of the visible viewport */
+  .sheet-max-height {
+    max-height: calc(var(--sheet-max-height, 85) * 1vh);
+    max-height: calc(var(--sheet-max-height, 85) * 1dvh);
+  }
+
+  /* Last block of a sheet (footer, or content without one) clears the home indicator */
+  .sheet-safe-bottom {
+    padding-bottom: calc(var(--sheet-end-padding, 0px) + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Sheets span the full width: keep their content clear of a landscape phone's notch */
+  .sheet-safe-x {
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+
+  /* Horizontally scrolling chip rows (bid chips, player bids): thin scrollbar, no page bounce */
+  .hud-scroll-row {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(180, 120, 50, 0.4) transparent;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* =================================
+   ACCESSIBILITY UTILITIES
+   ================================= */
+
+/* Screen reader only - visually hidden but accessible */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip to main content link */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--primary);
+  color: var(--background);
+  padding: 8px 16px;
+  z-index: 100;
+  transition: top 0.3s;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --border: #666;
+  }
+
+  button,
+  [role="button"] {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Browser autofill (Chrome/Edge/Safari) paints inputs light blue; keep account fields on-theme. */
+.wp-field:-webkit-autofill,
+.wp-field:-webkit-autofill:hover,
+.wp-field:-webkit-autofill:focus {
+  -webkit-text-fill-color: rgba(255, 235, 200, 0.95);
+  caret-color: rgba(255, 235, 200, 0.95);
+  -webkit-box-shadow: 0 0 0 1000px #0f0c09 inset;
+  box-shadow: 0 0 0 1000px #0f0c09 inset;
+  transition: background-color 9999s ease-out 0s;
+}

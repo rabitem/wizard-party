@@ -1,0 +1,240 @@
+/* Solarpunk HUD skin: brass fittings, hanging ivy, a riveted rail, a potted fern, a gear ring.
+   Purely decorative: every element sits in an aria-hidden, pointer-events-none wrapper. */
+
+/* ---------- buttons: glass sheen + brass corner fittings ---------- */
+
+.glassSheen {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(150deg, rgba(200, 238, 242, 0.14) 0%, transparent 45%);
+  box-shadow: inset 0 0 0 1px rgba(214, 165, 72, 0.28);
+}
+
+/* An L-bracket with a rivet in its elbow; rotated per corner around its own centre. */
+.corner {
+  position: absolute;
+  width: var(--sp-corner, 7px);
+  height: var(--sp-corner, 7px);
+  border-style: solid;
+  border-color: #d6a548;
+  border-width: 1.5px 0 0 1.5px;
+  border-top-left-radius: 2px;
+  background: radial-gradient(circle at 2px 2px, #f4d98f 0 0.8px, #8a601d 1.1px, transparent 1.5px);
+  filter: drop-shadow(0 0.5px 0.5px rgba(0, 0, 0, 0.45));
+}
+
+.cornerTl {
+  composes: corner;
+  top: 2px;
+  left: 2px;
+}
+
+.cornerTr {
+  composes: corner;
+  top: 2px;
+  right: 2px;
+  transform: rotate(90deg);
+}
+
+.cornerBr {
+  composes: corner;
+  bottom: 2px;
+  right: 2px;
+  transform: rotate(180deg);
+}
+
+.cornerBl {
+  composes: corner;
+  bottom: 2px;
+  left: 2px;
+  transform: rotate(270deg);
+}
+
+/* ---------- panels: leaf veins, ivy, brass rail ---------- */
+
+.clip {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.clipBehind {
+  composes: clip;
+  /* Behind the host's content, above its background (the host is `isolate`). */
+  z-index: -1;
+}
+
+.veins {
+  position: absolute;
+  inset: 0;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Cpath d='M0 96L96 0M22 74L12 54M22 74L42 84M48 48L38 24M48 48L72 58M72 24L64 6M72 24L90 32' fill='none' stroke='%23a9e8a0' stroke-width='1.3' stroke-linecap='round'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(244, 217, 143, 0.4), transparent 70%);
+  background-size: 96px 96px, 100% 100%;
+  opacity: 0.07;
+}
+
+/* Brass rail with rivets; it sits on the bottom edge. */
+.rail {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: -2px;
+  height: 4px;
+  border-radius: 2px;
+  background:
+    radial-gradient(circle at 50% 50%, #f4d98f 0 0.7px, #8a601d 1px, transparent 1.4px) 6px 0 / 22px 4px repeat-x,
+    linear-gradient(180deg, #f4d98f, #d6a548 45%, #8a601d);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.45);
+}
+
+.railContained {
+  composes: rail;
+  bottom: 2px;
+}
+
+.railSlim {
+  composes: rail;
+  height: 3px;
+  bottom: -1.5px;
+  background:
+    radial-gradient(circle at 50% 50%, #f4d98f 0 0.6px, #8a601d 0.9px, transparent 1.2px) 6px 0 / 22px 3px repeat-x,
+    linear-gradient(180deg, #f4d98f, #d6a548 45%, #8a601d);
+}
+
+.railSlimContained {
+  composes: railSlim;
+  bottom: 1px;
+}
+
+/* ---------- standings / chat: ivy along the top edge ---------- */
+
+.ivyRow {
+  position: absolute;
+  top: -2px;
+  left: 6px;
+  right: 6px;
+  height: 20px;
+}
+
+.ivyRowContained {
+  composes: ivyRow;
+  top: 1px;
+}
+
+.ivyVine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 1px;
+  background: repeating-linear-gradient(90deg, #2b7a43 0 5px, #4aa860 5px 9px);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
+}
+
+.ivy {
+  position: absolute;
+  top: 1px;
+  width: 10px;
+  transform: translateX(-50%);
+  transform-origin: 50% 0;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
+}
+
+/* ---------- picker: potted fern on the corner ---------- */
+
+.fern {
+  position: absolute;
+  top: -15px;
+  left: 10px;
+  width: 18px;
+  height: 22px;
+  transform-origin: 50% 100%;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.4));
+}
+
+.fernContained {
+  composes: fern;
+  top: 5px;
+  left: 6px;
+  width: 15px;
+  height: 18px;
+}
+
+/* ---------- status bar: brass gear ring with leaves around the round counter ---------- */
+
+.gearTeeth {
+  position: absolute;
+  inset: -6px -9px;
+  z-index: -1;
+  border-radius: 9999px;
+  background: repeating-conic-gradient(#d6a548 0 7deg, transparent 0 15deg);
+  -webkit-mask-image: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2.5px));
+  mask-image: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2.5px));
+  opacity: 0.7;
+}
+
+.gearRing {
+  position: absolute;
+  inset: -4px -7px;
+  z-index: -1;
+  border-radius: 9999px;
+  background: conic-gradient(from 200deg, #8a601d, #f4d98f 25%, #d6a548 50%, #8a601d 75%, #d6a548);
+  -webkit-mask-image: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
+  mask-image: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
+  opacity: 0.8;
+}
+
+.badgeLeaf {
+  position: absolute;
+  z-index: -1;
+  width: 10px;
+  height: 10px;
+  bottom: -6px;
+}
+
+.badgeLeafLeft {
+  composes: badgeLeaf;
+  left: -13px;
+}
+
+.badgeLeafRight {
+  composes: badgeLeaf;
+  right: -13px;
+}
+
+/* ---------- motion (never under reduced motion) ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .veins {
+    animation: solarpunk-veins 40s linear infinite;
+  }
+
+  .ivy {
+    animation: solarpunk-sway 4.6s ease-in-out infinite;
+  }
+
+  .ivy:nth-child(odd) {
+    animation-delay: -2.1s;
+  }
+
+  .fern {
+    animation: solarpunk-sway 5.2s ease-in-out infinite;
+  }
+}
+
+@keyframes solarpunk-veins {
+  to {
+    background-position: 96px 0, 0 0;
+  }
+}
+
+/* Keeps the strands' translateX(-50%) while swaying; the fern has no translate. */
+@keyframes solarpunk-sway {
+  50% {
+    rotate: 4deg;
+  }
+}

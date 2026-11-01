@@ -1,0 +1,3 @@
+# Wizard Party
+
+@AGENTS.md

@@ -1,0 +1,380 @@
+/* Manga lobby skin: a sunset page spread, inked panels with caption boxes, a hanko start button.
+   Purely decorative: every element sits in an aria-hidden, pointer-events-none wrapper.
+   Ink #141416, paper #f7f3ea, red #e5262f, yellow #ffd84a (the HUD manga palette). */
+
+/* ---------- header scene ---------- */
+
+.sceneSky {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(229, 38, 47, 0.16) 42%, rgba(255, 150, 70, 0.22) 70%, rgba(255, 216, 74, 0.16) 88%, transparent 100%);
+}
+
+.focusLines {
+  transform-origin: 200px 112px;
+}
+
+.headband {
+  transform-box: fill-box;
+  transform-origin: 0 50%;
+}
+
+.sfx {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+
+.petal {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+
+.badgeBurst {
+  position: absolute;
+  top: -32%;
+  left: -32%;
+  width: 164%;
+  height: 164%;
+  z-index: -1;
+  overflow: visible;
+}
+
+/* ---------- seats: inked panel, caption box, halftone avatar burst ---------- */
+
+.panelTone {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    radial-gradient(rgba(247, 243, 234, 0.13) 0.8px, transparent 1.2px) 0 0 / 5px 5px,
+    linear-gradient(100deg, transparent 55%, rgba(247, 243, 234, 0.05) 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 30%, #000 100%);
+  mask-image: linear-gradient(90deg, transparent 30%, #000 100%);
+}
+
+.panelToneLocal {
+  composes: panelTone;
+  background:
+    radial-gradient(rgba(229, 38, 47, 0.32) 0.9px, transparent 1.3px) 0 0 / 5px 5px,
+    linear-gradient(100deg, transparent 50%, rgba(229, 38, 47, 0.12) 100%);
+}
+
+.panelFrame {
+  position: absolute;
+  inset: -1px;
+  border-radius: 4px;
+  border: 2px solid rgba(247, 243, 234, 0.55);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.55);
+}
+
+.panelFrameLocal {
+  composes: panelFrame;
+  border-color: rgba(247, 243, 234, 0.85);
+  box-shadow: 3px 3px 0 #e5262f;
+}
+
+.caption {
+  position: absolute;
+  top: -7px;
+  left: 52px;
+  height: 13px;
+  padding: 0 5px;
+  font: italic 800 8px/11px system-ui, -apple-system, 'Segoe UI', sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #141416;
+  background: #f7f3ea;
+  border: 1px solid #141416;
+  box-shadow: 2px 2px 0 #141416;
+  transform: skewX(-8deg);
+}
+
+.captionLocal {
+  composes: caption;
+  color: #f7f3ea;
+  background: #e5262f;
+}
+
+.avatarBurst {
+  position: absolute;
+  inset: -24%;
+  z-index: -1;
+}
+
+.avatarBurstLocal {
+  composes: avatarBurst;
+}
+
+.avatarBurstRim {
+  position: absolute;
+  inset: 0;
+  background: rgba(247, 243, 234, 0.85);
+}
+
+.avatarBurstTone {
+  position: absolute;
+  inset: 2px;
+  background:
+    radial-gradient(var(--tone) 1px, transparent 1.4px) 0 0 / 4px 4px,
+    radial-gradient(circle, #141416 35%, color-mix(in srgb, var(--tone) 35%, #141416) 100%);
+}
+
+.emptyTone {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(rgba(247, 243, 234, 0.08) 0.8px, transparent 1.2px) 0 0 / 6px 6px;
+  -webkit-mask-image: linear-gradient(90deg, transparent 40%, #000 100%);
+  mask-image: linear-gradient(90deg, transparent 40%, #000 100%);
+}
+
+.thought {
+  position: absolute;
+  right: 6px;
+  top: 2px;
+  height: calc(100% - 4px);
+  width: min(45%, 150px);
+  z-index: -1;
+  opacity: 0.8;
+}
+
+.dot1,
+.dot2,
+.dot3 {
+  opacity: 0.9;
+}
+
+/* ---------- panels: screentone, brush corners, stickers ---------- */
+
+.screentone {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(rgba(247, 243, 234, 0.08) 0.9px, transparent 1.3px) 0 0 / 6px 6px;
+}
+
+.toneGradient {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(rgba(247, 243, 234, 0.12) 1.3px, transparent 1.7px) 0 0 / 7px 7px;
+  -webkit-mask-image: linear-gradient(135deg, #000 0%, transparent 40%);
+  mask-image: linear-gradient(135deg, #000 0%, transparent 40%);
+}
+
+.speedFloor {
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='28'%3E%3Cpath d='M0 4H60M84 4H150M24 12H110M6 20H48M70 22H156' stroke='%23f7f3ea' stroke-width='1' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / 160px 28px;
+  opacity: 0.06;
+}
+
+.panelInk {
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  border: 2px solid rgba(247, 243, 234, 0.5);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45);
+}
+
+.actionsInk {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, rgba(247, 243, 234, 0.55) 8%, rgba(247, 243, 234, 0.4) 70%, transparent 100%);
+}
+
+.brushTopLeft {
+  position: absolute;
+  top: -7px;
+  left: -7px;
+  width: 30px;
+  height: 30px;
+  filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.5));
+}
+
+.brushBottomRight {
+  composes: brushTopLeft;
+  top: auto;
+  left: auto;
+  bottom: -7px;
+  right: -7px;
+  transform: rotate(180deg);
+}
+
+.sticker {
+  position: absolute;
+  top: -13px;
+  right: 26px;
+  width: 38px;
+  height: 27px;
+  transform: rotate(8deg);
+  filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.6));
+}
+
+.panelHanko {
+  position: absolute;
+  top: -9px;
+  right: 16px;
+  width: 22px;
+  height: 22px;
+  transform: rotate(10deg);
+  filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.5));
+}
+
+/* ---------- add bot: "new rival" splash ---------- */
+
+.rivalLines {
+  composes: speedFloor;
+  z-index: -1;
+  border-radius: inherit;
+  opacity: 0.1;
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, transparent 70%);
+  mask-image: linear-gradient(90deg, #000 0%, transparent 70%);
+}
+
+.rivalTag {
+  position: absolute;
+  top: -8px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 14px;
+  padding: 0 6px 0 2px;
+  font: italic 900 9px/1 system-ui, -apple-system, 'Segoe UI', sans-serif;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  color: #f7f3ea;
+  background: #e5262f;
+  border: 1.5px solid #141416;
+  box-shadow: 2px 2px 0 #141416;
+  transform: skewX(-10deg) rotate(-2deg);
+}
+
+.rivalSpark {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+/* ---------- start button: ink splash + hanko ---------- */
+
+.startTone {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    radial-gradient(rgba(247, 243, 234, 0.12) 0.8px, transparent 1.2px) 0 0 / 5px 5px,
+    linear-gradient(180deg, #232328, #141416);
+}
+
+.startInk {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    radial-gradient(rgba(20, 20, 22, 0.35) 1px, transparent 1.5px) 0 0 / 5px 5px,
+    linear-gradient(180deg, #f0363f 0%, #e5262f 55%, #9c1219 100%);
+}
+
+.startFocus {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: repeating-conic-gradient(from 0deg at 50% 50%, rgba(247, 243, 234, 0.4) 0 1.5deg, transparent 1.5deg 9deg);
+  -webkit-mask-image: radial-gradient(ellipse 70% 90% at 50% 50%, transparent 45%, #000 100%);
+  mask-image: radial-gradient(ellipse 70% 90% at 50% 50%, transparent 45%, #000 100%);
+  opacity: 0.55;
+}
+
+.startBrush {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 3px #141416, inset 0 0 0 4.5px rgba(247, 243, 234, 0.55), 4px 4px 0 #141416;
+}
+
+.startBrushDim {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 2px rgba(247, 243, 234, 0.3);
+}
+
+.guestLines {
+  composes: speedFloor;
+  z-index: -1;
+  border-radius: inherit;
+  opacity: 0.12;
+}
+
+.stampLeft {
+  position: absolute;
+  top: 50%;
+  left: 8px;
+  height: 66%;
+  width: auto;
+  aspect-ratio: 1 / 1;
+  transform: translateY(-50%) rotate(-10deg);
+  filter: drop-shadow(1px 2px 0 rgba(0, 0, 0, 0.55));
+}
+
+.stampRight {
+  composes: stampLeft;
+  left: auto;
+  right: 8px;
+  transform: translateY(-50%) rotate(9deg);
+}
+
+.stampLeftDim {
+  composes: stampLeft;
+  opacity: 0.3;
+  filter: grayscale(1);
+}
+
+.stampRightDim {
+  composes: stampRight;
+  opacity: 0.3;
+  filter: grayscale(1);
+}
+
+/* ---------- motion (never under reduced motion) ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .focusLines { animation: manga-lobby-jitter 0.5s steps(2, end) infinite; }
+  .headband { animation: manga-lobby-flutter 0.9s ease-in-out infinite; }
+  .sfx { animation: manga-lobby-pop 2.6s ease-in-out infinite; }
+  .petal { animation: manga-lobby-fall 7s linear infinite; }
+  .badgeBurst { animation: manga-lobby-throb 2.2s ease-in-out infinite; }
+  .panelFrameLocal { animation: manga-lobby-shake 4s ease-in-out infinite; }
+  .dot1 { animation: manga-lobby-dot 1.5s ease-in-out infinite; }
+  .dot2 { animation: manga-lobby-dot 1.5s ease-in-out 0.25s infinite; }
+  .dot3 { animation: manga-lobby-dot 1.5s ease-in-out 0.5s infinite; }
+  .speedFloor, .guestLines { animation: manga-lobby-streak 2.4s linear infinite; }
+  .rivalLines { animation: manga-lobby-streak 1.2s linear infinite; }
+  .rivalTag { animation: manga-lobby-tag 2.8s ease-in-out infinite; }
+  .startFocus { animation: manga-lobby-jitter-fill 0.4s steps(2, end) infinite; }
+  .stampLeft { animation: manga-lobby-stamp-left 0.5s cubic-bezier(0.3, 1.6, 0.6, 1) both; }
+  .stampRight { animation: manga-lobby-stamp-right 0.5s cubic-bezier(0.3, 1.6, 0.6, 1) 0.18s both; }
+  .stampLeftDim, .stampRightDim { animation: none; }
+}
+
+@keyframes manga-lobby-jitter { 50% { transform: rotate(1.5deg); } }
+@keyframes manga-lobby-jitter-fill { 50% { transform: rotate(3deg) scale(1.05); } }
+@keyframes manga-lobby-flutter { 50% { transform: scaleY(1.6) skewY(-8deg); } }
+@keyframes manga-lobby-pop { 0%, 70%, 100% { transform: scale(1); } 78% { transform: scale(1.1) rotate(-2deg); } 86% { transform: scale(0.98); } }
+@keyframes manga-lobby-fall { 0% { transform: translate(0, 0) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 100% { transform: translate(-40px, 130px) rotate(400deg); opacity: 0; } }
+@keyframes manga-lobby-throb { 50% { transform: scale(1.06) rotate(4deg); } }
+@keyframes manga-lobby-shake { 0%, 92%, 100% { transform: translate(0, 0); } 94% { transform: translate(-1px, 1px); } 96% { transform: translate(1px, -1px); } }
+@keyframes manga-lobby-dot { 0%, 100% { opacity: 0.2; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-1.5px); } }
+@keyframes manga-lobby-streak { to { background-position: -160px 0; } }
+@keyframes manga-lobby-tag { 0%, 80%, 100% { transform: skewX(-10deg) rotate(-2deg) scale(1); } 86% { transform: skewX(-10deg) rotate(-4deg) scale(1.12); } }
+@keyframes manga-lobby-stamp-left { from { opacity: 0; transform: translateY(-50%) rotate(-24deg) scale(1.8); } to { opacity: 1; transform: translateY(-50%) rotate(-10deg) scale(1); } }
+@keyframes manga-lobby-stamp-right { from { opacity: 0; transform: translateY(-50%) rotate(24deg) scale(1.8); } to { opacity: 1; transform: translateY(-50%) rotate(9deg) scale(1); } }

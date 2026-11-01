@@ -1,0 +1,346 @@
+/* ================================
+   PER-THEME PAGE SURFACES
+   Screens should paint these instead of hard-coded hex gradients:
+
+     --page-base       solid color behind everything (html background, overscroll, theme-color)
+     --page-bg         full background value (gradients allowed), e.g. style={{ background: 'var(--page-bg)' }}.
+                       The global <SeasonalAmbience /> backdrop already paints it fixed behind all
+                       content, so page roots can simply stay transparent to let ambient particles show.
+     --surface         background for cards, panels, modals and sheets (translucent so the page glows through)
+     --surface-border  1px border color for those surfaces
+     --glow            accent glow color for box-shadow / text-shadow / radial highlights
+     --text-muted      secondary/caption text (Dark keeps the classic #8b7355; other themes derive it
+                       from their remapped amber scale so it stays readable on their surfaces)
+
+   Dark keeps the exact pre-theme look. Every theme stays dark enough for the amber-scale text
+   palette below; Light is a warm sepia "candlelit parchment" rather than white so amber text keeps
+   its contrast.
+   ================================ */
+
+:root,
+.theme-dark {
+  --page-base: #080706;
+  --page-bg: radial-gradient(ellipse at top, #1a1610 0%, #0f0d0a 50%, #080706 100%);
+  --surface: rgba(26, 21, 16, 0.92);
+  --surface-border: rgba(180, 83, 9, 0.3);
+  --glow: rgba(212, 168, 83, 0.35);
+  --text-muted: #8b7355;
+}
+
+/* Muted captions for every non-Dark theme: a softened amber-200 that follows the theme hue. */
+:is(.theme-light, .theme-forest, .theme-royal, .theme-frost, .theme-halloween, .theme-autumn, .theme-winter, .theme-spring, .theme-summer,
+  .theme-manga, .theme-neon, .theme-pixel, .theme-celestial, .theme-solarpunk) {
+  --text-muted: color-mix(in srgb, var(--color-amber-200) 62%, transparent);
+}
+
+.theme-light {
+  --page-base: #2a2118;
+  --page-bg:
+    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(255, 214, 150, 0.22) 0%, transparent 70%),
+    radial-gradient(ellipse at top, #4a3a28 0%, #33281c 50%, #2a2118 100%);
+  --surface: rgba(62, 48, 33, 0.9);
+  --surface-border: rgba(232, 196, 130, 0.35);
+  --glow: rgba(255, 210, 140, 0.4);
+}
+
+.theme-forest {
+  --page-base: #050a07;
+  --page-bg:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(120, 200, 130, 0.14) 0%, transparent 70%),
+    radial-gradient(ellipse at top, #13241a 0%, #0b150f 50%, #050a07 100%);
+  --surface: rgba(18, 32, 24, 0.9);
+  --surface-border: rgba(77, 155, 93, 0.32);
+  --glow: rgba(110, 200, 125, 0.32);
+}
+
+.theme-royal {
+  --page-base: #08050d;
+  --page-bg:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(212, 168, 83, 0.12) 0%, transparent 65%),
+    radial-gradient(ellipse at top, #241634 0%, #140c1e 50%, #08050d 100%);
+  --surface: rgba(28, 18, 38, 0.9);
+  --surface-border: rgba(155, 109, 212, 0.34);
+  --glow: rgba(170, 120, 230, 0.35);
+}
+
+.theme-frost {
+  --page-base: #04070b;
+  --page-bg:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(140, 200, 240, 0.14) 0%, transparent 70%),
+    radial-gradient(ellipse at top, #12202c 0%, #0a121a 50%, #04070b 100%);
+  --surface: rgba(16, 26, 34, 0.9);
+  --surface-border: rgba(93, 168, 212, 0.32);
+  --glow: rgba(130, 200, 240, 0.33);
+}
+
+.theme-halloween {
+  --page-base: #06030a;
+  --page-bg:
+    radial-gradient(circle at 82% 12%, rgba(255, 168, 60, 0.38) 0%, rgba(255, 122, 26, 0.14) 9%, transparent 24%),
+    radial-gradient(ellipse 120% 40% at 50% 100%, rgba(90, 40, 120, 0.35) 0%, transparent 70%),
+    radial-gradient(ellipse at top, #241032 0%, #130a1c 50%, #06030a 100%);
+  --surface: rgba(28, 16, 36, 0.9);
+  --surface-border: rgba(255, 122, 26, 0.32);
+  --glow: rgba(255, 122, 26, 0.4);
+}
+
+.theme-autumn {
+  --page-base: #0b0604;
+  --page-bg:
+    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(230, 130, 50, 0.2) 0%, transparent 70%),
+    radial-gradient(ellipse 100% 40% at 50% 100%, rgba(140, 50, 20, 0.28) 0%, transparent 70%),
+    radial-gradient(ellipse at top, #33190c 0%, #1c0f08 50%, #0b0604 100%);
+  --surface: rgba(40, 22, 12, 0.9);
+  --surface-border: rgba(217, 117, 43, 0.34);
+  --glow: rgba(230, 130, 50, 0.38);
+}
+
+.theme-winter {
+  --page-base: #03060f;
+  --page-bg:
+    radial-gradient(ellipse 90% 45% at 50% 0%, rgba(190, 225, 255, 0.2) 0%, transparent 70%),
+    radial-gradient(ellipse 100% 30% at 50% 100%, rgba(170, 200, 235, 0.12) 0%, transparent 70%),
+    radial-gradient(ellipse at top, #13213f 0%, #0a1226 50%, #03060f 100%);
+  --surface: rgba(16, 26, 48, 0.88);
+  --surface-border: rgba(180, 215, 245, 0.3);
+  --glow: rgba(190, 225, 255, 0.38);
+}
+
+.theme-spring {
+  --page-base: #050906;
+  --page-bg:
+    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(240, 150, 190, 0.2) 0%, transparent 70%),
+    radial-gradient(ellipse 100% 40% at 50% 100%, rgba(90, 150, 80, 0.2) 0%, transparent 70%),
+    radial-gradient(ellipse at top, #22281c 0%, #121810 50%, #050906 100%);
+  --surface: rgba(26, 32, 22, 0.9);
+  --surface-border: rgba(229, 139, 176, 0.32);
+  --glow: rgba(240, 150, 190, 0.36);
+}
+
+.theme-summer {
+  --page-base: #020a0c;
+  --page-bg:
+    radial-gradient(ellipse 100% 45% at 50% 0%, rgba(255, 170, 90, 0.26) 0%, rgba(255, 110, 80, 0.08) 40%, transparent 70%),
+    radial-gradient(ellipse at top, #0e2e33 0%, #08191c 50%, #020a0c 100%);
+  --surface: rgba(12, 34, 38, 0.88);
+  --surface-border: rgba(34, 184, 176, 0.32);
+  --glow: rgba(255, 170, 90, 0.38);
+}
+
+/* Shonen Ink: ink-black page with a faint halftone dot screen and a red splash up top */
+.theme-manga {
+  --page-base: #0a0a0b;
+  --page-bg:
+    radial-gradient(circle, rgba(244, 241, 234, 0.06) 1px, transparent 1.6px) 0 0 / 7px 7px,
+    radial-gradient(ellipse 90% 45% at 50% 0%, rgba(229, 38, 47, 0.18) 0%, transparent 70%),
+    radial-gradient(ellipse at top, #1d1c1e 0%, #111112 50%, #0a0a0b 100%);
+  --surface: rgba(20, 20, 22, 0.93);
+  --surface-border: rgba(244, 241, 234, 0.3);
+  --glow: rgba(229, 38, 47, 0.4);
+}
+
+/* Neon Night: near-black with a faint synthwave grid, magenta sky and cyan horizon */
+.theme-neon {
+  --page-base: #05020a;
+  --page-bg:
+    linear-gradient(rgba(34, 229, 255, 0.045) 1px, transparent 1px) 0 0 / 44px 44px,
+    linear-gradient(90deg, rgba(255, 63, 210, 0.045) 1px, transparent 1px) 0 0 / 44px 44px,
+    radial-gradient(ellipse 90% 45% at 50% 0%, rgba(255, 63, 210, 0.22) 0%, transparent 70%),
+    radial-gradient(ellipse 110% 35% at 50% 100%, rgba(34, 229, 255, 0.18) 0%, transparent 70%),
+    radial-gradient(ellipse at top, #1c0a30 0%, #0d0518 50%, #05020a 100%);
+  --surface: rgba(16, 8, 30, 0.88);
+  --surface-border: rgba(255, 63, 210, 0.42);
+  --glow: rgba(255, 63, 210, 0.5);
+}
+
+/* Pixel Arcade: deep navy with a chunky checker and a yellow marquee glow */
+.theme-pixel {
+  --page-base: #060a22;
+  --page-bg:
+    conic-gradient(rgba(255, 255, 255, 0.025) 25%, transparent 0 50%, rgba(255, 255, 255, 0.025) 0 75%, transparent 0) 0 0 / 16px 16px,
+    radial-gradient(ellipse 90% 45% at 50% 0%, rgba(255, 217, 59, 0.16) 0%, transparent 70%),
+    radial-gradient(ellipse at top, #142060 0%, #0a1238 50%, #060a22 100%);
+  --surface: rgba(14, 22, 64, 0.93);
+  --surface-border: rgba(255, 217, 59, 0.42);
+  --glow: rgba(74, 222, 90, 0.36);
+}
+
+/* Celestial Tarot: midnight sky with two offset star tiles and a gilded glow */
+.theme-celestial {
+  --page-base: #03051a;
+  --page-bg:
+    radial-gradient(1.4px 1.4px at 23px 41px, rgba(255, 244, 214, 0.85), transparent) 0 0 / 173px 173px,
+    radial-gradient(1.1px 1.1px at 131px 97px, rgba(220, 230, 255, 0.7), transparent) 0 0 / 241px 241px,
+    radial-gradient(1.8px 1.8px at 67px 151px, rgba(255, 226, 160, 0.9), transparent) 0 0 / 389px 389px,
+    radial-gradient(ellipse 90% 45% at 50% 0%, rgba(230, 196, 106, 0.16) 0%, transparent 70%),
+    radial-gradient(ellipse 70% 40% at 85% 100%, rgba(138, 106, 255, 0.14) 0%, transparent 70%),
+    radial-gradient(ellipse at top, #18204a 0%, #0c1030 50%, #03051a 100%);
+  --surface: rgba(12, 16, 44, 0.92);
+  --surface-border: rgba(230, 196, 106, 0.4);
+  --glow: rgba(230, 196, 106, 0.42);
+}
+
+/* Solarpunk: deep leaf green under a greenhouse roof - faint glazing bars and
+   leaf-vein diagonals, a warm brass sun up top and fresh meadow light below.
+   Surfaces stay deep green so the remapped (hue 140) text keeps amber-level contrast. */
+.theme-solarpunk {
+  --page-base: #04120b;
+  --page-bg:
+    repeating-linear-gradient(90deg, rgba(240, 250, 236, 0.035) 0 1px, transparent 1px 96px),
+    repeating-linear-gradient(0deg, rgba(240, 250, 236, 0.025) 0 1px, transparent 1px 128px),
+    repeating-linear-gradient(45deg, rgba(143, 220, 106, 0.03) 0 1px, transparent 1px 22px),
+    radial-gradient(ellipse 70% 40% at 30% 0%, rgba(255, 226, 130, 0.24) 0%, transparent 70%),
+    radial-gradient(ellipse 110% 40% at 50% 100%, rgba(120, 210, 110, 0.2) 0%, transparent 70%),
+    radial-gradient(ellipse at top, #14462e 0%, #0b2a1a 50%, #04120b 100%);
+  --surface: rgba(11, 38, 25, 0.9);
+  --surface-border: rgba(226, 192, 98, 0.4);
+  --glow: rgba(168, 232, 128, 0.4);
+}
+
+/* ================================
+   PER-THEME TEXT & ACCENT PALETTE
+   Most UI text, borders and badges use Tailwind's amber scale (text-amber-200, border-amber-700/30, ...).
+   Tailwind v4 reads those from --color-amber-*, so a theme can recolor them by overriding the scale.
+
+   Each theme only sets:
+     --text-hue     oklch hue of its text/accent color (amber is ~70)
+     --text-chroma  saturation relative to amber (1 = as colorful as amber, 0 = grey)
+   The shared rule below rebuilds all 11 shades with amber's lightness, so contrast on the
+   app's dark surfaces stays exactly as in the default theme. Dark and Light keep plain amber.
+   ================================ */
+
+.theme-forest {
+  --text-hue: 150;
+  --text-chroma: 0.8;
+}
+
+.theme-royal {
+  --text-hue: 300;
+  --text-chroma: 0.85;
+}
+
+.theme-frost {
+  --text-hue: 235;
+  --text-chroma: 0.75;
+}
+
+.theme-halloween {
+  --text-hue: 45;
+  --text-chroma: 1.05;
+}
+
+.theme-autumn {
+  --text-hue: 62;
+  --text-chroma: 0.95;
+}
+
+.theme-winter {
+  --text-hue: 230;
+  --text-chroma: 0.3;
+}
+
+.theme-spring {
+  --text-hue: 350;
+  --text-chroma: 0.75;
+}
+
+.theme-summer {
+  --text-hue: 190;
+  --text-chroma: 0.8;
+}
+
+.theme-manga {
+  --text-hue: 25;
+  --text-chroma: 1.1;
+}
+
+.theme-neon {
+  --text-hue: 320;
+  --text-chroma: 1.1;
+}
+
+.theme-pixel {
+  --text-hue: 95;
+  --text-chroma: 1.0;
+}
+
+.theme-celestial {
+  --text-hue: 85;
+  --text-chroma: 0.85;
+}
+
+.theme-solarpunk {
+  --text-hue: 140;
+  --text-chroma: 0.85;
+}
+
+/* Lightness and base chroma per shade come from Tailwind's amber; the hue keeps amber's
+   warm-to-deep drift (lighter shades slightly further along the wheel). */
+:is(.theme-forest, .theme-royal, .theme-frost, .theme-halloween, .theme-autumn, .theme-winter, .theme-spring, .theme-summer,
+  .theme-manga, .theme-neon, .theme-pixel, .theme-celestial, .theme-solarpunk) {
+  --color-amber-50: oklch(98.7% calc(0.022 * var(--text-chroma)) calc(var(--text-hue) + 10));
+  --color-amber-100: oklch(96.2% calc(0.059 * var(--text-chroma)) calc(var(--text-hue) + 10));
+  --color-amber-200: oklch(92.4% calc(0.12 * var(--text-chroma)) calc(var(--text-hue) + 10));
+  --color-amber-300: oklch(87.9% calc(0.169 * var(--text-chroma)) calc(var(--text-hue) + 9));
+  --color-amber-400: oklch(82.8% calc(0.189 * var(--text-chroma)) calc(var(--text-hue) + 6));
+  --color-amber-500: oklch(76.9% calc(0.188 * var(--text-chroma)) var(--text-hue));
+  --color-amber-600: oklch(66.6% calc(0.179 * var(--text-chroma)) calc(var(--text-hue) - 5));
+  --color-amber-700: oklch(55.5% calc(0.163 * var(--text-chroma)) calc(var(--text-hue) - 8));
+  --color-amber-800: oklch(47.3% calc(0.137 * var(--text-chroma)) calc(var(--text-hue) - 10));
+  --color-amber-900: oklch(41.4% calc(0.112 * var(--text-chroma)) calc(var(--text-hue) - 10));
+  --color-amber-950: oklch(27.9% calc(0.077 * var(--text-chroma)) calc(var(--text-hue) - 10));
+}
+
+/* Dark and Light restore Tailwind's own amber, so a scoped .theme-dark/.theme-light (e.g. the
+   Settings preview cards) doesn't inherit another theme's remapped scale from <html>. */
+:is(.theme-dark, .theme-light) {
+  --color-amber-50: oklch(98.7% 0.022 95.277);
+  --color-amber-100: oklch(96.2% 0.059 95.617);
+  --color-amber-200: oklch(92.4% 0.12 95.746);
+  --color-amber-300: oklch(87.9% 0.169 91.605);
+  --color-amber-400: oklch(82.8% 0.189 84.429);
+  --color-amber-500: oklch(76.9% 0.188 70.08);
+  --color-amber-600: oklch(66.6% 0.179 58.318);
+  --color-amber-700: oklch(55.5% 0.163 48.998);
+  --color-amber-800: oklch(47.3% 0.137 46.201);
+  --color-amber-900: oklch(41.4% 0.112 45.904);
+  --color-amber-950: oklch(27.9% 0.077 45.635);
+}
+
+/* ================================
+   PER-THEME GOLD ACCENTS
+   The classic tavern UI also paints gold/parchment accents as raw hex (#d4a853 titles and rules,
+   #ffd700 highlights, the #c9a227 -> #8b6914 call-to-action gradient, ...). Screens use these
+   variables instead, so the accents follow the theme like the amber scale does.
+   Dark and Light keep the exact classic hex values; every other theme rebuilds them from its
+   --text-hue / --text-chroma with the classic colour's lightness and chroma (hue offset relative
+   to amber-500, as the amber rebuild above does).
+   ================================ */
+
+:root,
+:is(.theme-dark, .theme-light) {
+  --accent: #d4a853;
+  --accent-bright: #ffd700;
+  --accent-deep: #b8860b;
+  --accent-pale: #f0c674;
+  --accent-dim: #6b5a42;
+  --accent-parchment: #c9b896;
+  --accent-brown: #8b5a2b;
+  --accent-cta-top: #c9a227;
+  --accent-cta-mid: #a67c00;
+  --accent-cta-bottom: #8b6914;
+}
+
+:is(.theme-forest, .theme-royal, .theme-frost, .theme-halloween, .theme-autumn, .theme-winter, .theme-spring, .theme-summer,
+  .theme-manga, .theme-neon, .theme-pixel, .theme-celestial, .theme-solarpunk) {
+  --accent: oklch(75.5% calc(0.115 * var(--text-chroma)) calc(var(--text-hue) + 12));
+  --accent-bright: oklch(88.7% calc(0.182 * var(--text-chroma)) calc(var(--text-hue) + 25));
+  --accent-deep: oklch(65.2% calc(0.132 * var(--text-chroma)) calc(var(--text-hue) + 12));
+  --accent-pale: oklch(84.6% calc(0.111 * var(--text-chroma)) calc(var(--text-hue) + 13));
+  --accent-dim: oklch(47.8% calc(0.042 * var(--text-chroma)) calc(var(--text-hue) + 6));
+  --accent-parchment: oklch(78.8% calc(0.05 * var(--text-chroma)) calc(var(--text-hue) + 14));
+  --accent-brown: oklch(51.2% calc(0.09 * var(--text-chroma)) calc(var(--text-hue) - 8));
+  --accent-cta-top: oklch(72.8% calc(0.138 * var(--text-chroma)) calc(var(--text-hue) + 20));
+  --accent-cta-mid: oklch(61.1% calc(0.125 * var(--text-chroma)) calc(var(--text-hue) + 15));
+  --accent-cta-bottom: oklch(54.1% calc(0.104 * var(--text-chroma)) calc(var(--text-hue) + 14));
+}

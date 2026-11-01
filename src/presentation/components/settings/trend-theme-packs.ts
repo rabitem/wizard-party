@@ -1,0 +1,56 @@
+// Trend theme packs: year-round looks (not tied to a season) that bundle a UI theme,
+// table and card deck just like the seasonal packs.
+import type { SeasonalThemePack } from './seasonal-theme-packs';
+
+export const TREND_THEME_PACKS: SeasonalThemePack[] = [
+  {
+    id: 'manga',
+    name: 'Shonen Ink',
+    tagline: 'Ink panels, screentone & a red splash',
+    icon: 'ra-speech-bubble',
+    color: '#e5262f',
+    theme: 'manga',
+    tableTheme: 'manga',
+    cardTheme: 'manga',
+  },
+  {
+    id: 'neon',
+    name: 'Neon Night',
+    tagline: 'Black glass, cyan grid & synthwave glow',
+    icon: 'ra-lightning-bolt',
+    color: '#ff3fd2',
+    theme: 'neon',
+    tableTheme: 'neon',
+    cardTheme: 'neon',
+  },
+  {
+    id: 'pixel',
+    name: 'Pixel Arcade',
+    tagline: '8-bit felt, chunky rims & pixel hearts',
+    icon: 'ra-hearts',
+    color: '#ffd93b',
+    theme: 'pixel',
+    tableTheme: 'pixel',
+    cardTheme: 'pixel',
+  },
+  {
+    id: 'celestial',
+    name: 'Celestial Tarot',
+    tagline: 'Midnight velvet, constellations & gold',
+    icon: 'ra-crystal-ball',
+    color: 'var(--accent-pale)',
+    theme: 'celestial',
+    tableTheme: 'celestial',
+    cardTheme: 'celestial',
+  },
+  {
+    id: 'solarpunk',
+    name: 'Solarpunk',
+    tagline: 'Birch, brass & leaf-veined moss',
+    icon: 'ra-sprout',
+    color: '#8fdc6a',
+    theme: 'solarpunk',
+    tableTheme: 'solarpunk',
+    cardTheme: 'solarpunk',
+  },
+];

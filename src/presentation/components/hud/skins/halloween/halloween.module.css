@@ -1,0 +1,197 @@
+/* Halloween HUD skin: cobwebs, lantern glow, hanging spider, dripping wax, bats, carved pumpkin.
+   Purely decorative: every element sits in an aria-hidden, pointer-events-none wrapper. */
+
+/* ---------- buttons: corner cobweb + faint jack-o'-lantern glow ---------- */
+
+.lanternGlow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(ellipse 90% 70% at 50% 110%, rgba(255, 122, 26, 0.22), transparent 70%);
+  box-shadow: inset 0 0 6px rgba(255, 140, 40, 0.28);
+}
+
+.webTopLeft {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+}
+
+.webTopRight {
+  composes: webTopLeft;
+  left: auto;
+  right: 1px;
+  transform: scaleX(-1);
+}
+
+.webBottomRight {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  transform: rotate(180deg);
+}
+
+/* ---------- panels: clip boxes, edge glow, bats ---------- */
+
+.clip {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.clipBehind {
+  composes: clip;
+  /* Behind the host's content, above its background (the host is `isolate`). */
+  z-index: -1;
+}
+
+.edgeGlow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 140, 40, 0.75) 30%, rgba(255, 190, 80, 0.85) 50%,
+    rgba(255, 140, 40, 0.75) 70%, transparent);
+  box-shadow: 0 0 8px rgba(255, 122, 26, 0.45);
+}
+
+.bats {
+  position: absolute;
+  inset: 0;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='90'%3E%3Cg fill='%23d9c8ff'%3E%3Cpath d='M14 20q3-5 7-2q1-3 2.5-1q1.5-2 2.5 1q4-3 7 2q-3-.5-4.5 2q-1.5-1.5-3 0l-2 1.5l-2-1.5q-1.5-1.5-3 0q-1.5-2.5-4.5-2Z'/%3E%3Cpath d='M70 58q2.4-4 5.6-1.6q.8-2.4 2-.8q1.2-1.6 2 .8q3.2-2.4 5.6 1.6q-2.4-.4-3.6 1.6q-1.2-1.2-2.4 0l-1.6 1.2l-1.6-1.2q-1.2-1.2-2.4 0q-1.2-2-3.6-1.6Z'/%3E%3Cpath d='M92 14q1.8-3 4.2-1.2q.6-1.8 1.5-.6q.9-1.2 1.5.6q2.4-1.8 4.2 1.2q-1.8-.3-2.7 1.2q-.9-.9-1.8 0l-1.2.9l-1.2-.9q-.9-.9-1.8 0q-.9-1.5-2.7-1.2Z'/%3E%3C/g%3E%3C/svg%3E"),
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(255, 122, 26, 0.35), transparent 70%);
+  background-size: 120px 90px, 100% 100%;
+  opacity: 0.09;
+}
+
+/* ---------- status bar: dripping candle wax along the top edge ---------- */
+
+.waxDrips {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 7px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='7'%3E%3Cpath d='M0 0H36V2Q34 2 34 3.4A1.2 1.2 0 0 1 31.6 3.4Q31.6 2 29 2H22Q20.4 2 20.4 4.8A1.3 1.3 0 0 1 17.8 4.8Q17.8 2 16 2H10Q8.6 2 8.6 3A1 1 0 0 1 6.6 3Q6.6 2 5 2H0Z' fill='%23f4ead2'/%3E%3C/svg%3E");
+  background-size: 36px 7px;
+  background-repeat: repeat-x;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
+  opacity: 0.75;
+}
+
+/* ---------- standings: a spider hanging on a thread from the top edge ---------- */
+
+.spiderHang {
+  position: absolute;
+  top: 0;
+  right: 30px;
+  width: 14px;
+  height: 26px;
+}
+
+.spiderHangContained {
+  composes: spiderHang;
+  right: 20px;
+}
+
+.thread {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 0.8px;
+  height: calc(100% - 10px);
+  transform-origin: top;
+  background: rgba(230, 227, 240, 0.7);
+}
+
+.spider {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 14px;
+  height: 12px;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.45));
+}
+
+/* ---------- picker: glowing jack-o'-lantern on the edge ---------- */
+
+.lantern {
+  position: absolute;
+  top: -15px;
+  right: 18px;
+  width: 22px;
+  height: 20px;
+  filter: drop-shadow(0 0 3px rgba(255, 160, 50, 0.55)) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.4));
+}
+
+.lanternContained {
+  composes: lantern;
+  top: 6px;
+  right: 8px;
+  width: 18px;
+  height: 16px;
+}
+
+/* ---------- status bar: carved pumpkin behind the round counter ---------- */
+
+.roundPumpkin {
+  position: absolute;
+  inset: -5px -9px;
+  z-index: -1;
+  width: calc(100% + 18px);
+  height: calc(100% + 10px);
+  opacity: 0.5;
+  filter: drop-shadow(0 0 4px rgba(255, 140, 40, 0.5));
+}
+
+/* ---------- motion (never under reduced motion) ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .bats {
+    animation: halloween-bats 40s linear infinite;
+  }
+
+  .thread {
+    animation: halloween-thread 3.6s ease-in-out infinite;
+  }
+
+  .spider {
+    animation: halloween-spider 3.6s ease-in-out infinite;
+  }
+
+  .lantern {
+    animation: halloween-flicker 2.8s ease-in-out infinite;
+  }
+}
+
+@keyframes halloween-bats {
+  to {
+    background-position: -240px -90px, 0 0;
+  }
+}
+
+/* The thread stretches by 25% and the spider follows it by the same distance. */
+@keyframes halloween-thread {
+  50% {
+    transform: scaleY(1.25);
+  }
+}
+
+@keyframes halloween-spider {
+  50% {
+    transform: translateY(4px) rotate(4deg);
+  }
+}
+
+@keyframes halloween-flicker {
+  40% {
+    filter: drop-shadow(0 0 5px rgba(255, 180, 60, 0.75)) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.4));
+  }
+
+  60% {
+    filter: drop-shadow(0 0 2px rgba(255, 140, 40, 0.4)) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.4));
+  }
+}

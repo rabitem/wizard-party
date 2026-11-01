@@ -1,0 +1,26 @@
+/** Colours of the winter (snowy holidays) HUD skin. */
+export const WINTER_PALETTE = {
+  snow: '#ffffff',
+  snowShade: '#cfe0ee',
+  frost: '#e8f6ff',
+  ice: '#bfe6ff',
+  iceDark: '#5b9fd0',
+  blue: '#3a78c2',
+  blueDark: '#1f4c86',
+  red: '#d62f3a',
+  redDark: '#8e1a22',
+  gold: '#f0c24a',
+  goldDark: '#a8801c',
+  fir: '#2f7a4a',
+  firDark: '#1b4d2e',
+  coal: '#22252b',
+  carrot: '#f08a24',
+  carrotDark: '#a85a10',
+  wood: '#8a5a32',
+  woodDark: '#523316',
+  silver: '#c8ccd4',
+  silverDark: '#7d828c',
+  glass: '#dff3ff',
+  /** Dark rim around every icon shape so bright fills separate on any surface. */
+  outline: 'rgba(10, 24, 40, 0.55)',
+} as const;

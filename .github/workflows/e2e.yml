@@ -1,0 +1,99 @@
+name: Browser suites
+
+# The Playwright suites drive the animation sandbox in real browsers. Hosted runners have no GPU,
+# so WebGL renders in software: runs are slow and frame-time budgets are not meaningful here
+# (run `npm run e2e:perf` on real hardware for those). This workflow checks correctness:
+# animation sequences, layouts per device and reconnect behaviour on every engine, Firefox included,
+# plus the deterministic render/React budgets, fault injection, touch input and visual baselines.
+# Software WebGL makes one sandbox run take minutes, so every project suite costs runner hours.
+# Pull requests labelled `e2e` run only Chromium and one touch phone; the weekly run (and a manual
+# dispatch) covers every engine and device, and the weekly run adds the full viewport matrix.
+#
+# Visual baselines are generated here, never locally: dispatch the workflow with update_snapshots,
+# download the visual-baselines-<project> artifacts and commit their e2e/visual.spec.ts-snapshots.
+
+on:
+  pull_request:
+    branches: [main]
+    types: [labeled, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      grep:
+        description: 'Only run tests whose title matches (Playwright --grep)'
+        required: false
+        default: ''
+      update_snapshots:
+        description: 'Regenerate the visual baselines and upload them as artifacts (runs only e2e/visual.spec.ts)'
+        type: boolean
+        required: false
+        default: false
+  schedule:
+    - cron: '0 3 * * 0'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    name: ${{ matrix.project }}
+    if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'e2e')
+    runs-on: ubuntu-latest
+    # The weekly viewport matrix plays every viewport (up to 4K, device pixel ratios up to 3) at
+    # every table size in software WebGL; it gets twice the time of a project suite.
+    timeout-minutes: ${{ matrix.project == 'viewport-matrix' && 180 || 90 }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # Pull requests: Chromium and a touch phone. Regenerating visual baselines leaves out the
+        # viewport matrix: it has no visual spec to update.
+        project: ${{ fromJSON(github.event_name == 'pull_request' && '["chromium","android-phone"]' || inputs.update_snapshots && '["chromium","firefox","webkit","android-phone","iphone","iphone-landscape","ipad"]' || '["chromium","firefox","webkit","android-phone","iphone","iphone-landscape","ipad","viewport-matrix"]') }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '26'
+          cache: npm
+      - run: npm ci
+      - name: Install the browser for this project
+        shell: bash
+        run: |
+          case "${{ matrix.project }}" in
+            chromium|android-phone|viewport-matrix) npx playwright install --with-deps chromium ;;
+            firefox) npx playwright install --with-deps firefox ;;
+            *) npx playwright install --with-deps webkit ;;
+          esac
+      - run: npm run e2e:build
+      - name: Run the suites
+        if: ${{ !inputs.update_snapshots }}
+        env:
+          E2E_WORKERS: '2'
+          E2E_FULL_MATRIX: ${{ github.event_name == 'schedule' && '1' || '0' }}
+          GREP: ${{ inputs.grep }}
+        run: npx playwright test --project=${{ matrix.project }} --grep-invert "sustains" ${GREP:+--grep "$GREP"}
+      - name: Update the visual baselines
+        if: ${{ inputs.update_snapshots }}
+        env:
+          E2E_WORKERS: '1'
+        run: npx playwright test e2e/visual.spec.ts --project=${{ matrix.project }} --update-snapshots=all
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: ${{ inputs.update_snapshots }}
+        with:
+          name: visual-baselines-${{ matrix.project }}
+          path: e2e/visual.spec.ts-snapshots/
+          if-no-files-found: error
+          retention-days: 14
+      # Also on a timeout: a cancelled job is the one whose traces are needed most.
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: failure() || cancelled()
+        with:
+          name: e2e-${{ matrix.project }}
+          path: |
+            e2e-report/
+            e2e-results/
+          retention-days: 7

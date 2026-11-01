@@ -1,0 +1,23 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "wizard-party",
+  "main": "party/worker.ts",
+  "compatibility_date": "2026-10-26",
+  "workers_dev": true,
+  "durable_objects": {
+    "bindings": [{ "name": "Main", "class_name": "Main" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Main"] }],
+  "dev": { "port": 1999 },
+  "observability": { "enabled": true },
+  "version_metadata": { "binding": "CF_VERSION_METADATA" },
+  // Secrets (never in this file):
+  //   TELEMETRY_INGEST_SECRET: `wrangler secret put TELEMETRY_INGEST_SECRET`
+  //   TOURNAMENT_SECRET: `wrangler secret put TOURNAMENT_SECRET`, identical to the Vercel env var.
+  //     Unset: the worker refuses every tournament ticket (tournaments unavailable).
+  // TOURNAMENT_RESULT_URL: where finished tournament matches are reported; point previews at their own deployment.
+  "vars": {
+    "TELEMETRY_INGEST_URL": "https://wizardparty.fun/api/telemetry/ingest",
+    "TOURNAMENT_RESULT_URL": "https://wizardparty.fun/api/tournaments/match-results"
+  }
+}

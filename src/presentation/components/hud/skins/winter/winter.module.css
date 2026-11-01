@@ -1,0 +1,212 @@
+/* Winter HUD skin: snow caps, icicles, frost crystals, fir sprig with a bauble, snowfall, wreath.
+   Purely decorative: every element sits in an aria-hidden, pointer-events-none wrapper. */
+
+/* ---------- buttons: snow cap on the top edge + tiny icicles ---------- */
+
+.frostRim {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(200deg, rgba(232, 246, 255, 0.14) 0%, transparent 45%);
+  box-shadow: inset 0 0 0 1px rgba(191, 230, 255, 0.35), inset 0 0 6px rgba(191, 230, 255, 0.18);
+}
+
+.buttonCapClip {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.buttonCap {
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  filter: drop-shadow(0 1px 0.5px rgba(30, 60, 100, 0.35));
+}
+
+.buttonIcicle {
+  position: absolute;
+  top: 3px;
+  width: 2px;
+  transform: translateX(-50%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  background: linear-gradient(90deg, #ffffff, #bfe6ff);
+  opacity: 0.9;
+}
+
+/* ---------- panels: clip boxes, snow on the top edge, icicles, frost ---------- */
+
+.clip {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.clipBehind {
+  composes: clip;
+  /* Behind the host's content, above its background (the host is `isolate`). */
+  z-index: -1;
+}
+
+/* Snow resting on the panel: rises ~4px above the edge and settles ~5px over it. */
+.snowEdge {
+  position: absolute;
+  top: -4px;
+  left: 6px;
+  right: 6px;
+  width: calc(100% - 12px);
+  height: 9px;
+  filter: drop-shadow(0 1px 1px rgba(30, 60, 100, 0.35));
+}
+
+.snowEdgeContained {
+  composes: snowEdge;
+  top: 0;
+  height: 5px;
+}
+
+.icicles {
+  position: absolute;
+  top: 4px;
+  left: 8px;
+  right: 8px;
+  height: 9px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='9'%3E%3Cg fill='%23dff3ff' stroke='%235b9fd0' stroke-width='.5' stroke-opacity='.6'%3E%3Cpath d='M3 0h4L5 8Z'/%3E%3Cpath d='M13 0h3l-1.5 4.6Z'/%3E%3Cpath d='M22 0h4l-2 6.4Z'/%3E%3Cpath d='M29.5 0h2.5l-1.2 3.4Z'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 34px 9px;
+  background-repeat: repeat-x;
+  opacity: 0.85;
+}
+
+.iciclesSlim {
+  composes: icicles;
+  top: 3px;
+  height: 6px;
+  background-size: 22px 6px;
+}
+
+.frostTopLeft {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 22px;
+  height: 22px;
+  opacity: 0.55;
+}
+
+.frostTopLeftSmall {
+  composes: frostTopLeft;
+  width: 14px;
+  height: 14px;
+}
+
+.frostTopRight {
+  composes: frostTopLeft;
+  left: auto;
+  right: 2px;
+  transform: scaleX(-1);
+}
+
+.frostTopRightSmall {
+  composes: frostTopRight;
+  width: 14px;
+  height: 14px;
+}
+
+.frostBottomLeft {
+  composes: frostTopLeft;
+  top: auto;
+  bottom: 2px;
+  width: 18px;
+  height: 18px;
+  transform: scaleY(-1);
+  opacity: 0.4;
+}
+
+.snowfall {
+  position: absolute;
+  inset: 0;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cg stroke='%23e8f6ff' stroke-width='1.1' stroke-linecap='round'%3E%3Cpath d='M18 12v12M12.8 15l10.4 6M12.8 21l10.4-6'/%3E%3Cpath d='M70 50v8M66.5 52l7 4M66.5 56l7-4'/%3E%3Cpath d='M40 80v10M35.7 82.5l8.6 5M35.7 87.5l8.6-5'/%3E%3C/g%3E%3Cg fill='%23ffffff'%3E%3Ccircle cx='52' cy='22' r='1.4'/%3E%3Ccircle cx='86' cy='84' r='1.2'/%3E%3Ccircle cx='8' cy='60' r='1.2'/%3E%3C/g%3E%3C/svg%3E"),
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(191, 230, 255, 0.5), transparent 70%);
+  background-size: 100px 100px, 100% 100%;
+  opacity: 0.09;
+}
+
+/* ---------- picker: fir sprig with a bauble on the corner ---------- */
+
+.sprig {
+  position: absolute;
+  top: -12px;
+  right: 8px;
+  width: 40px;
+  height: 24px;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.4));
+}
+
+.sprigContained {
+  composes: sprig;
+  top: 6px;
+  right: 6px;
+  width: 32px;
+  height: 19px;
+}
+
+/* ---------- status bar: fir wreath with a red bow around the round counter ---------- */
+
+.wreath {
+  position: absolute;
+  inset: -4px -8px;
+  z-index: -1;
+  opacity: 0.8;
+}
+
+.wreathRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 2px solid rgba(27, 77, 46, 0.85);
+}
+
+.firTuft {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+}
+
+.bow {
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 14px;
+  height: 9px;
+  transform: translateX(-50%);
+}
+
+/* ---------- motion (never under reduced motion) ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .snowfall {
+    animation: winter-snowfall 26s linear infinite;
+  }
+
+  .sprig {
+    animation: winter-sway 4.6s ease-in-out infinite;
+    transform-origin: 90% 20%;
+  }
+}
+
+@keyframes winter-snowfall {
+  to {
+    background-position: 30px 200px, 0 0;
+  }
+}
+
+@keyframes winter-sway {
+  50% {
+    transform: rotate(2.5deg);
+  }
+}

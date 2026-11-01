@@ -1,0 +1,33 @@
+/* Gentle idle motion for the themed error illustrations. Disabled for reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .bob {
+    animation: bob 4.5s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: 50% 90%;
+  }
+
+  .sway {
+    animation: sway 6s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: 50% 20%;
+  }
+
+  .pulse {
+    animation: pulse 2.6s ease-in-out infinite;
+  }
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes sway {
+  0%, 100% { transform: rotate(-6deg); }
+  50% { transform: rotate(6deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}

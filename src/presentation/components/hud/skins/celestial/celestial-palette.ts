@@ -1,0 +1,25 @@
+/** Colours of the celestial (night sky, gilded astronomy) HUD skin. */
+export const CELESTIAL_PALETTE = {
+  gold: '#f2c94c',
+  goldDark: '#a3761a',
+  goldLight: '#fff0b8',
+  midnight: '#141b42',
+  navy: '#24306b',
+  indigo: '#4a4fa8',
+  violet: '#8a7fe0',
+  moon: '#f4efd8',
+  moonShade: '#3a3f6e',
+  sun: '#ffbf3f',
+  sunDark: '#c9761a',
+  planetBlue: '#5fb0ea',
+  planetBlueDark: '#2c6ea6',
+  planetRose: '#ec8f7c',
+  planetRoseDark: '#a5503e',
+  brass: '#c99a4a',
+  brassDark: '#7a561c',
+  star: '#fff6cc',
+  blush: '#ff8f6b',
+  white: '#ffffff',
+  /** Dark rim around every icon shape so gold separates on light surfaces too. */
+  outline: 'rgba(10, 12, 36, 0.6)',
+} as const;

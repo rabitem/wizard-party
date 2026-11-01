@@ -1,0 +1,276 @@
+/* Winter lobby skin: alpine lodge scene, sled sign seats, snowmen, frosted glass start button.
+   Purely decorative: every element sits in an aria-hidden, pointer-events-none wrapper. */
+
+/* ---------- header scene ---------- */
+
+.sceneNight {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(rgba(255, 255, 255, 0.55) 0.6px, transparent 1px) 7px 5px / 37px 29px,
+    radial-gradient(rgba(255, 255, 255, 0.35) 0.5px, transparent 0.9px) 0 0 / 23px 41px,
+    linear-gradient(180deg, transparent 0%, rgba(40, 70, 120, 0.25) 70%, transparent 100%);
+}
+
+.smoke {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  opacity: 0.35;
+}
+
+.windowGlow {
+  opacity: 0.95;
+}
+
+.badgeSnow {
+  position: absolute;
+  top: -6px;
+  left: -4px;
+  width: calc(100% + 8px);
+  height: 11px;
+  filter: drop-shadow(0 1px 1px rgba(10, 24, 40, 0.4));
+}
+
+.badgeIcicles {
+  position: absolute;
+  bottom: -8px;
+  left: 18%;
+  width: 20px;
+  height: 10px;
+}
+
+/* ---------- seats: wooden sled sign ---------- */
+
+.planks {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    linear-gradient(180deg, transparent calc(50% - 0.5px), rgba(0, 0, 0, 0.35) calc(50% - 0.5px) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.035) 0 2px, transparent 2px 11px),
+    repeating-linear-gradient(88deg, rgba(0, 0, 0, 0.08) 0 1px, transparent 1px 23px),
+    linear-gradient(180deg, rgba(138, 90, 50, 0.5), rgba(82, 51, 22, 0.55));
+  box-shadow: inset 0 1px 0 rgba(255, 220, 180, 0.12);
+}
+
+.planksLocal {
+  composes: planks;
+  background:
+    radial-gradient(ellipse 45% 100% at 0% 50%, rgba(255, 190, 90, 0.18), transparent 70%),
+    linear-gradient(180deg, transparent calc(50% - 0.5px), rgba(0, 0, 0, 0.35) calc(50% - 0.5px) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.035) 0 2px, transparent 2px 11px),
+    linear-gradient(180deg, rgba(150, 98, 54, 0.56), rgba(90, 56, 24, 0.6));
+}
+
+.rowSnow {
+  position: absolute;
+  top: -3px;
+  left: 6px;
+  width: calc(100% - 12px);
+  height: 7px;
+}
+
+.nailLeft {
+  position: absolute;
+  top: 50%;
+  left: 3px;
+  width: 3px;
+  height: 3px;
+  border-radius: 9999px;
+  background: #c8ccd4;
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.6);
+  transform: translateY(-50%);
+}
+
+.nailRight {
+  composes: nailLeft;
+  left: auto;
+  right: 3px;
+}
+
+.runner {
+  position: absolute;
+  bottom: -4px;
+  left: 5%;
+  width: 93%;
+  height: 5px;
+}
+
+.avatarSnow {
+  position: absolute;
+  top: -4px;
+  left: -2px;
+  width: calc(100% + 4px);
+  height: 7px;
+}
+
+.frostBehind {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    radial-gradient(ellipse 40% 80% at 100% 100%, rgba(232, 246, 255, 0.1), transparent 70%),
+    radial-gradient(rgba(232, 246, 255, 0.18) 0.6px, transparent 1px) 0 0 / 6px 6px;
+  opacity: 0.8;
+}
+
+.snowman {
+  position: absolute;
+  right: 6px;
+  top: 2px;
+  height: calc(100% - 4px);
+  width: min(45%, 150px);
+  z-index: -1;
+  opacity: 0.85;
+}
+
+.scarf {
+  transform-box: fill-box;
+  transform-origin: 0 50%;
+}
+
+/* ---------- panels: snow load, icicles, frost, snowfall ---------- */
+
+.panelSnow {
+  position: absolute;
+  top: -6px;
+  left: -3px;
+  width: calc(100% + 6px);
+  height: 12px;
+  filter: drop-shadow(0 1px 1px rgba(10, 24, 40, 0.35));
+}
+
+.robin {
+  position: absolute;
+  top: -17px;
+  right: 22px;
+  width: 20px;
+  height: 16px;
+}
+
+.icicles {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: -9px;
+  height: 10px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='10'%3E%3Cpath d='M2 0L4 8L6 0ZM11 0L12.5 5L14 0ZM19 0L21.5 10L24 0Z' fill='%23bfe6ff' stroke='%235b9fd0' stroke-width='0.4'/%3E%3C/svg%3E") 0 0 / 30px 10px repeat-x;
+  opacity: 0.85;
+}
+
+.frostCorners {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 0 0, rgba(232, 246, 255, 0.14), transparent 22%),
+    radial-gradient(circle at 100% 0, rgba(232, 246, 255, 0.1), transparent 18%),
+    radial-gradient(circle at 100% 100%, rgba(232, 246, 255, 0.12), transparent 22%);
+}
+
+.snowfall {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(rgba(255, 255, 255, 0.5) 0.8px, transparent 1.2px) 0 0 / 22px 22px,
+    radial-gradient(rgba(255, 255, 255, 0.35) 0.6px, transparent 1px) 11px 7px / 31px 31px;
+  opacity: 0.3;
+}
+
+.snowGround {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 50%, rgba(232, 246, 255, 0.08) 100%);
+}
+
+.driftLeft {
+  position: absolute;
+  bottom: -2px;
+  left: -3px;
+  width: 26px;
+  height: 8px;
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  background: linear-gradient(180deg, #ffffff, #cfe0ee);
+  opacity: 0.9;
+}
+
+.driftRight {
+  composes: driftLeft;
+  left: auto;
+  right: -3px;
+  width: 34px;
+  height: 7px;
+}
+
+/* ---------- start button: frosted glass with snow piles ---------- */
+
+.frostGlass {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    radial-gradient(rgba(255, 255, 255, 0.7) 0.7px, transparent 1.1px) 0 0 / 5px 5px,
+    radial-gradient(ellipse 60% 120% at 15% 0%, rgba(255, 255, 255, 0.85), transparent 60%),
+    linear-gradient(180deg, #eef8ff 0%, #cfeaff 55%, #a9d6f5 100%);
+}
+
+.frostGlassDim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    radial-gradient(rgba(255, 255, 255, 0.22) 0.7px, transparent 1.1px) 0 0 / 5px 5px,
+    linear-gradient(180deg, rgba(223, 243, 255, 0.18), rgba(150, 200, 235, 0.1));
+}
+
+.glassSheen {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.4) 45%, transparent 55%) 100% 0 / 250% 100% no-repeat;
+}
+
+.pileTopLeft {
+  position: absolute;
+  top: -5px;
+  left: -3px;
+  width: 42px;
+  height: 10px;
+  border-radius: 60% 70% 40% 30% / 100% 100% 30% 30%;
+  background: linear-gradient(180deg, #ffffff, #dbe9f4);
+  box-shadow: 0 1px 1px rgba(10, 24, 40, 0.3);
+}
+
+.pileBottomRight {
+  composes: pileTopLeft;
+  top: auto;
+  left: auto;
+  bottom: -4px;
+  right: -3px;
+  width: 52px;
+  height: 9px;
+  border-radius: 50% 60% 20% 20% / 100% 100% 40% 40%;
+}
+
+/* ---------- motion (never under reduced motion) ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .smoke { animation: winter-lobby-smoke 3.9s ease-out infinite; }
+  .windowGlow { animation: winter-lobby-fire 2.4s ease-in-out infinite; }
+  .scarf { animation: winter-lobby-scarf 1.8s ease-in-out infinite; }
+  .snowfall { animation: winter-lobby-snowfall 9s linear infinite; }
+  .glassSheen { animation: winter-lobby-sheen 5s ease-in-out infinite; }
+}
+
+@keyframes winter-lobby-smoke {
+  0% { transform: translate(0, 0) scale(0.4); opacity: 0.6; }
+  100% { transform: translate(10px, -34px) scale(1.4); opacity: 0; }
+}
+@keyframes winter-lobby-fire { 50% { opacity: 0.7; } }
+@keyframes winter-lobby-scarf { 50% { transform: rotate(14deg) scaleX(0.85); } }
+@keyframes winter-lobby-snowfall { to { background-position: 0 22px, 11px 69px; } }
+@keyframes winter-lobby-sheen { 0%, 55% { background-position: 100% 0; } 100% { background-position: -50% 0; } }
