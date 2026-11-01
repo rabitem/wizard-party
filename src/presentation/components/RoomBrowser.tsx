@@ -9,14 +9,6 @@ import {
   ShareDialog,
   CreateRoomDialog,
   AmbientParticles,
-  HeroSection,
-  RealmSwitcher,
-  PlayCard,
-  LearnToPlaySection,
-  TournamentsSection,
-  RecentRoomsSection,
-  HowToWinSection, ExpansionShowcaseSection,
-  FooterSection,
   generateRoomId,
   RECENT_ROOMS_KEY,
   getDefaultHost,
@@ -25,14 +17,10 @@ import {
 } from './room-browser';
 import { normalizePartyHostInput } from './room-browser/room-host';
 import { parseRoomCodeInput } from './room-browser/room-code';
-import { GlobalStatsPanel } from './GlobalStatsPanel';
-import { HallOfChampions } from './hall-of-champions';
-import { RealmPulse } from './realm-pulse';
+import { StartHall } from './realm-hall';
 import { ClassicAmbienceOnly } from './ui';
 import { useGame } from '../providers/GameProvider';
 import { useAccount } from '../providers/AccountProvider';
-import { AccountButton, GuestHint, PreferencesButton } from './account';
-import { SocialButton } from './friends';
 import { useUsernameValidation } from '../hooks/useUsernameValidation';
 import { usePlayerName } from '../hooks/usePlayerName';
 
@@ -113,43 +101,6 @@ function RoomBrowserDialogs({
       {showCreateRoom ? <CreateRoomDialog onClose={onCreateRoomClose} onCreate={onCreateRoom} host={host} /> : null}
       {showShare ? <ShareDialog roomId={showShare.roomId} onClose={onShareClose} /> : null}
     </AnimatePresence>
-  );
-}
-
-interface RoomBrowserContentProps {
-  playCard: React.ComponentProps<typeof PlayCard>;
-  openTutorial: () => void;
-  recentRooms: RecentRoom[];
-  handleJoinRoom: (roomId: string, roomSettings?: RoomSettings) => void;
-}
-
-function RoomBrowserContent({
-  playCard,
-  openTutorial,
-  recentRooms,
-  handleJoinRoom,
-}: RoomBrowserContentProps) {
-  return (
-    <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
-      <div className="flex justify-end gap-2 mb-2 sm:mb-0 sm:absolute sm:top-6 sm:right-6">
-        <SocialButton />
-        <PreferencesButton />
-        <AccountButton />
-      </div>
-      <HeroSection />
-      <RealmSwitcher />
-      <PlayCard {...playCard} />
-      <GuestHint className="-mt-3 sm:-mt-4 mb-6 sm:mb-8" />
-      <RealmPulse />
-      <TournamentsSection />
-      <LearnToPlaySection onOpenTutorial={openTutorial} />
-      <RecentRoomsSection recentRooms={recentRooms} canPlay={playCard.identity.accountStatus !== 'loading'} onJoinRoom={handleJoinRoom} />
-      <HallOfChampions />
-      <GlobalStatsPanel />
-      <HowToWinSection />
-      <ExpansionShowcaseSection />
-      <FooterSection />
-    </div>
   );
 }
 
@@ -244,7 +195,7 @@ export function RoomBrowser() {
         }}
       />
 
-      <RoomBrowserContent
+      <StartHall
         playCard={{
           identity,
           validation: { status: usernameStatus, isChecking, isTaken },

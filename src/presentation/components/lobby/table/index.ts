@@ -11,3 +11,4 @@ export {
 } from './LobbyStates';
 export { buildSeatViews, summarizeRules, startReadiness, type SeatAccount } from './lobby-view';
 export type * from './lobby-view.types';
+export { GOLD_BUTTON_STYLE } from './lobby-styles';

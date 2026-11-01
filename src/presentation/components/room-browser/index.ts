@@ -1,7 +1,6 @@
 export { ShareDialog } from './ShareDialog';
 export { CreateRoomDialog } from './CreateRoomDialog';
 export { AmbientParticles } from './AmbientParticles';
-export { HeroSection } from './HeroSection';
 export { RealmSwitcher } from './RealmSwitcher';
 export { PlayCard } from './PlayCard';
 export { LearnToPlaySection } from './LearnToPlaySection';

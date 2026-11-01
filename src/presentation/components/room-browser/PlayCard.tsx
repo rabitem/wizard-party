@@ -3,7 +3,8 @@
 import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'motion/react';
-import { ArrowRight, Loader2, Play, Settings2, Shield } from 'lucide-react';
+import { ArrowRight, Loader2, Settings2, Shield, Sparkles } from 'lucide-react';
+import { GOLD_BUTTON_STYLE } from '../lobby/table';
 import type { UsernameValidationStatus } from '@/presentation/hooks/useUsernameValidation';
 import { PlayerAvatar } from '../account/PlayerAvatar';
 import { isValidRoomCode, parseRoomCodeInput } from './room-code';
@@ -42,19 +43,9 @@ interface PlayCardProps {
   onQuickJoin: () => void;
   onJoinByCode: (roomId: string) => void;
   onCreateRoom: () => void;
+  className?: string;
 }
 
-function Corners() {
-  const base = 'absolute w-1.5 h-1.5 pointer-events-none border-amber-500/40';
-  return (
-    <>
-      <span className={`${base} top-0.5 left-0.5 border-t border-l`} />
-      <span className={`${base} top-0.5 right-0.5 border-t border-r`} />
-      <span className={`${base} bottom-0.5 left-0.5 border-b border-l`} />
-      <span className={`${base} bottom-0.5 right-0.5 border-b border-r`} />
-    </>
-  );
-}
 
 function nameProblem(validation: PlayCardValidation): string | null {
   if (validation.isTaken) return 'This name belongs to a registered player. Pick another one.';
@@ -229,44 +220,12 @@ function JoinByCodeForm({
   );
 }
 
-function ActionTile({
-  icon,
-  title,
-  hint,
-  featured = false,
-  disabled,
-  onClick,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  hint: string;
-  featured?: boolean;
-  disabled: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      className={`relative text-left p-3.5 rounded-xl border transition-colors cursor-pointer active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed ${
-        featured ? 'border-amber-500/50 bg-amber-700/15 hover:bg-amber-700/25 hover:border-amber-400/70' : 'border-amber-700/40 hover:bg-amber-900/25 hover:border-amber-600/60'
-      }`}
-      style={featured ? SERIF : { background: 'color-mix(in srgb, var(--surface) 55%, transparent)', ...SERIF }}
-    >
-      <Corners />
-      <span className={`block mb-2 ${featured ? 'text-amber-300' : 'text-amber-400/80'}`}>{icon}</span>
-      <span className="block text-amber-100">{title}</span>
-      <span className="block text-amber-500/70 text-xs mt-0.5">{hint}</span>
-    </button>
-  );
-}
 
 /**
  * The landing page's play panel, code first: who you are, the room code field, then quick play
  * and create. Actions stay clickable without a name so a click can point at the missing field.
  */
-export function PlayCard({ identity, validation, canPlay, isLoading, pendingRoomId, onQuickJoin, onJoinByCode, onCreateRoom }: PlayCardProps) {
+export function PlayCard({ identity, validation, canPlay, isLoading, pendingRoomId, onQuickJoin, onJoinByCode, onCreateRoom, className = 'mb-6 sm:mb-8' }: PlayCardProps) {
   const nameInputRef = useRef<HTMLInputElement>(null);
   const [action, setAction] = useState<PlayAction | null>(null);
   const [nameRequested, setNameRequested] = useState(false);
@@ -286,7 +245,7 @@ export function PlayCard({ identity, validation, canPlay, isLoading, pendingRoom
 
   return (
     <motion.section
-      className="mb-6 sm:mb-8"
+      className={className}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.1 }}
@@ -319,22 +278,28 @@ export function PlayCard({ identity, validation, canPlay, isLoading, pendingRoom
             <div className="flex-1 h-px bg-amber-700/25" />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <ActionTile
-              featured
-              icon={busy && action === 'quick' ? <Loader2 className="w-5 h-5 animate-spin" /> : <Play className="w-5 h-5" fill="currentColor" />}
-              title="Quick play"
-              hint="Public table, starts fast"
-              disabled={isLoading}
+          <div className="space-y-2.5">
+            {/* The lobby's start button, so the first action looks like the last one before the game */}
+            <button
+              type="button"
               onClick={() => run('quick', onQuickJoin)}
-            />
-            <ActionTile
-              icon={<Settings2 className="w-5 h-5" />}
-              title="Create room"
-              hint="Your rules, invite friends"
               disabled={isLoading}
+              className="w-full h-12 rounded-xl flex items-center justify-center gap-2 text-base cursor-pointer active:scale-[0.98] hover:brightness-105 disabled:opacity-50 disabled:cursor-not-allowed"
+              style={GOLD_BUTTON_STYLE}
+            >
+              {busy && action === 'quick' ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden /> : <Sparkles className="w-4 h-4" aria-hidden />}
+              Quick play
+            </button>
+            <button
+              type="button"
               onClick={() => run('create', onCreateRoom)}
-            />
+              disabled={isLoading}
+              className="w-full h-11 rounded-xl border border-amber-700/50 flex items-center justify-center gap-2 text-sm text-amber-100 cursor-pointer hover:bg-amber-900/25 hover:border-amber-500/60 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+              style={SERIF}
+            >
+              {busy && action === 'create' ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden /> : <Settings2 className="w-4 h-4" aria-hidden />}
+              Create room
+            </button>
           </div>
         </div>
       </div>
