@@ -4,19 +4,26 @@ import { SITE_HOST } from "@/config/deployment.config";
 
 import { BrandMarkSvg } from "./brand-mark-svg";
 import { OG_COLORS, OG_FONTS, OG_SIZE, OgBackdrop, OgHost, REALM_COUNT, RealmLensRow } from "./og-kit";
+import { DEFAULT_OG_REALM } from "./og-realm";
+
+/** The room moves right by this much, so its lit corner and table clear the text column. */
+const ROOM_SHIFT_X = 260;
 
 export const HOME_PREVIEW_ALT = "Wizard Party: bid your tricks, then hit them exactly. A free online Wizard card game at a 3D table.";
 
 /**
- * The site's link preview: the real Classic game room with the table lit on the right; on the
- * left the mark, the name in Gelasio, the promise, and a lens for every realm.
+ * The site's link preview: a realm's real game room (Classic for the site itself) with its lit
+ * corner and table on the right; on the left the mark, the name in Gelasio, the promise, and a lens
+ * for every realm.
  */
-export function renderHomePreview(): ImageResponse {
+export function renderHomePreview(realm: string = DEFAULT_OG_REALM): ImageResponse {
   return new ImageResponse(
     (
       <div style={{ width: "100%", height: "100%", display: "flex", position: "relative", background: OG_COLORS.INK, fontFamily: "Gelasio" }}>
         <OgBackdrop
+          realm={realm}
           kind="side"
+          shiftX={ROOM_SHIFT_X}
           shade="linear-gradient(to right, rgb(11,8,5) 0%, rgba(11,8,5,0.94) 40%, rgba(11,8,5,0.3) 58%, rgba(11,8,5,0) 76%)"
         />
         <div style={{ position: "relative", display: "flex", flexDirection: "column", justifyContent: "center", paddingLeft: 72, width: 680, height: "100%" }}>

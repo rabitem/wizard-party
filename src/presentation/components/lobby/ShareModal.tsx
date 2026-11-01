@@ -7,6 +7,7 @@ import { motion, AnimatePresence, useMotionValue, useTransform, animate, PanInfo
 import { SITE_URL } from '@/config/deployment.config';
 import { THEME_SURFACE } from '@/presentation/config/theme-surface.config';
 import { SeasonalCorner, SeasonalEmblem } from '@/presentation/components/seasonal';
+import { useRealmLinkParam } from '@/presentation/components/room-browser';
 
 interface ShareModalProps {
   roomId: string;
@@ -132,7 +133,8 @@ function useModalSetup(): { isMobile: boolean } {
 export function ShareModal({ roomId, onClose }: ShareModalProps) {
   const [copied, setCopied] = useState(false);
   const { isMobile } = useModalSetup();
-  const shareUrl = `${SITE_URL}/join?room=${roomId}`;
+  const realmParam = useRealmLinkParam();
+  const shareUrl = `${SITE_URL}/join?room=${roomId}${realmParam}`;
   const canShare = typeof navigator !== 'undefined' && 'share' in navigator;
 
   const y = useMotionValue(0);

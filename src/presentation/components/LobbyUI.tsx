@@ -21,7 +21,7 @@ import {
   type SeatAccount,
 } from './lobby/table';
 import { useChangedRuleHighlight, useLobbyToasts } from './lobby/table/useLobbyFeedback';
-import { AmbientParticles } from './room-browser';
+import { AmbientParticles, useRealmLinkParam } from './room-browser';
 import { ClassicAmbienceOnly } from './ui';
 import { SeatFriendAction } from './friends';
 import { TournamentTableLobby } from './tournament/in-game';
@@ -43,8 +43,10 @@ type Sheet =
 
 const FALLBACK_AVATARS = AVATAR_PRESETS.map((preset) => preset.id);
 
-function shareUrlFor(roomId: string): string {
-  return typeof window === 'undefined' ? `/?room=${roomId}` : `${window.location.origin}/?room=${roomId}`;
+/** The invite link: the join page, whose preview shows the room code over the inviter's realm. */
+function shareUrlFor(roomId: string, realmParam: string): string {
+  const path = `/join?room=${roomId}${realmParam}`;
+  return typeof window === 'undefined' ? path : `${window.location.origin}${path}`;
 }
 
 function toInviteView(invite: SentInviteDto): LobbyInviteView {
@@ -84,6 +86,7 @@ function RoundTableLobby({ gameState, localPlayerId }: LobbyUIProps) {
   const { invite, busy, error: inviteError, notice: inviteNotice } = useSocialActions();
   const sentInvites = useSentInvites(socialEnabled ? gameState.id : null);
   const palette = useSelectedTableTheme();
+  const realmParam = useRealmLinkParam();
   const [sheet, setSheet] = useState<Sheet | null>(null);
   const [isStarting, setIsStarting] = useState(false);
   const { status: accountStatus } = useAccount();
@@ -141,8 +144,8 @@ function RoundTableLobby({ gameState, localPlayerId }: LobbyUIProps) {
   }, [friends, roomAccounts, sentInvites.invites]);
 
   const copyLink = useCallback(async () => {
-    await navigator.clipboard.writeText(shareUrlFor(gameState.id));
-  }, [gameState.id]);
+    await navigator.clipboard.writeText(shareUrlFor(gameState.id, realmParam));
+  }, [gameState.id, realmParam]);
 
   const handleStart = useCallback(() => {
     setIsStarting(true);
@@ -220,7 +223,7 @@ function RoundTableLobby({ gameState, localPlayerId }: LobbyUIProps) {
             key="invite"
             friends={friendViews}
             isLoading={sentInvites.isLoading && friends.length === 0}
-            shareUrl={shareUrlFor(gameState.id)}
+            shareUrl={shareUrlFor(gameState.id, realmParam)}
             busyUserId={busy?.startsWith('invite:') ? busy.slice('invite:'.length) : null}
             message={inviteError ? { tone: 'error', text: inviteError } : inviteNotice ? { tone: 'info', text: inviteNotice } : null}
             onInvite={handleInvite}

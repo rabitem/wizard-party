@@ -9,6 +9,7 @@ export { RecentRoomsSection } from './RecentRoomsSection';
 export { HowToWinSection } from './HowToWinSection';
 export { ExpansionShowcaseSection } from './ExpansionShowcaseSection';
 export { FooterSection } from './FooterSection';
+export { useRealmLinkParam } from './useRealmLinkParam';
 export {
   generateRoomId,
   getDefaultHost,
