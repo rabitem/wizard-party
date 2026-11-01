@@ -61,9 +61,12 @@ function SeatBadge({ seat }: { seat: LobbySeatView }) {
 /** Guests get a random avatar; choosing one (and this badge going away) comes with an account. */
 function GuestBadge() {
   return (
-    // A ribbon across the lower rim of the avatar, narrow enough to clear the ready tick (bottom right).
-    <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 px-1 rounded-full border border-amber-700/60 bg-black/75 text-[8px] leading-[14px] uppercase tracking-wider text-amber-200/90 shadow-[0_1px_4px_rgba(0,0,0,0.6)]" style={SERIF} aria-hidden>
-      Guest
+    // A see-through sash across the avatar's top-right corner, clipped to the circle, so the
+    // avatar icon in the middle stays uncovered.
+    <span className="absolute inset-0 rounded-full overflow-hidden pointer-events-none" aria-hidden>
+      <span className="absolute left-[74%] top-[26%] w-full -translate-x-1/2 -translate-y-1/2 rotate-45 border-y border-amber-600/45 bg-black/55 text-center text-[8px] leading-3 uppercase tracking-[0.14em] text-amber-200/95" style={SERIF}>
+        Guest
+      </span>
     </span>
   );
 }
