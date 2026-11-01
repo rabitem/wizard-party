@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { GameAlreadyStartedError, MaxPlayersReachedError, PlayerKickedError, ROOM_PLAYER_LIMITS, RoomFullError } from '@shared/domain';
 import { AlertTriangle, ArrowLeft, Check, Clock, Crown, DoorClosed, Loader2, LogOut, Sparkles, UserMinus, UserPlus, Users, WifiOff } from 'lucide-react';
 import { PlayerAvatar } from '../../account/PlayerAvatar';
-import { GOLD_BUTTON_STYLE, SERIF, SURFACE_STYLE } from './lobby-styles';
+import { GOLD_BUTTON_STYLE, LOBBY_GRID_CLASS, LOBBY_PAGE_CLASS, LOBBY_SLOT, SERIF, SURFACE_STYLE, TABLE_BOX_CLASS } from './lobby-styles';
 import type { LobbyActivityView } from './lobby-view.types';
 
 /* ─────────── loading skeleton ─────────── */
@@ -18,21 +18,24 @@ function Bone({ className }: { className: string }) {
 export function LobbySkeleton() {
   const positions = [90, 150, 210, 270, 330, 30];
   return (
-    <div className="relative z-10 max-w-lg mx-auto px-4 sm:px-6 py-6" aria-busy="true" aria-label="Loading table">
-      <div className="flex items-center gap-2">
-        <Bone className="h-11 w-36 rounded-full" />
-        <Bone className="h-6 w-16 rounded-full" />
-        <div className="ml-auto flex gap-2"><Bone className="w-11 h-11 rounded-full" /><Bone className="w-11 h-11 rounded-full" /></div>
+    <div className={LOBBY_PAGE_CLASS} aria-busy="true" aria-label="Loading table">
+      <div className={LOBBY_GRID_CLASS}>
+        <div className={LOBBY_SLOT.panel} />
+        <div className={`relative flex items-center gap-2 ${LOBBY_SLOT.top}`}>
+          <Bone className="h-11 w-36 rounded-full" />
+          <Bone className="h-6 w-16 rounded-full" />
+          <div className="ml-auto flex gap-2"><Bone className="w-11 h-11 rounded-full" /><Bone className="w-11 h-11 rounded-full" /></div>
+        </div>
+        <div className={TABLE_BOX_CLASS}>
+          <Bone className="absolute inset-[13%_9%] rounded-[50%]" />
+          {positions.map((deg) => {
+            const rad = (deg * Math.PI) / 180;
+            return <div key={deg} className="absolute -translate-x-1/2 -translate-y-1/2" style={{ left: `${50 + 44 * Math.cos(rad)}%`, top: `${50 + 44 * Math.sin(rad)}%` }}><Bone className="w-14 h-14 rounded-full" /></div>;
+          })}
+        </div>
+        <div className={`flex gap-1.5 ${LOBBY_SLOT.info}`}><Bone className="h-7 w-24 rounded-full" /><Bone className="h-7 w-20 rounded-full" /><Bone className="h-7 w-28 rounded-full" /></div>
+        <div className={`relative ${LOBBY_SLOT.actions} split:px-5 split:pb-5`}><Bone className="h-12 w-full rounded-xl mt-8" /></div>
       </div>
-      <div className="relative mx-auto w-full max-w-[360px] aspect-[4/3.4] my-6">
-        <Bone className="absolute inset-[13%_9%] rounded-[50%]" />
-        {positions.map((deg) => {
-          const rad = (deg * Math.PI) / 180;
-          return <div key={deg} className="absolute -translate-x-1/2 -translate-y-1/2" style={{ left: `${50 + 44 * Math.cos(rad)}%`, top: `${50 + 44 * Math.sin(rad)}%` }}><Bone className="w-14 h-14 rounded-full" /></div>;
-        })}
-      </div>
-      <div className="flex gap-1.5 mb-3"><Bone className="h-7 w-24 rounded-full" /><Bone className="h-7 w-20 rounded-full" /><Bone className="h-7 w-28 rounded-full" /></div>
-      <Bone className="h-12 w-full rounded-xl mt-8" />
     </div>
   );
 }
@@ -110,7 +113,7 @@ const ACTIVITY_ICON: Record<LobbyActivityView['kind'], React.ReactNode> = {
 
 export function LobbyToasts({ items }: { items: LobbyActivityView[] }) {
   return (
-    <div className="fixed top-16 inset-x-0 z-30 flex flex-col items-center gap-2 px-4 pointer-events-none" aria-live="polite">
+    <div className="fixed top-16 inset-x-0 z-30 flex flex-col items-center gap-2 px-4 pointer-events-none split:top-auto split:bottom-6 split:right-auto split:items-start split:px-6" aria-live="polite">
       <AnimatePresence initial={false}>
         {items.map((item) => (
           <motion.div

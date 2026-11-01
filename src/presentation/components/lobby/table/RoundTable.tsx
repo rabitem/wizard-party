@@ -6,7 +6,7 @@ import { Bot, Check, Crown, Plus, WifiOff } from 'lucide-react';
 import { PlayerAvatar } from '../../account/PlayerAvatar';
 import type { TableThemePalette } from '@/presentation/config/table-theme.config';
 import type { LobbySeatView } from './lobby-view.types';
-import { SERIF } from './lobby-styles';
+import { SERIF, TABLE_BOX_CLASS } from './lobby-styles';
 import { LobbyAvatarFrame } from '../skins/LobbyDecor';
 import { LobbyIcon } from '../skins/LobbySkinText';
 
@@ -17,6 +17,9 @@ interface RoundTableProps {
   onSeatClick: (seat: LobbySeatView) => void;
   onEmptySeatClick: (seatNumber: number) => void;
 }
+
+/** Centres a seat on its point; seats grow with the table (container `table`, see TABLE_BOX_CLASS). */
+const SEAT_SLOT_CLASS = 'absolute -translate-x-1/2 -translate-y-1/2 @min-[34rem]/table:scale-[1.15] @min-[42rem]/table:scale-[1.3] @min-[54rem]/table:scale-[1.5]';
 
 /** Seat centres on an ellipse, starting at the bottom (the local player) and going clockwise. */
 function seatPosition(index: number, count: number): { left: string; top: string } {
@@ -58,7 +61,8 @@ function SeatBadge({ seat }: { seat: LobbySeatView }) {
   return null;
 }
 
-function seatStatusLabel(seat: LobbySeatView, secondsLeft: number | null): string {
+/** A seat's status line; the roster beside the table shows the same words. */
+export function seatStatusLabel(seat: LobbySeatView, secondsLeft: number | null): string {
   if (!seat.isConnected) return secondsLeft !== null ? `Reconnecting ${formatCountdown(secondsLeft)}` : 'Reconnecting';
   if (seat.isHost) return 'Host';
   if (seat.isBot) return `${seat.botLabel} bot`;
@@ -124,7 +128,7 @@ export function RoundTable({ seats, maxPlayers, palette, onSeatClick, onEmptySea
   const away = seats.filter((seat) => !seat.isConnected).length;
 
   return (
-    <div className="relative mx-auto w-full max-w-[360px] aspect-[4/3.4] mt-6 mb-10" role="group" aria-label={`Table, ${seats.length} of ${seatCount} seats taken`}>
+    <div className={TABLE_BOX_CLASS} role="group" aria-label={`Table, ${seats.length} of ${seatCount} seats taken`}>
       <div
         className="absolute inset-[13%_9%] rounded-[50%]"
         style={{
@@ -137,9 +141,9 @@ export function RoundTable({ seats, maxPlayers, palette, onSeatClick, onEmptySea
       </div>
       <div className="absolute inset-0 flex items-center justify-center text-center pointer-events-none">
         {/* Own backdrop so the count stays readable on light felts (e.g. the manga table). */}
-        <div className="px-4 py-2 rounded-2xl bg-black/40 backdrop-blur-[2px]">
-          <p className="text-amber-50 text-sm" style={SERIF}>{seats.length} of {seatCount} seated</p>
-          <p className="text-[11px] mt-0.5 text-amber-100/75" style={SERIF}>
+        <div className="px-4 py-2 @min-[34rem]/table:px-5 @min-[34rem]/table:py-3 rounded-2xl bg-black/40 backdrop-blur-[2px]">
+          <p className="text-amber-50 text-sm @min-[34rem]/table:text-lg" style={SERIF}>{seats.length} of {seatCount} seated</p>
+          <p className="text-[11px] @min-[34rem]/table:text-sm mt-0.5 text-amber-100/75" style={SERIF}>
             {ready} ready{away ? ` · ${away} reconnecting` : ''}
           </p>
         </div>
@@ -148,7 +152,7 @@ export function RoundTable({ seats, maxPlayers, palette, onSeatClick, onEmptySea
         {Array.from({ length: seatCount }, (_, index) => {
           const seat = ordered[index];
           return (
-            <div key={seat?.id ?? `open-${index}`} className="absolute -translate-x-1/2 -translate-y-1/2" style={seatPosition(index, seatCount)}>
+            <div key={seat?.id ?? `open-${index}`} className={SEAT_SLOT_CLASS} style={seatPosition(index, seatCount)}>
               {seat ? <TakenSeat seat={seat} index={index} onClick={() => onSeatClick(seat)} /> : <OpenSeat seatNumber={index + 1} onClick={() => onEmptySeatClick(index + 1)} />}
             </div>
           );

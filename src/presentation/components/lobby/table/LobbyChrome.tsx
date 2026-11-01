@@ -18,9 +18,10 @@ interface LobbyTopBarProps {
   onShare: () => void;
   onOpenSettings: () => void;
   isHost: boolean;
+  className?: string;
 }
 
-export function LobbyTopBar({ roomId, isPublic, onCopyLink, onShare, onOpenSettings, isHost }: LobbyTopBarProps) {
+export function LobbyTopBar({ roomId, isPublic, onCopyLink, onShare, onOpenSettings, isHost, className = '' }: LobbyTopBarProps) {
   const [copied, setCopied] = useState(false);
   const copy = async () => {
     await onCopyLink();
@@ -28,7 +29,8 @@ export function LobbyTopBar({ roomId, isPublic, onCopyLink, onShare, onOpenSetti
     setTimeout(() => setCopied(false), 2000);
   };
   return (
-    <div className="flex items-center gap-2">
+    // Positioned so it paints above the theme vignette and the lobby panel card behind it.
+    <div className={`relative flex items-center gap-2 ${className}`}>
       <button
         type="button"
         onClick={copy}
@@ -151,13 +153,18 @@ interface LobbyBottomBarProps {
   onStart: () => void;
   onToggleReady: () => void;
   onLeave: () => void;
+  className?: string;
 }
 
-export function LobbyBottomBar({ isHost, isReady, readiness, playerCount, isStarting, onStart, onToggleReady, onLeave }: LobbyBottomBarProps) {
+/**
+ * Readiness line, leave and start/ready. Stacked, a bar pinned to the bottom of the screen; in
+ * the lobby's split layout it sits flat at the foot of the control panel.
+ */
+export function LobbyBottomBar({ isHost, isReady, readiness, playerCount, isStarting, onStart, onToggleReady, onLeave, className = '' }: LobbyBottomBarProps) {
   return (
     <div
-      className="sticky bottom-0 z-20 isolate -mx-4 sm:mx-0 mt-6 px-4 pt-3 border-t sm:rounded-2xl sm:border"
-      style={{ ...SURFACE_STYLE, backdropFilter: 'blur(12px)', paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}
+      className={`sticky bottom-0 z-20 isolate -mx-4 sm:mx-0 mt-6 px-4 pt-3 border-t sm:rounded-2xl sm:border border-[var(--surface-border)] bg-[var(--surface)] backdrop-blur-md split:relative split:z-auto split:mt-4 split:px-5 split:pt-4 split:rounded-t-none split:rounded-b-3xl split:border-x-0 split:border-b-0 split:bg-transparent split:backdrop-blur-none ${className}`}
+      style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}
     >
       <LobbyPanelBackdrop variant="actions" />
       <LobbyPanelDecor variant="actions" />

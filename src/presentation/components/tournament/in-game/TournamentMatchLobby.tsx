@@ -53,39 +53,47 @@ export function TournamentMatchLobby({ match, rulesetConfig, isConnected, onBack
   return (
     <>
       <TournamentMatchBanner match={match} isConnected={isConnected} />
-      <MatchWaitingRoster match={match} />
-      <MatchRules rulesetConfig={rulesetConfig} />
-
-      <motion.section
-        className="sticky bottom-0 -mx-4 sm:-mx-6 px-4 sm:px-6 py-4 sm:py-5"
-        style={{ background: 'linear-gradient(180deg, transparent 0%, var(--surface) 20%, var(--surface) 100%)' }}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-      >
-        <div className="flex gap-3">
-          <button
-            type="button"
-            onClick={onBackToTournament}
-            className="py-3 px-4 rounded-xl border border-amber-700/40 hover:border-amber-600/50 hover:bg-amber-900/20 text-amber-300/80 transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
-            style={{ background: 'linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--surface), black 10%) 90%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 35%) 90%, transparent) 100%)', ...SERIF }}
-            title="Back to the tournament"
-          >
-            <ArrowLeft className="w-4 h-4" aria-hidden />
-            <span className="hidden sm:inline text-sm">Tournament</span>
-            <span className="sr-only sm:hidden">Back to the tournament</span>
-          </button>
-          <div
-            className="flex-1 flex items-center justify-center gap-3 py-3.5 px-4 rounded-xl border border-amber-700/40 text-amber-400/70"
-            style={{ background: 'linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--surface), black 10%) 90%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 35%) 90%, transparent) 100%)', ...SERIF }}
-            role="status"
-          >
-            {match.expired ? <CalendarX className="w-5 h-5" aria-hidden /> : <Loader2 className="w-5 h-5 animate-spin" aria-hidden />}
-            <span className="text-sm sm:text-base">{match.expired ? 'Table expired' : 'Starts automatically'}</span>
-          </div>
+      {/* Stacked on phones and tablets; from lg the rules and the way back sit beside the roster. */}
+      <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:gap-x-8 lg:items-start">
+        <MatchWaitingRoster match={match} />
+        <div>
+          <MatchRules rulesetConfig={rulesetConfig} />
+          <MatchLobbyActions match={match} onBackToTournament={onBackToTournament} />
         </div>
-      </motion.section>
-
+      </div>
     </>
+  );
+}
+
+function MatchLobbyActions({ match, onBackToTournament }: Pick<TournamentMatchLobbyProps, 'match' | 'onBackToTournament'>) {
+  return (
+    <motion.section
+      className="sticky bottom-0 lg:static -mx-4 sm:-mx-6 lg:mx-0 px-4 sm:px-6 lg:px-0 py-4 sm:py-5 lg:pt-0 bg-[linear-gradient(180deg,transparent_0%,var(--surface)_20%,var(--surface)_100%)] lg:bg-none"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.4 }}
+    >
+      <div className="flex gap-3">
+        <button
+          type="button"
+          onClick={onBackToTournament}
+          className="py-3 px-4 rounded-xl border border-amber-700/40 hover:border-amber-600/50 hover:bg-amber-900/20 text-amber-300/80 transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+          style={{ background: 'linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--surface), black 10%) 90%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 35%) 90%, transparent) 100%)', ...SERIF }}
+          title="Back to the tournament"
+        >
+          <ArrowLeft className="w-4 h-4" aria-hidden />
+          <span className="hidden sm:inline text-sm">Tournament</span>
+          <span className="sr-only sm:hidden">Back to the tournament</span>
+        </button>
+        <div
+          className="flex-1 flex items-center justify-center gap-3 py-3.5 px-4 rounded-xl border border-amber-700/40 text-amber-400/70"
+          style={{ background: 'linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--surface), black 10%) 90%, transparent) 0%, color-mix(in srgb, color-mix(in srgb, var(--surface), black 35%) 90%, transparent) 100%)', ...SERIF }}
+          role="status"
+        >
+          {match.expired ? <CalendarX className="w-5 h-5" aria-hidden /> : <Loader2 className="w-5 h-5 animate-spin" aria-hidden />}
+          <span className="text-sm sm:text-base">{match.expired ? 'Table expired' : 'Starts automatically'}</span>
+        </div>
+      </div>
+    </motion.section>
   );
 }
