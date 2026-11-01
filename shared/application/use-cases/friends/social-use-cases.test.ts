@@ -251,7 +251,7 @@ describe('RevokeGameInviteUseCase', () => {
 
   it("should cancel the invite in the recipient's inbox", async () => {
     await s.revoke.execute('alice', inviteId(s));
-    const [item] = await s.db.list('bob');
+    const [item] = await s.db.list('bob', { limit: SOCIAL_LIMITS.INBOX_PAGE_SIZE });
     expect(item).toMatchObject({ resolution: 'cancelled', resolvedAt: now });
     expect((await s.listSent.execute('alice', 'room42'))[0].state).toBe('revoked');
     await expect(s.act.execute('bob', item.id, 'accept')).rejects.toBeInstanceOf(SocialError);

@@ -4,10 +4,12 @@ name: Browser suites
 # so WebGL renders in software: runs are slow and frame-time budgets are not meaningful here
 # (run `npm run e2e:perf` on real hardware for those). This workflow checks correctness:
 # animation sequences, layouts per device and reconnect behaviour on every engine, Firefox included,
-# plus the deterministic render/React budgets, fault injection, touch input and visual baselines.
+# plus the deterministic render/React budgets, fault injection, touch input, visual baselines, the
+# viewport and settings matrices on every engine, and the golden path through the real app.
 # Software WebGL makes one sandbox run take minutes, so every project suite costs runner hours.
-# Pull requests labelled `e2e` run only Chromium and one touch phone; the weekly run (and a manual
-# dispatch) covers every engine and device, and the weekly run adds the full viewport matrix.
+# Pull requests labelled `e2e` run only Chromium and one touch phone; a manual dispatch covers
+# every engine, device and matrix in two shards each; the weekly run widens the suites
+# (E2E_FULL_MATRIX=1: every table size, every viewport, every pair of settings) in four shards.
 #
 # Visual baselines are generated here, never locally: dispatch the workflow with update_snapshots,
 # download the visual-baselines-<project> artifacts and commit their e2e/visual.spec.ts-snapshots.
@@ -38,19 +40,49 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  e2e:
-    name: ${{ matrix.project }}
+  plan:
+    name: Plan the browser matrix
     if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'e2e')
     runs-on: ubuntu-latest
-    # The weekly viewport matrix plays every viewport (up to 4K, device pixel ratios up to 3) at
-    # every table size in software WebGL; it gets twice the time of a project suite.
-    timeout-minutes: ${{ matrix.project == 'viewport-matrix' && 180 || 90 }}
+    outputs:
+      include: ${{ steps.plan.outputs.include }}
+    steps:
+      # The project names are the projects in playwright.config.ts.
+      - id: plan
+        shell: bash
+        env:
+          EVENT: ${{ github.event_name }}
+          UPDATE_SNAPSHOTS: ${{ inputs.update_snapshots }}
+        run: |
+          desktop='"chromium","firefox","webkit","chrome","edge"'
+          devices='"android-phone","android-landscape","android-tablet","fold-cover","fold-open","iphone","iphone-landscape","iphone-se","iphone-pro-max","ipad","ipad-landscape","ipad-mini","chromium-hidpi","firefox-hidpi","touch-laptop"'
+          matrices='"viewport-matrix","viewport-matrix-firefox","viewport-matrix-webkit","settings-matrix","settings-matrix-firefox","settings-matrix-webkit","settings-matrix-phone"'
+          golden='"golden-path","golden-path-firefox","golden-path-webkit","golden-path-android","golden-path-iphone"'
+          if [ "$EVENT" = pull_request ]; then
+            projects='["chromium","android-phone"]'; shards=1
+          elif [ "$UPDATE_SNAPSHOTS" = true ]; then
+            # Only the projects that run e2e/visual.spec.ts.
+            projects="[$desktop,$devices]"; shards=1
+          elif [ "$EVENT" = schedule ]; then
+            projects="[$desktop,$devices,$matrices,$golden]"; shards=4
+          else
+            projects="[$desktop,$devices,$matrices,$golden]"; shards=2
+          fi
+          include=$(jq -cn --argjson projects "$projects" --argjson shards "$shards" \
+            '[ $projects[] as $project | range(1; $shards + 1) as $shard | { project: $project, shard: $shard, shards: $shards } ]')
+          echo "include=$include" >> "$GITHUB_OUTPUT"
+
+  e2e:
+    name: ${{ matrix.project }} ${{ matrix.shard }}/${{ matrix.shards }}
+    needs: plan
+    runs-on: ubuntu-latest
+    # The matrices play every viewport (up to 4K, device pixel ratios up to 3) or every pair of
+    # settings in software WebGL; they get twice the time of a project suite.
+    timeout-minutes: ${{ contains(matrix.project, '-matrix') && 180 || 90 }}
     strategy:
       fail-fast: false
       matrix:
-        # Pull requests: Chromium and a touch phone. Regenerating visual baselines leaves out the
-        # viewport matrix: it has no visual spec to update.
-        project: ${{ fromJSON(github.event_name == 'pull_request' && '["chromium","android-phone"]' || inputs.update_snapshots && '["chromium","firefox","webkit","android-phone","iphone","iphone-landscape","ipad"]' || '["chromium","firefox","webkit","android-phone","iphone","iphone-landscape","ipad","viewport-matrix"]') }}
+        include: ${{ fromJSON(needs.plan.outputs.include) }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -64,18 +96,37 @@ jobs:
         shell: bash
         run: |
           case "${{ matrix.project }}" in
-            chromium|android-phone|viewport-matrix) npx playwright install --with-deps chromium ;;
-            firefox) npx playwright install --with-deps firefox ;;
+            chrome) npx playwright install --with-deps chrome ;;
+            edge) npx playwright install --with-deps msedge ;;
+            firefox|firefox-hidpi|*-firefox) npx playwright install --with-deps firefox ;;
+            chromium|chromium-hidpi|touch-laptop|android-*|fold-*|viewport-matrix|settings-matrix|settings-matrix-phone|golden-path|golden-path-android)
+              npx playwright install --with-deps chromium ;;
             *) npx playwright install --with-deps webkit ;;
           esac
       - run: npm run e2e:build
+      # The golden path plays the real app against the local game worker (see ci.yml).
+      - name: Start the game worker
+        if: ${{ startsWith(matrix.project, 'golden-path') && !inputs.update_snapshots }}
+        shell: bash
+        run: |
+          nohup npm run dev:party > "$RUNNER_TEMP/wizard-worker.log" 2>&1 &
+          for attempt in {1..60}; do
+            if curl --fail --silent http://localhost:1999/health > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat "$RUNNER_TEMP/wizard-worker.log"
+          exit 1
       - name: Run the suites
         if: ${{ !inputs.update_snapshots }}
         env:
           E2E_WORKERS: '2'
           E2E_FULL_MATRIX: ${{ github.event_name == 'schedule' && '1' || '0' }}
           GREP: ${{ inputs.grep }}
-        run: npx playwright test --project=${{ matrix.project }} --grep-invert "sustains" ${GREP:+--grep "$GREP"}
+        # A narrow grep or a small project can leave a shard without tests.
+        run: npx playwright test --project=${{ matrix.project }} --shard=${{ matrix.shard }}/${{ matrix.shards }} --pass-with-no-tests --grep-invert "sustains" ${GREP:+--grep "$GREP"}
+      - name: Print the worker log
+        if: ${{ failure() && startsWith(matrix.project, 'golden-path') }}
+        run: cat "$RUNNER_TEMP/wizard-worker.log" || true
       - name: Update the visual baselines
         if: ${{ inputs.update_snapshots }}
         env:
@@ -92,7 +143,7 @@ jobs:
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: failure() || cancelled()
         with:
-          name: e2e-${{ matrix.project }}
+          name: e2e-${{ matrix.project }}-${{ matrix.shard }}
           path: |
             e2e-report/
             e2e-results/

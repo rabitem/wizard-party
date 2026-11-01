@@ -2,10 +2,11 @@ import { SANDBOX_VIEWPORTS, type SandboxViewport } from '../src/presentation/con
 import { expectCleanRun, test } from './support/sandbox';
 
 /**
- * The viewport matrix on one engine (its own project, viewport-matrix, on Chromium): phones from
- * the iPhone SE to a folded Galaxy Fold in both orientations, iPad mini to iPad Pro in both
- * orientations, and a 1366x768 laptop up to a 4K desktop, each with touch and device pixel ratio
- * as on the device.
+ * The viewport matrix on every desktop engine (its own projects: viewport-matrix on Chromium,
+ * viewport-matrix-firefox, viewport-matrix-webkit): phones from the iPhone SE to a folded Galaxy
+ * Fold in both orientations, iPad mini to iPad Pro in both orientations, and a 1366x768 laptop up
+ * to a 4K desktop, each with touch and device pixel ratio as on the device. Firefox has no mobile
+ * emulation (isMobile), so there the phones and tablets are touch windows of the same size.
  * Every viewport plays the largest hand the table size deals.
  *
  * Pull requests run the key viewports at the smallest and largest table; E2E_FULL_MATRIX=1
@@ -22,7 +23,8 @@ for (const viewport of VIEWPORTS) {
       viewport: { width: viewport.width, height: viewport.height },
       deviceScaleFactor: viewport.deviceScaleFactor,
       hasTouch: viewport.hasTouch,
-      isMobile: viewport.isMobile,
+      // Playwright's fixture callback; named `provide` so it is not mistaken for a React hook.
+      isMobile: async ({ browserName }, provide) => provide(browserName !== 'firefox' && viewport.isMobile),
     });
 
     for (const playerCount of PLAYER_COUNTS) {

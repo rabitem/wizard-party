@@ -50,11 +50,12 @@ with `wait-timeout` or `step-failed`.
 
    | Kind | Spec and list | Test title |
    | --- | --- | --- |
-   | Core animation | `e2e/scenarios.spec.ts`, `CORE_SCENARIOS` | `<id> plays cleanly` |
-   | Drops, stalls, latency | `e2e/reconnect.spec.ts`, `NETWORK_SCENARIOS` (3 and 6 players) | `<id> with <n> players recovers cleanly` |
-   | Network and device faults | `e2e/faults.spec.ts`, `FAULT_SCENARIOS` | `<id> recovers cleanly` |
+   | Core animation | `e2e/scenarios.spec.ts`, `CORE_SCENARIOS` (4 players; all sizes weekly) | `<id> with <n> players plays cleanly` |
+   | Drops, stalls, latency | `e2e/reconnect.spec.ts`, `NETWORK_SCENARIOS` (3 and 6 players; all sizes weekly) | `<id> with <n> players recovers cleanly` |
+   | Network and device faults | `e2e/faults.spec.ts`, `FAULT_SCENARIOS` (3 and 6 players; all sizes weekly) | `<id> with <n> players recovers cleanly` |
    | Synthetic touch | `e2e/input.spec.ts`, `SYNTHETIC_TOUCH_SCENARIOS` | `<id> plays cleanly` |
-   | Layout per table size | `e2e/viewports.spec.ts` (device projects), `e2e/playability-matrix.spec.ts` (`viewport-matrix`) | per player count |
+   | Layout per table size | `e2e/viewports.spec.ts` (device projects), `e2e/playability-matrix.spec.ts` (`viewport-matrix*`) | per player count |
+   | Settings crossed with play | `e2e/settings-matrix.spec.ts`, `SCENARIOS` (`settings-matrix*` projects) | `settings <n>/<rows> › <axis=value ...> plays cleanly` |
    | Budgets | `e2e/render-budget.spec.ts` with `e2e/support/budgets.ts` | per player count |
    | Visual baselines, real input | `e2e/visual.spec.ts`, `e2e/input.spec.ts` via `sandbox.runInteractive` | |
 

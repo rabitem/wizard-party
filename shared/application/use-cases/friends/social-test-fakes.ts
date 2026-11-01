@@ -25,6 +25,7 @@ import type {
   ISocialGraphRepository,
   ISocialMailer,
   ISocialThrottle,
+  InboxPageQuery,
   InboxSummary,
   SentGameInvitesQuery,
   SentInboxItem,
@@ -205,8 +206,15 @@ export class MemorySocial
     this.items.push({ id, userId: delivery.userId, actorId: delivery.actorId, dedupeKey, ...fields } as StoredItem);
     return id;
   }
-  async list(userId: string) {
-    return this.items.filter((item) => item.userId === userId && INBOX_KINDS[item.kind]);
+  /** Newest first (ties by id), strictly older than the cursor, like the Postgres keyset query. */
+  async list(userId: string, { before, limit }: InboxPageQuery) {
+    const newestFirst = (a: StoredItem, b: StoredItem) => b.createdAt - a.createdAt || Number(b.id > a.id) - Number(b.id < a.id);
+    const olderThanCursor = (item: StoredItem) =>
+      !before || item.createdAt < before.createdAt || (item.createdAt === before.createdAt && item.id < before.id);
+    return this.items
+      .filter((item) => item.userId === userId && INBOX_KINDS[item.kind] && olderThanCursor(item))
+      .sort(newestFirst)
+      .slice(0, limit);
   }
   async get(userId: string, id: string) {
     return this.items.find((item) => item.userId === userId && item.id === id) ?? null;

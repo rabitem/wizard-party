@@ -30,13 +30,13 @@ say which you did.
 ## Browser suites (e2e.yml)
 
 - A pull request with the `e2e` label runs the `chromium` and `android-phone` projects.
-  `workflow_dispatch` runs every project. With `grep`, it runs only the tests whose titles match.
-  Frame-time budgets (`sustains` tests) never run on CI.
-- A failed or timed-out job uploads `e2e-<project>`, holding `e2e-report/` (HTML report) and
-  `e2e-results/` (traces). To look at them:
+  `workflow_dispatch` runs every project in two shards. With `grep`, it runs only the tests whose
+  titles match. Frame-time budgets (`sustains` tests) never run on CI.
+- A failed or timed-out job uploads `e2e-<project>-<shard>`, holding `e2e-report/` (HTML report)
+  and `e2e-results/` (traces). To look at them:
 
   ```bash
-  gh run download <run-id> -n e2e-chromium
+  gh run download <run-id> -n e2e-chromium-1
   npx playwright show-report e2e-report
   npx playwright show-trace e2e-results/<test>/trace.zip
   ```

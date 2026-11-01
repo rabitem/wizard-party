@@ -7,7 +7,9 @@ import {
   DEFAULT_RULESET_CONFIG,
   Game,
   GamePhase,
+  InvalidEffectResponseError,
   Player,
+  PlayerNotFoundError,
   SPECIAL_CARD_TYPES,
   Suit,
   TrickEffectKind,
@@ -87,6 +89,25 @@ describe('special cards in a game', () => {
     expect(game.getPlayer('p1')?.bid).toBe(2);
     expect(game.hasPendingEffects()).toBe(false);
     expect(game.getCurrentPlayer().id).toBe('p1');
+  });
+
+  it.each([
+    ['a bid change of two', 'p1', { kind: TrickEffectKind.ADJUST_BID, delta: 2 }, InvalidEffectResponseError],
+    ['an unknown effect', 'p1', { kind: 'STEAL_TRICK' }, InvalidEffectResponseError],
+    ['an answer that is not an object', 'p1', 'raise', InvalidEffectResponseError],
+    ['the answer of another effect', 'p1', { kind: TrickEffectKind.PASS_LEFT, cardId: 'GIANTS-2' }, InvalidEffectResponseError],
+    ['an answer from a player the effect does not wait for', 'p2', { kind: TrickEffectKind.ADJUST_BID, delta: 1 }, InvalidEffectResponseError],
+    ['an answer from someone not at the table', 'p9', { kind: TrickEffectKind.ADJUST_BID, delta: 1 }, PlayerNotFoundError],
+  ])('refuses %s and keeps waiting for the Cloud winner', (_label, playerId, response, error) => {
+    const game = createGame([CardType.CLOUD]);
+    stagePlaying(game, [[sp(CardType.CLOUD), num(Suit.GIANTS, 2)], [num(Suit.ELVES, 2), num(Suit.GIANTS, 3)], [num(Suit.ELVES, 3), num(Suit.GIANTS, 4)]], [1, 1, 1]);
+    play(game, 'p1', 'CLOUD-0', { suit: Suit.ELVES });
+    play(game, 'p2', 'ELVES-2');
+    play(game, 'p3', 'ELVES-3');
+
+    expect(() => useCases.resolveEffect.execute({ game, playerId, response })).toThrow(error);
+    expect(game.getActiveEffect()).toEqual({ kind: TrickEffectKind.ADJUST_BID, playerId: 'p1' });
+    expect(game.players.map((player) => player.bid)).toEqual([1, 1, 1]);
   });
 
   it('forces a raise for a Cloud winner who bid zero', () => {

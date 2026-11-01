@@ -14,6 +14,13 @@
   }
 }
 
+/* The landscape-phone half of `split` alone; declared after it, so its classes win over split's. */
+@custom-variant landscape-phone {
+  @media (min-width: 40rem) and (max-height: 32rem) {
+    @slot;
+  }
+}
+
 :root {
   --background: #0a0908;
   --foreground: #faf6f0;

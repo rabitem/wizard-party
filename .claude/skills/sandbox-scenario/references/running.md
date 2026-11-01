@@ -47,7 +47,7 @@ Reports and `summary.md` land in `.animation-audit/latest/` (git-ignored).
 
 ```bash
 npm run e2e:build
-npx playwright test e2e/scenarios.spec.ts --project=chromium -g "<id> plays cleanly"
+npx playwright test e2e/scenarios.spec.ts --project=chromium -g "<id> with 4 players plays cleanly"
 ```
 
 The config starts `next start` on port 3210 (`E2E_PORT`) or uses `E2E_BASE_URL`. Each run
@@ -65,20 +65,19 @@ run takes minutes, and every job installs a browser and builds the app before it
 - Dispatch with a grep that only the intended test titles contain:
 
   ```bash
-  gh workflow run e2e.yml --ref <branch> -f grep="<id> plays cleanly"
+  gh workflow run e2e.yml --ref <branch> -f grep="<id> with 4 players plays cleanly"
   gh run list --workflow e2e.yml --limit 1
   gh run watch <run-id>
   ```
 
   Ids overlap (`drag-throw` is inside `lead-drag-throw` and `touch-drag-throw`), so include the
   title's verb or player count.
-- A dispatch starts one job per project (`chromium`, `firefox`, `webkit`, `android-phone`,
-  `iphone`, `iphone-landscape`, `ipad`, `viewport-matrix`). A project without a matching test
-  (always `viewport-matrix` unless you grep its titles) fails with "No tests found". Read only the
-  jobs you meant.
+- A dispatch starts two shard jobs per project (every project in `playwright.config.ts`: desktop
+  engines, devices, the matrices, the golden path). A shard without a matching test passes
+  (`--pass-with-no-tests`). Read only the jobs you meant.
 - Frame-time tests (titles with "sustains") never run on CI (`--grep-invert "sustains"`).
-- Failed or cancelled jobs upload `e2e-<project>` (`e2e-report/`, `e2e-results/`, 7 days):
-  `gh run download <run-id> -n e2e-chromium`. Passing jobs upload nothing.
+- Failed or cancelled jobs upload `e2e-<project>-<shard>` (`e2e-report/`, `e2e-results/`, 7 days):
+  `gh run download <run-id> -n e2e-chromium-1`. Passing jobs upload nothing.
 - `update_snapshots: true` regenerates visual baselines (only `e2e/visual.spec.ts`) as
   `visual-baselines-<project>` artifacts; copy them into `e2e/visual.spec.ts-snapshots/`.
 

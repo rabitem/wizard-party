@@ -70,7 +70,8 @@ does when the value is missing.
 | `E2E_BASE_URL` | shell | `playwright.config.ts` | No | Playwright starts a local server | Run the browser suites against a deployed URL |
 | `E2E_PORT` | shell | `playwright.config.ts` | No | `3210` | Port of the local server Playwright starts |
 | `E2E_WORKERS` | shell | `playwright.config.ts` | No | `2` | Playwright worker count |
-| `E2E_FULL_MATRIX` | shell | `e2e/playability-matrix.spec.ts` | No | Off | `1` runs every viewport of the playability matrix |
+| `E2E_FULL_MATRIX` | shell | `e2e/*.spec.ts` | No | Off | `1` widens the browser suites: every viewport, every pair of settings, every table size (see [testing.md](../testing/testing.md)) |
+| `FULL_MATRIX` | shell | `party/test-support/matrix.ts` | No | Off | `1` runs the full product of the level-3 and level-4 matrix suites instead of the pairwise subset (about 5 minutes) |
 | `PERF_TARGET_FPS` | shell | `e2e/performance.spec.ts` | No | `FRAME_BUDGETS.DEFAULT_TARGET_FPS` in `src/presentation/config/sandbox-budgets.config.ts` | Frame rate the performance suite enforces |
 | `PROPERTY_GAMES` | shell | `shared/application/use-cases/game/random-games.property.test.ts` | No | 24 | Seed count of the random-games property test |
 | `AUDIT_BROWSER` | shell | `scripts/lib/audit-browser.mjs` | No | The first existing path in `BROWSER_CANDIDATES` (Edge, Chrome or Chromium install paths) | Browser for `npm run audit:animations` |
