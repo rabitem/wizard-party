@@ -1,8 +1,8 @@
 'use client';
 
 import { LeaderboardEntry } from './types';
-import { getPlayerAvatarIcon } from './utils';
-import { useAvatarId } from '../../account/PlayerAvatar';
+import { CharacterFace } from '../../character/CharacterFace';
+import { useSeatAppearance } from '@/presentation/hooks/account/useSeatAppearance';
 import { PositionBadge } from './PositionBadge';
 import { PlayerConnectionDot } from '../../PlayerConnectionDot';
 import { SeatFriendAction } from '../../friends';
@@ -77,14 +77,13 @@ function CompactRow({ entry, isLocal, isCurrentTurn, scale }: { entry: Leaderboa
   );
 }
 
-/** Player avatar with connection indicator */
+/** Player's character portrait with connection indicator */
 function PlayerAvatar({ entry, isLocal, avatarSize }: { entry: LeaderboardEntry; isLocal: boolean; avatarSize: number }) {
-  const localAvatarId = useAvatarId();
-  const avatarIcon = getPlayerAvatarIcon(isLocal, entry.originalIndex, localAvatarId);
+  const appearance = useSeatAppearance(entry.player, isLocal);
   return (
     <div className="relative flex-shrink-0">
-      <div className="flex items-center justify-center border border-amber-800/40" style={{ width: avatarSize, height: avatarSize, background: THEME_SURFACE.CONTROL_BG }}>
-        <i className={`ra ${avatarIcon} leading-none`} style={{ color: entry.position === 1 ? 'var(--accent-bright)' : 'var(--accent)', fontSize: `${avatarSize * 0.5}px` }} />
+      <div className="flex items-center justify-center overflow-hidden border border-amber-800/40" style={{ width: avatarSize, height: avatarSize, background: THEME_SURFACE.CONTROL_BG }}>
+        <CharacterFace appearance={appearance} label={entry.player.name} />
       </div>
       {!entry.player.isBot && <div className="absolute -bottom-0.5 -right-0.5"><PlayerConnectionDot isConnected={entry.player.isConnected} isBot={entry.player.isBot} size="sm" /></div>}
     </div>

@@ -9,12 +9,13 @@ import {
   ROOM_PLAYER_LIMITS,
   RoomFullError,
 } from '@shared/domain';
+import { DEFAULT_APPEARANCE, botAppearance } from '@shared/domain/character';
 import { buildSeatViews, startReadiness, summarizeRules } from './lobby-view';
 import { classifyLobbyError } from './LobbyStates';
 import type { LobbySeatView } from './lobby-view.types';
 
 function seat(overrides: Partial<LobbySeatView>): LobbySeatView {
-  return { id: 'x', name: 'X', avatarId: 'wizard', isHost: false, isLocal: false, isBot: false, isReady: false, isConnected: true, graceEndsAt: null, hasAccount: false, isGuest: false, ...overrides };
+  return { id: 'x', name: 'X', appearance: null, isHost: false, isLocal: false, isBot: false, isReady: false, isConnected: true, graceEndsAt: null, hasAccount: false, isGuest: false, ...overrides };
 }
 
 describe('summarizeRules', () => {
@@ -63,8 +64,18 @@ describe('startReadiness', () => {
 describe('buildSeatViews', () => {
   const players = [new Player('me', 'Me'), new Player('other', 'Other')];
   const build = (localIsGuest: boolean) => buildSeatViews({
-    players, hostId: 'me', localPlayerId: 'me', localAvatarId: 'dragon', localIsGuest,
-    fallbackAvatarIds: ['wizard'], accounts: new Map(), graceEndsAt: new Map(),
+    players, hostId: 'me', localPlayerId: 'me', localAppearance: localIsGuest ? null : DEFAULT_APPEARANCE, localIsGuest,
+    accounts: new Map(), graceEndsAt: new Map(),
+  });
+
+  it('should show the local look, account looks and bot looks, and a silhouette for anyone unknown', () => {
+    const friendLook = { ...DEFAULT_APPEARANCE, palette: 'palette:frost' };
+    const seats = buildSeatViews({
+      players: [new Player('me', 'Me'), new Player('friend', 'Friend'), new Player('bot', 'Bot', true, 5), new Player('stranger', 'Stranger')],
+      hostId: 'me', localPlayerId: 'me', localAppearance: DEFAULT_APPEARANCE, localIsGuest: false,
+      accounts: new Map([['friend', { appearance: friendLook, level: 4 }]]), graceEndsAt: new Map(),
+    });
+    expect(seats.map((seat) => seat.appearance)).toEqual([DEFAULT_APPEARANCE, friendLook, botAppearance(5), null]);
   });
 
   it('should mark only the local seat as a guest, never a seat whose account is merely unknown', () => {

@@ -117,7 +117,7 @@ export function InboxEntry({ item, now }: { item: InboxItem; now: number }) {
     <motion.li layout initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, height: 0 }} className={`group relative rounded-xl border px-3 py-3 ${unread ? 'border-amber-600/40' : 'border-amber-900/30'}`} style={{ background: unread ? 'color-mix(in srgb, var(--color-amber-900) 30%, transparent)' : 'color-mix(in srgb, color-mix(in srgb, var(--surface), black 55%) 45%, transparent)' }}>
       {unread ? <span className="absolute left-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_8px_color-mix(in_srgb,_var(--color-amber-500)_80%,_transparent)]" aria-label="Unread" /> : null}
       <div className="flex items-start gap-3 pl-1.5">
-        {item.actor ? <PlayerAvatar avatarId={item.actor.avatar ?? 'wizard'} level={item.actor.level} size="sm" /> : <span className="w-8 h-8 rounded-full inline-flex items-center justify-center bg-amber-900/30 text-amber-400">{renderer.icon}</span>}
+        {item.actor ? <PlayerAvatar appearance={item.actor.appearance} label={item.actor.displayName} level={item.actor.level} size="sm" /> : <span className="w-8 h-8 rounded-full inline-flex items-center justify-center bg-amber-900/30 text-amber-400">{renderer.icon}</span>}
         <div className="min-w-0 flex-1">
           <p className="text-sm text-amber-100 leading-snug" style={SERIF}>
             <span className="inline-flex align-[-2px] mr-1.5 text-amber-500/80">{renderer.icon}</span>

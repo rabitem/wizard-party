@@ -73,7 +73,6 @@ export interface ScreenModel {
   timeoutSounds: GameClientState['timeoutSoundEvents'];
 }
 
-const HARNESS_AVATAR = 'harness-avatar';
 const NO_ACCOUNTS: ReadonlyMap<string, SeatAccount> = new Map();
 const NO_GRACE: ReadonlyMap<string, number> = new Map();
 
@@ -87,9 +86,8 @@ function lobbyScreen(game: IGameState, seatId: string): LobbyScreen {
     players: game.players,
     hostId: game.hostId,
     localPlayerId: seatId,
-    localAvatarId: HARNESS_AVATAR,
+    localAppearance: null,
     localIsGuest: false,
-    fallbackAvatarIds: [HARNESS_AVATAR],
     accounts: NO_ACCOUNTS,
     graceEndsAt: NO_GRACE,
   });
