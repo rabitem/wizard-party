@@ -68,7 +68,7 @@ export default async function Image({ params }: Props) {
             <div style={{ marginTop: 72, fontSize: name.length > LONG_NAME ? 60 : 80, lineHeight: 1.05, color: OG_COLORS.TEXT, letterSpacing: '-0.015em' }}>{name}</div>
             <div style={{ marginTop: 14, fontSize: 36, color: OG_COLORS.BRASS }}>{`Level ${level} · ${title}`}</div>
             <div style={{ marginTop: 18, fontSize: 26, color: OG_COLORS.MUTED }}>
-              {`${profile.stats.gamesPlayed} games played · ${profile.stats.gamesWon} won`}
+              {`${profile.stats.gamesPlayed} ${profile.stats.gamesPlayed === 1 ? 'game' : 'games'} played · ${profile.stats.gamesWon} won`}
             </div>
           </div>
           <Medallion portrait={portrait} />
