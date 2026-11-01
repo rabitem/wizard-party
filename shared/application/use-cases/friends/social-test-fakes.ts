@@ -176,7 +176,7 @@ export class MemorySocial
     return [...this.players.values()]
       .filter((player) => player.hasPublicProfile && player.username.includes(query))
       .slice(0, limit)
-      .map(({ username, displayName, avatar, level }) => ({ username, displayName, avatar, level }));
+      .map(({ username, displayName, avatar, appearance, level }) => ({ username, displayName, avatar, appearance, level }));
   }
   async findManyForViewer(viewerId: string, userIds: readonly string[]): Promise<PlayerSearchResult[]> {
     return userIds.flatMap((id) => {

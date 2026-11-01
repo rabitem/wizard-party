@@ -72,7 +72,7 @@ export function FindTab() {
       <ul className="mt-3 space-y-2">
         {(shown ?? []).map((player, index) => (
           <motion.li key={player.userId} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.03 }} className="flex items-center gap-3 rounded-xl border border-amber-900/30 px-3 py-2.5" style={{ background: 'color-mix(in srgb, color-mix(in srgb, var(--surface), black 55%) 45%, transparent)' }}>
-            <PlayerAvatar avatarId={player.avatar ?? 'wizard'} level={player.level} size="md" />
+            <PlayerAvatar appearance={player.appearance} label={player.displayName} level={player.level} size="md" />
             <div className="min-w-0 flex-1">
               {player.hasPublicProfile ? (
                 <Link href={`/u/${player.username}`} className="block truncate text-sm text-amber-100 hover:underline" style={SERIF}>{player.displayName}</Link>

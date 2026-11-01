@@ -54,7 +54,7 @@ export function useLobbyToasts(activity: LobbyActivityEntry[], invites: LobbyInv
             id: `invite-${invite.id}-${invite.state}`,
             kind: 'invite-accepted',
             text: invite.state === 'accepted' ? `${invite.name} accepted your invite` : `${invite.name} declined your invite`,
-            avatarId: invite.avatarId,
+            appearance: invite.appearance,
           });
         }
       }

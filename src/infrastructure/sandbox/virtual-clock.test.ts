@@ -10,6 +10,8 @@ import { VIRTUAL_FRAME_MS, VirtualClock } from './virtual-clock';
 
 const realPerformanceNow = performance.now;
 const realDateNow = Date.now;
+/** Below a microsecond: the rounding of subtracting two absolute times, not a missing frame. */
+const FLOAT_TOLERANCE_MS = 1e-3;
 
 type BrowserWindow = Window & typeof globalThis;
 let displayFrames: FrameRequestCallback[];
@@ -193,8 +195,11 @@ describe('VirtualClock time', () => {
     await clock.advance(100);
 
     expect(fired).toEqual([40]);
-    expect(clock.now() - start).toBeGreaterThanOrEqual(100);
-    expect(clock.now() - start).toBeLessThan(100 + VIRTUAL_FRAME_MS);
+    // Both readings are large absolute times, so their difference loses the last bits of the
+    // fraction (99.99999999999997 for six frames); compare at a microsecond.
+    const elapsed = clock.now() - start;
+    expect(elapsed).toBeGreaterThanOrEqual(100 - FLOAT_TOLERANCE_MS);
+    expect(elapsed).toBeLessThan(100 + VIRTUAL_FRAME_MS);
   });
 });
 

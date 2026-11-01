@@ -37,7 +37,7 @@ export function BlockedPlayersPanel() {
         <ul className="space-y-2">
           {(players ?? []).map((player) => (
             <li key={player.userId} className="flex items-center gap-3 rounded-xl border border-amber-900/30 px-3 py-2" style={{ background: 'color-mix(in srgb, color-mix(in srgb, var(--surface), black 55%) 45%, transparent)' }}>
-              <PlayerAvatar avatarId={player.avatar ?? 'wizard'} level={player.level} size="sm" />
+              <PlayerAvatar appearance={player.appearance} label={player.displayName} level={player.level} size="sm" />
               <span className="flex-1 min-w-0 truncate text-sm text-amber-100" style={SERIF}>{player.displayName}</span>
               <button type="button" onClick={() => void unblock(player.userId)} className="h-9 px-3 rounded-lg border border-amber-800/40 text-xs text-amber-200/80 hover:text-amber-100 cursor-pointer">Unblock</button>
             </li>
