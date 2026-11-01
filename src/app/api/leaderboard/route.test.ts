@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { EMPTY_STATS } from '@shared/domain/account';
 import { DEFAULT_APPEARANCE } from '@shared/domain/character';
 import type { LeaderboardCandidate } from '@shared/domain/account/leaderboard';
+import { DEFAULT_APPEARANCE } from '@shared/domain/character';
 
 import { harness, setUpApiHarness } from '../api-test-support';
 import { GET } from './route';
