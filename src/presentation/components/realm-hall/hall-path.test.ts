@@ -14,7 +14,13 @@ describe('cameraPoseAt', () => {
     ['at a stop', 1, STOPS[1]],
     ['past the end', 9, STOPS[2]],
   ])('rests on a stop %s', (_, progress, stop) => {
-    expect(cameraPoseAt(STOPS, progress)).toEqual(stop);
+    expect(cameraPoseAt(STOPS, progress)).toEqual({ ...stop, fov: REALM_HALL.CAMERA_FOV });
+  });
+
+  it('eases the field of view toward a stop that sets its own', () => {
+    const widening: HallCameraStop[] = [STOPS[0], { ...STOPS[1], fov: REALM_HALL.CAMERA_FOV + 20 }];
+    expect(cameraPoseAt(widening, 0.5).fov).toBeCloseTo(REALM_HALL.CAMERA_FOV + 10);
+    expect(cameraPoseAt(widening, 1).fov).toBe(REALM_HALL.CAMERA_FOV + 20);
   });
 
   it('eases halfway between two stops to their midpoint', () => {
