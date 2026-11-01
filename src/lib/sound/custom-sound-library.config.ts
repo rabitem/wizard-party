@@ -21,3 +21,15 @@ export function exceedsCustomSoundLibraryCap(sounds: ReadonlyArray<{ size: numbe
   const used = sounds.reduce((total, sound) => total + (Number.isFinite(sound.size) ? sound.size : 0), 0);
   return used + addedBytes > CUSTOM_SOUND_LIBRARY_CONFIG.MAX_TOTAL_BYTES;
 }
+
+/**
+ * Sounds other players shared at tables this device sat at, kept so they can be imported later
+ * from Preferences. Its own database, so the custom sound database never needs a version bump.
+ */
+export const RECENT_TABLE_SOUNDS_CONFIG = {
+  DATABASE_NAME: 'wizard-party-table-sounds',
+  STORE_NAME: 'recent',
+  /** Newest sounds kept; a full table shares at most 5 × MAX_SHARED_SOUNDS_PER_PLAYER. */
+  MAX_SOUNDS: 24,
+  MAX_AGE_MS: 14 * 24 * 60 * 60 * 1000,
+} as const;

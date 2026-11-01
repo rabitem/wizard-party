@@ -78,10 +78,10 @@ function RoundEndSection({ gameState, playerId, showRoundEndUI, onNextRound, isC
 }
 
 /** Panels section (Settings, Stats) */
-function PanelsSection({ state }: { state: Pick<GameClientState, 'settingsOpen' | 'statsOpen' | 'setSettingsOpen' | 'setStatsOpen' | 'handleLeaveGame' | 'sharedCustomSounds'> }) {
+function PanelsSection({ state }: { state: Pick<GameClientState, 'settingsOpen' | 'statsOpen' | 'setSettingsOpen' | 'setStatsOpen' | 'handleLeaveGame'> }) {
   return (
     <>
-      <SettingsPanel isOpen={state.settingsOpen} onClose={() => state.setSettingsOpen(false)} onLeaveGame={state.handleLeaveGame} showLeaveGame sharedCustomSounds={state.sharedCustomSounds} />
+      <SettingsPanel isOpen={state.settingsOpen} onClose={() => state.setSettingsOpen(false)} onLeaveGame={state.handleLeaveGame} showLeaveGame />
       <StatsPanel isOpen={state.statsOpen} onClose={() => state.setStatsOpen(false)} />
     </>
   );

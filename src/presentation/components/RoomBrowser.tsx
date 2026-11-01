@@ -31,7 +31,7 @@ import { RealmPulse } from './realm-pulse';
 import { ClassicAmbienceOnly } from './ui';
 import { useGame } from '../providers/GameProvider';
 import { useAccount } from '../providers/AccountProvider';
-import { AccountButton, GuestHint } from './account';
+import { AccountButton, GuestHint, PreferencesButton } from './account';
 import { SocialButton } from './friends';
 import { useUsernameValidation } from '../hooks/useUsernameValidation';
 import { usePlayerName } from '../hooks/usePlayerName';
@@ -133,6 +133,7 @@ function RoomBrowserContent({
     <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
       <div className="flex justify-end gap-2 mb-2 sm:mb-0 sm:absolute sm:top-6 sm:right-6">
         <SocialButton />
+        <PreferencesButton />
         <AccountButton />
       </div>
       <HeroSection />
