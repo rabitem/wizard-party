@@ -118,7 +118,8 @@ view ray (`getEnvelopeClampScale`, called from `SceneCamera`).
 Information (seat name and bid progress, played-card owner) is drawn with `ScreenSizedBillboard`
 (`components/three/ScreenSizedBillboard.tsx`): camera-facing, constant on-screen cap height, depth
 tested. Sizes are `SCENE_LABEL` in `config/scene-label.config.ts`. Decoration (brandmark plate,
-avatar emblem, turn glow) stays in world units.
+avatar emblem, turn glow) stays in world units. The billboard subscribes its frame callback after
+its parent's, so a label on a flying card fits the card's pose of the frame being drawn.
 
 ### Particles
 

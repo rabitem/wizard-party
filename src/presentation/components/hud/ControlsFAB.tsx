@@ -15,6 +15,8 @@ export function ControlsFAB({ disabled, onToggle }: ControlsFABProps) {
   const skinClass = useHudClassName('button');
   return (
     <button
+      type="button"
+      aria-label="Game controls"
       onClick={() => !disabled && onToggle()}
       className={`group relative w-12 h-12 flex items-center justify-center transition-all ${
         disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer active:scale-95'

@@ -18,57 +18,54 @@ export interface KnownIssue {
   reason: string;
 }
 
-/** The narrow phones and the landscape phone of the viewport matrix where the largest hand breaks layout. */
-const NARROW_HAND_LAYOUT = 'The largest hand on a narrow phone: hand cards under the 24 px tap minimum (tap-target-small) and HUD controls covering cards and seat labels (hud-occludes-scene).';
+/** Portrait phones up to the Pro Max at 3 to 5 players: the largest hand fans into rows. */
+const NARROW_HAND_TAP = 'The largest hand on a narrow phone: hand cards expose less than the 24 px tap minimum (tap-target-small). The hand fans into two or three rows, and the audit measures each strip against the neighbouring cards of every row.';
+/** Landscape phones (750x340: iPhone 14 landscape, the matrix's narrow landscape; Pixel 7 landscape) at every table size. */
+const LANDSCAPE_PROMPT = 'A landscape phone: the bidding panel in the prompt region covers the name and bid labels of the far seats (hud-occludes-scene).';
 
 export const KNOWN_ISSUES: readonly KnownIssue[] = [
   {
     title: /^(galaxy-fold-folded|iphone-se) \(\d+x\d+\) › 3 players: the largest hand is playable$/,
     projects: /^viewport-matrix/,
     mode: 'fails',
-    reason: NARROW_HAND_LAYOUT,
+    reason: NARROW_HAND_TAP,
   },
   {
     title: /^phone-landscape-narrow \(\d+x\d+\) › [36] players: the largest hand is playable$/,
     projects: /^viewport-matrix/,
     mode: 'fails',
-    reason: NARROW_HAND_LAYOUT,
+    reason: `${LANDSCAPE_PROMPT} At 3 players also ${NARROW_HAND_TAP}`,
   },
-  {
-    title: /^(galaxy-fold-folded|iphone-se) \(\d+x\d+\) › 6 players: the largest hand is playable$/,
-    projects: /^viewport-matrix-webkit$/,
-    mode: 'fails',
-    reason: 'WebKit only: a bid control button overlaps the "Place bid" button on a narrow phone (hud-overlap).',
-  },
-  // The device projects (viewports.spec.ts): the same layout bug per device and table size.
+  // The device projects (viewports.spec.ts): the same layout bugs per device and table size.
   {
     title: /^3 players: the largest hand is playable$/,
-    projects: /^(android-landscape|android-phone|android-tablet|fold-cover|iphone|iphone-pro-max|iphone-se)$/,
+    projects: /^(android-phone|fold-cover|iphone|iphone-pro-max|iphone-se)$/,
     mode: 'fails',
-    reason: `${NARROW_HAND_LAYOUT} Phones and the Galaxy Tab also show 3D labels below the legible size (scene-text-unreadable).`,
+    reason: NARROW_HAND_TAP,
+  },
+  {
+    title: /^3 players: the largest hand is playable$/,
+    projects: /^android-tablet$/,
+    mode: 'fails',
+    reason: 'Galaxy Tab S9 portrait: when your card leaves the 20-card hand, the hand fits 19 cards and a hand card jumps 0.25 NDC in one frame (teleport).',
   },
   {
     title: /^4 players: the largest hand is playable$/,
-    projects: /^(android-landscape|android-phone|fold-cover|ipad|ipad-landscape|ipad-mini|iphone|iphone-pro-max|iphone-se)$/,
+    projects: /^(android-phone|fold-cover|iphone|iphone-pro-max|iphone-se)$/,
     mode: 'fails',
-    reason: `${NARROW_HAND_LAYOUT} On iPads 3D labels render below 10 px (scene-text-unreadable).`,
+    reason: NARROW_HAND_TAP,
   },
   {
     title: /^5 players: the largest hand is playable$/,
-    projects: /^(android-landscape|fold-cover|iphone|iphone-pro-max|iphone-se)$/,
+    projects: /^fold-cover$/,
     mode: 'fails',
-    reason: NARROW_HAND_LAYOUT,
+    reason: NARROW_HAND_TAP,
   },
   {
-    title: /^6 players: the largest hand is playable$/,
-    projects: /^(android-landscape|iphone|iphone-pro-max|iphone-se)$/,
+    title: /^[3-6] players: the largest hand is playable$/,
+    projects: /^(android-landscape|iphone-landscape)$/,
     mode: 'fails',
-    reason: NARROW_HAND_LAYOUT,
-  },
-  {
-    title: /^a real touch plays a card$/,
-    mode: 'flaky',
-    reason: 'After a card is played with real device touch the trick never settles (wait-timeout, collection-stuck, skipped-play-animation); it mixes real-time input with the virtual clock, so the cause is not yet pinned down.',
+    reason: `${LANDSCAPE_PROMPT} At 3 players also ${NARROW_HAND_TAP}`,
   },
 ];
 

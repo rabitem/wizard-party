@@ -586,6 +586,18 @@ a {
     align-items: flex-end;
   }
 
+  /* Corner regions hug their content: an empty centre lets the corner cells grow toward the
+     middle, and the region box is the HUD's claim on the screen (it must not reach the hand) */
+  .hud-region-status,
+  .hud-region-social {
+    justify-self: start;
+  }
+
+  .hud-region-actions,
+  .hud-region-controls {
+    justify-self: end;
+  }
+
   .hud-region-dock-left,
   .hud-region-dock-right {
     justify-content: center;

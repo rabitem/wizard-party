@@ -64,8 +64,10 @@ export const PLAYABILITY_SCENARIOS: readonly SandboxScenario[] = [
       // The driver plays here; without one the autoplayer does, so batch runs still complete.
       { op: 'external', label: 'touch-play' },
       { op: 'autoplay', enabled: true },
-      ...finishTrick,
+      // Autoplay ends with the trick: left on, it leads the next trick and the table never idles.
+      { op: 'wait-for', until: 'all-landed' },
       { op: 'autoplay', enabled: false },
+      ...finishTrick,
     ],
   },
 ];
