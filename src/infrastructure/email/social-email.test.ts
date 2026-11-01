@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { DEFAULT_APPEARANCE } from '@shared/domain/character';
 
 vi.mock('server-only', () => ({}));
 
@@ -8,7 +9,7 @@ import { createUnsubscribeToken, verifyUnsubscribeToken } from './email-unsubscr
 import { friendRequestMail, gameInviteMail } from './social-email-templates';
 
 const player = (overrides: Partial<SocialPlayer>): SocialPlayer => ({
-  userId: 'u1', username: 'merlin', displayName: 'Merlin', avatar: 'wizard', level: 12, hasPublicProfile: true, ...overrides,
+  userId: 'u1', username: 'merlin', displayName: 'Merlin', avatar: 'wizard', appearance: DEFAULT_APPEARANCE, level: 12, hasPublicProfile: true, ...overrides,
 });
 
 describe('unsubscribe tokens', () => {

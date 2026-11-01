@@ -1,9 +1,10 @@
 import 'server-only';
 
 import { getProgression } from '@shared/domain/account';
+import { displayedAppearance } from '@shared/domain/character';
 import { DEFAULT_SOCIAL_SETTINGS, relationshipOf, type PlayerSearchResult, type SocialPlayer, type SocialSettings } from '@shared/domain/social';
 
-/** Columns of the `social_players` view (db/migrations/0105_social.sql). */
+/** Columns of the `social_players` view (db/migrations/0111_social_players_appearance.sql). */
 export interface SocialPlayerRow {
   user_id: string;
   username: string;
@@ -11,6 +12,8 @@ export interface SocialPlayerRow {
   avatar: string | null;
   total_xp: number | string;
   has_public_profile: boolean;
+  /** player_profiles.appearance: untrusted JSON, or null while none was saved. */
+  appearance: unknown;
 }
 
 export interface SocialSettingsRow {
@@ -37,6 +40,7 @@ export function toSocialPlayer(row: SocialPlayerRow): SocialPlayer {
     username: row.username,
     displayName: row.display_name,
     avatar: row.avatar,
+    appearance: displayedAppearance(row.appearance, row.avatar),
     level: getProgression(Number(row.total_xp) || 0).level,
     hasPublicProfile: row.has_public_profile,
   };

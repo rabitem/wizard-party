@@ -43,6 +43,7 @@ interface PublicProfileRow {
   summary: Partial<PlayerStatsSummary> | null;
   total_xp: number;
   avatar: string | null;
+  appearance: unknown;
   achievements: { id: string; unlocked_at: string }[] | null;
   pinned_games: GameJson[] | null;
   recent_games: GameJson[] | null;
@@ -99,7 +100,8 @@ export class PostgresPublicProfileReader implements IPublicProfileReader {
           COALESCE(p.show_history, ${DEFAULT_PROFILE_VISIBILITY.showHistory}::boolean) AS show_history,
           pr.summary,
           COALESCE(pr.total_xp, 0) AS total_xp,
-          d.data ->> 'avatar' AS avatar
+          d.data ->> 'avatar' AS avatar,
+          p.appearance
         FROM auth_users u
         LEFT JOIN player_profiles p ON p.user_id = u.id
         LEFT JOIN player_progress pr ON pr.user_id = u.id
@@ -110,7 +112,7 @@ export class PostgresPublicProfileReader implements IPublicProfileReader {
       )
       SELECT
         t.username, t.display_username, t.member_since, t.tagline,
-        t.is_public, t.show_history, t.summary, t.total_xp, t.avatar,
+        t.is_public, t.show_history, t.summary, t.total_xp, t.avatar, t.appearance,
         CASE WHEN t.is_public THEN (
           SELECT json_agg(json_build_object('id', a.achievement_id, 'unlocked_at', a.unlocked_at))
           FROM player_achievements a WHERE a.user_id = t.id
@@ -164,6 +166,7 @@ export class PostgresPublicProfileReader implements IPublicProfileReader {
       displayUsername: row.display_username,
       tagline: row.tagline ?? '',
       avatar: row.avatar,
+      appearance: row.appearance,
       isPublic: row.is_public,
       showHistory: row.show_history,
       memberSince: toTime(row.member_since) ?? 0,

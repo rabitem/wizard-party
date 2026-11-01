@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { DEFAULT_APPEARANCE } from '../character';
 
 import {
   INBOX_KINDS,
@@ -107,7 +108,7 @@ describe('presence', () => {
 
 describe('compareFriends', () => {
   const friend = (name: string, pinnedAt: number | null, status: 'online' | 'offline'): Friend => ({
-    userId: name, username: name, displayName: name, avatar: null, level: 1, hasPublicProfile: true, since: 0, pinnedAt,
+    userId: name, username: name, displayName: name, avatar: null, appearance: DEFAULT_APPEARANCE, level: 1, hasPublicProfile: true, since: 0, pinnedAt,
     presence: status === 'online' ? { status, activity: 'menu', joinableRoomCode: null, since: 0 } : OFFLINE_PRESENCE,
   });
 

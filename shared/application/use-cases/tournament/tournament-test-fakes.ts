@@ -1,4 +1,5 @@
 import { DEFAULT_SOCIAL_SETTINGS, type InboxDelivery, type RelationshipFacts, type SocialPlayer, type SocialSettings } from '../../../domain/social';
+import { DEFAULT_APPEARANCE } from '../../../domain/character';
 import { participationOf, type Tournament, type TournamentParticipation, type TournamentRateLimitedAction } from '../../../domain/tournament';
 import { signMatchTicket, type MatchTicketClaims } from '../../../tournament';
 import type {
@@ -256,7 +257,7 @@ export class FakeTournamentPlayers implements ITournamentPlayerDirectory, ITourn
   blocks = new Set<string>();
 
   add(userId: string, overrides: Partial<SocialPlayer> = {}): void {
-    this.players.set(userId, { userId, username: userId, displayName: userId.toUpperCase(), avatar: null, level: 1, hasPublicProfile: true, ...overrides });
+    this.players.set(userId, { userId, username: userId, displayName: userId.toUpperCase(), avatar: null, appearance: DEFAULT_APPEARANCE, level: 1, hasPublicProfile: true, ...overrides });
   }
 
   async findById(userId: string): Promise<SocialPlayer | null> {
