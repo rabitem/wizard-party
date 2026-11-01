@@ -41,4 +41,25 @@ describe('ResumeGameUseCase', () => {
     expect(game.hostId).toBe('p');
     expect(game.isPaused()).toBe(false);
   });
+
+  it('leaves the seat and the pause alone when the timeout alarm fires early', () => {
+    const clock = createManualClock(1_000);
+    const game = pausedGame(clock);
+    clock.advance(9_999);
+
+    expect(resume.executeOnTimeout({ game, botCounter: 2 })).toEqual({ wasResumed: false, replacedWithBot: false });
+    expect(game.isPaused()).toBe(true);
+    expect(game.getPlayer('h')).toMatchObject({ isBot: false, name: 'Hana' });
+  });
+
+  it('ignores a stale alarm or a reconnect once the game is no longer paused', () => {
+    const clock = createManualClock(1_000);
+    const game = pausedGame(clock);
+    resume.executeOnReconnect({ game, reconnectedPlayerId: 'h' });
+    clock.advance(10_000);
+
+    expect(resume.executeOnTimeout({ game })).toEqual({ wasResumed: false, replacedWithBot: false });
+    expect(resume.executeOnReconnect({ game, reconnectedPlayerId: 'h' })).toEqual({ wasResumed: false, replacedWithBot: false });
+    expect(game.getPlayer('h')?.isBot).toBe(false);
+  });
 });

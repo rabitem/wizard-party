@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { CardType } from './card-types';
 import { DEFAULT_RULESET_CONFIG, ensureRulesetConfig } from './ruleset-config';
 import { countNonDefaultRules } from './ruleset-validation';
 
@@ -124,5 +125,31 @@ describe('ensureRulesetConfig', () => {
 
     expect(missingVolumeConfig.turn.timeoutSoundVolume).toBe(DEFAULT_RULESET_CONFIG.turn.timeoutSoundVolume);
     expect(invalidConfig.turn.timeoutSoundVolume).toBe(DEFAULT_RULESET_CONFIG.turn.timeoutSoundVolume);
+  });
+});
+
+describe('countNonDefaultRules', () => {
+  it('counts each changed rule once', () => {
+    const config = {
+      card: { lastWizardWins: true, lastJesterWins: true },
+      bidding: { hiddenBids: true, allowEqualBids: true },
+      scoring: { baseBidPoints: 30, pointsPerTrick: 5, penaltyPerMiss: 5 },
+      structure: { customRoundCount: 10, descendingRounds: true },
+      turn: { ...DEFAULT_RULESET_CONFIG.turn },
+      expansions: { specialCards: [CardType.BOMB] },
+    };
+
+    expect(countNonDefaultRules(config)).toBe(10);
+  });
+
+  it('ignores values the game would replace by the default', () => {
+    const config = {
+      ...DEFAULT_RULESET_CONFIG,
+      scoring: { ...DEFAULT_RULESET_CONFIG.scoring, baseBidPoints: 500 },
+      structure: { ...DEFAULT_RULESET_CONFIG.structure, customRoundCount: 0 },
+    };
+
+    expect(countNonDefaultRules(config)).toBe(0);
+    expect(countNonDefaultRules('not a ruleset')).toBe(0);
   });
 });

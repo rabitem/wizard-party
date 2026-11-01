@@ -8,6 +8,7 @@ import type {
   SandboxRunConfig,
 } from '../../src/presentation/components/sandbox';
 import type { SandboxHold } from '../../src/presentation/components/sandbox/sandbox-hold';
+import { knownIssueFor } from './known-issues';
 
 export type SandboxClockMode = 'fast' | 'real';
 /** 'perf' samples the probe every Nth frame and skips per-commit render counting (see sandbox-profile.ts). */
@@ -47,6 +48,14 @@ async function openSandbox(page: Page, clock: SandboxClockMode, profile: Sandbox
     throw new Error(`${SANDBOX_PATH} is not in this build: run \`npm run e2e:build\` (a plain \`npm run build\` leaves the sandbox out), and stop any server it would reuse.`);
   }
   await page.waitForFunction(() => Boolean(window.__wizardSandbox), undefined, { timeout: SANDBOX_READY_TIMEOUT_MS });
+}
+
+function applyKnownIssue(testInfo: TestInfo): void {
+  const issue = knownIssueFor(testInfo.titlePath.slice(1).join(' › '), testInfo.project.name);
+  if (!issue) return;
+  testInfo.annotations.push({ type: 'known-issue', description: issue.reason });
+  if (issue.mode === 'fails') testInfo.fail(true, issue.reason);
+  else testInfo.fixme(true, issue.reason);
 }
 
 async function attachReport(testInfo: TestInfo, page: Page, report: AuditReport): Promise<void> {
@@ -94,13 +103,15 @@ async function runInteractive(page: Page, config: SandboxRunConfig, onHold: (hol
 /**
  * `sandbox` fixture: a page with the sandbox loaded on the requested clock and profile. Every
  * run's report (and a screenshot for failing runs) is attached to the test result, with the
- * WebGL renderer it ran on as an annotation.
+ * WebGL renderer it ran on as an annotation. A test on the known-issues list is marked before the
+ * page opens (support/known-issues.ts).
  */
 export const test = base.extend<{ clock: SandboxClockMode; profile: SandboxProfileMode; sandbox: SandboxDriver }>({
   clock: ['fast', { option: true }],
   profile: ['audit', { option: true }],
   // Playwright's fixture callback; named `provide` so it is not mistaken for a React hook.
   sandbox: async ({ page, clock, profile }, provide, testInfo) => {
+    applyKnownIssue(testInfo);
     await openSandbox(page, clock, profile);
     await provide({
       page,

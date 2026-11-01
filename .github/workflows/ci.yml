@@ -1,5 +1,18 @@
 name: CI
 
+# The gate for every pull request and every push to main. Independent checks run as parallel jobs,
+# each with its own cache; `Verify application` passes only when all of them passed, so it is the
+# one check that rulesets and the Dependabot policy (.github/scripts/dependabot-auto-merge.mjs) name.
+#
+#   Typecheck      tsc for the app and for the worker (tsconfig.worker.json), incremental
+#   Lint           ESLint with its cache
+#   Tests          Vitest, levels 1 to 4, with a coverage summary on the run page (not a gate)
+#   Build and play next build, wrangler dry run, then the realtime smoke and the golden path
+#                  against a local worker
+#
+# The browser suites (sandbox scenarios on every engine and device) are in e2e.yml; the full
+# products of the in-process matrices in matrix.yml.
+
 on:
   pull_request:
     branches: [main]
@@ -15,10 +28,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  verify:
-    name: Verify application
+  typecheck:
+    name: Typecheck
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -28,17 +41,95 @@ jobs:
           node-version: '26'
           cache: npm
       - run: npm ci
+      # tsconfig.json is incremental: the build info of the last run on this branch or main lets tsc
+      # skip unchanged files. A stale file only costs time, never correctness.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: tsconfig.tsbuildinfo
+          key: tsc-${{ hashFiles('package-lock.json', 'tsconfig.json') }}-${{ github.sha }}
+          restore-keys: tsc-${{ hashFiles('package-lock.json', 'tsconfig.json') }}-
       - run: npm run typecheck
-      - run: npm run lint
-      - run: npm test
-      - run: npm run build
-      - run: npm run check:worker
-      # Chromium for the golden path; its OS packages are installed on every run, the browser only on a cache miss.
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '26'
+          cache: npm
+      - run: npm ci
+      # The content strategy keys the cache on file contents, which a fresh checkout keeps (mtimes
+      # do not survive it). A new lockfile or ESLint config starts a new cache.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .eslintcache
+          key: eslint-${{ hashFiles('package-lock.json', 'eslint.config.mjs') }}-${{ github.sha }}
+          restore-keys: eslint-${{ hashFiles('package-lock.json', 'eslint.config.mjs') }}-
+      - run: npm run lint -- --cache --cache-location .eslintcache --cache-strategy content
+
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '26'
+          cache: npm
+      - run: npm ci
+      - run: npm run test:coverage
+      # Line coverage is a map of what the suites reach, not a gate: a percentage cannot tell a
+      # meaningful test from a vacuous one (.claude/skills/test-audit/SKILL.md).
+      - name: Coverage summary
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: |
+          if [ -f coverage/coverage-summary.json ]; then
+            node -e '
+              const { total } = require("./coverage/coverage-summary.json");
+              const row = (name) => `| ${name} | ${total[name].pct}% | ${total[name].covered} / ${total[name].total} |`;
+              console.log(["### Coverage", "", "| | Covered | Count |", "| --- | --- | --- |", ...["lines", "branches", "functions", "statements"].map(row)].join("\n"));
+            ' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  play:
+    name: Build and play
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '26'
+          cache: npm
+      - run: npm ci
+      # The browser download is cached; its OS packages are installed on every run.
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-      - run: npx playwright install --with-deps chromium
+          key: playwright-chromium-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      # Chromium installs while the app builds: the two do not depend on each other.
+      - name: Build the app and the worker, install Chromium alongside
+        shell: bash
+        run: |
+          npx playwright install --with-deps chromium > "$RUNNER_TEMP/browser-install.log" 2>&1 &
+          install_pid=$!
+          npm run build
+          npm run check:worker
+          if ! wait "$install_pid"; then
+            cat "$RUNNER_TEMP/browser-install.log"
+            exit 1
+          fi
       # One local worker serves both checks: the smoke test's raw sockets, then the golden path, which
       # plays the build above (next start on localhost, so the app picks the local worker) in Chromium.
       - name: Multiplayer smoke test and golden path
@@ -70,3 +161,20 @@ jobs:
             e2e-results/
           if-no-files-found: ignore
           retention-days: 7
+
+  verify:
+    name: Verify application
+    needs: [typecheck, lint, test, play]
+    # Runs even when a job above failed, so the gate reports failure instead of being skipped (a
+    # skipped required check would count as passing).
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Every check passed
+        shell: bash
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: |
+          echo "$NEEDS" | jq -r 'to_entries[] | "\(.key): \(.value.result)"'
+          echo "$NEEDS" | jq -e 'to_entries | all(.value.result == "success")' > /dev/null

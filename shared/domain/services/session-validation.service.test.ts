@@ -24,3 +24,49 @@ describe('SessionValidationService.validatePersistentId', () => {
     expect(SessionValidationService.validatePersistentId(persistentId).isValid).toBe(false);
   });
 });
+
+describe('SessionValidationService.isSessionToken', () => {
+  // Server-issued tokens are base64url of at least 32 random bytes: 43 characters or more.
+  const token = (length: number, char = 'a') => char.repeat(length);
+
+  it.each([
+    ['32 random bytes', token(43)],
+    ['the longest accepted token', token(128)],
+    ['the whole base64url alphabet', 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'],
+  ])('accepts %s', (_label, value) => {
+    expect(SessionValidationService.isSessionToken(value)).toBe(true);
+  });
+
+  it.each([
+    ['fewer than 32 bytes', token(42)],
+    ['an oversized value', token(129)],
+    ['standard base64 padding', `${token(42)}=`],
+    ['a "+" from standard base64', `${token(42)}+`],
+    ['a persistent id', 'player-1500000000000-abc1234'],
+    ['a number', 1234567890],
+    ['nothing', undefined],
+  ])('refuses %s', (_label, value) => {
+    expect(SessionValidationService.isSessionToken(value)).toBe(false);
+  });
+});
+
+describe('SessionValidationService.secretsMatch', () => {
+  // Token-shaped but deliberately low-entropy (secret scanners flag random-looking literals);
+  // mixed case and distinct first and last characters keep every row below meaningful.
+  const secret = `Seat${'a'.repeat(39)}Z`;
+
+  it('opens a seat only with the identical token', () => {
+    expect(SessionValidationService.secretsMatch(secret, secret.slice())).toBe(true);
+  });
+
+  it.each([
+    ['the last character differs', `${secret.slice(0, -1)}z`],
+    ['the first character differs', `X${secret.slice(1)}`],
+    ['it differs only in case', secret.toLowerCase()],
+    ['it is a prefix of the token', secret.slice(0, -1)],
+    ['it extends the token', `${secret}a`],
+    ['it is empty', ''],
+  ])('refuses a presented token when %s', (_label, presented) => {
+    expect(SessionValidationService.secretsMatch(secret, presented)).toBe(false);
+  });
+});
