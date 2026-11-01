@@ -84,8 +84,9 @@ export interface FormFactorBudget {
 
 export const PLAYABILITY_BUDGETS = {
   /**
-   * Exposed width of each hand card (the part the next card does not cover), in CSS px. Touch
-   * uses the WCAG 2.5.8 minimum target size; a mouse can hit a narrower strip.
+   * Exposed width of each hand card, in CSS px: the widest strip where a tap selects that card,
+   * found by hit-testing the scene (other cards of its row and any row in front cover the rest).
+   * Touch uses the WCAG 2.5.8 minimum target size; a mouse can hit a narrower strip.
    */
   MIN_HAND_CARD_TAP_PX: { touch: 24, pointer: 12 },
   /** Projected em height of 3D labels (names, bids, owners) in CSS px. */
