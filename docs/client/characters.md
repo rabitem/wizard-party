@@ -211,6 +211,12 @@ is nearest the camera and would stand in front of the player's own hand.
   clip once (`CharacterFigure`'s `oneShot`) and the figure settles back by itself on the mixer's
   clock, so ending it needs no timer or re-render. Reactions only read what the client was told;
   nothing judges the game.
+- **Draw calls**: `character-bake.ts` merges a figure's visible parts into one skinned mesh per
+  material (a figure is five skinned outfit pieces, a skinned head and rigid props on bones), so a
+  figure draws in two or three calls instead of about a dozen. Skinned parts move into one bind
+  space (the KayKit skins differ by one constant offset each); rigid props are bound to their
+  nearest bone with full weight. Every `CharacterFigure` is baked, also in the editor and on the
+  podium; the bake re-runs when the look changes.
 - **Cost**: at rest a figure holds its clip's first frame, and `character-skeleton.ts` stops its
   bone uploads once the pose is in place (three.js would re-upload a skinned mesh's bone texture
   every frame), so a resting table uploads nothing. All parts of a figure share one skeleton. The

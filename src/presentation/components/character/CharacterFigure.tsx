@@ -10,6 +10,7 @@ import type { CharacterAppearance } from '@shared/domain/character';
 import { CHARACTER_CLIP_FADE_SECONDS, CHARACTER_CLIPS, CHARACTER_SILHOUETTE_COLOR, type CharacterClip } from '@/presentation/config/character.config';
 import { loadCharacterAnimations, loadCharacterModel } from './character-assets';
 import { ownFigureMaterials } from './character-palette';
+import { bakeFigure } from './character-bake';
 import { applyAppearance } from './character-parts';
 import { prepareSkeletons, type PoseGate } from './character-skeleton';
 
@@ -101,7 +102,12 @@ export function CharacterFigure({ appearance, clip = CHARACTER_CLIPS.IDLE, holdP
     materials.forEach((material) => material.dispose());
     gate.dispose();
   }, [materials, gate]);
-  useEffect(() => applyAppearance(figure, appearance), [figure, appearance]);
+  // The chosen parts, merged into a draw call or two per material (character-bake.ts).
+  useEffect(() => {
+    applyAppearance(figure, appearance);
+    const bake = bakeFigure(figure);
+    return () => bake.dispose();
+  }, [figure, appearance]);
 
   useEffect(() => {
     const rest = actions[clip];
