@@ -75,6 +75,8 @@ with `wait-timeout` or `step-failed`.
   `e2e/performance.spec.ts` alone.
 - A scenario must finish without a driver: unheld snapshots run through and `external` steps are
   skipped, so follow an `external` with a fallback, as `real-touch-play` enables `autoplay`.
+  Turn `autoplay` off before `wait-for idle`: left on, it keeps leading tricks and the table never
+  idles (`wait-timeout`, then `collection-stuck` and `not-settled` at the end of the run).
 - End idle (`...finishTrick` or `wait-for idle`). The run then settles and flags anything still
   moving or stuck.
 - Every `measure-start` has a `measure-end` with the same label (the registry test checks it).

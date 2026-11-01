@@ -127,7 +127,9 @@ viewport), so the canvas fills the screen edge to edge and every HUD edge adds
 
 - Edge columns keep their content width and share the rest equally, so the centre stays centred
   and shrinks first. Chip rows scroll, and the bidding panel wraps Place Bid onto a second line
-  instead of overflowing.
+  instead of overflowing. The corner regions (`status`, `actions`, `social`, `controls`) hug their
+  content inside the cell (`justify-self`), so with an empty centre the controls region does not
+  stretch over the hand.
 - Components render into a region with `<HudSlot region order>`
   (`components/hud/layout/HudSlot.tsx`). A slot is a portal into the region's node, so content
   placed through slots cannot overlap another region. `order` comes from `HUD_SLOT_ORDER`, so
@@ -148,7 +150,7 @@ Placements (`src/app/game/[id]/GameHud.tsx` and the bidding components):
 | dock-left/right | docked standings panel                                             |
 | social        | emote bar and quick chat (regular HUD)                               |
 | bottom        | horizontal standings panel (user setting "bottom")                   |
-| controls      | reactions feed, hand controls (regular HUD), bidding reopen button (portrait phones), controls button (phones) |
+| controls      | reactions feed, hand controls (regular HUD), bidding reopen button (portrait phones), controls button (phones; hidden while any sheet is open, since the sheet covers it) |
 
 ### Standings
 

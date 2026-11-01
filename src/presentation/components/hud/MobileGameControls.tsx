@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { HUD_SLOT_ORDER } from '@/presentation/config/responsive.config';
-import { useSheetState, BottomSheet, useClickLock } from '../ui';
+import { useSheet, useSheetState, BottomSheet, useClickLock } from '../ui';
 import { COOLDOWN_SECONDS } from '../social/types';
 import { HudSlot } from './layout';
 import { ControlsFAB } from './ControlsFAB';
@@ -32,6 +32,8 @@ export function MobileGameControls({
   disabled,
 }: MobileGameControlsProps) {
   const { isOpen, toggle, close } = useSheetState('quickchat');
+  // An open sheet (this one, bidding, standings) covers the controls corner: no button under it.
+  const anySheetOpen = useSheet().activeSheet !== null;
   const [view, setView] = useState<ControlsView>('main');
   const [emoteCooldown, setEmoteCooldown] = useState(0);
   const [chatCooldown, setChatCooldown] = useState(0);
@@ -93,9 +95,11 @@ export function MobileGameControls({
 
   return (
     <>
-      <HudSlot region="controls" order={HUD_SLOT_ORDER.controls.controlsButton}>
-        <ControlsFAB disabled={disabled} onToggle={toggle} />
-      </HudSlot>
+      {anySheetOpen ? null : (
+        <HudSlot region="controls" order={HUD_SLOT_ORDER.controls.controlsButton}>
+          <ControlsFAB disabled={disabled} onToggle={toggle} />
+        </HudSlot>
+      )}
       <BottomSheet isOpen={isOpen} onClose={closeAndResetView} title={getTitle()} maxHeight={view === 'main' ? 45 : 70}>
         {view === 'main' && (
           <ControlsMainView
