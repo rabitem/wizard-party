@@ -75,6 +75,20 @@ regions" block: `.game-viewport` (100dvh with a 100vh fallback, no pinch zoom of
 `.sheet-max-height` (dvh-based sheet height), `.sheet-safe-bottom` and `.sheet-safe-x`
 (safe-area padding of sheets) and `.hud-scroll-row` (thin scrollbar for chip rows).
 
+Pages outside the game (the home page, the lobby) are plain CSS and use Tailwind breakpoints. For
+two-pane layouts `globals.css` defines the `split` variant: desktop width (64rem) or a landscape
+phone (at least 40rem wide, at most 32rem tall). The lobby puts the table beside its control panel
+there (`lobby/table/lobby-styles.ts`). Tailwind emits custom variants after its breakpoints, so a
+larger size inside a `split` layout is written `split:2xl:...`, not `2xl:...`.
+
+The home page (`components/realm-hall/`) renders the active realm's game room and table behind
+the page: `ThemedEnvironment`, `SceneLighting` and `TableSurface`, the same parts as the game, in
+a canvas set up like `Game3DCanvas`. Each `HallStation` section is one stop of a camera walk
+(`REALM_HALL.STOPS` in `config/realm-hall.config.ts`, same order); `useHallScrollProgress` turns
+the scroll position into walk progress, and the camera eases toward it inside `useFrame`. With
+reduced motion the camera stays at the first stop; without WebGL the page keeps a painted
+backdrop.
+
 The game route sets `viewportFit: 'cover'` (`src/app/game/[id]/page.tsx`, merged over the root
 viewport), so the canvas fills the screen edge to edge and every HUD edge adds
 `env(safe-area-inset-*)` through `max(gutter, inset)`.

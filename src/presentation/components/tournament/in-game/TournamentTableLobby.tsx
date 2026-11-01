@@ -21,7 +21,7 @@ export function TournamentTableLobby({ match, gameState }: TournamentTableLobbyP
       <ClassicAmbienceOnly>
         <AmbientParticles />
       </ClassicAmbienceOnly>
-      <div className="relative z-10 max-w-lg mx-auto px-4 sm:px-6 py-6 sm:py-10">
+      <div className="relative z-10 max-w-lg md:max-w-2xl lg:max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
         <TournamentMatchLobby
           match={match}
           rulesetConfig={gameState.rulesetConfig ?? DEFAULT_RULESET_CONFIG}

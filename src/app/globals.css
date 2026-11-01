@@ -3,6 +3,17 @@
 @import "tailwindcss";
 @import "./theme-palettes.css";
 
+/*
+ * Screens that stack on phones place their panels side by side here: from desktop width (64rem),
+ * and on landscape phones (at least 40rem wide, at most 32rem tall), where a stack would scroll
+ * the main content off screen. Used by the lobby.
+ */
+@custom-variant split {
+  @media (min-width: 64rem), (min-width: 40rem) and (max-height: 32rem) {
+    @slot;
+  }
+}
+
 :root {
   --background: #0a0908;
   --foreground: #faf6f0;

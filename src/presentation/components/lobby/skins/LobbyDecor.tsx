@@ -7,16 +7,25 @@ import { useLobbySkin } from './useLobbySkin';
 const DECOR_ROOT_CLASS = 'pointer-events-none absolute inset-0 rounded-[inherit]';
 
 /**
- * Header vignette box: bleeds to the page gutters (px-4 / sm:px-6) and from the top padding
- * (py-6 / sm:py-10) to just below the header, behind the header content (-z-10).
+ * Header vignette box: bleeds to the page gutters (px-4 / sm:px-6 / lg:px-10) and from the top
+ * padding (py-6 / sm:py-10) to just below the header, behind the header content (-z-10).
  */
 const SCENE_ROOT_CLASS =
-  'pointer-events-none absolute -z-10 left-1/2 -translate-x-1/2 w-[calc(100%+2rem)] sm:w-[calc(100%+3rem)] -top-6 sm:-top-10 -bottom-5 sm:-bottom-6 overflow-hidden';
+  'pointer-events-none absolute -z-10 left-1/2 -translate-x-1/2 w-[calc(100%+2rem)] sm:w-[calc(100%+3rem)] lg:w-[calc(100%+5rem)] -top-6 sm:-top-10 -bottom-5 sm:-bottom-6 overflow-hidden ' +
+  // The vertical fade: into the page at the bottom edge; in the split lobby, where the group is
+  // centred below the top of the screen, also at the top edge.
+  '[--scene-fade:linear-gradient(180deg,#000_0%,#000_72%,transparent_100%)] split:[--scene-fade:linear-gradient(180deg,transparent_0%,#000_25%,#000_72%,transparent_100%)]';
 
-/** Fades the vignette into the page at its bottom edge and a little at the sides. */
+/**
+ * Fades the vignette into the page vertically (--scene-fade) and a little at the sides, so a wide
+ * lobby does not end the scene in a hard edge. Both masks apply (intersect).
+ */
+const SCENE_MASK = 'var(--scene-fade), linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%)';
 const SCENE_FADE_STYLE = {
-  maskImage: 'linear-gradient(180deg, #000 0%, #000 72%, transparent 100%)',
-  WebkitMaskImage: 'linear-gradient(180deg, #000 0%, #000 72%, transparent 100%)',
+  maskImage: SCENE_MASK,
+  maskComposite: 'intersect',
+  WebkitMaskImage: SCENE_MASK,
+  WebkitMaskComposite: 'source-in',
 } as const;
 
 /** Dark halo behind the title + room code so they stay readable over any scene. */
