@@ -49,6 +49,18 @@ export const CAMERA_CONFIG = {
     TOP_RAY_MARGIN_DEG: 2,
   },
 
+  /**
+   * A new room (table theme) has its own envelope, so on narrow screens its framing differs by
+   * up to ~6 units: the camera glides there (camera-transition.ts) instead of cutting.
+   */
+  FRAMING_TRANSITION: {
+    MIN_MS: 400,
+    /** Peak speed of the camera and its target (units/s): 0.13 units per frame at 60 Hz */
+    MAX_SPEED: 8,
+    /** A frame longer than this (a stall, a background tab) advances the glide by this much only */
+    MAX_FRAME_MS: 50,
+  },
+
   // OrbitControls
   TARGET: [0, 0.2, 0] as [number, number, number],
   MIN_DISTANCE: { DESKTOP: 4, MOBILE: 3 },

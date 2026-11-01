@@ -3,8 +3,13 @@ import { TABLE_THEMES, THEME_PRESETS } from '../settings';
 import { finishTrick, playOnTurn } from './sandbox-scenarios';
 import type { SandboxScenario, SandboxStep } from './sandbox.types';
 
-/** Settles a theme switch (textures, environment) before a snapshot freezes the frame. */
+/** Settles a UI theme switch (textures, colours) before a snapshot freezes the frame. */
 const THEME_DWELL_MS = 400;
+/**
+ * A table theme can also move the camera on a narrow screen (each room has its own ceiling, see
+ * CAMERA_CONFIG.FRAMING_TRANSITION): the slowest glide takes about 1.2 s, so the frame waits past it.
+ */
+const TABLE_THEME_DWELL_MS = 1500;
 /** Rounds at server pace; generous because a round's length grows with the hand. */
 const ROUND_TIMEOUT_MS = 240000;
 
@@ -73,12 +78,12 @@ export const PLAYABILITY_SCENARIOS: readonly SandboxScenario[] = [
 ];
 
 /** One frozen frame per table theme, then per UI theme, on a quiet table waiting for your lead. */
-function themeTour(count: number, setting: 'tableTheme' | 'theme', label: string): SandboxStep {
+function themeTour(count: number, setting: 'tableTheme' | 'theme', label: string, dwellMs: number): SandboxStep {
   return {
     op: 'repeat',
     times: count,
     steps: [
-      { op: 'wait', ms: THEME_DWELL_MS },
+      { op: 'wait', ms: dwellMs },
       { op: 'snapshot', label, hold: true },
       { op: 'settings', patch: setting === 'tableTheme' ? { tableTheme: 'next' } : { theme: 'next' } },
     ],
@@ -98,8 +103,8 @@ export const ROOM_TOUR_SCENARIO: SandboxScenario = {
   steps: [
     { op: 'wait-for', until: 'local-turn' },
     { op: 'wait-for', until: 'idle' },
-    themeTour(TABLE_THEMES.length, 'tableTheme', 'room-{tableTheme}'),
-    themeTour(THEME_PRESETS.length, 'theme', 'ui-{theme}'),
+    themeTour(TABLE_THEMES.length, 'tableTheme', 'room-{tableTheme}', TABLE_THEME_DWELL_MS),
+    themeTour(THEME_PRESETS.length, 'theme', 'ui-{theme}', THEME_DWELL_MS),
   ],
 };
 
