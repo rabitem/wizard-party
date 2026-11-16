@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { SANDBOX_DEFAULT_TRUMP_SUIT, SandboxAutoplayer } from './sandbox-autoplayer';
-import type { SandboxGameHandles } from './sandbox.types';
+import type { SandboxClock, SandboxGameHandles } from './sandbox.types';
 
 function handles(overrides: Partial<SandboxGameHandles>, calls: string[]): SandboxGameHandles {
   return {
@@ -33,6 +33,14 @@ function handles(overrides: Partial<SandboxGameHandles>, calls: string[]): Sandb
     takeOverSeat: () => {},
     ...overrides,
   };
+}
+
+function clockTicks() {
+  const listeners = new Set<(now: number, frame: number) => void>();
+  const clock: Pick<SandboxClock, 'onFrame'> = {
+    onFrame(listener) { listeners.add(listener); return () => { listeners.delete(listener); }; },
+  };
+  return { clock, tick: () => listeners.forEach(listener => listener(0, 0)) };
 }
 
 describe('SandboxAutoplayer', () => {
@@ -69,4 +77,42 @@ describe('SandboxAutoplayer', () => {
     autoplayer.act(roundEnd);
     expect(calls).toEqual(['next-round']);
   });
+  it('notices a bidding turn on clock ticks even when no GPU frame is drawn', () => {
+    const calls: string[] = [];
+    const { clock, tick } = clockTicks();
+    const autoplayer = new SandboxAutoplayer(() => true);
+    let state = handles({ phase: 'BIDDING' }, calls);
+    const stop = autoplayer.watch(clock, () => state);
+    tick();
+    expect(calls).toEqual([]);
+    autoplayer.setEnabled(true);
+    tick(); tick();
+    expect(calls).toEqual(['bid:0']);
+    stop();
+    state = handles({ phase: 'PLAYING' }, calls);
+    tick();
+    expect(calls).toEqual(['bid:0']);
+  });
+
+  it('lets the scenario observe round end and pause before starting its measured round', async () => {
+    const calls: string[] = [];
+    const { clock, tick } = clockTicks();
+    const autoplayer = new SandboxAutoplayer(() => true);
+    const state = handles({ phase: 'ROUND_END', localHand: [] }, calls);
+    autoplayer.watch(clock, () => state);
+    autoplayer.setEnabled(true);
+    let release!: () => void;
+    const observed = autoplayer.observeRoundEnd(true, () => new Promise<void>(resolve => { release = resolve; }));
+    tick();
+    expect(calls).toEqual([]);
+    release();
+    await observed;
+    autoplayer.setEnabled(false);
+    tick();
+    expect(calls).toEqual([]);
+    autoplayer.setEnabled(true);
+    tick(); tick();
+    expect(calls).toEqual(['next-round']);
+  });
+
 });

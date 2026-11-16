@@ -96,6 +96,9 @@ that moves a caster outside an active frame calls `useRenderScheduler().requestS
    cores, memory, touch and device pixel ratio. Renderer strings can be masked (Brave, Firefox
    resist-fingerprinting), so they only refine the choice.
 
+The canvas honours native DPR below 1, including zoomed-out browser windows, instead of
+supersampling those displays up to DPR 1. The tier's upper DPR cap still applies.
+
 The storage keys are `RENDER_QUALITY_STORAGE_KEYS` in `render-quality.config.ts`. The sandbox
 turns the governor off (`adaptive={!isSandbox}` in `Game3DCanvas`), because its virtual clock
 has fixed frame times.
@@ -150,6 +153,8 @@ key/fill. Lower tiers fold the generic fill into the hemisphere
 with `roomAccentLights`. The current-turn seat glow is an additive textured disc, not a point
 light, and the trump light stays mounted and only dims, so the light count, and with it every lit
 program, is constant across turns. Lights never mount or unmount during play.
+`SceneFog` installs fog in the layout phase, before a frame can compile room materials;
+otherwise direct-rendered tiers retain both fog-free and fog-enabled copies of the same programs.
 
 ## Draw calls
 

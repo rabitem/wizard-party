@@ -9,6 +9,14 @@ import { expectCleanRun, test } from './support/sandbox';
  * lights and programs, React commits. Counts, not timings, so they hold on CI's software
  * renderer exactly as on a real GPU, and a regression names what grew.
  */
+// These assertions count submitted GPU work, independent of raster resolution. Keep the
+// desktop CSS viewport, scene and quality tier; software CI rasterises one quarter DPR.
+// Pixel/input suites retain their device DPR. Avoid continuous readbacks in budget traces.
+if (process.env.CI) test.use({
+  deviceScaleFactor: 0.25,
+  trace: { mode: 'retain-on-failure', screenshots: false, snapshots: true, sources: true },
+});
+
 const PLAYER_COUNTS = [3, 4, 5, 6] as const;
 
 // Each scenario owns a fresh page; individual themes can be distributed across CI shards.

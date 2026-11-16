@@ -32,3 +32,8 @@ export function resolveRenderProfile(structuralTier: RenderQualityTier, runtimeT
 export function resolveAntialias(profile: Pick<RenderQualityProfile, 'antialias'>, devicePixelRatio: number): boolean {
   return profile.antialias && devicePixelRatio < MSAA_MAX_DPR;
 }
+
+/** Honour native pixels below DPR 1 (for example browser zoom-out), up to the tier cap. */
+export function resolveDprRange(dprMax: number, devicePixelRatio: number): [number, number] {
+  return [Math.min(1, devicePixelRatio), dprMax];
+}

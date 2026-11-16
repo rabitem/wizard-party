@@ -199,7 +199,7 @@ artifact (`e2e-report/`, `e2e-results/`).
 ### Browser suites
 
 - **Pull request.** The `e2e` label runs the `chromium` and `android-phone` projects on every push
-  to the PR, each split into eight shards. Each runner uses one browser worker. Render-budget
+  to the PR, each split into sixteen shards. Each runner uses one browser worker. Render-budget
   cases run independently per table theme, so the shards distribute those long scenarios too.
 - **Weekly run.** Sunday 03:00 UTC, every project (desktop engines, branded Chrome and Edge,
   devices, both matrices on every engine, the golden path on every engine and both phones) with

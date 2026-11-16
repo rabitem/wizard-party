@@ -146,6 +146,16 @@ which presets run them.
 | Social | `social`: emotes, chat lines or timeout sounds in the opponents' names |
 | Capture | `checkpoint` (full playability audit), `snapshot` (freeze, audit, record scene facts, optional image, optional hold), `external` (hand control to the driver), `measure-start` and `measure-end` |
 
+On software CI, `render-budget.spec.ts` uses DPR 0.25 with the same desktop CSS viewport,
+scene and quality tier. Its assertions count draws, resources and React work; lower raster density
+avoids spending runner time shading pixels those assertions do not inspect. Continuous trace
+screencasts are disabled for these count tests; action/DOM traces and failure screenshots remain.
+Local GPU count tests use native DPR. Layout, input and visual suites retain each device's DPR.
+
+The autoplayer follows clock ticks, including ticks where a demand-rendered canvas draws nothing.
+A `wait-for: round-end` step holds that boundary until its waiter has observed it, so autoplay cannot
+skip the warm-up round's end before the measurement steps disable it.
+
 With the `auto` pointer, synthetic gestures use touch pointers on a coarse-pointer device. Touch
 pointers have their own pointer ids, and a second finger has `isPrimary: false`.
 
