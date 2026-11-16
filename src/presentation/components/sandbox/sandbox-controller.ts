@@ -301,7 +301,8 @@ export class SandboxController implements SandboxLifecycleSink {
   // --------------------------------------------------------------------------
 
   private isReady(): boolean {
-    return isSandboxReady(this.handles, this.recorder, getSandboxSceneBridge() !== null);
+    const bridge = getSandboxSceneBridge();
+    return isSandboxReady(this.handles, this.recorder, bridge !== null) && bridge?.pendingLoads === 0;
   }
 
   private isIdle(): boolean {

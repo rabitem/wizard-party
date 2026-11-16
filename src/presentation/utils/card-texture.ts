@@ -14,6 +14,7 @@ import { getActiveCardTheme } from './card-theme-store';
 export { getCardArtRenderer } from './card-textures/card-art-styles';
 export {
   buildCardMaterials,
+  getSharedCardBackMaterial,
   retainCardMaterials,
   disposeCardMaterials,
   type CardMaterial,
@@ -31,3 +32,7 @@ export const CARD_THICKNESS = CARD_DIMENSIONS.THICKNESS;
 export function getCurrentCardBackTexture(): THREE.CanvasTexture {
   return getCardBackTexture(getActiveCardTheme().id);
 }
+
+export { createCardTexture } from './card-textures/card-face-texture';
+export { peekCardFace, retainCardFace, releaseCardFace } from './card-textures/card-face-texture-cache';
+export { getCardTextureTierSpec } from './card-textures/card-texture-quality';

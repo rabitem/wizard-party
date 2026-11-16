@@ -1,3 +1,4 @@
+import { allowMaterialNormalization } from '../../render-variants';
 import * as THREE from 'three';
 import { SUMMER_WIND } from '@/presentation/config/summer-environment.config';
 import { createPaintedTexture, seededRandom } from '../primitives';
@@ -102,5 +103,6 @@ export function applyFrondSway<T extends THREE.Material>(material: T): T {
     );
   };
   material.customProgramCacheKey = () => 'summer-frond-sway';
+  allowMaterialNormalization(material);
   return material;
 }

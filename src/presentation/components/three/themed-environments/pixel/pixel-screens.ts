@@ -4,10 +4,9 @@ import { seededRandom } from '../primitives';
 import { pixelate } from './pixel-textures';
 
 /**
- * Animated cabinet screens: one tiny canvas atlas holding four generic mini
- * games side by side (space shooter, snake, brick breaker, side-scroller).
- * Every cabinet samples its tile through remapped UVs, so all screens share a
- * single texture upload per frame.
+ * Cabinet screens: four mini games in a baked twenty-second sprite sheet.
+ * Every cabinet samples its tile through remapped UVs; frames change through
+ * texture transforms, so idle and active animations upload no pixels.
  */
 
 const W = S.TILE_WIDTH;
@@ -121,37 +120,63 @@ const paintRunner: TilePainter = (ctx, ox, tick) => {
 const PAINTERS: readonly TilePainter[] = [paintShooter, paintSnake, paintBreaker, paintRunner];
 
 export interface ScreenAtlas {
-  /** Crisp nearest-filtered texture for the screens */
+  /** Crisp nearest-filtered sprite sheet for the screens. */
   texture: THREE.Texture;
-  /** Same canvas, linearly filtered: a soft source for floor reflections */
+  /** Same sheet, linearly filtered for floor reflections. */
   reflection: THREE.Texture;
-  /** Repaints every tile for an integer animation tick */
-  paint: (tick: number) => void;
+  /** Select a baked animation frame through UV transforms; no canvas repaint or GPU upload. */
+  setFrame: (tick: number) => void;
+}
+
+const FRAME_WIDTH = W * S.VARIANTS;
+const CELL_WIDTH = FRAME_WIDTH + 2 * S.FRAME_GUTTER;
+const CELL_HEIGHT = H + 2 * S.FRAME_GUTTER;
+const ATLAS_WIDTH = CELL_WIDTH * S.FRAME_COLUMNS;
+const ATLAS_HEIGHT = CELL_HEIGHT * Math.ceil(S.FRAMES / S.FRAME_COLUMNS);
+
+function createAtlasCanvas(): HTMLCanvasElement | null {
+  if (typeof document === 'undefined') return null;
+  const canvas = document.createElement('canvas');
+  canvas.width = ATLAS_WIDTH;
+  canvas.height = ATLAS_HEIGHT;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return canvas;
+  for (let tick = 0; tick < S.FRAMES; tick++) {
+    const x = (tick % S.FRAME_COLUMNS) * CELL_WIDTH + S.FRAME_GUTTER;
+    const y = Math.floor(tick / S.FRAME_COLUMNS) * CELL_HEIGHT + S.FRAME_GUTTER;
+    ctx.save();
+    ctx.translate(x, y);
+    for (let i = 0; i < S.VARIANTS; i++) PAINTERS[i % PAINTERS.length](ctx, i * W, tick);
+    ctx.restore();
+    // Duplicate border texels so linear reflections never bleed into the next animation frame.
+    ctx.drawImage(canvas, x, y, FRAME_WIDTH, 1, x, y - 1, FRAME_WIDTH, 1);
+    ctx.drawImage(canvas, x, y + H - 1, FRAME_WIDTH, 1, x, y + H, FRAME_WIDTH, 1);
+    ctx.drawImage(canvas, x, y, 1, H, x - 1, y, 1, H);
+    ctx.drawImage(canvas, x + FRAME_WIDTH - 1, y, 1, H, x + FRAME_WIDTH, y, 1, H);
+  }
+  return canvas;
 }
 
 export function createScreenAtlas(): ScreenAtlas {
-  const width = W * S.VARIANTS;
-  if (typeof document === 'undefined') return { texture: new THREE.Texture(), reflection: new THREE.Texture(), paint: () => {} };
-  const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = H;
-  const ctx = canvas.getContext('2d');
-  const texture = new THREE.CanvasTexture(canvas);
+  const canvas = createAtlasCanvas();
+  const texture = canvas ? new THREE.CanvasTexture(canvas) : new THREE.Texture();
   texture.colorSpace = THREE.SRGBColorSpace;
   pixelate(texture);
-  const reflection = new THREE.CanvasTexture(canvas);
+  const reflection = canvas ? new THREE.CanvasTexture(canvas) : new THREE.Texture();
   reflection.colorSpace = THREE.SRGBColorSpace;
   reflection.minFilter = THREE.LinearFilter;
   reflection.magFilter = THREE.LinearFilter;
   reflection.generateMipmaps = false;
-  const paint = (tick: number) => {
-    if (!ctx) return;
-    for (let i = 0; i < S.VARIANTS; i++) PAINTERS[i % PAINTERS.length](ctx, i * W, tick);
-    texture.needsUpdate = true;
-    reflection.needsUpdate = true;
+  for (const map of [texture, reflection]) map.repeat.set(FRAME_WIDTH / ATLAS_WIDTH, H / ATLAS_HEIGHT);
+  const setFrame = (tick: number) => {
+    const frame = ((Math.floor(tick) % S.FRAMES) + S.FRAMES) % S.FRAMES;
+    const x = ((frame % S.FRAME_COLUMNS) * CELL_WIDTH + S.FRAME_GUTTER) / ATLAS_WIDTH;
+    const y = 1 - (Math.floor(frame / S.FRAME_COLUMNS) * CELL_HEIGHT + S.FRAME_GUTTER + H) / ATLAS_HEIGHT;
+    texture.offset.set(x, y);
+    reflection.offset.set(x, y);
   };
-  paint(0);
-  return { texture, reflection, paint };
+  setFrame(0);
+  return { texture, reflection, setFrame };
 }
 
 /** Plane whose UVs sample one atlas tile (so screens can be instanced per variant). */

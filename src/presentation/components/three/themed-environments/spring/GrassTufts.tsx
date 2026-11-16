@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import { SPRING_COLORS, SPRING_REALISM } from '@/presentation/config/spring-environment.config';
 import { InstancedProp, useDisposables } from '../primitives';
 import { addFoliageSway, useSwayClock } from '../solarpunk/foliage-sway';
@@ -29,9 +30,11 @@ export function GrassTufts() {
   useSwayClock(sway);
 
   return (
-    <group>
-      <InstancedProp geometry={assets.tuft} material={assets.blades} placements={parts.tufts} />
-      <InstancedProp geometry={assets.head} material={assets.petals} placements={parts.wildflowers} />
-    </group>
+    <StaticBatch>
+      <group>
+        <InstancedProp geometry={assets.tuft} material={assets.blades} placements={parts.tufts} />
+        <InstancedProp geometry={assets.head} material={assets.petals} placements={parts.wildflowers} />
+      </group>
+    </StaticBatch>
   );
 }

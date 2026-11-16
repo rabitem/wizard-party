@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import { ContactShadows } from '@react-three/drei';
+import { BakedContactShadow } from './BakedContactShadow';
 import {
   TABLE_GROUND_SHADOW,
   createTableContactShadowProps,
@@ -26,7 +26,7 @@ function GroundShadowMeshes({
 }: GroundShadowProps) {
   return (
     <group>
-      <ContactShadows
+      <BakedContactShadow
         position={[0, y + 0.03, 0]}
         {...CONTACT_SHADOW_PROPS}
       />
@@ -43,8 +43,5 @@ function GroundShadowMeshes({
   );
 }
 
-/**
- * Memoized: ContactShadows counts its baked `frames` in a render-local variable, so every
- * re-render (the rim re-renders on each game-state update) would bake the whole scene again.
- */
+/** Keep the baked-shadow resource owner stable across game-state updates. */
 export const GroundShadow = memo(GroundShadowMeshes);

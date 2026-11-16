@@ -1,7 +1,9 @@
 'use client';
 
+
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import { CELESTIAL_COLORS, CELESTIAL_DOME, CELESTIAL_LAYOUT } from '@/presentation/config/celestial-environment.config';
 import { ENVIRONMENT_ROOM } from '@/presentation/config/themed-environment.config';
 import {
@@ -80,7 +82,7 @@ export function ObservatoryRoom() {
   useDisposables(assets);
 
   return (
-    <RoomShell
+    <StaticBatch><RoomShell
       fogColor={CELESTIAL_COLORS.fog}
       floorColor={CELESTIAL_COLORS.floorTile}
       wallColor={CELESTIAL_COLORS.stone}
@@ -106,6 +108,6 @@ export function ObservatoryRoom() {
       <InstancedProp geometry={assets.pillarGeometry} material={assets.pillar} placements={PILLARS} />
       <InstancedProp geometry={assets.capGeometry} material={assets.gold} placements={CAPS} />
       <InstancedProp geometry={assets.corniceGeometry} material={assets.gold} placements={CORNICES} />
-    </RoomShell>
+    </RoomShell></StaticBatch>
   );
 }

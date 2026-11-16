@@ -1,7 +1,9 @@
 'use client';
 
+
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import {
   CELESTIAL_BOOK_COLORS,
   CELESTIAL_COLORS,
@@ -118,19 +120,21 @@ export function ObservatoryShelves() {
   useDisposables(assets);
 
   return (
-    <group>
-      <MatrixInstances geometry={assets.box} material={assets.wood} matrices={layout.frame} />
-      <MatrixInstances geometry={assets.box} material={assets.book} matrices={layout.books} colors={layout.bookColors} />
-      <MatrixInstances geometry={assets.disc} material={assets.brass} matrices={layout.astrolabeDiscs} />
-      <MatrixInstances geometry={assets.ring} material={assets.brass} matrices={layout.astrolabeRings} />
-      <MatrixInstances geometry={assets.sphere} material={assets.globe} matrices={layout.globes} />
-      <CandleCluster
-        candles={layout.candles}
-        waxColor={CELESTIAL_COLORS.candleWax}
-        flameColor={CELESTIAL_COLORS.candleFlame}
-        glowColor={CELESTIAL_COLORS.candleGlow}
-        glowStrength={0.5}
-      />
-    </group>
+    <StaticBatch>
+      <group>
+        <MatrixInstances geometry={assets.box} material={assets.wood} matrices={layout.frame} />
+        <MatrixInstances geometry={assets.box} material={assets.book} matrices={layout.books} colors={layout.bookColors} />
+        <MatrixInstances geometry={assets.disc} material={assets.brass} matrices={layout.astrolabeDiscs} />
+        <MatrixInstances geometry={assets.ring} material={assets.brass} matrices={layout.astrolabeRings} />
+        <MatrixInstances geometry={assets.sphere} material={assets.globe} matrices={layout.globes} />
+        <CandleCluster
+          candles={layout.candles}
+          waxColor={CELESTIAL_COLORS.candleWax}
+          flameColor={CELESTIAL_COLORS.candleFlame}
+          glowColor={CELESTIAL_COLORS.candleGlow}
+          glowStrength={0.5}
+        />
+      </group>
+    </StaticBatch>
   );
 }

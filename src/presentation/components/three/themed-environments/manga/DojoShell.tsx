@@ -1,7 +1,9 @@
 'use client';
 
+
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import { MANGA_COLORS, MANGA_DAYLIGHT, MANGA_ROOM, MANGA_TOKONOMA, MANGA_WINDOW } from '@/presentation/config/manga-environment.config';
 import type { Vec3 } from '@/presentation/config/themed-environment.config';
 import { InstancedProp, RoomShell, useDisposables, type PropPlacement } from '../primitives';
@@ -126,7 +128,7 @@ export function DojoShell() {
   useDisposables(assets);
 
   return (
-    <RoomShell
+    <StaticBatch><RoomShell
       fogColor={MANGA_COLORS.fog}
       floorColor={MANGA_COLORS.tatami}
       wallColor={MANGA_COLORS.paper}
@@ -143,6 +145,6 @@ export function DojoShell() {
       <InstancedProp geometry={assets.box} material={assets.woodDark} placements={WALL_RAILS} />
       <InstancedProp geometry={assets.box} material={assets.woodDark} placements={CEILING_BEAMS} />
       <InstancedProp geometry={assets.box} material={assets.woodDark} placements={TOKONOMA} />
-    </RoomShell>
+    </RoomShell></StaticBatch>
   );
 }

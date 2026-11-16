@@ -1,4 +1,4 @@
-import { REST_DETECTION, TABLE_PHYSICS } from '@/presentation/config/rapier.config';
+import { REST_DETECTION } from '@/presentation/config/rapier.config';
 import { isVelocityAtRest } from '../three/physics-utils';
 
 interface DecorationBody {
@@ -9,20 +9,24 @@ interface DecorationBody {
   sleep(): void;
 }
 
-/** Settle contact jitter after sustained rest; Rapier still wakes a chip when a card hits it. */
+/** Settle a decoration group together, so a sleeping lower chip never destabilises its stack. */
 export class DecorationRestTracker {
-  private readonly quietMs = new WeakMap<DecorationBody, number>();
+  private quietMs = 0;
 
-  step(body: DecorationBody, deltaMs: number): void {
-    if (body.isSleeping() || body.translation().y < TABLE_PHYSICS.HEIGHT ||
-        !isVelocityAtRest(body.linvel(), body.angvel())) {
-      this.quietMs.delete(body);
+  step(bodies: readonly DecorationBody[], deltaMs: number): void {
+    // Fallen bodies keep simulating; they neither freeze nor prevent the table props settling.
+    const supported = bodies.filter(body => body.translation().y >= REST_DETECTION.FALLEN_Y_THRESHOLD);
+    const awake = supported.filter(body => !body.isSleeping());
+    if (!awake.length || awake.some(body => !isVelocityAtRest(body.linvel(), body.angvel()))) {
+      this.quietMs = 0;
       return;
     }
-    const quiet = (this.quietMs.get(body) ?? 0) + deltaMs;
-    if (quiet >= REST_DETECTION.FRAMES_UNTIL_REST * REST_DETECTION.CHECK_INTERVAL_MS) {
-      body.sleep();
-      this.quietMs.delete(body);
-    } else this.quietMs.set(body, quiet);
+    this.quietMs += deltaMs;
+    if (this.quietMs >= REST_DETECTION.FRAMES_UNTIL_REST * REST_DETECTION.CHECK_INTERVAL_MS) {
+      // Sleeping individual members early leaves other members pushing into immovable contacts.
+      // Let the solver settle the whole group before sleeping it in one physics step.
+      awake.forEach(body => body.sleep());
+      this.quietMs = 0;
+    }
   }
 }

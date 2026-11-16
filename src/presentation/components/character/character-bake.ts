@@ -1,5 +1,6 @@
 import { Bone, BufferAttribute, BufferGeometry, Matrix3, Matrix4, Vector3, SkinnedMesh, type Material, type Mesh, type Object3D, type Skeleton } from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import { markReplacedMesh, restoreReplacedMesh } from '../three/batching';
 
 /*
  * A figure is a dozen meshes: five skinned outfit pieces, a skinned head, and rigid props hung on
@@ -154,13 +155,13 @@ export function bakeFigure(figure: Object3D): FigureBake {
   }
   if (merged.length === 0) return { dispose: () => undefined };
   parts.forEach((part) => {
-    part.visible = false;
+    part.visible = false; markReplacedMesh(part);
   });
 
   return {
     dispose: () => {
       parts.forEach((part) => {
-        part.visible = true;
+        part.visible = true; restoreReplacedMesh(part);
       });
       merged.forEach((mesh) => {
         mesh.removeFromParent();

@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import * as THREE from 'three';
+import { TABLE_LAYOUT } from '@/presentation/config/table-layout.config';
+import { CARD_DIMENSIONS } from '@/presentation/config/card-physics';
+import { STACKED_DECK_LAYOUT } from './stacked-deck-layout';
 import { TABLE_PHYSICS } from '@/presentation/config/rapier.config';
 import { CHIP_PLACEMENTS, COASTER_PLACEMENTS, DECORATION_SHAPES } from './decoration-layout';
 import { writePlacementMatrices } from './decoration-instances';
@@ -14,6 +17,21 @@ describe('decoration layout', () => {
     for (const placement of [...CHIP_PLACEMENTS, ...COASTER_PLACEMENTS]) {
       expect(restsOnTableCollider(placement.position), placement.key).toBe(true);
       expect(placement.position[1]).toBeGreaterThanOrEqual(TABLE_PHYSICS.HEIGHT);
+    }
+  });
+
+  it('keeps knockable props clear of the collected-pile footprint at every possible seat angle', () => {
+    const deckRadius = TABLE_LAYOUT.SEAT_RADIUS * STACKED_DECK_LAYOUT.SEAT_TO_DECK_FACTOR;
+    const faceReach = Math.hypot(CARD_DIMENSIONS.WIDTH, CARD_DIMENSIONS.HEIGHT) * STACKED_DECK_LAYOUT.DECK_SCALE / 2;
+    const offsetReach = Math.hypot(STACKED_DECK_LAYOUT.NATURAL_OFFSET_X, STACKED_DECK_LAYOUT.NATURAL_OFFSET_Z);
+    const props = [
+      ...CHIP_PLACEMENTS.map(placement => ({ placement, radius: DECORATION_SHAPES.CHIP.RADIUS })),
+      ...COASTER_PLACEMENTS.map(placement => ({ placement, radius: DECORATION_SHAPES.COASTER.RADIUS })),
+    ];
+    for (const { placement, radius } of props) {
+      const [x, , z] = placement.position;
+      const radialGap = Math.hypot(x, z) - deckRadius;
+      expect(radialGap, placement.key).toBeGreaterThan(faceReach + offsetReach + radius);
     }
   });
 

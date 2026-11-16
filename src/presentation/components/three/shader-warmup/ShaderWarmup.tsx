@@ -1,6 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { EffectComposerContext } from '@react-three/postprocessing';
+import { useProgress } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { SHADER_WARMUP } from '@/presentation/config/render-quality.config';
 import { useRenderScheduler } from '../frame-scheduling';
@@ -32,12 +34,16 @@ export function ShaderWarmup({ warmupKey }: ShaderWarmupProps) {
   const camera = useThree((state) => state.camera);
   const scheduler = useRenderScheduler();
   const generation = useContextGeneration(gl.domElement);
+  const composition = useContext(EffectComposerContext);
+  const target = composition?.composer.inputBuffer ?? null;
+  const loading = useProgress((state) => state.active);
 
   useEffect(() => {
+    if (loading) return;
     let cancelled = false;
     const timer = setTimeout(() => {
       if (gl.getContext().isContextLost()) return;
-      warmUpScene(gl, scene, camera)
+      warmUpScene(gl, scene, camera, target)
         .then(() => {
           if (!cancelled) scheduler.requestShadowUpdate();
         })
@@ -47,7 +53,7 @@ export function ShaderWarmup({ warmupKey }: ShaderWarmupProps) {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [gl, scene, camera, scheduler, warmupKey, generation]);
+  }, [gl, scene, camera, scheduler, warmupKey, generation, target, loading]);
 
   return null;
 }

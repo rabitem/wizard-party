@@ -18,3 +18,6 @@ export { calculatePlayedCardRestPosition } from './played-card-rest-position';
 // Visual Effects (used by GameTable)
 export { TrickWinParticles } from './TrickWinParticles';
 export { SparkleParticles } from './SparkleParticles';
+
+export { sceneObjectName } from './scene-object-names';
+export { getRigidBodyPoseKey } from './rigid-body-pose-key';

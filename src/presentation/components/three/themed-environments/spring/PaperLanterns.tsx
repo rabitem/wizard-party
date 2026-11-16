@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import { SPRING_COLORS, SPRING_LANTERN_COLORS, SPRING_LAYOUT } from '@/presentation/config/spring-environment.config';
 import type { Vec3 } from '@/presentation/config/themed-environment.config';
 import {
@@ -89,12 +90,14 @@ export function PaperLanterns() {
   useFlicker(flickerTargets);
 
   return (
-    <group>
-      <MatrixInstances geometry={assets.string} material={assets.stringMaterial} matrices={layout.strings} />
-      <InstancedProp geometry={assets.paper} material={assets.glowPaper} placements={layout.lanterns} />
-      <InstancedProp geometry={assets.cap} material={assets.capMaterial} placements={layout.lanterns} offset={CAP_TOP} />
-      <InstancedProp geometry={assets.cap} material={assets.capMaterial} placements={layout.lanterns} offset={CAP_BOTTOM} />
-      <GlowSprites points={layout.glows} material={assets.glow} />
-    </group>
+    <StaticBatch>
+      <group>
+        <MatrixInstances geometry={assets.string} material={assets.stringMaterial} matrices={layout.strings} />
+        <InstancedProp geometry={assets.paper} material={assets.glowPaper} placements={layout.lanterns} />
+        <InstancedProp geometry={assets.cap} material={assets.capMaterial} placements={layout.lanterns} offset={CAP_TOP} />
+        <InstancedProp geometry={assets.cap} material={assets.capMaterial} placements={layout.lanterns} offset={CAP_BOTTOM} />
+        <GlowSprites points={layout.glows} material={assets.glow} />
+      </group>
+    </StaticBatch>
   );
 }

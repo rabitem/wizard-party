@@ -1,3 +1,4 @@
+import { DefaultLoadingManager } from 'three';
 import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 import { CHARACTER_ASSETS } from '@/presentation/config/character.config';
@@ -10,12 +11,18 @@ let model: Promise<GLTF> | null = null;
 let animations: Promise<GLTF> | null = null;
 
 async function load(url: string): Promise<GLTF> {
-  const [{ GLTFLoader }, { MeshoptDecoder }] = await Promise.all([
-    import('three/examples/jsm/loaders/GLTFLoader.js'),
-    import('three/examples/jsm/libs/meshopt_decoder.module.js'),
-  ]);
-  const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
-  return loader.loadAsync(url);
+  // Dynamic loader imports are part of loading too, before GLTFLoader starts its own request.
+  DefaultLoadingManager.itemStart(url);
+  try {
+    const [{ GLTFLoader }, { MeshoptDecoder }] = await Promise.all([
+      import('three/examples/jsm/loaders/GLTFLoader.js'),
+      import('three/examples/jsm/libs/meshopt_decoder.module.js'),
+    ]);
+    const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
+    return await loader.loadAsync(url);
+  } finally {
+    DefaultLoadingManager.itemEnd(url);
+  }
 }
 
 /** The rig with every part. A failed load is forgotten, so the next caller retries. */

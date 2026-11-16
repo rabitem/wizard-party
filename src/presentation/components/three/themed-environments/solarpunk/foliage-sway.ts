@@ -1,5 +1,6 @@
 'use client';
 
+import { allowMaterialNormalization } from '../../render-variants';
 import { useFrame } from '@react-three/fiber';
 import type * as THREE from 'three';
 import { usePrefersReducedMotion } from '../primitives';
@@ -66,6 +67,7 @@ export function addFoliageSway(material: THREE.MeshStandardMaterial, options: Fo
     shader.vertexShader = SWAY_PARS + shader.vertexShader.replace('#include <begin_vertex>', SWAY_VERTEX);
   };
   material.customProgramCacheKey = () => 'foliage-sway';
+  allowMaterialNormalization(material);
   return uniforms;
 }
 

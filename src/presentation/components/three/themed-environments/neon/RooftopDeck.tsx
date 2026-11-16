@@ -1,7 +1,9 @@
 'use client';
 
+
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import { NEON_COLORS, NEON_LAYOUT, NEON_REALISM, NEON_ROOF_UNITS } from '@/presentation/config/neon-environment.config';
 import { ENVIRONMENT_ROOM } from '@/presentation/config/themed-environment.config';
 import { addSurfaceDetail, getPbrTextureSet, InstancedProp, useDisposables, type PropPlacement } from '../primitives';
@@ -90,14 +92,16 @@ export function RooftopDeck() {
   useDisposables(assets);
 
   return (
-    <group>
-      <mesh position={[0, FLOOR - DECK_THICKNESS / 2, 0]} material={assets.deck}>
-        <boxGeometry args={[HALF * 2, DECK_THICKNESS, HALF * 2]} />
-      </mesh>
-      <InstancedProp geometry={assets.box} material={assets.parapet} placements={PARAPETS} />
-      <InstancedProp geometry={assets.box} material={assets.neon} placements={STRIPS} />
-      <InstancedProp geometry={assets.box} material={assets.unit} placements={UNITS} />
-      <InstancedProp geometry={assets.box} material={assets.neon} placements={VENTS} />
-    </group>
+    <StaticBatch>
+      <group>
+        <mesh position={[0, FLOOR - DECK_THICKNESS / 2, 0]} material={assets.deck}>
+          <boxGeometry args={[HALF * 2, DECK_THICKNESS, HALF * 2]} />
+        </mesh>
+        <InstancedProp geometry={assets.box} material={assets.parapet} placements={PARAPETS} />
+        <InstancedProp geometry={assets.box} material={assets.neon} placements={STRIPS} />
+        <InstancedProp geometry={assets.box} material={assets.unit} placements={UNITS} />
+        <InstancedProp geometry={assets.box} material={assets.neon} placements={VENTS} />
+      </group>
+    </StaticBatch>
   );
 }

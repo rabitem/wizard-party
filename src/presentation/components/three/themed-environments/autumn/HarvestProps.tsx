@@ -1,7 +1,9 @@
 'use client';
 
+
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import {
   AUTUMN_COLORS,
   AUTUMN_CORN_SHOCKS,
@@ -104,13 +106,15 @@ export function HarvestProps() {
   const { geometries, materials } = useHarvestAssets();
 
   return (
-    <group>
-      <InstancedProp geometry={geometries.hay} material={materials.hay} placements={HAY} />
-      <InstancedProp geometry={geometries.twine} material={materials.twine} placements={HAY} />
-      <PumpkinPatch pumpkins={PUMPKINS} skinColor={AUTUMN_COLORS.pumpkin} stemColor={AUTUMN_COLORS.stem} />
-      <InstancedProp geometry={geometries.crate} material={materials.crate} placements={CRATES} />
-      <InstancedProp geometry={geometries.apple} material={materials.apple} placements={APPLES} />
-      <InstancedProp geometry={geometries.corn} material={materials.corn} placements={CORN} />
-    </group>
+    <StaticBatch>
+      <group>
+        <InstancedProp geometry={geometries.hay} material={materials.hay} placements={HAY} />
+        <InstancedProp geometry={geometries.twine} material={materials.twine} placements={HAY} />
+        <PumpkinPatch pumpkins={PUMPKINS} skinColor={AUTUMN_COLORS.pumpkin} stemColor={AUTUMN_COLORS.stem} />
+        <InstancedProp geometry={geometries.crate} material={materials.crate} placements={CRATES} />
+        <InstancedProp geometry={geometries.apple} material={materials.apple} placements={APPLES} />
+        <InstancedProp geometry={geometries.corn} material={materials.corn} placements={CORN} />
+      </group>
+    </StaticBatch>
   );
 }

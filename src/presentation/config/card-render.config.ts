@@ -27,9 +27,9 @@ export interface CardTextureTierSpec {
 
 export const CARD_TEXTURE_TIERS: Readonly<Record<CardTextureTier, CardTextureTierSpec>> = {
   /** Desktop and devices with plenty of memory: about 2 MiB per face with mipmaps */
-  standard: { width: 512, height: 768, idleFaceCapacity: 12 },
+  standard: { width: 512, height: 768, idleFaceCapacity: 6 },
   /** iOS (WebKit canvas memory cap, jetsam) and devices reporting <= 4 GB: about 1.2 MiB per face */
-  compact: { width: 384, height: 576, idleFaceCapacity: 6 },
+  compact: { width: 384, height: 576, idleFaceCapacity: 3 },
 };
 
 export const CARD_MEMORY_TIER = {
@@ -72,3 +72,6 @@ export const SUIT_GLYPH = {
   /** Size used when the context font carries no px size */
   FALLBACK_FONT_PX: 48,
 } as const;
+
+/** Collected cards are half size on the table; their faces share a smaller, padded atlas. */
+export const DECK_FACE_ATLAS = { COLUMNS: 3, RESOLUTION_SCALE: 0.5, GUTTER: 1 } as const;

@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import {
   WINTER_COLORS,
   WINTER_LAYOUT,
@@ -114,23 +115,25 @@ export function SnowyWindows() {
   useDisposables(assets);
 
   return (
-    <group>
-      {WINDOWS.map((win) => (
-        <WindowSnowView
-          key={`pane-${win.center[0]}`}
-          position={[win.center[0], win.center[1], win.center[2] + PANE_OFFSET]}
-          size={win.size}
-          variant="night"
-          precipitation="snow"
-          frost={WINTER_LAYOUT.WINDOW_FROST}
-        />
-      ))}
-      <InstancedProp geometry={assets.box} material={assets.frame} placements={FRAMES} />
-      <InstancedProp geometry={assets.box} material={assets.frame} placements={SILLS} />
-      <InstancedProp geometry={assets.roll} material={assets.snow} placements={SILL_DRIFTS} />
-      <InstancedProp geometry={assets.roll} material={assets.snow} placements={LEDGE_DRIFTS} />
-      <InstancedProp geometry={assets.icicle} material={assets.ice} placements={ICICLES} />
-      <CandleCluster candles={SILL_CANDLES} waxColor={WINTER_COLORS.wax} flameColor={WINTER_COLORS.candleFlame} glowColor={WINTER_COLORS.candleGlow} />
-    </group>
+    <StaticBatch>
+      <group>
+        {WINDOWS.map((win) => (
+          <WindowSnowView
+            key={`pane-${win.center[0]}`}
+            position={[win.center[0], win.center[1], win.center[2] + PANE_OFFSET]}
+            size={win.size}
+            variant="night"
+            precipitation="snow"
+            frost={WINTER_LAYOUT.WINDOW_FROST}
+          />
+        ))}
+        <InstancedProp geometry={assets.box} material={assets.frame} placements={FRAMES} />
+        <InstancedProp geometry={assets.box} material={assets.frame} placements={SILLS} />
+        <InstancedProp geometry={assets.roll} material={assets.snow} placements={SILL_DRIFTS} />
+        <InstancedProp geometry={assets.roll} material={assets.snow} placements={LEDGE_DRIFTS} />
+        <InstancedProp geometry={assets.icicle} material={assets.ice} placements={ICICLES} />
+        <CandleCluster candles={SILL_CANDLES} waxColor={WINTER_COLORS.wax} flameColor={WINTER_COLORS.candleFlame} glowColor={WINTER_COLORS.candleGlow} />
+      </group>
+    </StaticBatch>
   );
 }

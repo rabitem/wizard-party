@@ -1,7 +1,9 @@
 'use client';
 
+
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import { PIXEL_COLORS, PIXEL_DECOR as D } from '@/presentation/config/pixel-environment.config';
 import { ENVIRONMENT_ROOM } from '@/presentation/config/themed-environment.config';
 import { InstancedProp, useDisposables, type PropPlacement } from '../primitives';
@@ -56,12 +58,14 @@ export function VoxelDecor() {
   useDisposables(assets);
 
   return (
-    <group>
-      <InstancedProp geometry={getVoxelGeometry('mushroom')} material={assets.voxel} placements={MUSHROOMS} />
-      <InstancedProp geometry={getVoxelGeometry('brick')} material={assets.voxel} placements={BRICKS} />
-      <InstancedProp geometry={getVoxelGeometry('bonus')} material={assets.bonus} placements={BONUS} />
-      <InstancedProp geometry={getVoxelGeometry('heart', 'center')} material={assets.bonus} placements={HEART} />
-      <InstancedProp geometry={assets.box} material={assets.stripe} placements={STRIPES} />
-    </group>
+    <StaticBatch>
+      <group>
+        <InstancedProp geometry={getVoxelGeometry('mushroom')} material={assets.voxel} placements={MUSHROOMS} />
+        <InstancedProp geometry={getVoxelGeometry('brick')} material={assets.voxel} placements={BRICKS} />
+        <InstancedProp geometry={getVoxelGeometry('bonus')} material={assets.bonus} placements={BONUS} />
+        <InstancedProp geometry={getVoxelGeometry('heart', 'center')} material={assets.bonus} placements={HEART} />
+        <InstancedProp geometry={assets.box} material={assets.stripe} placements={STRIPES} />
+      </group>
+    </StaticBatch>
   );
 }

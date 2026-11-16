@@ -144,7 +144,8 @@ extra render target and no resolve.
 The budget is in `scene-lighting.config.ts`: ambient and hemisphere, the key directional (the only
 shadow caster, its orthographic camera fitted to the table through `shadowCameraSize`), the
 overhead spot (no shadow) and the trump light. The cool fill and warm rim directionals exist only
-on tiers with `fillLights`; lower tiers fold the fill into the hemisphere
+on tiers with `fillLights` when the room has no atmosphere lights; themed rooms use their own
+key/fill. Lower tiers fold the generic fill into the hemisphere
 (`fillFallbackHemisphereBoost`). The casino's practical lights and banner glow exist only on tiers
 with `roomAccentLights`. The current-turn seat glow is an additive textured disc, not a point
 light, and the trump light stays mounted and only dims, so the light count, and with it every lit
@@ -156,17 +157,35 @@ program, is constant across turns. Lights never mount or unmount during play.
   and edges) share one instance matrix buffer (`OpponentHand.tsx`).
 - **Static decor.** `<StaticBatch>` merges its children's meshes per material look at mount
   (transforms baked, base colour folded into vertex colour), hides the originals and restores them
-  on unmount. It is used for the casino room (`CasinoEnvironment.tsx`), the table legs
-  (`TableLegs.tsx`) and the wood rim (`WoodTableRim.tsx`). Use it only for static children; meshes
-  with shader, physical or customised materials stay as they are.
+  on unmount. Static instance sets are baked into ordinary geometry too. Seasonal rooms share
+  `StaticSceneBatch`, which combines only subtrees explicitly registered by `StaticBatch` and
+  rebuilds when those roots change. Moving rotors, coins and other independently animated meshes
+  stay outside those roots. Shader, physical, customised and transparent materials stay as they are.
+- **Equivalent materials.** `MaterialVariantCache` bakes flat normals and supplies neutral vertex
+  colours for built-in meshes and particle bursts. Standard, physical and toon surfaces share a sampler layout through two shared white
+  texels; missing normal maps use zero normal scale. Authored maps, colours and normal strength
+  stay intact. This trades cheap cached neutral samples for fewer driver programs. Snow and
+  foliage patches explicitly opt in because they preserve these input semantics; other customised
+  shaders, including CRTs, retain their own inputs.
+- **Ambient effects.** Trump burn marks and embers use instanced meshes with their original
+  individual poses. Candle halos use instanced camera-facing quads; flicker updates their shared
+  source material. Pixel arcade screens select tiles in a prepainted sprite sheet through UV
+  transforms, so animation does not upload another texture every frame.
+- **Contact shadows.** `BakedContactShadow` retains the baked output and releases scratch targets
+  and depth/blur programs after its configured frame count. A context restoration rebakes it.
 - **Felt stitching.** One `InstancedRingPart` (`STITCH_COUNT` dashes in `FeltSurface.tsx`).
 - **Chips and coasters.** `InstancedRigidBodies` in `PhysicsDecorations.tsx`: the chip body, edge
   ring and inlay are three instanced draws sharing the body's instance buffer, and only the body
   casts a shadow. Each body has only its explicit cylinder collider (`colliders={false}`). A test
   in `decoration-layout.test.ts` keeps every decoration above the table collider, so all
-  decorations start above the felt. `DecorationRestTracker` applies the cards' sustained-rest
+  decorations start above the felt and outside every possible collected-pile footprint
+  (`TABLE_LAYOUT` in `table-layout.config.ts`). Fixed pile colliders must never spawn through
+  decorations and trap them against the felt. `DecorationRestTracker` applies the cards' sustained-rest
   thresholds on physics time and puts quiet chips/coasters to sleep; collisions still wake them.
-  Instanced uploads of unchanged poses do not count as scene motion.
+  Quiet decorations slightly embedded in the felt can sleep; bodies below the fallen-body
+  threshold remain active. The group sleeps together after sustained rest; sleeping lower chips
+  while their neighbours still move would destabilise the contact stack. A real knock restarts
+  the sustained-rest interval. Instanced uploads of unchanged poses do not count as scene motion.
 - **Table legs** (`TableLegs.tsx`) do not cast shadow-map shadows, since they sit under the table
   top.
 
@@ -174,10 +193,14 @@ program, is constant across turns. Lights never mount or unmount during play.
 
 `ShaderWarmup` runs `warmUpScene` (`shader-warmup/shader-warmup.ts`) `SHADER_WARMUP.SETTLE_MS`
 after the table mounts, after a room or structural tier change (its `warmupKey`) and after a
-context restore: `renderer.initTexture` for every material texture, then
-`renderer.compileAsync(scene, camera)` (`KHR_parallel_shader_compile` where available), and a
-shadow update when it finishes. Turn indicators stay mounted while hidden between turns, so
-the last glow material does not release its warmed shader program.
+context restore. It waits for model and font loads, uploads image textures and compiles hidden
+future effects with `KHR_parallel_shader_compile` where available. Replaced batch/model sources
+and render-target textures are excluded. In bloom rooms compilation uses the composer's input
+target, so its output colour space matches the next draw; the previous target is restored before
+awaiting the compiler. Text meshes use their exact derived material. A shadow update follows. Turn indicators stay mounted while hidden between turns, so
+the last glow material does not release its warmed shader program. `CardLandEffectWarmup` keeps
+one hidden recipe for the selected table alive too: card-local effects can release their mutable
+materials at collection without discarding the program needed by the next trick.
 
 ## Graphics lifecycle
 

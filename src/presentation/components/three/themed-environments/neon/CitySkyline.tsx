@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import { NEON_COLORS } from '@/presentation/config/neon-environment.config';
 import { InstancedProp, useDisposables } from '../primitives';
 import { AircraftLights } from './AircraftLights';
@@ -50,11 +51,13 @@ export function CitySkyline() {
   useDisposables(assets);
 
   return (
-    <group>
-      <InstancedProp geometry={assets.box} material={assets.far} placements={FAR_BUILDINGS} />
-      <InstancedProp geometry={assets.tower} material={assets.near} placements={NEAR_BUILDINGS} />
-      <SkylineHaze />
-      <AircraftLights />
-    </group>
+    <StaticBatch>
+      <group>
+        <InstancedProp geometry={assets.box} material={assets.far} placements={FAR_BUILDINGS} />
+        <InstancedProp geometry={assets.tower} material={assets.near} placements={NEAR_BUILDINGS} />
+        <SkylineHaze />
+        <AircraftLights />
+      </group>
+    </StaticBatch>
   );
 }

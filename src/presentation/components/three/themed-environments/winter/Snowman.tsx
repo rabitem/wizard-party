@@ -1,7 +1,9 @@
 'use client';
 
+
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import { WINTER_COLORS, WINTER_LAYOUT } from '@/presentation/config/winter-environment.config';
 import type { Vec3 } from '@/presentation/config/themed-environment.config';
 import { addSurfaceDetail, createPbrMaterial, InstancedProp, useDisposables, type PropPlacement } from '../primitives';
@@ -62,42 +64,44 @@ export function Snowman() {
   useDisposables(assets);
 
   return (
-    <group position={WINTER_LAYOUT.SNOWMAN_POSITION} rotation={[0, WINTER_LAYOUT.SNOWMAN_ROTATION, 0]}>
-      <mesh position={[0, 0, 0]} scale={[DRIFT.RADIUS, DRIFT.HEIGHT, DRIFT.RADIUS]} geometry={assets.ball} material={assets.snow} />
-      {BODY.map(([radius, y]) => (
-        <mesh key={`ball-${y}`} position={[0, y, 0]} scale={radius} geometry={assets.ball} material={assets.snow} />
-      ))}
-      <InstancedProp geometry={assets.coalGeometry} material={assets.coal} placements={COALS} />
-      <mesh position={[0, HEAD_Y, HEAD_R + 0.12]} rotation={[Math.PI / 2, 0, 0]} material={assets.carrot}>
-        <coneGeometry args={[0.055, 0.32, 7]} />
-      </mesh>
-      <mesh position={[0, HEAD_Y - HEAD_R * 0.85, 0]} rotation={[Math.PI / 2, 0, 0]} material={assets.scarf}>
-        <torusGeometry args={[HEAD_R * 0.82, 0.075, 6, 16]} />
-      </mesh>
-      <mesh position={[0.18, HEAD_Y - HEAD_R - 0.2, HEAD_R * 0.7]} rotation={[0.25, 0, 0.12]} material={assets.scarf}>
-        <boxGeometry args={[0.14, 0.42, 0.05]} />
-      </mesh>
-      <group position={[0, HEAD_Y + HEAD_R * 0.82, 0]} rotation={[0, 0, 0.12]}>
-        <mesh material={assets.hat}>
-          <cylinderGeometry args={[0.36, 0.36, 0.04, 14]} />
+    <StaticBatch>
+      <group position={WINTER_LAYOUT.SNOWMAN_POSITION} rotation={[0, WINTER_LAYOUT.SNOWMAN_ROTATION, 0]}>
+        <mesh position={[0, 0, 0]} scale={[DRIFT.RADIUS, DRIFT.HEIGHT, DRIFT.RADIUS]} geometry={assets.ball} material={assets.snow} />
+        {BODY.map(([radius, y]) => (
+          <mesh key={`ball-${y}`} position={[0, y, 0]} scale={radius} geometry={assets.ball} material={assets.snow} />
+        ))}
+        <InstancedProp geometry={assets.coalGeometry} material={assets.coal} placements={COALS} />
+        <mesh position={[0, HEAD_Y, HEAD_R + 0.12]} rotation={[Math.PI / 2, 0, 0]} material={assets.carrot}>
+          <coneGeometry args={[0.055, 0.32, 7]} />
         </mesh>
-        <mesh position={[0, 0.2, 0]} material={assets.hat}>
-          <cylinderGeometry args={[0.22, 0.24, 0.4, 14]} />
+        <mesh position={[0, HEAD_Y - HEAD_R * 0.85, 0]} rotation={[Math.PI / 2, 0, 0]} material={assets.scarf}>
+          <torusGeometry args={[HEAD_R * 0.82, 0.075, 6, 16]} />
         </mesh>
-        <mesh position={[0, 0.06, 0]} material={assets.scarf}>
-          <cylinderGeometry args={[0.245, 0.245, 0.07, 14]} />
+        <mesh position={[0.18, HEAD_Y - HEAD_R - 0.2, HEAD_R * 0.7]} rotation={[0.25, 0, 0.12]} material={assets.scarf}>
+          <boxGeometry args={[0.14, 0.42, 0.05]} />
         </mesh>
-      </group>
-      {ARMS.map((arm) => (
-        <group key={arm.id} position={arm.position} rotation={arm.rotation}>
-          <mesh material={assets.twig}>
-            <cylinderGeometry args={[0.018, 0.028, 0.75, 5]} />
+        <group position={[0, HEAD_Y + HEAD_R * 0.82, 0]} rotation={[0, 0, 0.12]}>
+          <mesh material={assets.hat}>
+            <cylinderGeometry args={[0.36, 0.36, 0.04, 14]} />
           </mesh>
-          <mesh position={[0.06, 0.3, 0]} rotation={[0, 0, -0.6]} material={assets.twig}>
-            <cylinderGeometry args={[0.01, 0.015, 0.22, 4]} />
+          <mesh position={[0, 0.2, 0]} material={assets.hat}>
+            <cylinderGeometry args={[0.22, 0.24, 0.4, 14]} />
+          </mesh>
+          <mesh position={[0, 0.06, 0]} material={assets.scarf}>
+            <cylinderGeometry args={[0.245, 0.245, 0.07, 14]} />
           </mesh>
         </group>
-      ))}
-    </group>
+        {ARMS.map((arm) => (
+          <group key={arm.id} position={arm.position} rotation={arm.rotation}>
+            <mesh material={assets.twig}>
+              <cylinderGeometry args={[0.018, 0.028, 0.75, 5]} />
+            </mesh>
+            <mesh position={[0.06, 0.3, 0]} rotation={[0, 0, -0.6]} material={assets.twig}>
+              <cylinderGeometry args={[0.01, 0.015, 0.22, 4]} />
+            </mesh>
+          </group>
+        ))}
+      </group>
+    </StaticBatch>
   );
 }

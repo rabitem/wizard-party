@@ -1,7 +1,9 @@
 'use client';
 
+
 import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import { SOLARPUNK_COLORS, SOLARPUNK_SUN_SHAFTS, SOLARPUNK_WATER, SOLARPUNK_WATER_LOOK } from '@/presentation/config/solarpunk-environment.config';
 import { addSurfaceDetail, InstancedProp, seededRandom, useDisposables, type PropPlacement } from '../primitives';
 import { createLilyPadGeometry, createLotusGeometry } from './solarpunk-geometry';
@@ -84,21 +86,23 @@ export function WaterChannel() {
 
   const floorCausticZ = CZ + W.WIDTH / 2 + W.EDGE_WIDTH + LOOK.CAUSTICS.floorDepth / 2;
   return (
-    <group>
-      <InstancedProp geometry={assets.box} material={assets.kerb} placements={EDGES} />
-      <mesh geometry={assets.plane} material={assets.bed} position={[CX, FLOOR + BED_LIFT, CZ]} scale={[W.LENGTH, 1, W.WIDTH]} />
-      <mesh ref={bedCausticRef} geometry={assets.plane} material={assets.bedCaustics} position={[CX, FLOOR + BED_LIFT + 0.005, CZ]} scale={[W.LENGTH, 1, W.WIDTH]} />
-      <mesh ref={surfaceRef} geometry={assets.plane} material={assets.water} position={[CX, W.SURFACE_Y, CZ]} scale={[W.LENGTH, 1, W.WIDTH]} renderOrder={2} />
-      <mesh
-        ref={floorCausticRef}
-        geometry={assets.plane}
-        material={assets.floorCaustics}
-        position={[CX, FLOOR + CAUSTIC_LIFT, floorCausticZ]}
-        scale={[W.LENGTH + 1, 1, LOOK.CAUSTICS.floorDepth]}
-        renderOrder={1}
-      />
-      <InstancedProp geometry={assets.pad} material={assets.lily} placements={ALL_PADS} />
-      <InstancedProp geometry={assets.lotus} material={assets.bloom} placements={LOTUS} />
-    </group>
+    <StaticBatch>
+      <group>
+        <InstancedProp geometry={assets.box} material={assets.kerb} placements={EDGES} />
+        <mesh geometry={assets.plane} material={assets.bed} position={[CX, FLOOR + BED_LIFT, CZ]} scale={[W.LENGTH, 1, W.WIDTH]} />
+        <mesh ref={bedCausticRef} geometry={assets.plane} material={assets.bedCaustics} position={[CX, FLOOR + BED_LIFT + 0.005, CZ]} scale={[W.LENGTH, 1, W.WIDTH]} />
+        <mesh ref={surfaceRef} geometry={assets.plane} material={assets.water} position={[CX, W.SURFACE_Y, CZ]} scale={[W.LENGTH, 1, W.WIDTH]} renderOrder={2} />
+        <mesh
+          ref={floorCausticRef}
+          geometry={assets.plane}
+          material={assets.floorCaustics}
+          position={[CX, FLOOR + CAUSTIC_LIFT, floorCausticZ]}
+          scale={[W.LENGTH + 1, 1, LOOK.CAUSTICS.floorDepth]}
+          renderOrder={1}
+        />
+        <InstancedProp geometry={assets.pad} material={assets.lily} placements={ALL_PADS} />
+        <InstancedProp geometry={assets.lotus} material={assets.bloom} placements={LOTUS} />
+      </group>
+    </StaticBatch>
   );
 }

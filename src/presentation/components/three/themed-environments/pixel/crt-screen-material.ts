@@ -11,6 +11,8 @@ export interface CrtScreenMaterial {
 
 const CRT_PARS = /* glsl */ `
 uniform float uCrtTime;
+uniform vec2 uCrtFrameOffset;
+uniform vec2 uCrtFrameScale;
 `;
 
 /**
@@ -20,7 +22,8 @@ uniform float uCrtTime;
  */
 const CRT_FRAGMENT = /* glsl */ `
 #ifdef USE_MAP
-  vec2 crtUv = vec2(fract(vMapUv.x * ${PIXEL_SCREENS.VARIANTS.toFixed(1)}), vMapUv.y);
+  vec2 frameUv = (vMapUv - uCrtFrameOffset) / uCrtFrameScale;
+  vec2 crtUv = vec2(fract(frameUv.x * ${PIXEL_SCREENS.VARIANTS.toFixed(1)}), frameUv.y);
   float rows = crtUv.y * ${PIXEL_SCREENS.TILE_HEIGHT.toFixed(1)};
   float rowFootprint = fwidth(rows);
   float scanStrength = ${SCREEN.SCANLINE_STRENGTH.toFixed(3)} * (1.0 - smoothstep(0.35, 0.8, rowFootprint));
@@ -44,6 +47,8 @@ export function createCrtScreenMaterial(map: THREE.Texture): CrtScreenMaterial {
   material.color.setScalar(SCREEN.BRIGHTNESS);
   material.onBeforeCompile = (shader) => {
     shader.uniforms.uCrtTime = time;
+    shader.uniforms.uCrtFrameOffset = { value: map.offset };
+    shader.uniforms.uCrtFrameScale = { value: map.repeat };
     shader.fragmentShader = shader.fragmentShader
       .replace('#include <common>', `#include <common>\n${CRT_PARS}`)
       .replace('#include <map_fragment>', `#include <map_fragment>\n${CRT_FRAGMENT}`);

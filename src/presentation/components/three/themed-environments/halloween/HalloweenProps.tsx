@@ -1,7 +1,9 @@
 'use client';
 
+
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import { HALLOWEEN_COLORS, HALLOWEEN_LAYOUT } from '@/presentation/config/halloween-environment.config';
 import {
   addSurfaceDetail,
@@ -97,40 +99,42 @@ export function HalloweenProps() {
   const { geometries, materials } = usePropAssets();
 
   return (
-    <group>
-      <PumpkinPatch
-        pumpkins={MANOR_PUMPKINS}
-        skinColor={HALLOWEEN_COLORS.pumpkin}
-        faceColor={HALLOWEEN_COLORS.faceGlow}
-        glowColor={HALLOWEEN_COLORS.pumpkinGlow}
-      />
-      <CandleCluster candles={MANOR_CANDLES} waxColor={HALLOWEEN_COLORS.candleWax} />
-
-      <InstancedProp geometry={geometries.shelf} material={materials.wood} placements={SHELF_PLACEMENTS} />
-      {BRACKET_OFFSETS.map((offset) => (
-        <InstancedProp
-          key={offset.id}
-          geometry={geometries.bracket}
-          material={materials.wood}
-          placements={SHELF_PLACEMENTS}
-          offset={offset.matrix}
+    <StaticBatch>
+      <group>
+        <PumpkinPatch
+          pumpkins={MANOR_PUMPKINS}
+          skinColor={HALLOWEEN_COLORS.pumpkin}
+          faceColor={HALLOWEEN_COLORS.faceGlow}
+          glowColor={HALLOWEEN_COLORS.pumpkinGlow}
         />
-      ))}
+        <CandleCluster candles={MANOR_CANDLES} waxColor={HALLOWEEN_COLORS.candleWax} />
 
-      <InstancedProp geometry={geometries.gravestone} material={materials.stone} placements={GRAVESTONE_PLACEMENTS} />
-      <GraveMounds material={materials.moss} />
+        <InstancedProp geometry={geometries.shelf} material={materials.wood} placements={SHELF_PLACEMENTS} />
+        {BRACKET_OFFSETS.map((offset) => (
+          <InstancedProp
+            key={offset.id}
+            geometry={geometries.bracket}
+            material={materials.wood}
+            placements={SHELF_PLACEMENTS}
+            offset={offset.matrix}
+          />
+        ))}
 
-      <InstancedProp geometry={geometries.cranium} material={materials.bone} placements={SKULL_PLACEMENTS} />
-      <InstancedProp geometry={geometries.jaw} material={materials.bone} placements={SKULL_PLACEMENTS} />
-      {SOCKET_OFFSETS.map((offset) => (
-        <InstancedProp
-          key={offset.id}
-          geometry={geometries.socket}
-          material={materials.socket}
-          placements={SKULL_PLACEMENTS}
-          offset={offset.matrix}
-        />
-      ))}
-    </group>
+        <InstancedProp geometry={geometries.gravestone} material={materials.stone} placements={GRAVESTONE_PLACEMENTS} />
+        <GraveMounds material={materials.moss} />
+
+        <InstancedProp geometry={geometries.cranium} material={materials.bone} placements={SKULL_PLACEMENTS} />
+        <InstancedProp geometry={geometries.jaw} material={materials.bone} placements={SKULL_PLACEMENTS} />
+        {SOCKET_OFFSETS.map((offset) => (
+          <InstancedProp
+            key={offset.id}
+            geometry={geometries.socket}
+            material={materials.socket}
+            placements={SKULL_PLACEMENTS}
+            offset={offset.matrix}
+          />
+        ))}
+      </group>
+    </StaticBatch>
   );
 }

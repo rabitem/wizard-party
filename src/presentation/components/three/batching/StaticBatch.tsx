@@ -1,9 +1,11 @@
 'use client';
 
-import { useLayoutEffect, useRef, type ReactNode } from 'react';
+import { useContext, useLayoutEffect, useRef, type ReactNode } from 'react';
 import { useThree } from '@react-three/fiber';
 import type * as THREE from 'three';
 import { buildStaticBatch, disposeStaticBatch } from './static-batch';
+import { markReplacedMesh, restoreReplacedMesh } from './replaced-meshes';
+import { StaticBatchContext } from './static-batch-context';
 
 interface StaticBatchProps {
   /** Static decor: no animation, no props that change after mount */
@@ -19,14 +21,16 @@ interface StaticBatchProps {
  * not batchable keeps rendering by itself, and unmounting restores the children exactly.
  */
 export function StaticBatch({ children, version }: StaticBatchProps) {
+  const register = useContext(StaticBatchContext);
   const rootRef = useRef<THREE.Group>(null);
   const invalidate = useThree((state) => state.invalidate);
 
   useLayoutEffect(() => {
     const root = rootRef.current;
     if (!root) return undefined;
+    if (register) return register(root);
     const batch = buildStaticBatch(root);
-    for (const source of batch.sources) source.visible = false;
+    for (const source of batch.sources) { source.visible = false; markReplacedMesh(source); }
     for (const mesh of batch.meshes) {
       root.add(mesh);
       mesh.updateMatrixWorld(true);
@@ -34,10 +38,10 @@ export function StaticBatch({ children, version }: StaticBatchProps) {
     invalidate();
     return () => {
       for (const mesh of batch.meshes) root.remove(mesh);
-      for (const source of batch.sources) source.visible = true;
+      for (const source of batch.sources) { source.visible = true; restoreReplacedMesh(source); }
       disposeStaticBatch(batch);
     };
-  }, [version, invalidate]);
+  }, [version, invalidate, register]);
 
   return <group ref={rootRef}>{children}</group>;
 }

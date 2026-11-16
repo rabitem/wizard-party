@@ -93,11 +93,13 @@ describe('SceneMotionMonitor', () => {
 
 describe('hasAwakeDynamicBodies', () => {
   it('should only count awake dynamic bodies, not kinematic ones', () => {
-    const world = (bodies: { isDynamic(): boolean }[]) => ({
-      forEachActiveRigidBody: (callback: (body: { isDynamic(): boolean }) => void) => bodies.forEach(callback),
+    const world = (bodies: { isDynamic(): boolean; isSleeping(): boolean }[]) => ({
+      forEachActiveRigidBody: (callback: (body: { isDynamic(): boolean; isSleeping(): boolean }) => void) => bodies.forEach(callback),
     });
     expect(hasAwakeDynamicBodies(world([]))).toBe(false);
-    expect(hasAwakeDynamicBodies(world([{ isDynamic: () => false }]))).toBe(false);
-    expect(hasAwakeDynamicBodies(world([{ isDynamic: () => false }, { isDynamic: () => true }]))).toBe(true);
+    // An explicit sleep can precede the island manager's next active-set refresh.
+    expect(hasAwakeDynamicBodies(world([{ isDynamic: () => true, isSleeping: () => true }]))).toBe(false);
+    expect(hasAwakeDynamicBodies(world([{ isDynamic: () => false, isSleeping: () => false }]))).toBe(false);
+    expect(hasAwakeDynamicBodies(world([{ isDynamic: () => false, isSleeping: () => false }, { isDynamic: () => true, isSleeping: () => false }]))).toBe(true);
   });
 });

@@ -1,7 +1,9 @@
 'use client';
 
+
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import { SOLARPUNK_COLORS, SOLARPUNK_GREENHOUSE, SOLARPUNK_OUTSIDE, SOLARPUNK_SKY, SOLARPUNK_SWAY } from '@/presentation/config/solarpunk-environment.config';
 import { ENVIRONMENT_ROOM, type Vec3 } from '@/presentation/config/themed-environment.config';
 import { addSurfaceDetail, createPbrMaterial, InstancedProp, RoomShell, ROOM_WALLS, seededRandom, useDisposables, type PropPlacement } from '../primitives';
@@ -150,29 +152,31 @@ export function GreenhouseAtrium() {
   useDisposables(assets);
 
   return (
-    <group>
-      <mesh geometry={assets.dome} material={assets.sky} position={[0, FLOOR_Y, 0]} />
-      <mesh geometry={assets.ground} material={assets.meadow} position={[0, FLOOR_Y - 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]} />
-      <RoomShell
-        fogColor={SOLARPUNK_COLORS.fog}
-        floorColor={SOLARPUNK_COLORS.tile}
-        wallColor={SOLARPUNK_COLORS.glass}
-        ceilingColor={SOLARPUNK_COLORS.glass}
-        floorMaterial={assets.floor}
-        wallMaterial={assets.glass}
-        ceilingMaterial={assets.roofGlass}
-        fogNear={20}
-        fogFar={62}
-      >
-        <InstancedProp geometry={assets.box} material={assets.birch} placements={KNEE_WALLS} />
-        <InstancedProp geometry={assets.box} material={assets.frame} placements={MULLIONS} />
-        <InstancedProp geometry={assets.box} material={assets.frame} placements={TRANSOMS} />
-        <InstancedProp geometry={assets.box} material={assets.frame} placements={ROOF_RIBS} />
-        <InstancedProp geometry={assets.blob} material={assets.bush} placements={LEDGE_BUSHES} />
-        <mesh geometry={assets.mossRing} material={assets.moss} position={[0, FLOOR_Y + 0.004, 0]} rotation={[-Math.PI / 2, 0, 0]} />
-        <mesh geometry={assets.brassRing} material={assets.brass} position={[0, FLOOR_Y + 0.005, 0]} rotation={[-Math.PI / 2, 0, 0]} />
-        <InstancedProp geometry={assets.blob} material={assets.bush} placements={MOSS_TUFTS} />
-      </RoomShell>
-    </group>
+    <StaticBatch>
+      <group>
+        <mesh geometry={assets.dome} material={assets.sky} position={[0, FLOOR_Y, 0]} />
+        <mesh geometry={assets.ground} material={assets.meadow} position={[0, FLOOR_Y - 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]} />
+        <RoomShell
+          fogColor={SOLARPUNK_COLORS.fog}
+          floorColor={SOLARPUNK_COLORS.tile}
+          wallColor={SOLARPUNK_COLORS.glass}
+          ceilingColor={SOLARPUNK_COLORS.glass}
+          floorMaterial={assets.floor}
+          wallMaterial={assets.glass}
+          ceilingMaterial={assets.roofGlass}
+          fogNear={20}
+          fogFar={62}
+        >
+          <InstancedProp geometry={assets.box} material={assets.birch} placements={KNEE_WALLS} />
+          <InstancedProp geometry={assets.box} material={assets.frame} placements={MULLIONS} />
+          <InstancedProp geometry={assets.box} material={assets.frame} placements={TRANSOMS} />
+          <InstancedProp geometry={assets.box} material={assets.frame} placements={ROOF_RIBS} />
+          <InstancedProp geometry={assets.blob} material={assets.bush} placements={LEDGE_BUSHES} />
+          <mesh geometry={assets.mossRing} material={assets.moss} position={[0, FLOOR_Y + 0.004, 0]} rotation={[-Math.PI / 2, 0, 0]} />
+          <mesh geometry={assets.brassRing} material={assets.brass} position={[0, FLOOR_Y + 0.005, 0]} rotation={[-Math.PI / 2, 0, 0]} />
+          <InstancedProp geometry={assets.blob} material={assets.bush} placements={MOSS_TUFTS} />
+        </RoomShell>
+      </group>
+    </StaticBatch>
   );
 }

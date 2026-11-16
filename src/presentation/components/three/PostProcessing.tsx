@@ -8,11 +8,13 @@ import { BLOOM_DEFAULTS, type AtmosphereBloom } from '@/presentation/config/real
 import { COLOR_PIPELINE } from '@/presentation/config/render-quality.config';
 import { getEnvironmentAtmosphere } from './themed-environments/environment-registry';
 import { useRenderQuality } from './render-quality';
+import { ShaderWarmup } from './shader-warmup';
 
 interface BloomComposerProps {
   bloom: AtmosphereBloom;
   multisampling: number;
   levels: number;
+  warmupKey: string;
 }
 
 /**
@@ -22,9 +24,10 @@ interface BloomComposerProps {
  * bloom nothing is mounted and the renderer tone-maps directly: no extra target, resolve or
  * full-screen pass. The screen vignette is a CSS layer over the canvas (Game3DCanvas).
  */
-function BloomComposer({ bloom, multisampling, levels }: BloomComposerProps) {
+function BloomComposer({ bloom, multisampling, levels, warmupKey }: BloomComposerProps) {
   return (
     <EffectComposer multisampling={multisampling}>
+      <ShaderWarmup warmupKey={warmupKey} />
       <Bloom
         mipmapBlur
         levels={levels}
@@ -44,15 +47,16 @@ function BloomComposer({ bloom, multisampling, levels }: BloomComposerProps) {
  */
 export function PostProcessing() {
   const tableTheme = useSelectedTableTheme();
-  const { profile, tier } = useRenderQuality();
+  const { profile, tier, structuralTier } = useRenderQuality();
   const bloom = getEnvironmentAtmosphere(tableTheme.id)?.bloom;
-  if (!bloom || !profile.bloom) return null;
+  const warmupKey = `${tableTheme.id}:${structuralTier}`;
+  if (!bloom || !profile.bloom) return <ShaderWarmup warmupKey={warmupKey} />;
 
   // The rooms' bloom was tuned at the medium level count; only the top tier widens the glow
   const levels = tier === 'ultra' ? BLOOM_DEFAULTS.LEVELS.high : BLOOM_DEFAULTS.LEVELS.medium;
   return (
     <Suspense fallback={null}>
-      <BloomComposer bloom={bloom} multisampling={profile.composerMultisampling} levels={levels} />
+      <BloomComposer bloom={bloom} multisampling={profile.composerMultisampling} levels={levels} warmupKey={warmupKey} />
     </Suspense>
   );
 }

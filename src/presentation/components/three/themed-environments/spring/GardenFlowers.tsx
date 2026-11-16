@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import { SPRING_COLORS, SPRING_FLOWER_COLORS, SPRING_LAYOUT } from '@/presentation/config/spring-environment.config';
 import { ENVIRONMENT_ROOM, type Vec3 } from '@/presentation/config/themed-environment.config';
 import { addSurfaceDetail, InstancedProp, seededRandom, useDisposables, type PropPlacement } from '../primitives';
@@ -90,13 +91,15 @@ export function GardenFlowers() {
   useDisposables(assets);
 
   return (
-    <group>
-      <InstancedProp geometry={assets.box} material={assets.planter} placements={beds.frames} />
-      <InstancedProp geometry={assets.box} material={assets.soil} placements={beds.soil} />
-      <InstancedProp geometry={assets.mound} material={assets.leaf} placements={leafMounds} />
-      <InstancedProp geometry={assets.stem} material={assets.leaf} placements={beds.stems} />
-      <InstancedProp geometry={assets.head} material={assets.petal} placements={flowerHeads} />
-      <InstancedProp geometry={assets.pot} material={assets.terracotta} placements={pots.pots} />
-    </group>
+    <StaticBatch>
+      <group>
+        <InstancedProp geometry={assets.box} material={assets.planter} placements={beds.frames} />
+        <InstancedProp geometry={assets.box} material={assets.soil} placements={beds.soil} />
+        <InstancedProp geometry={assets.mound} material={assets.leaf} placements={leafMounds} />
+        <InstancedProp geometry={assets.stem} material={assets.leaf} placements={beds.stems} />
+        <InstancedProp geometry={assets.head} material={assets.petal} placements={flowerHeads} />
+        <InstancedProp geometry={assets.pot} material={assets.terracotta} placements={pots.pots} />
+      </group>
+    </StaticBatch>
   );
 }

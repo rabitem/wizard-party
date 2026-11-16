@@ -41,7 +41,7 @@ function createFadeTexture(): THREE.Texture {
  * Glossy-floor reflections of the cabinet screens: one stretched, softly
  * filtered copy of each screen's live atlas tile per cabinet, fading away
  * from the cabinet (additive, one draw call per mini game). They animate
- * with the screens for free since they sample the same canvas.
+ * with the screens through the same sprite-sheet frame transform.
  */
 export function CabinetReflections({ texture }: { texture: THREE.Texture }) {
   const assets = useMemo(() => {

@@ -1,7 +1,9 @@
 'use client';
 
+
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import {
   WINTER_COLORS,
   WINTER_GIFT_COLORS,
@@ -146,33 +148,35 @@ export function ChristmasTree() {
   useFlicker(flickerTargets);
 
   return (
-    <group>
-      <group position={WINTER_LAYOUT.TREE_POSITION}>
-        <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]} material={assets.skirt}>
-          <circleGeometry args={[TREE_RADIUS * SKIRT_RADIUS_RATIO, 16]} />
-        </mesh>
-        <mesh position={[0, TRUNK.HEIGHT / 2, 0]} material={assets.trunk}>
-          <cylinderGeometry args={[TRUNK.RADIUS * 0.8, TRUNK.RADIUS, TRUNK.HEIGHT, 7]} />
-        </mesh>
-        {TIER_LIST.map((tier, i) => (
-          <mesh
-            key={tier.id}
-            position={[0, tier.baseY + tier.height / 2, 0]}
-            scale={[tier.radius, tier.height, tier.radius]}
-            rotation={[0, i * 0.4, 0]}
-            geometry={assets.tierGeometry}
-            material={assets[tier.material]}
-          />
-        ))}
-      </group>
-      <InstancedProp geometry={assets.ornament} material={assets.bauble} placements={ORNAMENTS} />
-      <GlowSprites points={ORNAMENT_GLOWS} material={assets.ornamentGlow} />
-      <mesh position={STAR_POSITION} geometry={assets.star} material={assets.starMaterial} />
-      <sprite position={STAR_POSITION} scale={[STAR.GLOW, STAR.GLOW, 1]} material={assets.starGlow} />
+    <StaticBatch>
+      <group>
+        <group position={WINTER_LAYOUT.TREE_POSITION}>
+          <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]} material={assets.skirt}>
+            <circleGeometry args={[TREE_RADIUS * SKIRT_RADIUS_RATIO, 16]} />
+          </mesh>
+          <mesh position={[0, TRUNK.HEIGHT / 2, 0]} material={assets.trunk}>
+            <cylinderGeometry args={[TRUNK.RADIUS * 0.8, TRUNK.RADIUS, TRUNK.HEIGHT, 7]} />
+          </mesh>
+          {TIER_LIST.map((tier, i) => (
+            <mesh
+              key={tier.id}
+              position={[0, tier.baseY + tier.height / 2, 0]}
+              scale={[tier.radius, tier.height, tier.radius]}
+              rotation={[0, i * 0.4, 0]}
+              geometry={assets.tierGeometry}
+              material={assets[tier.material]}
+            />
+          ))}
+        </group>
+        <InstancedProp geometry={assets.ornament} material={assets.bauble} placements={ORNAMENTS} />
+        <GlowSprites points={ORNAMENT_GLOWS} material={assets.ornamentGlow} />
+        <mesh position={STAR_POSITION} geometry={assets.star} material={assets.starMaterial} />
+        <sprite position={STAR_POSITION} scale={[STAR.GLOW, STAR.GLOW, 1]} material={assets.starGlow} />
 
-      <InstancedProp geometry={assets.giftBox} material={assets.giftPaper} placements={GIFTS} />
-      <InstancedProp geometry={assets.giftBox} material={assets.ribbon} placements={RIBBONS} offset={RIBBON_X} />
-      <InstancedProp geometry={assets.giftBox} material={assets.ribbon} placements={RIBBONS} offset={RIBBON_Z} />
-    </group>
+        <InstancedProp geometry={assets.giftBox} material={assets.giftPaper} placements={GIFTS} />
+        <InstancedProp geometry={assets.giftBox} material={assets.ribbon} placements={RIBBONS} offset={RIBBON_X} />
+        <InstancedProp geometry={assets.giftBox} material={assets.ribbon} placements={RIBBONS} offset={RIBBON_Z} />
+      </group>
+    </StaticBatch>
   );
 }

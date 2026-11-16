@@ -28,10 +28,17 @@ config/card-render.config.ts                tiers, cache capacity, anisotropy, s
   instead of six. Pass it as the `geometry` prop and never dispose it.
 - **Faces.** A face is keyed by content, not card id: `getCardFaceKey(card, themeVersion, tier)`
   joins type, suit, value, theme version and memory tier. Hand, dragged, played, collecting and
-  deck meshes of the same card, and identical cards such as the four Wizards, share one
+  meshes of the same card, and identical cards such as the four Wizards, share one
   `CanvasTexture`, so a stage change is a cache hit instead of a 2D repaint and a texture upload.
   Faces nobody uses stay idle in an LRU of `idleFaceCapacity` (per tier in `CARD_TEXTURE_TIERS`);
   idle faces of an old theme version are dropped on the next lookup.
+- **Collection colliders.** The kinematic cuboid follows the same scale as the animated card
+  (`PhysicsCollectingCard.tsx`); an invisible full-size card must not strike nearby props after
+  its visible face has shrunk.
+- **Collected piles.** `StackedDeckCards` merges the visible card fronts into one padded face
+  atlas and the backs/edges into one mesh. The small faces use `DECK_FACE_ATLAS` resolution;
+  copying a cached face retains it only for the copy. Each card keeps its fixed collider and
+  identity for scene sampling. Atlas geometry and textures are released when the pile changes.
 - **Memory tier.** `getCardTextureTier()` (`card-texture-quality.ts`) picks `compact` on iOS and
   iPadOS and on devices reporting `deviceMemory <= CARD_MEMORY_TIER.LOW_MEMORY_GB`, and `standard`
   elsewhere. A tier changes the canvas resolution (`CARD_TEXTURE_TIERS`); painters always draw in

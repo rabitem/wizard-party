@@ -5,6 +5,8 @@ import type * as THREE from 'three';
 import { SCENE_LIGHTING } from '@/presentation/config/scene-lighting.config';
 import { useRenderScheduler } from './frame-scheduling';
 import { useRenderQuality } from './render-quality';
+import { useSelectedTableTheme } from '../table/table-theme';
+import { getEnvironmentAtmosphere } from './themed-environments/environment-registry';
 
 const { key, fill, rim, tableSpot, hemisphere, ambient } = SCENE_LIGHTING;
 
@@ -35,9 +37,14 @@ function useShadowMapSize(lightRef: RefObject<THREE.DirectionalLight | null>, si
  */
 export function SceneLighting() {
   const { profile } = useRenderQuality();
+  const theme = useSelectedTableTheme();
+  const atmosphere = getEnvironmentAtmosphere(theme.id);
+  // Room-specific directionals replace the casino fill/rim rather than adding another pair.
+  const useFillLights = profile.fillLights && !atmosphere;
+
   const keyRef = useRef<THREE.DirectionalLight>(null);
   useShadowMapSize(keyRef, profile.shadowMapSize);
-  const hemisphereIntensity = hemisphere.intensity + (profile.fillLights ? 0 : hemisphere.fillFallbackHemisphereBoost);
+  const hemisphereIntensity = hemisphere.intensity + (useFillLights ? 0 : hemisphere.fillFallbackHemisphereBoost);
 
   return (
     <>
@@ -63,7 +70,7 @@ export function SceneLighting() {
         shadow-radius={key.shadowRadius}
       />
 
-      {profile.fillLights ? (
+      {useFillLights ? (
         <>
           {/* Fill light - cooler, softer */}
           <directionalLight position={fill.position} intensity={fill.intensity} color={fill.color} />

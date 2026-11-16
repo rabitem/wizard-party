@@ -1,7 +1,9 @@
 'use client';
 
+
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import { AUTUMN_COLORS, AUTUMN_LAYOUT, AUTUMN_WINDOW_VIEW } from '@/presentation/config/autumn-environment.config';
 import { ENVIRONMENT_ROOM, type Vec3 } from '@/presentation/config/themed-environment.config';
 import {
@@ -111,28 +113,30 @@ export function HarvestBarnRoom() {
   const geometries = useBarnGeometries();
 
   return (
-    <group>
-      <mesh position={[0, 5, -HALF_DEPTH - 1]} scale={[80, 30, 1]}>
-        <planeGeometry />
-        <meshBasicMaterial color={AUTUMN_COLORS.background} />
-      </mesh>
-      <RoomShell
-        fogColor={AUTUMN_COLORS.fog}
-        floorColor={AUTUMN_COLORS.floorWood}
-        wallColor={AUTUMN_COLORS.wallWood}
-        ceilingColor={AUTUMN_COLORS.ceiling}
-        floorMaterial={materials.floor}
-        wallMaterial={materials.wall}
-        ceilingMaterial={materials.ceiling}
-        fogNear={15}
-        fogFar={44}
-      >
-        <InstancedProp geometry={geometries.rafter} material={materials.beam} placements={RAFTERS} />
-        <InstancedProp geometry={geometries.purlin} material={materials.beam} placements={PURLINS} />
-        <InstancedProp geometry={geometries.post} material={materials.beam} placements={POSTS} />
-        <InstancedProp geometry={geometries.brace} material={materials.beam} placements={BRACES} />
-        <SunsetWindow frame={materials.beam} halo={materials.halo} />
-      </RoomShell>
-    </group>
+    <StaticBatch>
+      <group>
+        <mesh position={[0, 5, -HALF_DEPTH - 1]} scale={[80, 30, 1]}>
+          <planeGeometry />
+          <meshBasicMaterial color={AUTUMN_COLORS.background} />
+        </mesh>
+        <RoomShell
+          fogColor={AUTUMN_COLORS.fog}
+          floorColor={AUTUMN_COLORS.floorWood}
+          wallColor={AUTUMN_COLORS.wallWood}
+          ceilingColor={AUTUMN_COLORS.ceiling}
+          floorMaterial={materials.floor}
+          wallMaterial={materials.wall}
+          ceilingMaterial={materials.ceiling}
+          fogNear={15}
+          fogFar={44}
+        >
+          <InstancedProp geometry={geometries.rafter} material={materials.beam} placements={RAFTERS} />
+          <InstancedProp geometry={geometries.purlin} material={materials.beam} placements={PURLINS} />
+          <InstancedProp geometry={geometries.post} material={materials.beam} placements={POSTS} />
+          <InstancedProp geometry={geometries.brace} material={materials.beam} placements={BRACES} />
+          <SunsetWindow frame={materials.beam} halo={materials.halo} />
+        </RoomShell>
+      </group>
+    </StaticBatch>
   );
 }

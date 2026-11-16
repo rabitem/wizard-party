@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import { SOLARPUNK_COLORS, SOLARPUNK_SWAY } from '@/presentation/config/solarpunk-environment.config';
 import { addSurfaceDetail, InstancedProp, useDisposables } from '../primitives';
 import { addFoliageSway, useSwayClock } from './foliage-sway';
@@ -51,18 +52,20 @@ export function GreenhousePlants() {
   useDisposables(assets);
 
   return (
-    <group>
-      <InstancedProp geometry={assets.pot} material={assets.ceramic} placements={potted.pots} />
-      <InstancedProp geometry={assets.disc} material={assets.soil} placements={potted.soil} />
-      <InstancedProp geometry={assets.frond} material={assets.foliage} placements={potted.fronds} />
-      <InstancedProp geometry={assets.stem} material={assets.stemMat} placements={potted.stems} />
-      <InstancedProp geometry={assets.monstera} material={assets.foliage} placements={potted.bigLeaves} />
+    <StaticBatch>
+      <group>
+        <InstancedProp geometry={assets.pot} material={assets.ceramic} placements={potted.pots} />
+        <InstancedProp geometry={assets.disc} material={assets.soil} placements={potted.soil} />
+        <InstancedProp geometry={assets.frond} material={assets.foliage} placements={potted.fronds} />
+        <InstancedProp geometry={assets.stem} material={assets.stemMat} placements={potted.stems} />
+        <InstancedProp geometry={assets.monstera} material={assets.foliage} placements={potted.bigLeaves} />
 
-      <InstancedProp geometry={assets.cable} material={assets.brass} placements={hanging.cables} />
-      <InstancedProp geometry={assets.basket} material={assets.ceramic} placements={hanging.baskets} />
-      <InstancedProp geometry={assets.mound} material={assets.mossy} placements={hanging.mounds} />
-      <InstancedProp geometry={assets.cable} material={assets.stemMat} placements={hanging.vines} />
-      <InstancedProp geometry={assets.leaf} material={assets.foliage} placements={hanging.leaves} />
-    </group>
+        <InstancedProp geometry={assets.cable} material={assets.brass} placements={hanging.cables} />
+        <InstancedProp geometry={assets.basket} material={assets.ceramic} placements={hanging.baskets} />
+        <InstancedProp geometry={assets.mound} material={assets.mossy} placements={hanging.mounds} />
+        <InstancedProp geometry={assets.cable} material={assets.stemMat} placements={hanging.vines} />
+        <InstancedProp geometry={assets.leaf} material={assets.foliage} placements={hanging.leaves} />
+      </group>
+    </StaticBatch>
   );
 }
