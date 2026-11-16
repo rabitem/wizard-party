@@ -183,9 +183,8 @@ program, is constant across turns. Lights never mount or unmount during play.
   decorations and trap them against the felt. `DecorationRestTracker` applies the cards' sustained-rest
   thresholds on physics time and puts quiet chips/coasters to sleep; collisions still wake them.
   Quiet decorations slightly embedded in the felt can sleep; bodies below the fallen-body
-  threshold remain active. The group sleeps together after sustained rest; sleeping lower chips
-  while their neighbours still move would destabilise the contact stack. A real knock restarts
-  the sustained-rest interval. Instanced uploads of unchanged poses do not count as scene motion.
+  threshold remain active. Each body settles independently, so a moving prop does not prevent
+  unrelated props sleeping. A real knock restarts its sustained-rest interval. Instanced uploads of unchanged poses do not count as scene motion.
 - **Table legs** (`TableLegs.tsx`) do not cast shadow-map shadows, since they sit under the table
   top.
 

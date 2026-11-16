@@ -7,7 +7,9 @@ export function useDecorationRest() {
   const bodies = useRef<(RapierRigidBody | null)[] | null>(null);
   const tracker = useRef(new DecorationRestTracker());
   useAfterPhysicsStep((world) => {
-    tracker.current.step((bodies.current ?? []).filter((body): body is RapierRigidBody => body !== null), world.timestep * 1000);
+    for (const body of bodies.current ?? []) {
+      if (body) tracker.current.step(body, world.timestep * 1000);
+    }
   });
   return bodies;
 }
