@@ -10,3 +10,4 @@ export { usePlayerPositions } from './hooks/usePlayerPositions';
 export { PlayerAreaRenderer } from './PlayerAreaRenderer';
 export { CollectingCardsRenderer } from './CollectingCardsRenderer';
 export { TableDecorations, StackedDecksRenderer } from './TableDecorations';
+export { PlayedCardOwnerBadgeWarmup } from './PlayedCardOwnerBadge';

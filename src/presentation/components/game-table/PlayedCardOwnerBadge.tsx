@@ -30,6 +30,21 @@ function getBadgeColor(playerIndex: number): string {
   return OWNER_BADGE_COLORS[playerIndex % OWNER_BADGE_COLORS.length];
 }
 
+/** The visible badge and the table's program lease use the same dot material. */
+function OwnerBadgeDot({ color }: { color: string }) {
+  return (
+    <mesh>
+      <circleGeometry args={[OWNER_BADGE.DOT_RADIUS, 20]} />
+      <meshBasicMaterial color={color} toneMapped={false} />
+    </mesh>
+  );
+}
+
+/** Keep the opaque, untone-mapped program alive while no played-card badges are mounted. */
+export function PlayedCardOwnerBadgeWarmup() {
+  return <group visible={false}><OwnerBadgeDot color={getBadgeColor(0)} /></group>;
+}
+
 /**
  * Who played this card: a camera-facing chip (seat-coloured play-order dot plus name) of
  * constant on-screen size, hovering just past the card's top edge. It is depth-tested, so a
@@ -50,10 +65,7 @@ export function PlayedCardOwnerBadge({
       contentHeight={FONT_SIZE * CAP_HEIGHT_RATIO}
       targetPx={OWNER_BADGE.CAP_PX}
     >
-      <mesh>
-        <circleGeometry args={[OWNER_BADGE.DOT_RADIUS, 20]} />
-        <meshBasicMaterial color={badgeColor} toneMapped={false} />
-      </mesh>
+      <OwnerBadgeDot color={badgeColor} />
       <SceneText
         position={[0, 0, 0.002]}
         fontSize={FONT_SIZE}

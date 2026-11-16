@@ -156,6 +156,10 @@ program, is constant across turns. Lights never mount or unmount during play.
 `SceneFog` installs fog in the layout phase, before a frame can compile room materials;
 otherwise direct-rendered tiers retain both fog-free and fog-enabled copies of the same programs.
 
+`PlayedCardOwnerBadgeWarmup` keeps the badge dot's opaque, untone-mapped material alive
+for the table's lifetime. Direct-rendered tiers otherwise release that program after each trick
+and link it again on the next one. The hidden dot uses the visible badge's primitive and never draws.
+
 ## Draw calls
 
 - **Opponent hands.** Two instanced draws per hand (backs with the shared per-theme back material,
