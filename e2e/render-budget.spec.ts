@@ -1,4 +1,5 @@
 import { RENDER_BUDGET_SCENARIO } from '../src/presentation/config/sandbox-budgets.config';
+import { TABLE_THEME_PALETTES } from '../src/presentation/config/table-theme.config';
 import { describeWindows, expectIdleBudgets, expectResourceBudgets, expectWarmRoundBudgets } from './support/budgets';
 import { expectCleanRun, test } from './support/sandbox';
 
@@ -8,7 +9,18 @@ import { expectCleanRun, test } from './support/sandbox';
  * lights and programs, React commits. Counts, not timings, so they hold on CI's software
  * renderer exactly as on a real GPU, and a regression names what grew.
  */
+// These assertions count submitted GPU work, independent of raster resolution. Keep the
+// desktop CSS viewport, scene and quality tier; software CI rasterises one quarter DPR.
+// Pixel/input suites retain their device DPR. Avoid continuous readbacks in budget traces.
+if (process.env.CI) test.use({
+  deviceScaleFactor: 0.25,
+  trace: { mode: 'retain-on-failure', screenshots: false, snapshots: true, sources: true },
+});
+
 const PLAYER_COUNTS = [3, 4, 5, 6] as const;
+
+// Each scenario owns a fresh page; individual themes can be distributed across CI shards.
+test.describe.configure({ mode: 'parallel' });
 
 for (const playerCount of PLAYER_COUNTS) {
   test(`${playerCount} players: render and React work stay within budget`, async ({ sandbox }, testInfo) => {
@@ -21,18 +33,15 @@ for (const playerCount of PLAYER_COUNTS) {
   });
 }
 
-test('every table theme stays within the six-player budget', async ({ sandbox }, testInfo) => {
-  // Each environment adds its own meshes, lights and effects; one run per theme, judged alike.
-  test.setTimeout(testInfo.timeout * 3);
-  const { tableTheme: themes } = await sandbox.dimensions();
-  for (const tableTheme of themes) {
+for (const { id: tableTheme } of TABLE_THEME_PALETTES) {
+  test(`table theme ${tableTheme} stays within the six-player budget`, async ({ sandbox }, testInfo) => {
     const report = await sandbox.run({ id: `${RENDER_BUDGET_SCENARIO.ID}-${tableTheme}`, scenario: RENDER_BUDGET_SCENARIO.ID, playerCount: 6, settings: { tableTheme } });
     testInfo.annotations.push({ type: tableTheme, description: describeWindows(report) });
     expectIdleBudgets(report);
     expectWarmRoundBudgets(report, 6);
     expectResourceBudgets(report);
-  }
-});
+  });
+}
 
 test('an idle table waiting for your lead does no render or React work', async ({ sandbox }, testInfo) => {
   const report = await sandbox.run({ scenario: 'idle-table-10s', playerCount: 6 });

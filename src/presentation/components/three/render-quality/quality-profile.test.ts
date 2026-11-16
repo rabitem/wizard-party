@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { MSAA_MAX_DPR, RENDER_QUALITY_TIERS, RUNTIME_QUALITY, STRUCTURAL_QUALITY } from '@/presentation/config/render-quality.config';
-import { resolveAntialias, resolveRenderProfile, stepTier } from './quality-profile';
+import { resolveAntialias, resolveDprRange, resolveRenderProfile, stepTier } from './quality-profile';
 import { readLearnedTier, readTierOverride, writeLearnedTier, type TierStorage } from './quality-tier-storage';
 
 function memoryStorage(initial: Record<string, string> = {}): TierStorage {
@@ -43,6 +43,12 @@ describe('render quality profiles', () => {
     expect(stepTier('medium', -1)).toBe('low');
     expect(stepTier('low', -1)).toBeNull();
     expect(stepTier('ultra', 1)).toBeNull();
+  });
+
+  it('uses native pixels on zoomed-out displays while preserving the tier cap', () => {
+    expect(resolveDprRange(2, 0.5)).toEqual([0.5, 2]);
+    expect(resolveDprRange(2, 1)).toEqual([1, 2]);
+    expect(resolveDprRange(2, 3)).toEqual([1, 2]);
   });
 
   it('should skip native MSAA on dense screens', () => {

@@ -1,7 +1,9 @@
 'use client';
 
+
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import {
   SUMMER_COLORS,
   SUMMER_LAYOUT,
@@ -84,20 +86,22 @@ export function BeachFurniture() {
   const canopies = [assets.canopy0, assets.canopy1];
 
   return (
-    <group>
-      {SUMMER_LAYOUT.UMBRELLAS.map(([x, z, tilt, scheme]) => (
-        <Umbrella
-          key={`umbrella-${x}-${z}`}
-          position={[x, FLOOR, z]}
-          tilt={tilt}
-          canopy={canopies[scheme % canopies.length]}
-          pole={assets.pole}
-          canopyGeometry={assets.canopyGeometry}
-        />
-      ))}
-      <InstancedProp geometry={assets.frame} material={assets.frameMaterial} placements={LOUNGERS} />
-      <InstancedProp geometry={assets.fabric} material={assets.fabricMaterial} placements={FABRICS} />
-      <InstancedProp geometry={assets.board} material={assets.boardMaterial} placements={SURFBOARDS} />
-    </group>
+    <StaticBatch>
+      <group>
+        {SUMMER_LAYOUT.UMBRELLAS.map(([x, z, tilt, scheme]) => (
+          <Umbrella
+            key={`umbrella-${x}-${z}`}
+            position={[x, FLOOR, z]}
+            tilt={tilt}
+            canopy={canopies[scheme % canopies.length]}
+            pole={assets.pole}
+            canopyGeometry={assets.canopyGeometry}
+          />
+        ))}
+        <InstancedProp geometry={assets.frame} material={assets.frameMaterial} placements={LOUNGERS} />
+        <InstancedProp geometry={assets.fabric} material={assets.fabricMaterial} placements={FABRICS} />
+        <InstancedProp geometry={assets.board} material={assets.boardMaterial} placements={SURFBOARDS} />
+      </group>
+    </StaticBatch>
   );
 }

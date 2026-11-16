@@ -70,7 +70,7 @@ describe('SceneMotionMonitor', () => {
     expect(monitor.sample(scene, 32)).toBe(true);
   });
 
-  it('should see instance matrix updates and camera moves', () => {
+  it('should ignore identical instance uploads and see changed poses and camera moves', () => {
     const monitor = new SceneMotionMonitor(0.1);
     const chips = new THREE.InstancedMesh(new THREE.BufferGeometry(), new THREE.MeshBasicMaterial(), 2);
     const camera = new THREE.PerspectiveCamera();
@@ -79,7 +79,10 @@ describe('SceneMotionMonitor', () => {
     monitor.sample(scene, 16, camera);
 
     chips.instanceMatrix.needsUpdate = true;
-    expect(monitor.sample(scene, 32, camera)).toBe(true);
+    expect(monitor.sample(scene, 32, camera)).toBe(false);
+    chips.setMatrixAt(0, new THREE.Matrix4().makeTranslation(0, 1, 0));
+    chips.instanceMatrix.needsUpdate = true;
+    expect(monitor.sample(scene, 40, camera)).toBe(true);
 
     camera.position.z = 2;
     camera.updateMatrixWorld(true);
@@ -90,11 +93,13 @@ describe('SceneMotionMonitor', () => {
 
 describe('hasAwakeDynamicBodies', () => {
   it('should only count awake dynamic bodies, not kinematic ones', () => {
-    const world = (bodies: { isDynamic(): boolean }[]) => ({
-      forEachActiveRigidBody: (callback: (body: { isDynamic(): boolean }) => void) => bodies.forEach(callback),
+    const world = (bodies: { isDynamic(): boolean; isSleeping(): boolean }[]) => ({
+      forEachActiveRigidBody: (callback: (body: { isDynamic(): boolean; isSleeping(): boolean }) => void) => bodies.forEach(callback),
     });
     expect(hasAwakeDynamicBodies(world([]))).toBe(false);
-    expect(hasAwakeDynamicBodies(world([{ isDynamic: () => false }]))).toBe(false);
-    expect(hasAwakeDynamicBodies(world([{ isDynamic: () => false }, { isDynamic: () => true }]))).toBe(true);
+    // An explicit sleep can precede the island manager's next active-set refresh.
+    expect(hasAwakeDynamicBodies(world([{ isDynamic: () => true, isSleeping: () => true }]))).toBe(false);
+    expect(hasAwakeDynamicBodies(world([{ isDynamic: () => false, isSleeping: () => false }]))).toBe(false);
+    expect(hasAwakeDynamicBodies(world([{ isDynamic: () => false, isSleeping: () => false }, { isDynamic: () => true, isSleeping: () => false }]))).toBe(true);
   });
 });

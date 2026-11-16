@@ -99,8 +99,12 @@ export const PIXEL_SCREENS = {
   TILE_HEIGHT: 24,
   /** Number of different mini games on the atlas */
   VARIANTS: 4,
-  /** Repaints per second (chunky retro frame rate, cheap on mobile) */
+  /** Sprite-sheet frames per second (chunky retro frame rate). */
   FPS: 8,
+  /** Twenty-second demo loop, baked once; fits WebGL2's minimum texture-size limit. */
+  FRAMES: 160,
+  FRAME_COLUMNS: 4,
+  FRAME_GUTTER: 1,
 } as const;
 
 export interface CabinetPlacement {

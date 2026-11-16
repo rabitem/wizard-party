@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import { COLLISION_GROUPS, interactionGroups } from '../../config/rapier.config';
 import { CHIP_PLACEMENTS, COASTER_PLACEMENTS, DECORATION_SHAPES, type DecorationPlacement } from './decoration-layout';
 import { writePlacementMatrices } from './decoration-instances';
+import { useDecorationRest } from './useDecorationRest';
 
 // Decorations collide with cards, the table and each other
 const DECORATION_COLLISION_GROUPS = interactionGroups(
@@ -13,7 +14,7 @@ const DECORATION_COLLISION_GROUPS = interactionGroups(
   COLLISION_GROUPS.CARD | COLLISION_GROUPS.TABLE | COLLISION_GROUPS.DECORATION,
 );
 
-const CHIP_BODY = { mass: 0.01, linearDamping: 1.5, angularDamping: 2.0, restitution: 0.2, friction: 0.6 } as const;
+const CHIP_BODY = { mass: 0.01, additionalSolverIterations: 8, linearDamping: 1.5, angularDamping: 2.0, restitution: 0.2, friction: 0.6 } as const;
 const COASTER_BODY = { mass: 0.02, linearDamping: 2.0, angularDamping: 3.0, restitution: 0.1, friction: 0.8 } as const;
 const { RADIUS: CHIP_RADIUS, HEIGHT: CHIP_HEIGHT } = DECORATION_SHAPES.CHIP;
 const { RADIUS: COASTER_RADIUS, HEIGHT: COASTER_HEIGHT } = DECORATION_SHAPES.COASTER;
@@ -61,6 +62,7 @@ const CHIP_COLORS = CHIP_PLACEMENTS.map((chip) => chip.color);
  * instance matrix buffer, so whatever Rapier writes for a knocked chip moves all three parts.
  */
 export function PhysicsChipStacks() {
+  const bodies = useDecorationRest();
   const bodyRef = useRef<THREE.InstancedMesh>(null);
   const ringRef = useRef<THREE.InstancedMesh>(null);
   const inlayRef = useRef<THREE.InstancedMesh>(null);
@@ -79,6 +81,7 @@ export function PhysicsChipStacks() {
   return (
     <group>
       <InstancedRigidBodies
+        ref={bodies}
         instances={chipInstances}
         colliderNodes={chipColliders}
         colliders={false}
@@ -102,11 +105,13 @@ export function PhysicsChipStacks() {
 
 /** Coasters resting on the table (one instanced draw; they sleep once settled). */
 export function PhysicsCoasters() {
+  const bodies = useDecorationRest();
   const meshRef = useRef<THREE.InstancedMesh>(null);
   useInitialInstances(meshRef, COASTER_PLACEMENTS);
 
   return (
     <InstancedRigidBodies
+      ref={bodies}
       instances={coasterInstances}
       colliderNodes={coasterColliders}
       colliders={false}

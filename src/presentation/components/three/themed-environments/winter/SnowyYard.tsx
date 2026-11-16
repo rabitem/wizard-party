@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import { WINTER_COLORS } from '@/presentation/config/winter-environment.config';
 import { PORCH_FRONT_Z, WINTER_YARD, WINTER_YARD_COLORS } from '@/presentation/config/winter-porch.config';
 import { ENVIRONMENT_ROOM, type Vec3 } from '@/presentation/config/themed-environment.config';
@@ -72,20 +73,22 @@ export function SnowyYard() {
   useDisposables(assets);
 
   return (
-    <group>
-      <mesh position={[0, Y.GROUND_Y, GROUND_CENTER_Z]} geometry={assets.ground} material={assets.snow} />
-      <InstancedProp geometry={assets.ball} material={assets.drift} placements={DRIFTS} />
-      <InstancedProp geometry={assets.trunkGeometry} material={assets.trunk} placements={PINE_TRUNKS} />
-      <InstancedProp geometry={assets.tier} material={assets.pine} placements={PINE_TIER_PLACEMENTS} />
-      <WindowSnowView
-        position={Y.BACKDROP_CENTER}
-        size={Y.BACKDROP_SIZE}
-        variant="night"
-        palette={BACKDROP_PALETTE}
-        precipitation="snow"
-        frost={0}
-        sillDrift={0}
-      />
-    </group>
+    <StaticBatch>
+      <group>
+        <mesh position={[0, Y.GROUND_Y, GROUND_CENTER_Z]} geometry={assets.ground} material={assets.snow} />
+        <InstancedProp geometry={assets.ball} material={assets.drift} placements={DRIFTS} />
+        <InstancedProp geometry={assets.trunkGeometry} material={assets.trunk} placements={PINE_TRUNKS} />
+        <InstancedProp geometry={assets.tier} material={assets.pine} placements={PINE_TIER_PLACEMENTS} />
+        <WindowSnowView
+          position={Y.BACKDROP_CENTER}
+          size={Y.BACKDROP_SIZE}
+          variant="night"
+          palette={BACKDROP_PALETTE}
+          precipitation="snow"
+          frost={0}
+          sillDrift={0}
+        />
+      </group>
+    </StaticBatch>
   );
 }

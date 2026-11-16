@@ -1,6 +1,8 @@
 'use client';
 
-import { Suspense, type ComponentProps } from 'react';
+import { Suspense, useCallback, useLayoutEffect, useRef, type ComponentProps } from 'react';
+import { DefaultLoadingManager } from 'three';
+import { SCENE_TEXT_WARMUP } from '@/presentation/config/scene-label.config';
 import { Text } from '@react-three/drei';
 
 type SceneTextProps = ComponentProps<typeof Text>;
@@ -26,5 +28,15 @@ export function SceneText(props: SceneTextProps) {
  * Mount it outside <Physics> so the font loads in parallel with rapier.
  */
 export function SceneTextFontWarmup() {
-  return <SceneText visible={false}>{' '}</SceneText>;
+  const ready = useRef(false);
+  const pending = useRef(false);
+  const settle = useCallback(() => {
+    ready.current = true;
+    if (pending.current) { pending.current = false; DefaultLoadingManager.itemEnd(SCENE_TEXT_WARMUP.LOAD_KEY); }
+  }, []);
+  useLayoutEffect(() => {
+    if (!ready.current) { pending.current = true; DefaultLoadingManager.itemStart(SCENE_TEXT_WARMUP.LOAD_KEY); }
+    return () => { if (pending.current) { pending.current = false; DefaultLoadingManager.itemEnd(SCENE_TEXT_WARMUP.LOAD_KEY); } };
+  }, []);
+  return <SceneText visible={false} onSync={settle}>{SCENE_TEXT_WARMUP.GLYPHS}</SceneText>;
 }

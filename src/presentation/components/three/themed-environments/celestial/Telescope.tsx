@@ -1,7 +1,9 @@
 'use client';
 
+
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import { CELESTIAL_COLORS, CELESTIAL_LAYOUT } from '@/presentation/config/celestial-environment.config';
 import { addSurfaceDetail, MatrixInstances, localMatrix, useDisposables } from '../primitives';
 import { createBrassMaterial } from './celestial-materials';
@@ -71,30 +73,32 @@ export function Telescope() {
 
   const tubeOffset = (0.5 - PIVOT_RATIO) * T.tubeLength;
   return (
-    <group position={T.position} rotation={[0, T.yaw, 0]}>
-      <MatrixInstances geometry={assets.leg} material={assets.wood} matrices={legs} />
-      <mesh geometry={assets.head} material={assets.brass} position={[0, T.tripodHeight + 0.1, 0]} />
-      <mesh geometry={assets.yoke} material={assets.brass} position={[-0.3, T.tripodHeight + 0.4, 0]} />
-      <mesh geometry={assets.yoke} material={assets.brass} position={[0.3, T.tripodHeight + 0.4, 0]} />
+    <StaticBatch>
+      <group position={T.position} rotation={[0, T.yaw, 0]}>
+        <MatrixInstances geometry={assets.leg} material={assets.wood} matrices={legs} />
+        <mesh geometry={assets.head} material={assets.brass} position={[0, T.tripodHeight + 0.1, 0]} />
+        <mesh geometry={assets.yoke} material={assets.brass} position={[-0.3, T.tripodHeight + 0.4, 0]} />
+        <mesh geometry={assets.yoke} material={assets.brass} position={[0.3, T.tripodHeight + 0.4, 0]} />
 
-      {/* Tube pivots on the yoke; its local +Y points along the line of sight */}
-      <group position={[0, T.tripodHeight + 0.55, 0]} rotation={[-(Math.PI / 2 - T.pitch), 0, 0]}>
-        <mesh geometry={assets.tube} material={assets.brass} position={[0, tubeOffset, 0]} />
-        <mesh
-          geometry={assets.cap}
-          material={assets.brass}
-          position={[0, tubeOffset + T.tubeLength / 2 + TUBE.CAP_LENGTH / 2 - 0.05, 0]}
-        />
-        <mesh
-          geometry={assets.lensDisc}
-          material={assets.lens}
-          position={[0, tubeOffset + T.tubeLength / 2 - 0.02, 0]}
-          rotation={[-Math.PI / 2, 0, 0]}
-        />
-        <mesh geometry={assets.eyepiece} material={assets.brass} position={[0, tubeOffset - T.tubeLength / 2 - 0.18, 0]} />
-        <mesh geometry={assets.finder} material={assets.brass} position={[0, tubeOffset + 0.4, TUBE.FRONT + 0.12]} />
-        <MatrixInstances geometry={assets.band} material={assets.brass} matrices={bands} />
+        {/* Tube pivots on the yoke; its local +Y points along the line of sight */}
+        <group position={[0, T.tripodHeight + 0.55, 0]} rotation={[-(Math.PI / 2 - T.pitch), 0, 0]}>
+          <mesh geometry={assets.tube} material={assets.brass} position={[0, tubeOffset, 0]} />
+          <mesh
+            geometry={assets.cap}
+            material={assets.brass}
+            position={[0, tubeOffset + T.tubeLength / 2 + TUBE.CAP_LENGTH / 2 - 0.05, 0]}
+          />
+          <mesh
+            geometry={assets.lensDisc}
+            material={assets.lens}
+            position={[0, tubeOffset + T.tubeLength / 2 - 0.02, 0]}
+            rotation={[-Math.PI / 2, 0, 0]}
+          />
+          <mesh geometry={assets.eyepiece} material={assets.brass} position={[0, tubeOffset - T.tubeLength / 2 - 0.18, 0]} />
+          <mesh geometry={assets.finder} material={assets.brass} position={[0, tubeOffset + 0.4, TUBE.FRONT + 0.12]} />
+          <MatrixInstances geometry={assets.band} material={assets.brass} matrices={bands} />
+        </group>
       </group>
-    </group>
+    </StaticBatch>
   );
 }

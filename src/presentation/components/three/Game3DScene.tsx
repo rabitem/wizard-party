@@ -8,12 +8,10 @@ import { PlayerHand, type DragStatePublication } from '../PlayerHand';
 import { GameTable } from '../GameTable';
 import { CameraRelativeHand } from './CameraRelativeHand';
 import { DraggedCard } from './DraggedCard';
+import { CardLandEffectWarmup } from './card-land-fx';
 import { PostProcessing } from './PostProcessing';
 import { AMBIENT_USER_DATA, PhysicsActivityProbe, useRenderPulse } from './frame-scheduling';
-import { useRenderQuality } from './render-quality';
-import { ShaderWarmup } from './shader-warmup';
 import { ThemedEnvironment } from './themed-environments';
-import { useSelectedTableTheme } from '../table/table-theme';
 import { TableShakeWrapper, TableShakeHandle } from './TableShakeWrapper';
 import { PhysicsTable } from './PhysicsTable';
 import { TrumpCollider } from './TrumpCollider';
@@ -142,8 +140,6 @@ function Game3DSceneView({
   // Server updates start deals, flights and collections: render them at full rate from frame one
   useRenderPulse(gameState, FRAME_SCHEDULING.STATE_CHANGE_ACTIVE_MS);
   useRenderPulse(trickResult, FRAME_SCHEDULING.STATE_CHANGE_ACTIVE_MS);
-  const tableTheme = useSelectedTableTheme();
-  const { structuralTier } = useRenderQuality();
 
   const showHand = localPlayer && (gameState.phase === GamePhase.BIDDING || gameState.phase === GamePhase.TRUMP_SELECTION || gameState.phase === GamePhase.PLAYING);
   const handCards = orderedCards.length > 0 ? orderedCards : (localPlayer?.hand ?? []);
@@ -162,6 +158,7 @@ function Game3DSceneView({
       </group>
 
       <SceneLighting />
+      <CardLandEffectWarmup />
 
       <Physics
         gravity={RAPIER_WORLD.GRAVITY}
@@ -205,8 +202,6 @@ function Game3DSceneView({
       ) : null}
 
       <PostProcessing />
-
-      <ShaderWarmup warmupKey={`${tableTheme.id}:${structuralTier}`} />
 
       <SceneProbeSlot />
     </>

@@ -31,7 +31,7 @@ function shouldRenderCardFaceDown(card: ICard, explicitFaceDown = false): boolea
     (card.type === CardType.NUMBER && (card.suit === null || card.value === null));
 }
 
-function getSharedBackMaterial(texture: THREE.Texture, mode: CardRenderMode): CardMaterial {
+export function getSharedCardBackMaterial(texture: THREE.Texture, mode: CardRenderMode): CardMaterial {
   const key = `${texture.uuid}|${mode}`;
   let material = sharedBackMaterials.get(key);
   if (!material) {
@@ -59,7 +59,7 @@ function getFaceHandle(material: THREE.Material): CardFaceHandle | undefined {
 export function buildCardMaterials(card: ICard, options: CreateCardMaterialsOptions = {}): CardMaterial[] {
   const mode = options.renderMode ?? 'table';
   const backTexture = getCardBackTexture(getActiveCardTheme().id);
-  const back = getSharedBackMaterial(backTexture, mode);
+  const back = getSharedCardBackMaterial(backTexture, mode);
   const face = shouldRenderCardFaceDown(card, options.faceDown)
     ? null
     : peekCardFace(card, cardThemeVersionOf(getCardThemeSnapshot()), (c) => createCardTexture(c));

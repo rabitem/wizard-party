@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 
@@ -18,7 +18,8 @@ interface SceneFogProps {
 export function SceneFog({ color, near, far }: SceneFogProps) {
   const getState = useThree((state) => state.get);
 
-  useEffect(() => {
+  // Fog changes program defines: install it before the first frame can compile materials.
+  useLayoutEffect(() => {
     const { scene } = getState();
     const previous = scene.fog;
     scene.fog = new THREE.Fog(color, near, far);

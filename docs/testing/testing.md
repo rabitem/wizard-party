@@ -138,10 +138,10 @@ Playwright reads these environment variables:
 | --- | --- | --- | --- |
 | `E2E_BASE_URL` | `playwright.config.ts` | Unset: Playwright starts `next start` | Point the suites at a server that is already running |
 | `E2E_PORT` | `playwright.config.ts` | `3210` | Port of the server Playwright starts |
-| `E2E_WORKERS` | `playwright.config.ts` | `2` | Parallel workers; a sandbox run drives a whole game client, so keep it low |
+| `E2E_WORKERS` | `playwright.config.ts` | `2` locally, `1` in browser CI | Parallel workers; each software-rendered sandbox uses one runner's CPU |
 | `E2E_FULL_MATRIX` | `e2e/playability-matrix.spec.ts`, `settings-matrix.spec.ts`, `scenarios.spec.ts`, `faults.spec.ts`, `reconnect.spec.ts`, `golden-path.spec.ts` | Unset | `1` widens every suite: every viewport, every pair of settings (`allPairs`), and every table size (3 to 6) for the core scenarios, faults, network scenarios and the golden path. Unset: the key viewports at the smallest and largest table, every setting value once (`eachChoice`), four seats for the core scenarios, 3 and 6 for faults, network and the golden path |
 | `PERF_TARGET_FPS` | `e2e/performance.spec.ts` | `FRAME_BUDGETS.DEFAULT_TARGET_FPS` | Frame rate the p95 frame time must sustain |
-| `CI` | `playwright.config.ts` | Unset | Set: one retry, `test.only` is an error, the line reporter |
+| `CI` | `playwright.config.ts` | Unset | Set: one retry, `test.only` is an error, the line reporter and a longer wall-clock allowance for software WebGL; scenario deadlines stay virtual |
 
 Reports go to `e2e-report/` (HTML) and `e2e-results/` (traces, screenshots of failures). Both are
 git-ignored.
@@ -199,7 +199,8 @@ artifact (`e2e-report/`, `e2e-results/`).
 ### Browser suites
 
 - **Pull request.** The `e2e` label runs the `chromium` and `android-phone` projects on every push
-  to the PR.
+  to the PR, each split into sixteen shards. Each runner uses one browser worker. Render-budget
+  cases run independently per table theme, so the shards distribute those long scenarios too.
 - **Weekly run.** Sunday 03:00 UTC, every project (desktop engines, branded Chrome and Edge,
   devices, both matrices on every engine, the golden path on every engine and both phones) with
   `E2E_FULL_MATRIX=1`, each project split into four shards.
@@ -276,6 +277,10 @@ PERF_TARGET_FPS=120 npm run e2e:perf
 
 `e2e:perf` runs `e2e/performance.spec.ts` on `chromium`, `firefox`, `webkit` and `edge`. Playwright's
 WebKit build on Windows has no Web Audio and often no GPU WebGL: treat it as a smoke run there.
+
+The render-budget scenario waits `RENDER_BUDGET_SCENARIO.SETTLE_MS` after the logical idle
+condition before measuring: server/card animations can finish while chip contacts and render
+activity pulses are still settling. Budget thresholds and virtual scenario deadlines are unchanged.
 
 ## Visual baselines
 

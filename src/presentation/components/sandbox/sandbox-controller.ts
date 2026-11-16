@@ -65,7 +65,7 @@ export class SandboxController implements SandboxLifecycleSink {
   /** Per-run event counters that wait-for conditions take baselines from. */
   private counts = { connections: 0, dropMarker: 0, collectCompletions: 0, landedCompletions: 0, drawnFrames: 0 };
   private handAnimating = false;
-  private autoplay = false;
+  private autoplayWatch: (() => void) | null = null;
   private readonly autoplayer = new SandboxAutoplayer(() => this.isIdle());
   /** Frames from a previous mount are ignored while a run tears it down and mounts its own. */
   private acceptingFrames = false;
@@ -109,7 +109,6 @@ export class SandboxController implements SandboxLifecycleSink {
     this.sceneMounted = true;
     this.recorder.frame(this.clock.now(), samples);
     this.recorder.frameCost(this.clock.stats().lastFrameCostMs);
-    if (this.autoplay && this.handles) this.autoplayer.act(this.handles);
   }
 
   sceneUnmounted(): void {
@@ -176,6 +175,8 @@ export class SandboxController implements SandboxLifecycleSink {
   /** Unmounts the game and stops the server, leaving the sandbox empty. */
   stop(): void {
     this.holds.cancel();
+    this.autoplayWatch?.();
+    this.autoplayWatch = null;
     this.browserFaults.reset();
     this.server?.dispose();
     this.server = null;
@@ -211,7 +212,6 @@ export class SandboxController implements SandboxLifecycleSink {
 
     this.counts = { connections: 0, dropMarker: 0, collectCompletions: 0, landedCompletions: 0, drawnFrames: 0 };
     this.handAnimating = false;
-    this.autoplay = false;
     this.autoplayer.reset();
     this.socketFaults.reset();
     this.clock.resetFrameCostStats();
@@ -255,6 +255,7 @@ export class SandboxController implements SandboxLifecycleSink {
       isActive: () => this.sceneMounted && !!this.handles?.isConnected && !getSandboxSceneBridge()?.renderer.getContext().isContextLost(),
       phase: () => this.runPhase,
     });
+    this.autoplayWatch = this.autoplayer.watch(this.clock, () => this.handles);
     this.runPhase = 'scenario';
     server.setBotPacing({ mode: 'auto' });
     this.status.set({ status: 'running' });
@@ -285,6 +286,8 @@ export class SandboxController implements SandboxLifecycleSink {
     this.consoleRestore = null;
     this.stallWatch?.();
     this.stallWatch = null;
+    this.autoplayWatch?.();
+    this.autoplayWatch = null;
 
     const report = buildAuditReport({
       ...identity,
@@ -301,7 +304,8 @@ export class SandboxController implements SandboxLifecycleSink {
   // --------------------------------------------------------------------------
 
   private isReady(): boolean {
-    return isSandboxReady(this.handles, this.recorder, getSandboxSceneBridge() !== null);
+    const bridge = getSandboxSceneBridge();
+    return isSandboxReady(this.handles, this.recorder, bridge !== null) && bridge?.pendingLoads === 0;
   }
 
   private isIdle(): boolean {
@@ -319,7 +323,8 @@ export class SandboxController implements SandboxLifecycleSink {
   };
 
   private async waitFor(until: WaitCondition, timeoutMs: number = SANDBOX_AUDIT.WAIT_TIMEOUT_MS): Promise<void> {
-    const met = await this.clock.waitUntil(createWaitCondition(until, this.conditions), timeoutMs);
+    const met = await this.autoplayer.observeRoundEnd(until === 'round-end', () =>
+      this.clock.waitUntil(createWaitCondition(until, this.conditions), timeoutMs));
     if (!met) {
       this.recorder?.flag(this.clock.now(), 'wait-timeout', `Timed out after ${timeoutMs}ms waiting for ${until}`, until, describeRunState(this.handles, this.server, this.recorder));
       throw new StepAbort();
@@ -349,9 +354,7 @@ export class SandboxController implements SandboxLifecycleSink {
       ...this.conditions,
       clock: this.clock,
       waitFor: (until, timeoutMs) => this.waitFor(until, timeoutMs),
-      setAutoplay: (enabled) => {
-        this.autoplay = enabled;
-      },
+      setAutoplay: (enabled) => this.autoplayer.setEnabled(enabled),
       markConnectionDrop: () => {
         this.counts.dropMarker = this.counts.connections;
       },

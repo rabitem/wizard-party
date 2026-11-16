@@ -1,7 +1,9 @@
 'use client';
 
+
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import {
   MANGA_COLORS,
   MANGA_CUSHION_COLORS,
@@ -84,19 +86,21 @@ export function DojoFurniture() {
   useDisposables(assets);
 
   return (
-    <group>
-      <InstancedProp geometry={assets.box} material={assets.wood} placements={TABLE_PLACEMENTS} offset={TOP_OFFSET} />
-      <InstancedProp geometry={assets.box} material={assets.outline} placements={TABLE_PLACEMENTS} offset={TOP_OUTLINE} />
-      <MatrixInstances geometry={assets.box} material={assets.wood} matrices={matrices.legs} />
-      <MatrixInstances geometry={assets.box} material={assets.cushion} matrices={matrices.cushions} colors={MANGA_CUSHION_COLORS} />
-      <MatrixInstances geometry={assets.cup} material={assets.porcelain} matrices={matrices.cups} />
+    <StaticBatch>
+      <group>
+        <InstancedProp geometry={assets.box} material={assets.wood} placements={TABLE_PLACEMENTS} offset={TOP_OFFSET} />
+        <InstancedProp geometry={assets.box} material={assets.outline} placements={TABLE_PLACEMENTS} offset={TOP_OUTLINE} />
+        <MatrixInstances geometry={assets.box} material={assets.wood} matrices={matrices.legs} />
+        <MatrixInstances geometry={assets.box} material={assets.cushion} matrices={matrices.cushions} colors={MANGA_CUSHION_COLORS} />
+        <MatrixInstances geometry={assets.cup} material={assets.porcelain} matrices={matrices.cups} />
 
-      <group position={MANGA_KATANA_RACK.POSITION} rotation={[0, MANGA_KATANA_RACK.ROTATION_Y, 0]} scale={MANGA_KATANA_RACK.SCALE}>
-        <InstancedProp geometry={assets.box} material={assets.woodLight} placements={RACK_FRAME} />
-        <InstancedProp geometry={assets.box} material={assets.lacquer} placements={SWORDS} offset={SAYA} />
-        <InstancedProp geometry={assets.box} material={assets.wrap} placements={SWORDS} offset={TSUKA} />
-        <InstancedProp geometry={assets.tsuba} material={assets.gold} placements={SWORDS} offset={TSUBA} />
+        <group position={MANGA_KATANA_RACK.POSITION} rotation={[0, MANGA_KATANA_RACK.ROTATION_Y, 0]} scale={MANGA_KATANA_RACK.SCALE}>
+          <InstancedProp geometry={assets.box} material={assets.woodLight} placements={RACK_FRAME} />
+          <InstancedProp geometry={assets.box} material={assets.lacquer} placements={SWORDS} offset={SAYA} />
+          <InstancedProp geometry={assets.box} material={assets.wrap} placements={SWORDS} offset={TSUKA} />
+          <InstancedProp geometry={assets.tsuba} material={assets.gold} placements={SWORDS} offset={TSUBA} />
+        </group>
       </group>
-    </group>
+    </StaticBatch>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import {
   WINTER_COLORS,
   WINTER_LAYOUT,
@@ -111,46 +112,48 @@ export function LodgeFireplace() {
   const sideWidth = (HEARTH.WIDTH - HEARTH.OPENING_W) / 2;
   const { WIDTH, HEIGHT, DEPTH, OPENING_H, OPENING_W } = HEARTH;
   return (
-    <group position={WINTER_LAYOUT.FIREPLACE_POSITION} rotation={[0, WINTER_LAYOUT.FIREPLACE_ROTATION, 0]}>
-      {[-1, 1].map((side) => (
-        <mesh key={`jamb-${side}`} position={[side * (WIDTH / 2 - sideWidth / 2), HEIGHT / 2, DEPTH / 2]} material={assets.stone}>
-          <boxGeometry args={[sideWidth, HEIGHT, DEPTH]} />
+    <StaticBatch>
+      <group position={WINTER_LAYOUT.FIREPLACE_POSITION} rotation={[0, WINTER_LAYOUT.FIREPLACE_ROTATION, 0]}>
+        {[-1, 1].map((side) => (
+          <mesh key={`jamb-${side}`} position={[side * (WIDTH / 2 - sideWidth / 2), HEIGHT / 2, DEPTH / 2]} material={assets.stone}>
+            <boxGeometry args={[sideWidth, HEIGHT, DEPTH]} />
+          </mesh>
+        ))}
+        <mesh position={[0, (HEIGHT + OPENING_H) / 2, DEPTH / 2]} material={assets.stone}>
+          <boxGeometry args={[OPENING_W, HEIGHT - OPENING_H, DEPTH]} />
         </mesh>
-      ))}
-      <mesh position={[0, (HEIGHT + OPENING_H) / 2, DEPTH / 2]} material={assets.stone}>
-        <boxGeometry args={[OPENING_W, HEIGHT - OPENING_H, DEPTH]} />
-      </mesh>
-      <mesh position={[0, OPENING_H / 2, 0.15]} material={assets.soot}>
-        <boxGeometry args={[OPENING_W, OPENING_H, 0.3]} />
-      </mesh>
-      <mesh position={[0, HEIGHT + HEARTH.CHIMNEY_H / 2, 0.35]} material={assets.stone}>
-        <boxGeometry args={[HEARTH.CHIMNEY_W, HEARTH.CHIMNEY_H, 0.7]} />
-      </mesh>
-      <mesh position={[0, HEIGHT + MANTEL.HEIGHT / 2, DEPTH / 2 + MANTEL.DEPTH_EXTRA / 4]} material={assets.mantel}>
-        <boxGeometry args={[WIDTH + MANTEL.OVERHANG, MANTEL.HEIGHT, DEPTH + MANTEL.DEPTH_EXTRA]} />
-      </mesh>
-      <mesh position={[0, 0.05, DEPTH + 0.35]} material={assets.stone}>
-        <boxGeometry args={[WIDTH + 0.6, 0.1, 0.7]} />
-      </mesh>
+        <mesh position={[0, OPENING_H / 2, 0.15]} material={assets.soot}>
+          <boxGeometry args={[OPENING_W, OPENING_H, 0.3]} />
+        </mesh>
+        <mesh position={[0, HEIGHT + HEARTH.CHIMNEY_H / 2, 0.35]} material={assets.stone}>
+          <boxGeometry args={[HEARTH.CHIMNEY_W, HEARTH.CHIMNEY_H, 0.7]} />
+        </mesh>
+        <mesh position={[0, HEIGHT + MANTEL.HEIGHT / 2, DEPTH / 2 + MANTEL.DEPTH_EXTRA / 4]} material={assets.mantel}>
+          <boxGeometry args={[WIDTH + MANTEL.OVERHANG, MANTEL.HEIGHT, DEPTH + MANTEL.DEPTH_EXTRA]} />
+        </mesh>
+        <mesh position={[0, 0.05, DEPTH + 0.35]} material={assets.stone}>
+          <boxGeometry args={[WIDTH + 0.6, 0.1, 0.7]} />
+        </mesh>
 
-      <InstancedProp geometry={assets.leaf} material={assets.garland} placements={GARLAND_LEAVES} />
-      <InstancedProp geometry={assets.berryGeometry} material={assets.berry} placements={GARLAND_BERRIES} />
-      <InstancedProp geometry={assets.box} material={assets.stocking} placements={STOCKING_LEGS} />
-      <InstancedProp geometry={assets.box} material={assets.stocking} placements={STOCKING_FEET} />
-      <InstancedProp geometry={assets.box} material={assets.cuff} placements={STOCKING_CUFFS} />
-      <CandleCluster candles={MANTEL_CANDLES} waxColor={WINTER_COLORS.wax} flameColor={WINTER_COLORS.candleFlame} glowColor={WINTER_COLORS.candleGlow} />
+        <InstancedProp geometry={assets.leaf} material={assets.garland} placements={GARLAND_LEAVES} />
+        <InstancedProp geometry={assets.berryGeometry} material={assets.berry} placements={GARLAND_BERRIES} />
+        <InstancedProp geometry={assets.box} material={assets.stocking} placements={STOCKING_LEGS} />
+        <InstancedProp geometry={assets.box} material={assets.stocking} placements={STOCKING_FEET} />
+        <InstancedProp geometry={assets.box} material={assets.cuff} placements={STOCKING_CUFFS} />
+        <CandleCluster candles={MANTEL_CANDLES} waxColor={WINTER_COLORS.wax} flameColor={WINTER_COLORS.candleFlame} glowColor={WINTER_COLORS.candleGlow} />
 
-      <group position={[0, 0, DEPTH * 0.55]}>
-        <HearthFire width={OPENING_W} colors={FIRE_COLORS} emberCount={0} light={WINTER_LIGHTS.fire} seed={23} />
-        <RealisticParticleField
-          kind="embers"
-          volume={EMBER_VOLUME}
-          count={WINTER_LAYOUT.EMBER_COUNT}
-          colors={EMBER_COLORS}
-          clearRadius={0}
-          seed={29}
-        />
+        <group position={[0, 0, DEPTH * 0.55]}>
+          <HearthFire width={OPENING_W} colors={FIRE_COLORS} emberCount={0} light={WINTER_LIGHTS.fire} seed={23} />
+          <RealisticParticleField
+            kind="embers"
+            volume={EMBER_VOLUME}
+            count={WINTER_LAYOUT.EMBER_COUNT}
+            colors={EMBER_COLORS}
+            clearRadius={0}
+            seed={29}
+          />
+        </group>
       </group>
-    </group>
+    </StaticBatch>
   );
 }

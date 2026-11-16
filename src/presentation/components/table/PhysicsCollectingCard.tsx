@@ -4,6 +4,7 @@ import { useFrame } from "@react-three/fiber";
 import {
   CuboidCollider,
   RapierRigidBody,
+  type RapierCollider,
   RigidBody,
 } from "@react-three/rapier";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -61,6 +62,14 @@ const CARD_WIDTH = CARD_DIMENSIONS.WIDTH;
 const CARD_HEIGHT = CARD_DIMENSIONS.HEIGHT;
 const CARD_THICKNESS = CARD_DIMENSIONS.THICKNESS;
 
+/** Keep the kinematic shape equal to the visible face throughout collection. */
+function syncColliderScale(collider: RapierCollider | null, previous: React.MutableRefObject<number>, scale: number): void {
+  if (!collider || previous.current === scale) return;
+  // A full-size invisible card would hit nearby chips after the visible face cleared them.
+  collider.setHalfExtents({ x: CARD_WIDTH * scale / 2, y: CARD_HEIGHT * scale / 2, z: CARD_THICKNESS * scale / 2 });
+  previous.current = scale;
+}
+
 /** Card mesh with the card's own face and back (same shared face as the played card it replaces) */
 function CollectingCardMesh({ materials }: { materials: THREE.Material[] }) {
   return <mesh geometry={getCardGeometry()} material={materials} castShadow receiveShadow />;
@@ -69,6 +78,7 @@ function CollectingCardMesh({ materials }: { materials: THREE.Material[] }) {
 interface CollectingCardFrameParams {
   groupRef: React.RefObject<THREE.Group | null>;
   rigidBodyRef: React.RefObject<RapierRigidBody | null>;
+  colliderRef: React.RefObject<RapierCollider | null>;
   startTimeRef: React.MutableRefObject<number | null>;
   stackedStartTimeRef: React.MutableRefObject<number | null>;
   arrivedRef: React.MutableRefObject<boolean>;
@@ -99,6 +109,7 @@ interface CollectingCardFrameParams {
 function useCollectingCardFrame({
   groupRef,
   rigidBodyRef,
+  colliderRef,
   startTimeRef,
   stackedStartTimeRef,
   arrivedRef,
@@ -125,6 +136,7 @@ function useCollectingCardFrame({
   waitDuration,
   flyDelay,
 }: CollectingCardFrameParams): void {
+  const colliderScale = useRef(COLLECTING_CARD_START_SCALE);
   useFrame((state) => {
     if (!groupRef.current) return;
     if (startTimeRef.current === null) startTimeRef.current = state.clock.elapsedTime;
@@ -157,6 +169,7 @@ function useCollectingCardFrame({
     groupRef.current.rotation.order = 'YXZ'; groupRef.current.rotation.set(-Math.PI / 2, result.rotY, result.rotZ);
     groupRef.current.scale.setScalar(result.scale);
 
+    syncColliderScale(colliderRef.current, colliderScale, result.scale);
     if (rigidBodyRef.current && isAnimating) {
       rigidBodyRef.current.setNextKinematicTranslation({ x: result.x, y: finalY, z: result.z });
       const quat = new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 2, result.rotY, result.rotZ, 'YXZ'));
@@ -169,6 +182,7 @@ function useCollectingCardFrame({
 export function PhysicsCollectingCard({ card, startPosition, targetPosition, startRotation, targetRotation, targetScale = COLLECTING_CARD_END_SCALE, animationMode = 'random', stackIndex, collectingCardCount, onComplete }: PhysicsCollectingCardProps) {
   const groupRef = useRef<THREE.Group>(null);
   const rigidBodyRef = useRef<RapierRigidBody>(null);
+  const colliderRef = useRef<RapierCollider>(null);
   const startTimeRef = useRef<number | null>(null);
   const stackedStartTimeRef = useRef<number | null>(null);
   const arrivedRef = useRef(false);
@@ -211,7 +225,7 @@ export function PhysicsCollectingCard({ card, startPosition, targetPosition, sta
   const materials = useCardMaterials(card);
 
   useCollectingCardFrame({
-    groupRef, rigidBodyRef, startTimeRef, stackedStartTimeRef, arrivedRef,
+    groupRef, rigidBodyRef, colliderRef, startTimeRef, stackedStartTimeRef, arrivedRef,
     completedRef, onCompleteRef, animationPhase, setAnimationPhase, setIsAnimating,
     isAnimating, startPosition, centerPos, targetPosition, stackedY, startRotation,
     targetRotation, targetScale, randomOffsets, animationVariant, animationProfile,
@@ -226,7 +240,7 @@ export function PhysicsCollectingCard({ card, startPosition, targetPosition, sta
       <RigidBody ref={rigidBodyRef} type="kinematicPosition" position={initialTransform.position} rotation={initialTransform.rotation}
         collisionGroups={interactionGroups(CARD_PHYSICS.COLLISION_MEMBERSHIP, CARD_PHYSICS.COLLISION_FILTER)}
         userData={bodyUserData}>
-        <CuboidCollider args={[(CARD_WIDTH * COLLECTING_CARD_START_SCALE) / 2, (CARD_HEIGHT * COLLECTING_CARD_START_SCALE) / 2, (CARD_THICKNESS * COLLECTING_CARD_START_SCALE) / 2]} friction={CARD_PHYSICS.FRICTION} restitution={CARD_PHYSICS.RESTITUTION} />
+        <CuboidCollider ref={colliderRef} args={[(CARD_WIDTH * COLLECTING_CARD_START_SCALE) / 2, (CARD_HEIGHT * COLLECTING_CARD_START_SCALE) / 2, (CARD_THICKNESS * COLLECTING_CARD_START_SCALE) / 2]} friction={CARD_PHYSICS.FRICTION} restitution={CARD_PHYSICS.RESTITUTION} />
       </RigidBody>
       <group ref={groupRef} name={sceneObjectName('collecting-card', card.id)} position={initialTransform.position} rotation={initialTransform.rotation} scale={initialTransform.scale}>
         <CollectingCardMesh materials={materials} />

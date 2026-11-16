@@ -76,6 +76,71 @@ describe('buildStaticBatch', () => {
     expect(buildStaticBatch(root).meshes).toHaveLength(0);
   });
 
+  it('merges static instanced props while preserving each pose and tint', () => {
+    const root = new THREE.Group();
+    root.position.x = 10;
+    const material = new THREE.MeshStandardMaterial();
+    const first = new THREE.InstancedMesh(new THREE.BoxGeometry(), material, 2);
+    first.setMatrixAt(0, new THREE.Matrix4());
+    first.setMatrixAt(1, new THREE.Matrix4().makeTranslation(2, 0, 0));
+    first.setColorAt(0, new THREE.Color('red'));
+    first.setColorAt(1, new THREE.Color('blue'));
+    const second = new THREE.InstancedMesh(new THREE.BoxGeometry(), material, 1);
+    second.position.x = 4;
+    second.setMatrixAt(0, new THREE.Matrix4());
+    second.setColorAt(0, new THREE.Color('lime'));
+    root.add(first, second);
+    const batch = buildStaticBatch(root);
+    expect(batch.meshes).toHaveLength(1);
+    expect(new Set(batch.sources)).toEqual(new Set([first, second]));
+    const geometry = batch.meshes[0].geometry;
+    geometry.computeBoundingBox();
+    expect(geometry.boundingBox?.min.x).toBeCloseTo(-0.5);
+    expect(geometry.boundingBox?.max.x).toBeCloseTo(4.5);
+    const positions = geometry.getAttribute('position');
+    const colors = geometry.getAttribute('color');
+    for (let i = 0; i < positions.count; i++) {
+      const x = positions.getX(i);
+      const expected = x < 1 ? [1, 0, 0] : x < 3 ? [0, 0, 1] : [0, 1, 0];
+      expect([colors.getX(i), colors.getY(i), colors.getZ(i)]).toEqual(expected);
+    }
+    disposeStaticBatch(batch);
+  });
+
+  it('bakes a standalone static instance set without changing its pose or tint', () => {
+    const root = new THREE.Group();
+    const instances = new THREE.InstancedMesh(new THREE.BoxGeometry(), new THREE.MeshStandardMaterial(), 1);
+    instances.setMatrixAt(0, new THREE.Matrix4().makeTranslation(3, 2, 1));
+    instances.setColorAt(0, new THREE.Color('red'));
+    root.add(instances);
+    const batch = buildStaticBatch(root);
+    expect(batch.sources).toEqual([instances]);
+    const geometry = batch.meshes[0].geometry;
+    geometry.computeBoundingBox();
+    expect(geometry.boundingBox?.min.toArray()).toEqual([2.5, 1.5, 0.5]);
+    const colors = geometry.getAttribute('color');
+    expect([colors.getX(0), colors.getY(0), colors.getZ(0)]).toEqual([1, 0, 0]);
+    disposeStaticBatch(batch);
+  });
+
+  it('keeps large instance sets instanced rather than expanding their vertex memory', () => {
+    const root = new THREE.Group();
+    root.add(new THREE.InstancedMesh(new THREE.BoxGeometry(), new THREE.MeshStandardMaterial(), 10_000));
+    expect(buildStaticBatch(root).sources).toEqual([]);
+  });
+
+  it('leaves translucent and individually animated material instances untouched', () => {
+    const root = new THREE.Group();
+    const flame = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.8 });
+    const first = box(flame, 0);
+    const second = box(flame, 2);
+    root.add(first, second);
+    expect(buildStaticBatch(root).sources).toEqual([]);
+    flame.opacity = 0.5;
+    expect((first.material as THREE.Material).opacity).toBe(0.5);
+    expect((second.material as THREE.Material).opacity).toBe(0.5);
+  });
+
   it('should keep vertex-coloured materials instead of folding their colour', () => {
     const root = new THREE.Group();
     const material = new THREE.MeshBasicMaterial({ vertexColors: true });

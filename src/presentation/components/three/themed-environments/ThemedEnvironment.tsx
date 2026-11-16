@@ -1,6 +1,8 @@
 'use client';
 
-import { createElement, Fragment } from 'react';
+import { createElement, memo } from 'react';
+
+import { StaticSceneBatch } from '../batching';
 import { useSelectedTableTheme } from '@/presentation/components/table/table-theme';
 import { CasinoEnvironment } from '../CasinoEnvironment';
 import { getEnvironmentAtmosphere, getThemedEnvironment } from './environment-registry';
@@ -11,15 +13,17 @@ import { EnvironmentAtmosphere } from './primitives/realism';
  * room and props (plus its optional atmosphere), every other table keeps
  * the casino.
  */
-export function ThemedEnvironment() {
+function ThemedEnvironmentView() {
   const tableTheme = useSelectedTableTheme();
   const Environment = getThemedEnvironment(tableTheme.id) ?? CasinoEnvironment;
   const atmosphere = getEnvironmentAtmosphere(tableTheme.id);
   // Keyed by theme so switching rooms remounts cleanly (fog, lights, resources).
   return createElement(
-    Fragment,
+    StaticSceneBatch,
     { key: tableTheme.id },
     createElement(Environment),
     createElement(EnvironmentAtmosphere, { atmosphere }),
   );
 }
+
+export const ThemedEnvironment = memo(ThemedEnvironmentView);

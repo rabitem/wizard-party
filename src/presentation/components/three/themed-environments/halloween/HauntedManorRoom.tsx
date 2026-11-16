@@ -1,7 +1,9 @@
 'use client';
 
+
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import { HALLOWEEN_COLORS, HALLOWEEN_LAYOUT, HALLOWEEN_REALISM } from '@/presentation/config/halloween-environment.config';
 import { ENVIRONMENT_ROOM } from '@/presentation/config/themed-environment.config';
 import {
@@ -118,37 +120,39 @@ export function HauntedManorRoom() {
   const windowY = HALLOWEEN_LAYOUT.WINDOW_Y;
 
   return (
-    <group>
-      <mesh position={[0, 5, -HALF_DEPTH - 1]} scale={[80, 30, 1]}>
-        <planeGeometry />
-        <meshBasicMaterial color={HALLOWEEN_COLORS.background} />
-      </mesh>
+    <StaticBatch>
+      <group>
+        <mesh position={[0, 5, -HALF_DEPTH - 1]} scale={[80, 30, 1]}>
+          <planeGeometry />
+          <meshBasicMaterial color={HALLOWEEN_COLORS.background} />
+        </mesh>
 
-      <RoomShell
-        fogColor={HALLOWEEN_COLORS.fog}
-        floorColor={HALLOWEEN_COLORS.floor}
-        wallColor={HALLOWEEN_COLORS.stone}
-        ceilingColor={HALLOWEEN_COLORS.ceiling}
-        floorMaterial={materials.floor}
-        wallMaterial={materials.wall}
-        ceilingMaterial={materials.ceiling}
-        fogNear={12}
-        fogFar={38}
-      >
-        <Wainscoting material={materials.wainscot} railMaterial={materials.rail} />
-        <InstancedProp geometry={geometries.beam} material={materials.beam} placements={BEAM_PLACEMENTS} />
-        <InstancedProp geometry={geometries.pillar} material={materials.pillar} placements={PILLAR_PLACEMENTS} />
+        <RoomShell
+          fogColor={HALLOWEEN_COLORS.fog}
+          floorColor={HALLOWEEN_COLORS.floor}
+          wallColor={HALLOWEEN_COLORS.stone}
+          ceilingColor={HALLOWEEN_COLORS.ceiling}
+          floorMaterial={materials.floor}
+          wallMaterial={materials.wall}
+          ceilingMaterial={materials.ceiling}
+          fogNear={12}
+          fogFar={38}
+        >
+          <Wainscoting material={materials.wainscot} railMaterial={materials.rail} />
+          <InstancedProp geometry={geometries.beam} material={materials.beam} placements={BEAM_PLACEMENTS} />
+          <InstancedProp geometry={geometries.pillar} material={materials.pillar} placements={PILLAR_PLACEMENTS} />
 
-        {HALLOWEEN_LAYOUT.WINDOW_XS.map((x) => (
-          <GothicWindow key={`back-${x}`} position={[x, windowY, -HALF_DEPTH + 0.01]} withMoon={x === 0} />
-        ))}
-        {HALLOWEEN_LAYOUT.SIDE_WINDOW_ZS.map((z) => (
-          <group key={`side-${z}`}>
-            <GothicWindow position={[-HALF_WIDTH + 0.01, windowY, z]} rotationY={Math.PI / 2} />
-            <GothicWindow position={[HALF_WIDTH - 0.01, windowY, z]} rotationY={-Math.PI / 2} />
-          </group>
-        ))}
-      </RoomShell>
-    </group>
+          {HALLOWEEN_LAYOUT.WINDOW_XS.map((x) => (
+            <GothicWindow key={`back-${x}`} position={[x, windowY, -HALF_DEPTH + 0.01]} withMoon={x === 0} />
+          ))}
+          {HALLOWEEN_LAYOUT.SIDE_WINDOW_ZS.map((z) => (
+            <group key={`side-${z}`}>
+              <GothicWindow position={[-HALF_WIDTH + 0.01, windowY, z]} rotationY={Math.PI / 2} />
+              <GothicWindow position={[HALF_WIDTH - 0.01, windowY, z]} rotationY={-Math.PI / 2} />
+            </group>
+          ))}
+        </RoomShell>
+      </group>
+    </StaticBatch>
   );
 }

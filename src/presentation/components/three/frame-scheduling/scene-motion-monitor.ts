@@ -4,8 +4,9 @@ import { isAmbient } from './ambient';
 
 interface ObjectSnapshot {
   matrix: Float64Array;
-  /** Version of the per-instance or per-vertex data that animates without the object moving */
+  /** Version of particle vertex data that animates without the object moving. */
   dataVersion: number;
+  instances: Float32Array | null;
 }
 
 type DataCarrier = THREE.Object3D & {
@@ -13,21 +14,20 @@ type DataCarrier = THREE.Object3D & {
   geometry?: THREE.BufferGeometry;
 };
 
-/** Instanced transforms and CPU particle positions animate through buffer versions. */
+/** CPU particle positions signal changes through buffer versions; instances compare actual poses. */
 function dataVersion(object: DataCarrier): number {
-  const instances = object.instanceMatrix?.version ?? 0;
   const positions = (object.geometry?.attributes?.position as THREE.BufferAttribute | undefined)?.version ?? 0;
-  return instances + positions;
+  return positions;
 }
 
 /**
  * Detects visible motion between rendered frames without any component having to report it:
- * compares every visible object's world matrix (and instance / particle buffer versions) with
+ * compares every visible object's world matrix, instance poses and particle buffer versions with
  * the previous frame. Objects in ambient subtrees are skipped, as is drift slower than the
  * configured threshold, so idle breathing does not keep the frame rate up while a card flight,
  * a camera move or a mount does.
  *
- * Cost: one pass over the visible scene graph with 16 float compares per object.
+ * Cost: one pass over visible world matrices and the small instanced pose buffers.
  */
 export class SceneMotionMonitor {
   private readonly snapshots = new WeakMap<THREE.Object3D, ObjectSnapshot>();
@@ -70,10 +70,22 @@ export class SceneMotionMonitor {
     const version = dataVersion(object);
     const snapshot = this.snapshots.get(object);
     if (!snapshot) {
-      this.snapshots.set(object, { matrix: Float64Array.from(elements), dataVersion: version });
+      this.snapshots.set(object, { matrix: Float64Array.from(elements), dataVersion: version, instances: object.instanceMatrix ? Float32Array.from(object.instanceMatrix.array) : null });
       return true;
     }
     let changed = snapshot.dataVersion !== version;
+    const instances = object.instanceMatrix?.array;
+    if (instances) {
+      if (!snapshot.instances || snapshot.instances.length !== instances.length) {
+        snapshot.instances = Float32Array.from(instances);
+        changed = true;
+      } else {
+        for (let i = 0; i < instances.length; i++) {
+          if (Math.abs(instances[i] - snapshot.instances[i]) > this.limit) changed = true;
+          snapshot.instances[i] = instances[i];
+        }
+      }
+    }
     snapshot.dataVersion = version;
     const stored = snapshot.matrix;
     for (let i = 0; i < 16; i++) {

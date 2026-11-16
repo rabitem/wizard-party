@@ -3,6 +3,7 @@
 import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import { SOLARPUNK_COLORS, SOLARPUNK_OUTSIDE } from '@/presentation/config/solarpunk-environment.config';
 import { ENVIRONMENT_ROOM, type Vec3 } from '@/presentation/config/themed-environment.config';
 import { InstancedProp, localMatrix, useDisposables, usePrefersReducedMotion, type PropPlacement } from '../primitives';
@@ -116,11 +117,14 @@ export function OutdoorEnergy() {
 
   return (
     <group>
-      <InstancedProp geometry={assets.tower} material={assets.white} placements={TOWERS} />
-      <InstancedProp geometry={assets.box} material={assets.white} placements={NACELLES} offset={NACELLE_OFFSET} />
+      <StaticBatch>
+        <InstancedProp geometry={assets.tower} material={assets.white} placements={TOWERS} />
+        <InstancedProp geometry={assets.box} material={assets.white} placements={NACELLES} offset={NACELLE_OFFSET} />
+
+        <InstancedProp geometry={assets.plate} material={assets.panel} placements={arrays.panels} />
+        <InstancedProp geometry={assets.box} material={assets.steel} placements={arrays.legs} />
+      </StaticBatch>
       <Rotors geometry={assets.rotor} material={assets.white} />
-      <InstancedProp geometry={assets.plate} material={assets.panel} placements={arrays.panels} />
-      <InstancedProp geometry={assets.box} material={assets.steel} placements={arrays.legs} />
     </group>
   );
 }

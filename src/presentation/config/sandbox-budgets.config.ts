@@ -156,6 +156,8 @@ export const RENDER_BUDGET_SCENARIO = {
   WARMUP_ROUND: 2,
   /** Virtual time the idle window measures a settled table. */
   IDLE_MS: 3000,
+  /** Let state-change pulses and knockable chip stacks settle before measuring idle work. */
+  SETTLE_MS: 2000,
   /** Measurement windows the scenario opens (report.metrics.windows keys). */
   IDLE_WINDOW: 'idle',
   WARM_ROUND_WINDOW: 'warm-round',

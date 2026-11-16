@@ -1,7 +1,10 @@
-import { Suspense, isValidElement, type ReactElement } from 'react';
+import { Suspense, createElement, isValidElement, type ReactElement } from 'react';
 import { Text } from '@react-three/drei';
-import { describe, expect, it } from 'vitest';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { describe, expect, it, vi } from 'vitest';
 import { SceneText, SceneTextFontWarmup } from './SceneText';
+
+vi.mock('@react-three/drei', () => ({ Text: vi.fn(() => null) }));
 
 type BoundaryElement = ReactElement<{ fallback: unknown; children: ReactElement<{ children?: unknown; visible?: boolean }> }>;
 
@@ -18,11 +21,11 @@ describe('SceneText', () => {
 
 describe('SceneTextFontWarmup', () => {
   it('mounts a hidden SceneText that shares the default font preload', () => {
-    const element = SceneTextFontWarmup() as ReactElement<{ visible?: boolean; font?: unknown; characters?: unknown }>;
-    expect(element.type).toBe(SceneText);
-    expect(element.props.visible).toBe(false);
-    // A font or characters prop would give it a different suspend key than the game's text.
-    expect(element.props.font).toBeUndefined();
-    expect(element.props.characters).toBeUndefined();
+    renderToStaticMarkup(createElement(SceneTextFontWarmup));
+    const props = vi.mocked(Text).mock.calls.at(-1)?.[0];
+    expect(props?.visible).toBe(false);
+    // Font/characters would select a different suspend key from the game's ordinary labels.
+    expect(props?.font).toBeUndefined();
+    expect(props?.characters).toBeUndefined();
   });
 });

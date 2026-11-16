@@ -7,8 +7,9 @@ import { IGameState, ICard, CardPhysicsState } from '@shared/domain';
 import { Game3DScene } from '@/presentation/components/three';
 import { configureTextRendering } from '@/presentation/components/three/configure-text-rendering';
 import { FrameScheduler } from '@/presentation/components/three/frame-scheduling';
+import { MaterialVariants } from '@/presentation/components/three/render-variants';
 import { getGameCanvasGlOptions } from '@/presentation/components/three/game-canvas-gl';
-import { AdaptiveQuality, RenderQualityProvider, resolveAntialias, useRenderQuality } from '@/presentation/components/three/render-quality';
+import { AdaptiveQuality, RenderQualityProvider, resolveAntialias, resolveDprRange, useRenderQuality } from '@/presentation/components/three/render-quality';
 import { SceneTextFontWarmup } from '@/presentation/components/three/SceneText';
 import { TableReadySignal } from '@/presentation/components/three/TableReadySignal';
 import { WebGLContextHandler, WebGLErrorBoundary, useGraphicsLifecycle } from '@/presentation/components/WebGLContextHandler';
@@ -84,7 +85,7 @@ function GameCanvasHost({ disableInteractions, onTableReady, sceneProps }: GameC
   const [antialias] = useState(() => resolveAntialias(profile, window.devicePixelRatio));
   const glOptions = useMemo(() => getGameCanvasGlOptions({ antialias }), [antialias]);
   const shadows = useShadowOptions(profile.shadows);
-  const dpr = useMemo<[number, number]>(() => [1, profile.dprMax], [profile.dprMax]);
+  const dpr = useMemo(() => resolveDprRange(profile.dprMax, window.devicePixelRatio), [profile.dprMax]);
 
   if (status === 'unavailable') return <WebGLUnavailableOverlay />;
   if (status === 'rebuilding' || status === 'failed') return <WebGLRecoveryOverlay onForceRecover={lifecycle.retry} />;
@@ -107,6 +108,7 @@ function GameCanvasHost({ disableInteractions, onTableReady, sceneProps }: GameC
           />
           {onTableReady ? <TableReadySignal onReady={onTableReady} /> : null}
           <FrameScheduler ambientFps={profile.ambientFps}>
+            <MaterialVariants />
             <AdaptiveQuality />
             <SceneTextFontWarmup />
             <Game3DScene {...sceneProps} />

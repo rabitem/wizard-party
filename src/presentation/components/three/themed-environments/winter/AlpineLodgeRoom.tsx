@@ -1,7 +1,9 @@
 'use client';
 
+
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import { WINTER_COLORS, WINTER_LAYOUT } from '@/presentation/config/winter-environment.config';
 import { ENVIRONMENT_ROOM } from '@/presentation/config/themed-environment.config';
 import {
@@ -86,20 +88,22 @@ export function AlpineLodgeRoom() {
   useDisposables(assets);
 
   return (
-    <group>
-      <SceneFog color={WINTER_COLORS.fog} near={FOG.NEAR} far={FOG.FAR} />
-      <mesh position={[0, FLOOR_Y, 0]} rotation={[-Math.PI / 2, 0, 0]} geometry={assets.floorGeometry} material={assets.floor} receiveShadow />
-      <mesh position={[0, FLOOR_Y + HEIGHT, 0]} rotation={[Math.PI / 2, 0, 0]} geometry={assets.ceilingGeometry} material={assets.ceiling} />
-      <mesh position={[0, 0, -HALF_DEPTH]} geometry={assets.backWall} material={assets.wall} />
-      {SOLID_WALLS.map((wall) => (
-        <mesh key={wall.id} position={wall.position} rotation={[0, wall.rotationY, 0]} material={assets.wall}>
-          <planeGeometry args={[wall.width, HEIGHT]} />
-        </mesh>
-      ))}
-      <InstancedProp geometry={assets.beamGeometry} material={assets.beam} placements={BEAMS} />
-      <InstancedProp geometry={assets.ridgeGeometry} material={assets.beam} placements={RIDGE} />
-      <InstancedProp geometry={assets.postGeometry} material={assets.beam} placements={POSTS} />
-      <LodgeRug />
-    </group>
+    <StaticBatch>
+      <group>
+        <SceneFog color={WINTER_COLORS.fog} near={FOG.NEAR} far={FOG.FAR} />
+        <mesh position={[0, FLOOR_Y, 0]} rotation={[-Math.PI / 2, 0, 0]} geometry={assets.floorGeometry} material={assets.floor} receiveShadow />
+        <mesh position={[0, FLOOR_Y + HEIGHT, 0]} rotation={[Math.PI / 2, 0, 0]} geometry={assets.ceilingGeometry} material={assets.ceiling} />
+        <mesh position={[0, 0, -HALF_DEPTH]} geometry={assets.backWall} material={assets.wall} />
+        {SOLID_WALLS.map((wall) => (
+          <mesh key={wall.id} position={wall.position} rotation={[0, wall.rotationY, 0]} material={assets.wall}>
+            <planeGeometry args={[wall.width, HEIGHT]} />
+          </mesh>
+        ))}
+        <InstancedProp geometry={assets.beamGeometry} material={assets.beam} placements={BEAMS} />
+        <InstancedProp geometry={assets.ridgeGeometry} material={assets.beam} placements={RIDGE} />
+        <InstancedProp geometry={assets.postGeometry} material={assets.beam} placements={POSTS} />
+        <LodgeRug />
+      </group>
+    </StaticBatch>
   );
 }

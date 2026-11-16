@@ -7,7 +7,7 @@ name: Browser suites
 # plus the deterministic render/React budgets, fault injection, touch input, visual baselines, the
 # viewport and settings matrices on every engine, and the golden path through the real app.
 #
-# - Pull requests labelled `e2e`: Chromium and one touch phone.
+# - Pull requests labelled `e2e`: Chromium and one touch phone, each in sixteen shards.
 # - Manual dispatch: every project in two shards (inputs: grep, update_snapshots), or the weekly
 #   scope in four shards with full_matrix.
 # - Weekly: every project in four shards, with E2E_FULL_MATRIX=1 (every table size, every viewport,
@@ -72,7 +72,7 @@ jobs:
           matrices='"viewport-matrix","viewport-matrix-firefox","viewport-matrix-webkit","settings-matrix","settings-matrix-firefox","settings-matrix-webkit","settings-matrix-phone"'
           golden='"golden-path","golden-path-firefox","golden-path-webkit","golden-path-android","golden-path-iphone"'
           if [ "$EVENT" = pull_request ]; then
-            projects='["chromium","android-phone"]'; shards=1
+            projects='["chromium","android-phone"]'; shards=16
           elif [ "$UPDATE_SNAPSHOTS" = true ]; then
             # Only the projects that run e2e/visual.spec.ts.
             projects="[$desktop,$devices]"; shards=1
@@ -175,7 +175,8 @@ jobs:
       - name: Run the suites
         if: ${{ !inputs.update_snapshots }}
         env:
-          E2E_WORKERS: '2'
+          # Software WebGL saturates the runner; parallel browsers contend for the same CPU.
+          E2E_WORKERS: '1'
           E2E_FULL_MATRIX: ${{ (github.event_name == 'schedule' || inputs.full_matrix) && '1' || '0' }}
           GREP: ${{ inputs.grep }}
         # A narrow grep or a small project can leave a shard without tests.

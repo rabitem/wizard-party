@@ -1,7 +1,9 @@
 'use client';
 
+
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import { SPRING_COLORS, SPRING_LAYOUT, SPRING_SKY } from '@/presentation/config/spring-environment.config';
 import { ENVIRONMENT_ROOM, type Vec3 } from '@/presentation/config/themed-environment.config';
 import { addSurfaceDetail, createPbrMaterial, InstancedProp, localMatrix, RoomShell, seededRandom, useDisposables, type PropPlacement } from '../primitives';
@@ -89,34 +91,36 @@ export function BlossomPavilion() {
   useDisposables(assets);
 
   return (
-    <group>
-      <mesh position={[0, 5, -HALF_DEPTH - 1]} scale={[80, 30, 1]}>
-        <planeGeometry />
-        <meshBasicMaterial color={SPRING_COLORS.background} />
-      </mesh>
-      <RoomShell
-        fogColor={SPRING_COLORS.fog}
-        floorColor={SPRING_COLORS.stone}
-        wallColor={SPRING_COLORS.background}
-        ceilingColor={SPRING_COLORS.background}
-        floorMaterial={assets.floor}
-        wallMaterial={assets.sky}
-        ceilingMaterial={assets.ceiling}
-        fogNear={16}
-        fogFar={48}
-      >
-        <InstancedProp geometry={assets.shaft} material={assets.column} placements={COLUMN_PLACEMENTS} offset={SHAFT_OFFSET} />
-        <InstancedProp geometry={assets.box} material={assets.column} placements={COLUMN_PLACEMENTS} offset={PLINTH_OFFSET} />
-        <InstancedProp geometry={assets.box} material={assets.column} placements={COLUMN_PLACEMENTS} offset={CAPITAL_OFFSET} />
-        <InstancedProp geometry={assets.box} material={assets.wood} placements={GIRDERS} />
-        <InstancedProp geometry={assets.box} material={assets.wood} placements={BEAMS} />
-        <InstancedProp geometry={assets.box} material={assets.hedge} placements={HEDGES} />
-        <InstancedProp geometry={assets.sphere} material={assets.bump} placements={HEDGE_BUMPS} />
-      </RoomShell>
-      <mesh position={[0, FLOOR_Y + 0.004, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[HALF_WIDTH * 0.32, HALF_WIDTH * 0.34, 48]} />
-        <meshStandardMaterial color={SPRING_COLORS.column} roughness={0.6} />
-      </mesh>
-    </group>
+    <StaticBatch>
+      <group>
+        <mesh position={[0, 5, -HALF_DEPTH - 1]} scale={[80, 30, 1]}>
+          <planeGeometry />
+          <meshBasicMaterial color={SPRING_COLORS.background} />
+        </mesh>
+        <RoomShell
+          fogColor={SPRING_COLORS.fog}
+          floorColor={SPRING_COLORS.stone}
+          wallColor={SPRING_COLORS.background}
+          ceilingColor={SPRING_COLORS.background}
+          floorMaterial={assets.floor}
+          wallMaterial={assets.sky}
+          ceilingMaterial={assets.ceiling}
+          fogNear={16}
+          fogFar={48}
+        >
+          <InstancedProp geometry={assets.shaft} material={assets.column} placements={COLUMN_PLACEMENTS} offset={SHAFT_OFFSET} />
+          <InstancedProp geometry={assets.box} material={assets.column} placements={COLUMN_PLACEMENTS} offset={PLINTH_OFFSET} />
+          <InstancedProp geometry={assets.box} material={assets.column} placements={COLUMN_PLACEMENTS} offset={CAPITAL_OFFSET} />
+          <InstancedProp geometry={assets.box} material={assets.wood} placements={GIRDERS} />
+          <InstancedProp geometry={assets.box} material={assets.wood} placements={BEAMS} />
+          <InstancedProp geometry={assets.box} material={assets.hedge} placements={HEDGES} />
+          <InstancedProp geometry={assets.sphere} material={assets.bump} placements={HEDGE_BUMPS} />
+        </RoomShell>
+        <mesh position={[0, FLOOR_Y + 0.004, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[HALF_WIDTH * 0.32, HALF_WIDTH * 0.34, 48]} />
+          <meshStandardMaterial color={SPRING_COLORS.column} roughness={0.6} />
+        </mesh>
+      </group>
+    </StaticBatch>
   );
 }

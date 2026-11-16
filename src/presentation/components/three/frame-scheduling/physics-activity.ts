@@ -1,6 +1,6 @@
 /** The part of the Rapier world the activity probe reads. */
 export interface ActiveBodySource {
-  forEachActiveRigidBody(callback: (body: { isDynamic(): boolean }) => void): void;
+  forEachActiveRigidBody(callback: (body: { isDynamic(): boolean; isSleeping(): boolean }) => void): void;
 }
 
 /**
@@ -10,7 +10,7 @@ export interface ActiveBodySource {
 export function hasAwakeDynamicBodies(world: ActiveBodySource): boolean {
   let awake = false;
   world.forEachActiveRigidBody((body) => {
-    if (!awake && body.isDynamic()) awake = true;
+    if (!awake && body.isDynamic() && !body.isSleeping()) awake = true;
   });
   return awake;
 }

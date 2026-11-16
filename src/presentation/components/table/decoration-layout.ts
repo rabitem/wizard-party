@@ -1,4 +1,5 @@
 import type { Vector3Tuple } from 'three';
+import { TABLE_LAYOUT } from '@/presentation/config/table-layout.config';
 import { TABLE_PHYSICS } from '@/presentation/config/rapier.config';
 
 /** Cylinder sizes of the knockable decorations (visual mesh and collider share them). */
@@ -77,7 +78,13 @@ export const CHIP_PLACEMENTS: readonly ChipPlacement[] = CHIP_STACKS.flatMap((st
   stack.chips.map((chip, chipIdx) => ({
     key: chip.id,
     color: chip.color,
-    position: [stack.pos[0], stack.pos[1] + chip.height, stack.pos[2]] as Vector3Tuple,
+    // Piles are fixed colliders: spawning one through a chip traps it against the felt.
+    // Keep the stacks outside the collected-pile annulus, preserving their original angles.
+    position: [
+      stack.pos[0] * TABLE_LAYOUT.CHIP_STACK_RADIUS / Math.hypot(stack.pos[0], stack.pos[2]),
+      stack.pos[1] + chip.height,
+      stack.pos[2] * TABLE_LAYOUT.CHIP_STACK_RADIUS / Math.hypot(stack.pos[0], stack.pos[2]),
+    ] as Vector3Tuple,
     rotation: [0, (stackIdx * 0.3 + chipIdx * 0.15) % (Math.PI * 2), 0] as Vector3Tuple,
   })),
 );

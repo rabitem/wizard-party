@@ -37,3 +37,9 @@ export const SCENE_LABEL = {
     OUTLINE: '#160c05',
   },
 } as const;
+
+/** Warm the shared font atlas before scene loading completes (arbitrary names still load on demand). */
+export const SCENE_TEXT_WARMUP = {
+  LOAD_KEY: 'scene-text-warmup',
+  GLYPHS: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-:/ ',
+} as const;

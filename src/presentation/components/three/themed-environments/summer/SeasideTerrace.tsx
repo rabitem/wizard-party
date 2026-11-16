@@ -1,7 +1,9 @@
 'use client';
 
+
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import { SUMMER_COLORS, SUMMER_LAYOUT } from '@/presentation/config/summer-environment.config';
 import { ENVIRONMENT_ROOM } from '@/presentation/config/themed-environment.config';
 import { addSurfaceDetail, createPbrMaterial, InstancedProp, SceneFog, useDisposables, type PropPlacement } from '../primitives';
@@ -87,21 +89,23 @@ export function SeasideTerrace() {
 
   const [sandFar, sandNear] = SUMMER_LAYOUT.SAND_Z;
   return (
-    <group>
-      <SceneFog color={SUMMER_COLORS.fog} near={FOG.NEAR} far={FOG.FAR} />
-      <SunsetSky gradient={assets.skyGradient} />
-      <SeaSurface gradient={assets.skyGradient} />
-      <InstancedProp geometry={assets.islandGeometry} material={assets.islandMaterial} placements={ISLANDS} />
-      <mesh position={[0, SUMMER_LAYOUT.SAND_Y, (sandFar + sandNear) / 2]} rotation={[-Math.PI / 2, 0, 0]} material={assets.sand}>
-        <planeGeometry args={[SUMMER_LAYOUT.SEA_WIDTH, sandNear - sandFar]} />
-      </mesh>
+    <StaticBatch>
+      <group>
+        <SceneFog color={SUMMER_COLORS.fog} near={FOG.NEAR} far={FOG.FAR} />
+        <SunsetSky gradient={assets.skyGradient} />
+        <SeaSurface gradient={assets.skyGradient} />
+        <InstancedProp geometry={assets.islandGeometry} material={assets.islandMaterial} placements={ISLANDS} />
+        <mesh position={[0, SUMMER_LAYOUT.SAND_Y, (sandFar + sandNear) / 2]} rotation={[-Math.PI / 2, 0, 0]} material={assets.sand}>
+          <planeGeometry args={[SUMMER_LAYOUT.SEA_WIDTH, sandNear - sandFar]} />
+        </mesh>
 
-      <mesh position={[0, FLOOR - DECK_THICKNESS / 2, DECK_CENTER_Z]} material={assets.deck}>
-        <boxGeometry args={[HALF_W * 2, DECK_THICKNESS, DECK_DEPTH]} />
-      </mesh>
-      <InstancedProp geometry={assets.box} material={assets.rail} placements={POSTS} />
-      <InstancedProp geometry={assets.box} material={assets.rail} placements={RAILS} />
-      <InstancedProp geometry={assets.box} material={assets.deck} placements={STEPS} />
-    </group>
+        <mesh position={[0, FLOOR - DECK_THICKNESS / 2, DECK_CENTER_Z]} material={assets.deck}>
+          <boxGeometry args={[HALF_W * 2, DECK_THICKNESS, DECK_DEPTH]} />
+        </mesh>
+        <InstancedProp geometry={assets.box} material={assets.rail} placements={POSTS} />
+        <InstancedProp geometry={assets.box} material={assets.rail} placements={RAILS} />
+        <InstancedProp geometry={assets.box} material={assets.deck} placements={STEPS} />
+      </group>
+    </StaticBatch>
   );
 }

@@ -1,8 +1,10 @@
 'use client';
 
+
 import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import { SPRING_COLORS, SPRING_LAYOUT, SPRING_REALISM } from '@/presentation/config/spring-environment.config';
 import { addSurfaceDetail, useDisposables, usePrefersReducedMotion } from '../primitives';
 import { useShaderTime } from '../solarpunk/useShaderTime';
@@ -80,26 +82,28 @@ export function Fountain() {
   const bowlY = PEDESTAL.HEIGHT;
   const innerRadius = BASIN.RADIUS - BASIN.WALL;
   return (
-    <group position={SPRING_LAYOUT.FOUNTAIN_POSITION}>
-      <mesh geometry={assets.basin} material={assets.stone} />
-      <mesh ref={causticRef} position={[0, CAUSTIC_Y, 0]} scale={innerRadius} geometry={assets.square} material={assets.caustics} />
-      <mesh ref={basinWaterRef} position={[0, BASIN.WATER_Y, 0]} scale={innerRadius} geometry={assets.disc} material={assets.basinWater} renderOrder={2} />
+    <StaticBatch>
+      <group position={SPRING_LAYOUT.FOUNTAIN_POSITION}>
+        <mesh geometry={assets.basin} material={assets.stone} />
+        <mesh ref={causticRef} position={[0, CAUSTIC_Y, 0]} scale={innerRadius} geometry={assets.square} material={assets.caustics} />
+        <mesh ref={basinWaterRef} position={[0, BASIN.WATER_Y, 0]} scale={innerRadius} geometry={assets.disc} material={assets.basinWater} renderOrder={2} />
 
-      <mesh position={[0, PEDESTAL.HEIGHT / 2, 0]} geometry={assets.pedestal} material={assets.stone} />
-      <group position={[0, bowlY, 0]}>
-        <mesh geometry={assets.bowl} material={assets.stone} />
-        <mesh ref={bowlWaterRef} position={[0, BOWL.WATER_Y, 0]} scale={BOWL.RADIUS - 0.06} geometry={assets.disc} material={assets.bowlWater} renderOrder={2} />
-        <mesh position={[0, BOWL.HEIGHT - SPILL.HEIGHT / 2, 0]} geometry={assets.spill} material={assets.curtain} />
-        <mesh ref={jetRef} position={[0, BOWL.WATER_Y, 0]} geometry={assets.jet} material={assets.curtain} />
+        <mesh position={[0, PEDESTAL.HEIGHT / 2, 0]} geometry={assets.pedestal} material={assets.stone} />
+        <group position={[0, bowlY, 0]}>
+          <mesh geometry={assets.bowl} material={assets.stone} />
+          <mesh ref={bowlWaterRef} position={[0, BOWL.WATER_Y, 0]} scale={BOWL.RADIUS - 0.06} geometry={assets.disc} material={assets.bowlWater} renderOrder={2} />
+          <mesh position={[0, BOWL.HEIGHT - SPILL.HEIGHT / 2, 0]} geometry={assets.spill} material={assets.curtain} />
+          <mesh ref={jetRef} position={[0, BOWL.WATER_Y, 0]} geometry={assets.jet} material={assets.curtain} />
+        </group>
+
+        <FountainSpray
+          jetY={bowlY + BOWL.WATER_Y + JET.HEIGHT * 0.85}
+          rimRadius={BOWL.RADIUS + 0.06}
+          rimY={bowlY + BOWL.HEIGHT}
+          basinY={BASIN.WATER_Y}
+          splashRadius={BOWL.RADIUS + 0.1}
+        />
       </group>
-
-      <FountainSpray
-        jetY={bowlY + BOWL.WATER_Y + JET.HEIGHT * 0.85}
-        rimRadius={BOWL.RADIUS + 0.06}
-        rimY={bowlY + BOWL.HEIGHT}
-        basinY={BASIN.WATER_Y}
-        splashRadius={BOWL.RADIUS + 0.1}
-      />
-    </group>
+    </StaticBatch>
   );
 }

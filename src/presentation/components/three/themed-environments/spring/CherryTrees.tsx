@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import { SPRING_BLOSSOM_COLORS, SPRING_COLORS, SPRING_LAYOUT, SPRING_REALISM } from '@/presentation/config/spring-environment.config';
 import { ENVIRONMENT_ROOM, type Vec3 } from '@/presentation/config/themed-environment.config';
 import { addSurfaceDetail, InstancedProp, seededRandom, useDisposables, type PropPlacement } from '../primitives';
@@ -87,11 +88,13 @@ export function CherryTrees() {
   useSwayClock(sway);
 
   return (
-    <group>
-      <InstancedProp geometry={assets.carpet} material={assets.carpetMaterial} placements={parts.carpets} />
-      <InstancedProp geometry={assets.trunk} material={assets.bark} placements={parts.trunks} />
-      <InstancedProp geometry={assets.branch} material={assets.bark} placements={parts.branches} />
-      <InstancedProp geometry={assets.blossom} material={assets.bloom} placements={parts.blossoms} />
-    </group>
+    <StaticBatch>
+      <group>
+        <InstancedProp geometry={assets.carpet} material={assets.carpetMaterial} placements={parts.carpets} />
+        <InstancedProp geometry={assets.trunk} material={assets.bark} placements={parts.trunks} />
+        <InstancedProp geometry={assets.branch} material={assets.bark} placements={parts.branches} />
+        <InstancedProp geometry={assets.blossom} material={assets.bloom} placements={parts.blossoms} />
+      </group>
+    </StaticBatch>
   );
 }

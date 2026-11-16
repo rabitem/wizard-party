@@ -3,6 +3,7 @@
 import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import {
   PIXEL_BACK_ROW_COUNT,
   PIXEL_CABINET as CAB,
@@ -55,7 +56,7 @@ const GLOW_OPACITY = 0.32;
 
 /**
  * Rows of arcade cabinets: tinted bodies, dark trim, glowing marquees and
- * animated pixel screens (one shared atlas repainted at PIXEL_SCREENS.FPS)
+ * animated pixel screens (one shared sprite sheet advanced at PIXEL_SCREENS.FPS)
  * rendered as blooming CRTs with scanlines, plus their reflections on the
  * glossy floor. About a dozen draw calls for every cabinet in the hall.
  */
@@ -103,7 +104,7 @@ export function ArcadeCabinets() {
     const tick = reducedMotion ? STILL_TICK : Math.floor(clock.getElapsedTime() * PIXEL_SCREENS.FPS);
     if (tick === lastTick.current) return;
     lastTick.current = tick;
-    atlas.paint(tick);
+    atlas.setFrame(tick);
   });
 
   const flickerTargets = useMemo(
@@ -113,22 +114,24 @@ export function ArcadeCabinets() {
   useFlicker(flickerTargets);
 
   return (
-    <group>
-      <InstancedProp geometry={assets.body} material={assets.bodyMaterial} placements={BODY_PLACEMENTS} />
-      <InstancedProp geometry={assets.trim} material={assets.trimMaterial} placements={PLAIN_PLACEMENTS} />
-      <InstancedProp geometry={assets.marquee} material={materials.marquee} placements={BODY_PLACEMENTS} offset={CABINET_MARQUEE_OFFSET} />
-      {SCREEN_GROUPS.map(({ id, variant, placements }) => (
-        <InstancedProp
-          key={id}
-          geometry={screenGeometries[variant]}
-          material={materials.screen}
-          placements={placements}
-          offset={CABINET_SCREEN_OFFSET}
-        />
-      ))}
-      <MatrixInstances geometry={assets.detail} material={assets.detailMaterial} matrices={DETAILS.matrices} colors={DETAILS.colors} />
-      <GlowSprites points={SCREEN_GLOWS} material={assets.glow} />
-      <CabinetReflections texture={atlas.reflection} />
-    </group>
+    <StaticBatch>
+      <group>
+        <InstancedProp geometry={assets.body} material={assets.bodyMaterial} placements={BODY_PLACEMENTS} />
+        <InstancedProp geometry={assets.trim} material={assets.trimMaterial} placements={PLAIN_PLACEMENTS} />
+        <InstancedProp geometry={assets.marquee} material={materials.marquee} placements={BODY_PLACEMENTS} offset={CABINET_MARQUEE_OFFSET} />
+        {SCREEN_GROUPS.map(({ id, variant, placements }) => (
+          <InstancedProp
+            key={id}
+            geometry={screenGeometries[variant]}
+            material={materials.screen}
+            placements={placements}
+            offset={CABINET_SCREEN_OFFSET}
+          />
+        ))}
+        <MatrixInstances geometry={assets.detail} material={assets.detailMaterial} matrices={DETAILS.matrices} colors={DETAILS.colors} />
+        <GlowSprites points={SCREEN_GLOWS} material={assets.glow} />
+        <CabinetReflections texture={atlas.reflection} />
+      </group>
+    </StaticBatch>
   );
 }

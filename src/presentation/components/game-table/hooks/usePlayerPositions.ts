@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { IPlayer } from '@shared/domain';
+import { TABLE_LAYOUT } from '@/presentation/config/table-layout.config';
 import { TABLE_SURFACE } from '../../../config/physics.config';
 import type { PlayerPosition } from '../types';
 
@@ -21,7 +22,7 @@ export function usePlayerPositions({
       const relativeIndex = (i - localIndex + count) % count;
       const angle = (relativeIndex / count) * Math.PI * 2 + Math.PI / 2;
 
-      const tableRadius = 2.6;
+      const tableRadius = TABLE_LAYOUT.SEAT_RADIUS;
       const cardRadius = 1.3;
       const x = Math.cos(angle);
       const z = Math.sin(angle);

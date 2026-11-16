@@ -1,7 +1,9 @@
 'use client';
 
+
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { StaticBatch } from '../../batching';
 import { WINTER_COLORS } from '@/presentation/config/winter-environment.config';
 import { PORCH_FRONT_Z, WINTER_ARCHWAY, WINTER_PORCH, WINTER_YARD_COLORS } from '@/presentation/config/winter-porch.config';
 import { ENVIRONMENT_ROOM, type Vec3 } from '@/presentation/config/themed-environment.config';
@@ -106,18 +108,20 @@ export function SnowyPorch() {
   useDisposables(assets);
 
   return (
-    <group>
-      <InstancedProp geometry={assets.box} material={assets.frame} placements={ARCH_FRAME} />
-      <mesh position={[0, FLOOR_Y - P.DECK_THICKNESS / 2, DECK_CENTER_Z]} material={assets.deck}>
-        <boxGeometry args={[P.HALF_WIDTH * 2, P.DECK_THICKNESS, P.DEPTH]} />
-      </mesh>
-      <mesh position={[0, P.ROOF_Y, ROOF_CENTER_Z]} material={assets.roof}>
-        <boxGeometry args={[P.HALF_WIDTH * 2 + P.ROOF_OVERHANG * 2, P.ROOF_THICKNESS, ROOF_DEPTH]} />
-      </mesh>
-      <InstancedProp geometry={assets.box} material={assets.timber} placements={PORCH_TIMBER} />
-      <InstancedProp geometry={assets.box} material={assets.snow} placements={SNOW_CAPS} />
-      <InstancedProp geometry={assets.roll} material={assets.snow} placements={CORNICES} />
-      <InstancedProp geometry={assets.icicle} material={assets.ice} placements={ICICLES} />
-    </group>
+    <StaticBatch>
+      <group>
+        <InstancedProp geometry={assets.box} material={assets.frame} placements={ARCH_FRAME} />
+        <mesh position={[0, FLOOR_Y - P.DECK_THICKNESS / 2, DECK_CENTER_Z]} material={assets.deck}>
+          <boxGeometry args={[P.HALF_WIDTH * 2, P.DECK_THICKNESS, P.DEPTH]} />
+        </mesh>
+        <mesh position={[0, P.ROOF_Y, ROOF_CENTER_Z]} material={assets.roof}>
+          <boxGeometry args={[P.HALF_WIDTH * 2 + P.ROOF_OVERHANG * 2, P.ROOF_THICKNESS, ROOF_DEPTH]} />
+        </mesh>
+        <InstancedProp geometry={assets.box} material={assets.timber} placements={PORCH_TIMBER} />
+        <InstancedProp geometry={assets.box} material={assets.snow} placements={SNOW_CAPS} />
+        <InstancedProp geometry={assets.roll} material={assets.snow} placements={CORNICES} />
+        <InstancedProp geometry={assets.icicle} material={assets.ice} placements={ICICLES} />
+      </group>
+    </StaticBatch>
   );
 }

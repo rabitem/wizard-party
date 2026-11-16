@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef } from 'react';
 import { addAfterEffect, useThree } from '@react-three/fiber';
+import { useProgress } from '@react-three/drei';
 import * as THREE from 'three';
 import type { SceneObjectKind } from '../three/scene-object-names';
 import { LoadingTracker } from './loading-tracker';
@@ -73,7 +74,8 @@ export function SceneAnimationProbe({ onFrame, onSceneUnmount, realNow, sampleSt
         return object ? object.getWorldPosition(new THREE.Vector3()) : null;
       },
       get pendingLoads() {
-        return loading.current?.pendingLoads ?? 0;
+        const { active, total, loaded } = useProgress.getState();
+        return Math.max(loading.current?.pendingLoads ?? 0, active ? total - loaded : 0);
       },
       requestFrame() {
         get().invalidate();

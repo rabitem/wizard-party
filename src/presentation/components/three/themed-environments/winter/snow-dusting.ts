@@ -1,3 +1,4 @@
+import { allowMaterialNormalization } from '../../render-variants';
 import * as THREE from 'three';
 
 export interface SnowDustingOptions {
@@ -116,6 +117,7 @@ export function applySnowDusting<T extends THREE.MeshStandardMaterial>(material:
       .replace('#include <emissivemap_fragment>', DUSTING_EMISSIVE_FRAGMENT);
   };
   material.customProgramCacheKey = () => 'winter-snow-dusting-v1';
+  allowMaterialNormalization(material);
   material.needsUpdate = true;
   return material;
 }

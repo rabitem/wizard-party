@@ -12,6 +12,7 @@ import {
   useCollectingAnimation,
   usePlayerPositions,
   PlayerAreaRenderer,
+  PlayedCardOwnerBadgeWarmup,
   CollectingCardsRenderer,
   TableDecorations,
   StackedDecksRenderer,
@@ -71,6 +72,7 @@ function GameTableView({
 
   return (
     <group>
+      <PlayedCardOwnerBadgeWarmup />
       {/* TABLE SURFACE */}
       <TableSurface players={players} localPlayerId={localPlayerId} currentPlayerIndex={currentPlayerIndex} trickWinnerId={trickWinnerId} />
 

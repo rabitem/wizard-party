@@ -1,6 +1,6 @@
 import { Suit } from '@shared/domain';
 import { canPlayLocally } from './sandbox-conditions';
-import type { SandboxGameHandles } from './sandbox.types';
+import type { SandboxClock, SandboxGameHandles } from './sandbox.types';
 
 /** Trump the local seat names when it must choose (a Wizard turned up while it deals). */
 export const SANDBOX_DEFAULT_TRUMP_SUIT = Suit.GIANTS;
@@ -13,11 +13,32 @@ export const SANDBOX_DEFAULT_TRUMP_SUIT = Suit.GIANTS;
  */
 export class SandboxAutoplayer {
   private actedOn: string | null = null;
+  private enabled = false;
+  private waitingForRoundEnd = false;
 
   constructor(private readonly isIdle: () => boolean) {}
 
   reset(): void {
     this.actedOn = null;
+    this.enabled = false;
+    this.waitingForRoundEnd = false;
+  }
+
+  setEnabled(enabled: boolean): void { this.enabled = enabled; }
+
+  /** A quiet demand-rendered scene must not prevent the player noticing a UI turn. */
+  watch(clock: Pick<SandboxClock, 'onFrame'>, handles: () => SandboxGameHandles | null): () => void {
+    return clock.onFrame(() => {
+      const state = handles();
+      if (this.enabled && state && !(this.waitingForRoundEnd && state.phase === 'ROUND_END')) this.act(state);
+    });
+  }
+
+  /** Leave ROUND_END observable until its scenario waiter has stopped autoplay. */
+  async observeRoundEnd<T>(waiting: boolean, action: () => Promise<T>): Promise<T> {
+    this.waitingForRoundEnd = waiting;
+    try { return await action(); }
+    finally { this.waitingForRoundEnd = false; }
   }
 
   act(handles: SandboxGameHandles): void {
