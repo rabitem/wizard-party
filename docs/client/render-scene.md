@@ -183,7 +183,9 @@ program, is constant across turns. Lights never mount or unmount during play.
   decorations and trap them against the felt. `DecorationRestTracker` applies the cards' sustained-rest
   thresholds on physics time and puts quiet chips/coasters to sleep; collisions still wake them.
   Quiet decorations slightly embedded in the felt can sleep; bodies below the fallen-body
-  threshold remain active. Each body settles independently, so a moving prop does not prevent
+  threshold remain active until they leave the room. Below `DECORATION_CULL_Y` (-10), their
+  Rapier bodies are disabled: knocked-off props have no floor collider and would otherwise fall
+  forever, keeping physics and shadow updates alive after leaving the visible room. Each body settles independently, so a moving prop does not prevent
   unrelated props sleeping. A real knock restarts its sustained-rest interval. Instanced uploads of unchanged poses do not count as scene motion.
 - **Table legs** (`TableLegs.tsx`) do not cast shadow-map shadows, since they sit under the table
   top.

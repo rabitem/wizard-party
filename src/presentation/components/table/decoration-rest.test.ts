@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { DecorationRestTracker } from './decoration-rest';
 
 function body() {
-  return { isSleeping: () => false, linvel: () => ({ x: 0, y: 0.01, z: 0 }),
+  return { isEnabled: () => true, setEnabled: vi.fn(), isSleeping: () => false, linvel: () => ({ x: 0, y: 0.01, z: 0 }),
     angvel: () => ({ x: 0, y: 0, z: 0 }), translation: () => ({ y: 0.03 }), sleep: vi.fn() };
 }
 
@@ -41,10 +41,15 @@ describe('DecorationRestTracker', () => {
     }
   });
 
-  it('never freezes a decoration that has fallen below the table', () => {
+  it('keeps a falling decoration active until it clears the room', () => {
     const chip = body();
     chip.translation = () => ({ y: -2 });
     new DecorationRestTracker().step(chip, 5000);
+    expect(chip.sleep).not.toHaveBeenCalled();
+    expect(chip.setEnabled).not.toHaveBeenCalled();
+    chip.translation = () => ({ y: -11 });
+    new DecorationRestTracker().step(chip, 16);
+    expect(chip.setEnabled).toHaveBeenCalledWith(false);
     expect(chip.sleep).not.toHaveBeenCalled();
   });
 

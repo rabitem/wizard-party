@@ -166,6 +166,9 @@ export const REST_DETECTION = {
 
   /** Y position threshold - cards below table are considered fallen */
   FALLEN_Y_THRESHOLD: -1.0,
+
+  /** Decorations below the room are no longer visible or able to contact the table. */
+  DECORATION_CULL_Y: -10,
 } as const;
 
 // =============================================================================
