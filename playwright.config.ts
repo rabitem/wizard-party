@@ -61,7 +61,11 @@ type ProjectUse = NonNullable<Project['use']>;
 /** Engine settings shared by every project of that engine: muted audio, and the GPU and frame-rate flags when `uncapped`. */
 function onEngine(use: ProjectUse, uncapped = true): ProjectUse {
   const engine = use.defaultBrowserType ?? 'chromium';
-  if (engine === 'chromium') return { ...use, launchOptions: { args: [...MUTED_CHROMIUM_ARGS, ...(uncapped ? UNCAPPED_CHROMIUM_ARGS : [])] } };
+  if (engine === 'chromium') return {
+    ...use,
+    ...(process.platform === 'win32' && !use.channel ? { channel: 'msedge' } : {}),
+    launchOptions: { args: [...MUTED_CHROMIUM_ARGS, ...(uncapped ? UNCAPPED_CHROMIUM_ARGS : [])] },
+  };
   if (engine === 'firefox') {
     return { ...use, headless: FIREFOX_HEADLESS, launchOptions: { firefoxUserPrefs: { ...MUTED_FIREFOX_PREFS, ...(uncapped ? UNCAPPED_FIREFOX_PREFS : {}) } } };
   }
@@ -136,10 +140,11 @@ export default defineConfig({
   testDir: './e2e',
   // e2e/support/*.test.ts are Vitest unit tests of the pure helpers.
   testMatch: '**/*.spec.ts',
-  // One sandbox run drives a whole game client; runs are long and GPU-bound, so parallelism stays low.
-  fullyParallel: false,
+  // Each test owns its page. CI shards split within files; workers still bound GPU concurrency.
+  fullyParallel: !!process.env.CI,
   workers: Number(process.env.E2E_WORKERS ?? 2),
-  timeout: 10 * 60_000,
+  // Software WebGL advances virtual frames much slower than wall time; scenario deadlines stay virtual.
+  timeout: (process.env.CI ? 30 : 10) * 60_000,
   expect: { timeout: 30_000 },
   retries: process.env.CI ? 1 : 0,
   forbidOnly: !!process.env.CI,

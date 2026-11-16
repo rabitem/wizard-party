@@ -20,6 +20,8 @@ const eslintConfig = defineConfig([
     ".codex/**",
     // Animation sandbox audit output and scratch files
     ".animation-audit/**",
+    "e2e-report/**",
+    "e2e-results/**",
   ]),
 
   // Strict rules for all TypeScript/JavaScript files
