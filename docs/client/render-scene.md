@@ -49,8 +49,8 @@ A frame is **active** (full rate) when any of these holds:
 - **Holds.** `useRenderActivity(active)` (`frame-scheduling/render-scheduler-context.ts`, not
   re-exported by `frame-scheduling/index.ts`) for animations the motion check cannot see, such as
   shader-only ones. No component calls it.
-- **Scene motion.** `SceneMotionMonitor` compares every visible object's world matrix (and
-  instance and particle buffer versions) and the camera with the previous frame. Drift slower than
+- **Scene motion.** `SceneMotionMonitor` compares every visible object's world matrix, instance poses
+  and particle buffer versions and the camera with the previous frame. Drift slower than
   `MOTION_THRESHOLD_PER_SECOND`, such as idle breathing, does not count.
 
 Otherwise the table renders at the tier's ambient rate (`ambientFps` in `RUNTIME_QUALITY`),
@@ -164,7 +164,9 @@ program, is constant across turns. Lights never mount or unmount during play.
   ring and inlay are three instanced draws sharing the body's instance buffer, and only the body
   casts a shadow. Each body has only its explicit cylinder collider (`colliders={false}`). A test
   in `decoration-layout.test.ts` keeps every decoration above the table collider, so all
-  decoration bodies fall asleep.
+  decorations start above the felt. `DecorationRestTracker` applies the cards' sustained-rest
+  thresholds on physics time and puts quiet chips/coasters to sleep; collisions still wake them.
+  Instanced uploads of unchanged poses do not count as scene motion.
 - **Table legs** (`TableLegs.tsx`) do not cast shadow-map shadows, since they sit under the table
   top.
 
@@ -174,7 +176,8 @@ program, is constant across turns. Lights never mount or unmount during play.
 after the table mounts, after a room or structural tier change (its `warmupKey`) and after a
 context restore: `renderer.initTexture` for every material texture, then
 `renderer.compileAsync(scene, camera)` (`KHR_parallel_shader_compile` where available), and a
-shadow update when it finishes.
+shadow update when it finishes. Turn indicators stay mounted while hidden between turns, so
+the last glow material does not release its warmed shader program.
 
 ## Graphics lifecycle
 

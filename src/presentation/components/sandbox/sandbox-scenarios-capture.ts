@@ -123,6 +123,7 @@ export const RENDER_BUDGET_SCENARIO_DEFINITION: SandboxScenario = {
     { op: 'wait-for', until: 'round-end', timeoutMs: ROUND_TIMEOUT_MS },
     { op: 'autoplay', enabled: false },
     { op: 'wait-for', until: 'idle' },
+    { op: 'wait', ms: RENDER_BUDGET_SCENARIO.SETTLE_MS },
     { op: 'measure-start', label: RENDER_BUDGET_SCENARIO.IDLE_WINDOW },
     { op: 'wait', ms: RENDER_BUDGET_SCENARIO.IDLE_MS },
     { op: 'measure-end', label: RENDER_BUDGET_SCENARIO.IDLE_WINDOW },
@@ -145,6 +146,7 @@ export const IDLE_TABLE_SCENARIO: SandboxScenario = {
   steps: [
     { op: 'wait-for', until: 'local-turn' },
     { op: 'wait-for', until: 'idle' },
+    { op: 'wait', ms: RENDER_BUDGET_SCENARIO.SETTLE_MS },
     { op: 'measure-start', label: 'idle' },
     { op: 'wait', ms: 10000 },
     { op: 'measure-end', label: 'idle' },

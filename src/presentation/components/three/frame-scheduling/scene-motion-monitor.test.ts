@@ -70,7 +70,7 @@ describe('SceneMotionMonitor', () => {
     expect(monitor.sample(scene, 32)).toBe(true);
   });
 
-  it('should see instance matrix updates and camera moves', () => {
+  it('should ignore identical instance uploads and see changed poses and camera moves', () => {
     const monitor = new SceneMotionMonitor(0.1);
     const chips = new THREE.InstancedMesh(new THREE.BufferGeometry(), new THREE.MeshBasicMaterial(), 2);
     const camera = new THREE.PerspectiveCamera();
@@ -79,7 +79,10 @@ describe('SceneMotionMonitor', () => {
     monitor.sample(scene, 16, camera);
 
     chips.instanceMatrix.needsUpdate = true;
-    expect(monitor.sample(scene, 32, camera)).toBe(true);
+    expect(monitor.sample(scene, 32, camera)).toBe(false);
+    chips.setMatrixAt(0, new THREE.Matrix4().makeTranslation(0, 1, 0));
+    chips.instanceMatrix.needsUpdate = true;
+    expect(monitor.sample(scene, 40, camera)).toBe(true);
 
     camera.position.z = 2;
     camera.updateMatrixWorld(true);

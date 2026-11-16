@@ -37,11 +37,12 @@ function TurnGlow() {
 }
 
 /** Pulsing rings of the current turn (decorative: animates at the ambient frame rate when idle). */
-function TurnIndicator() {
+function TurnIndicator({ active }: { active: boolean }) {
   const turnIndicatorRef = useRef<THREE.Mesh>(null);
   const outerRingRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
+    if (!active) return;
     const time = state.clock.elapsedTime;
 
     // Pulsing opacity for inner ring
@@ -64,7 +65,7 @@ function TurnIndicator() {
   });
 
   return (
-    <group userData={AMBIENT_USER_DATA}>
+    <group userData={AMBIENT_USER_DATA} visible={active}>
       {/* Inner pulsing ring */}
       <mesh ref={turnIndicatorRef} position={[0, -0.06, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <ringGeometry args={[0.15, 0.3, 24]} />
@@ -91,8 +92,9 @@ export function PlayerSeat({ position, isCurrentTurn, isDealer }: PlayerSeatProp
         <meshBasicMaterial color="#1a1a2e" />
       </mesh>
 
-      {/* Turn indicator - pulsing glow ring */}
-      {isCurrentTurn ? <TurnIndicator /> : null}
+      {/* Keep the warmed glow materials alive between turns: disposing the last mapped material
+          releases its shader program and forces a synchronous link on the next turn. */}
+      <TurnIndicator active={isCurrentTurn} />
 
       {/* Dealer chip */}
       {isDealer ? <mesh position={[0.28, -0.04, 0]}>
