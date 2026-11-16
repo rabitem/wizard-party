@@ -79,6 +79,11 @@ describe('material variants', () => {
     expect(neutral.normalScale.toArray()).toEqual([0, 0]);
     expect((neutral.map as THREE.DataTexture).image.data).toEqual(new Uint8Array([255, 255, 255, 255]));
     expect((neutral.roughnessMap as THREE.DataTexture).image.data).toEqual(new Uint8Array([255, 255, 255, 255]));
+    const bump = new THREE.Texture();
+    const heightMapped = new THREE.MeshStandardMaterial({ bumpMap: bump });
+    cache.prepare(new THREE.Mesh(new THREE.BoxGeometry(), heightMapped));
+    expect(heightMapped.bumpMap).toBe(bump);
+    expect(heightMapped.normalMap).toBeNull();
   });
 
   it('keeps authored particle colours while a uniform-colour burst uses a neutral attribute', () => {

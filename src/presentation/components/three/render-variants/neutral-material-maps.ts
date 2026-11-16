@@ -17,10 +17,13 @@ export function unifyMaterialMaps(material: THREE.Material): void {
   if (!['MeshStandardMaterial', 'MeshPhysicalMaterial', 'MeshToonMaterial'].includes(material.type)) return;
   const standard = material as THREE.MeshStandardMaterial;
   const roughness = material.type !== 'MeshToonMaterial';
-  const changed = !standard.map || (roughness && !standard.roughnessMap) || !standard.normalMap;
+  // Three prioritises a normal map over a bump map. A neutral placeholder must not mask an
+  // authored height map, or enter the object-space normal path where normalScale is not neutral.
+  const neutralNormal = !standard.normalMap && !standard.bumpMap && standard.normalMapType === THREE.TangentSpaceNormalMap;
+  const changed = !standard.map || (roughness && !standard.roughnessMap) || neutralNormal;
   if (!standard.map) standard.map = color;
   if (roughness && !standard.roughnessMap) standard.roughnessMap = data;
-  if (!standard.normalMap) {
+  if (neutralNormal) {
     standard.normalMap = data;
     standard.normalScale.set(0, 0);
   }
