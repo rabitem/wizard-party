@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useLayoutEffect, useMemo, useRef, type ReactNode } from 'react';
-import { useStore, useThree, type RenderCallback, type ThreeElements } from '@react-three/fiber';
+import { useLayoutEffect, useMemo, useRef, type ReactNode } from 'react';
+import { useFrame, useThree, type ThreeElements } from '@react-three/fiber';
 import * as THREE from 'three';
 import { getScreenConstantScale } from './screen-size';
 
@@ -58,17 +58,12 @@ function fitToScreen({ outer, inner, camera, viewportHeightPx, contentHeight, ta
  * distance, zoom or parent transform (it may sit on a moving, rotated card). Its children are
  * ordinary depth-tested meshes, so cards and props in front of it still cover it.
  *
- * The fit must read the parent's pose of the frame being drawn. A parent that moves in its own
- * frame callback (a played card's flight, useCardAnimation) subscribes after its children, since
- * layout effects run child first, so a plain useFrame here would fit to the previous frame's
- * pose: on the first frame of a throw the label lay flat on the card at about half its size.
- * The frame callback is therefore subscribed from a passive effect, after every layout effect of
- * the commit, and the label is fitted once on mount for a frame drawn before that.
+ * The frame fit reads the current camera and card pose after their negative-priority
+ * callbacks. The layout effect also fits a newly mounted label before its first frame.
  */
 export function ScreenSizedBillboard({ contentHeight, targetPx, children, ...props }: ScreenSizedBillboardProps) {
   const outerRef = useRef<THREE.Group>(null);
   const innerRef = useRef<THREE.Group>(null);
-  const store = useStore();
   const camera = useThree((state) => state.camera);
   const viewportHeightPx = useThree((state) => state.size.height);
   const scratch = useMemo<Scratch>(() => ({
@@ -79,18 +74,14 @@ export function ScreenSizedBillboard({ contentHeight, targetPx, children, ...pro
     toLabel: new THREE.Vector3(),
   }), []);
 
-  const fitRef = useRef<RenderCallback>(() => undefined);
-  useLayoutEffect(() => {
-    const fit = (fitCamera: THREE.Camera, heightPx: number) => {
-      const outer = outerRef.current;
-      const inner = innerRef.current;
-      if (outer && inner) fitToScreen({ outer, inner, camera: fitCamera, viewportHeightPx: heightPx, contentHeight, targetPx, scratch });
-    };
-    fitRef.current = (state) => fit(state.camera, state.size.height);
-    fit(camera, viewportHeightPx);
-  }, [camera, viewportHeightPx, contentHeight, targetPx, scratch]);
+  function fit(fitCamera: THREE.Camera, heightPx: number) {
+    const outer = outerRef.current;
+    const inner = innerRef.current;
+    if (outer && inner) fitToScreen({ outer, inner, camera: fitCamera, viewportHeightPx: heightPx, contentHeight, targetPx, scratch });
+  }
 
-  useEffect(() => store.getState().internal.subscribe(fitRef, 0, store), [store]);
+  useLayoutEffect(() => fit(camera, viewportHeightPx));
+  useFrame((state) => fit(state.camera, state.size.height));
 
   return (
     <group ref={outerRef} {...props}>
