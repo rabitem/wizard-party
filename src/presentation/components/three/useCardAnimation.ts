@@ -151,6 +151,7 @@ export function useCardAnimation({
 
   const lastAnimatedCardIdRef = useRef(cardId);
 
+  // Update the card pose before its owner badge fits itself to the screen.
   useFrame((state) => {
     if (!groupRef.current) return;
 
@@ -200,7 +201,7 @@ export function useCardAnimation({
     }
 
     if (rawProgress >= 1 && isAnimating) setIsAnimating(false);
-  });
+  }, -1);
 
   return { groupRef, rigidBodyRef, meshRef, isAnimating, dustActive, dustPosition, setDustActive, effectiveStartPosition };
 }
