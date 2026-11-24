@@ -28,7 +28,7 @@
     "e2e:perf": "playwright test e2e/performance.spec.ts --project=chromium --project=firefox --project=webkit --project=edge"
   },
   "dependencies": {
-    "@better-auth/passkey": "^1.7.22",
+    "@better-auth/passkey": "^1.7.26",
     "@fontsource-variable/inter": "^5.3.0",
     "@neondatabase/serverless": "^1.2.0",
     "@react-three/drei": "^10.7.9",
@@ -41,7 +41,7 @@
     "@vercel/functions": "^3.11.1",
     "@vercel/speed-insights": "^2.1.0",
     "better-auth": "^1.7.14",
-    "lucide-react": "^1.72.0",
+    "lucide-react": "^1.76.0",
     "motion": "^14.12.0",
     "next": "^16.4.6",
     "partyserver": "^0.5.10",
@@ -67,19 +67,19 @@
     "node": "^22.13.0 || ^24.0.0 || ^26.0.0"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^5.20261112.1",
+    "@cloudflare/workers-types": "^5.20261119.1",
     "@gltf-transform/core": "^4.5.1",
     "@gltf-transform/extensions": "^4.5.1",
     "@gltf-transform/functions": "^4.5.1",
-    "@playwright/test": "^1.65.0",
+    "@playwright/test": "^1.65.1",
     "@tailwindcss/postcss": "^4.3.5",
     "@types/node": "^26.6.6",
     "@types/pg": "^8.23.1",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@types/three": "^0.187.0",
-    "@vitest/coverage-v8": "^5.1.0",
-    "baseline-browser-mapping": "^2.11.36",
+    "@vitest/coverage-v8": "^5.1.1",
+    "baseline-browser-mapping": "^2.11.38",
     "concurrently": "^10.0.7",
     "esbuild": "^0.28.2",
     "eslint": "^10.15.0",
@@ -91,7 +91,7 @@
     "three-motion-audit": "^0.1.1",
     "typescript": "npm:@typescript/typescript6@^6.0.3",
     "vitest": "^5.0.5",
-    "wrangler": "^4.160.1"
+    "wrangler": "^4.165.0"
   },
   "type": "module"
 }
